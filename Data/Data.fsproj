@@ -6,9 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Domain.fs" />
+    <Compile Include="Domain\Globals.fs" />
+    <Compile Include="Workflow\Keyword.fs" />
+    <None Include="scripts\Scratchpad.fsx" />
     <None Include="scripts\Ini to Json.fsx" />
-    <Compile Include="Library.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\DMLib-FSharp\DMLib-FSharp.fsproj" />
   </ItemGroup>
 
 </Project>

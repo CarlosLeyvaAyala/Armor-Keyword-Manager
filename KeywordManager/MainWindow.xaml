@@ -6,8 +6,8 @@
   xmlns:local="clr-namespace:KeywordManager"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   Title="Keyword Manager"
-  Width="800"
-  Height="450"
+  Width="900"
+  Height="490"
   Loaded="Window_Loaded"
   mc:Ignorable="d">
   <Window.Resources>
@@ -19,11 +19,12 @@
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
     <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="3*" />
+      <ColumnDefinition Width="3*" />
       <ColumnDefinition Width="2*" />
-      <ColumnDefinition Width="3*" />
-      <ColumnDefinition Width="3*" />
     </Grid.ColumnDefinitions>
     <TextBox
+      x:Name="tbItemName"
       Grid.Row="0"
       Grid.Column="1"
       Margin="{DynamicResource MarginStd}"
@@ -36,12 +37,19 @@
       Grid.Column="1"
       Margin="{DynamicResource MarginStd}"
       Header="Item keywords">
-      <ListBox Margin="{DynamicResource MarginStd}" d:ItemsSource="{d:SampleData ItemCount=5}" />
+      <ListBox
+        x:Name="lstItemKeywords"
+        Margin="{DynamicResource MarginStd}"
+        d:ItemsSource="{d:SampleData ItemCount=5}" />
     </GroupBox>
     <GroupBox Grid.RowSpan="2" Header="Navigate">
       <DockPanel>
         <TextBox Margin="{DynamicResource MarginStd}" DockPanel.Dock="Top" />
-        <ListBox Margin="{DynamicResource MarginStd}" d:ItemsSource="{d:SampleData ItemCount=5}" />
+        <ListBox
+          x:Name="lstNavItems"
+          Margin="{DynamicResource MarginStd}"
+          d:ItemsSource="{d:SampleData ItemCount=5}"
+          SelectionChanged="LstNavItems_SelectionChanged" />
       </DockPanel>
     </GroupBox>
     <GroupBox

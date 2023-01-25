@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="Domain\Globals.fs" />
     <Compile Include="Workflow\Keyword.fs" />
+    <Compile Include="Workflow\Item.fs" />
     <None Include="scripts\Scratchpad.fsx" />
     <None Include="scripts\Ini to Json.fsx" />
   </ItemGroup>

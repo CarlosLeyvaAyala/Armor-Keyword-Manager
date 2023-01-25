@@ -4,11 +4,23 @@
 open System.IO
 open DMLib
 
-let f = "../../KeywordManager/bin/Debug/net7.0-windows/Data/Keywords.json"
-File.ReadAllText f
+let inF = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors.json"
+let armors = inF |> Json.getFromFile<Data.ArmorMap>
 
-let loadKeywords f =
-    Json.getFromFile<string list> f
+query {
+    for name in armors.Keys do
+        sortBy name
+}
+|> Seq.toList
+|> Collections.ListToCList
+
+let findData key =
+    match armors.ContainsKey(key) with
+    | true -> armors[key]
+    | false -> []
     |> Collections.ListToCList
 
-loadKeywords f
+findData "Witchi_skirtsmp5"
+
+for k in armors.Keys do
+    printfn "%A" k

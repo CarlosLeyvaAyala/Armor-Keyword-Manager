@@ -17,14 +17,27 @@ public partial class MainWindow : Window {
     LstSelectFirst(lstNavItems);
   }
 
+  private void ReloadSelectedItem() {
+    var name = lstNavItems.SelectedItem.ToString();
+    tbItemName.Text = name;
+    lstItemKeywords.ItemsSource = Items.GetKeywords(name);
+  }
+
+  private void AddKeyword() {
+    Items.AddKeyword(lstNavItems.SelectedItem.ToString(), lstKeywords.SelectedItem.ToString());
+    ReloadSelectedItem();
+    //MessageBox.Show(lstKeywords.SelectedItem.ToString());
+  }
+
   private void Window_Loaded(object sender, RoutedEventArgs e) {
     LoadKeywords();
     OpenFile(@"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors.json");
   }
 
-  private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-    var name = lstNavItems.SelectedItem.ToString();
-    tbItemName.Text = name;
-    lstItemKeywords.ItemsSource = Items.GetKeywords(name);
+  private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) => ReloadSelectedItem();
+  private void LstKeywords_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) => AddKeyword();
+
+  private void LstKeywords_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
+    if (e.Key == System.Windows.Input.Key.Return) { AddKeyword(); }
   }
 }

@@ -40,7 +40,8 @@
       <ListBox
         x:Name="lstItemKeywords"
         Margin="{DynamicResource MarginStd}"
-        d:ItemsSource="{d:SampleData ItemCount=5}" />
+        d:ItemsSource="{d:SampleData ItemCount=5}"
+        SelectionMode="Extended" />
     </GroupBox>
     <GroupBox Grid.RowSpan="2" Header="Navigate">
       <DockPanel>
@@ -60,7 +61,9 @@
         <ListBox
           x:Name="lstKeywords"
           Margin="{DynamicResource MarginStd}"
-          d:ItemsSource="{d:SampleData ItemCount=5}" />
+          d:ItemsSource="{d:SampleData ItemCount=5}"
+          KeyDown="LstKeywords_KeyDown"
+          MouseDoubleClick="LstKeywords_MouseDoubleClick" />
       </DockPanel>
     </GroupBox>
   </Grid>

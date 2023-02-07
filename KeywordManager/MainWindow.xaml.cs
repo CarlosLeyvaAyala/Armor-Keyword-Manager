@@ -29,9 +29,11 @@ public partial class MainWindow : Window {
     //MessageBox.Show(lstKeywords.SelectedItem.ToString());
   }
 
+  private readonly string dummyFile = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors.json";
+
   private void Window_Loaded(object sender, RoutedEventArgs e) {
     LoadKeywords();
-    OpenFile(@"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors.json");
+    OpenFile(dummyFile);
   }
 
   private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) => ReloadSelectedItem();
@@ -40,4 +42,8 @@ public partial class MainWindow : Window {
   private void LstKeywords_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
     if (e.Key == System.Windows.Input.Key.Return) { AddKeyword(); }
   }
+
+  private void BtnExportClick(object sender, RoutedEventArgs e) => Items.ExportToKID("F:\\Skyrim SE\\MO2\\mods\\DM-Dynamic-Armors\\Armors_KID.ini");
+
+  private void BtnSaveClick(object sender, RoutedEventArgs e) => Items.SaveJson(dummyFile);
 }

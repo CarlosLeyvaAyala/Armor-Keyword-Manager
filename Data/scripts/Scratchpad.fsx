@@ -7,17 +7,42 @@ open DMLib
 let inF = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors.json"
 let mutable items = inF |> Json.getFromFile<Data.ArmorMap>
 
-let AddKeyword edid keyword =
+let addWordToKey getWords addWord hasKey key word =
     let addIfNotExisting () =
-        let keywords = items[edid]
+        let wordList = getWords (key)
 
-        match keywords |> List.tryFind (fun k -> k = keyword) with
+        match wordList |> List.tryFind (fun k -> k = word) with
         | Some _ -> ()
-        | None -> items <- items.Add(edid, keyword :: keywords)
+        | None -> addWord key (word :: wordList)
 
-    match items.ContainsKey(edid) with
+    match hasKey key with
     | true -> addIfNotExisting ()
-    | false -> items <- items.Add(edid, [ keyword ])
+    | false -> addWord key [ word ]
+
+
+let AddKeyword edid keyword =
+    addWordToKey (fun k -> items[k]) (fun k l -> items <- items.Add(k, l)) (fun k -> items.ContainsKey(k)) edid keyword
+
+let SaveToFile fileName =
+    let transformed =
+        let mutable output: Data.OutputMap = Map.empty
+
+        for armor in items.Keys do
+            for keyword in items[armor] do
+                addWordToKey
+                    (fun k -> output[k])
+                    (fun k l -> output <- output.Add(k, l))
+                    (fun k -> output.ContainsKey(k))
+                    keyword
+                    armor
+
+        [| for keyword in output.Keys do
+               let txt = output[keyword] |> String.concat ","
+               sprintf "Keyword = %s|Armor|%s" keyword txt |]
+
+    File.WriteAllLines(fileName, transformed)
+
+SaveToFile @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors_KID.ini"
 
 AddKeyword "00ARLakeFeets" "MagicDisallowEnchanting"
 AddKeyword "00ARLakeFeets" "SLA_ArmorTransparent"

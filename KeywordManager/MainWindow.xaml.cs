@@ -43,7 +43,12 @@ public partial class MainWindow : Window {
     if (e.Key == System.Windows.Input.Key.Return) { AddKeyword(); }
   }
 
-  private void BtnExportClick(object sender, RoutedEventArgs e) => Items.ExportToKID("F:\\Skyrim SE\\MO2\\mods\\DM-Dynamic-Armors\\Armors_KID.ini");
+  private void ExportToKID() {
+    Items.ExportToKID("F:\\Skyrim SE\\MO2\\mods\\DM-Dynamic-Armors\\Armors_KID.ini");
+    MessageBox.Show("File Exported", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+  }
+
+  private void BtnExportClick(object sender, RoutedEventArgs e) => ExportToKID();
 
   private void BtnSaveClick(object sender, RoutedEventArgs e) => Items.SaveJson(dummyFile);
 }

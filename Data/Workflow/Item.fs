@@ -38,6 +38,21 @@ let AddKeyword (edid, keyword) =
     addWordToKey (fun k -> items[k]) (fun k l -> items <- items.Add(k, l)) (fun k -> items.ContainsKey(k)) edid keyword
 
 let ExportToKID filename =
+    let maxArmorsPerLine = 50
+
+    let rec dictToStr acc keyword list =
+
+        let listToStr l =
+            let txt = l |> List.map String.trim |> String.concat ","
+            sprintf "Keyword = %s|Armor|%s" keyword txt
+
+        match List.length list with
+        | full when full > maxArmorsPerLine ->
+            let s = list |> List.take maxArmorsPerLine |> listToStr
+            dictToStr (acc @ [ s ]) keyword (list |> List.skip maxArmorsPerLine)
+
+        | _ -> acc @ [ list |> listToStr ]
+
     let transformed =
         let mutable output: Data.OutputMap = Map.empty
 
@@ -51,8 +66,8 @@ let ExportToKID filename =
                     armor
 
         [| for keyword in output.Keys do
-               let txt = output[keyword] |> List.sort |> String.concat ","
-               sprintf "Keyword = %s|Armor|%s" keyword txt |]
+               dictToStr [] keyword (output[keyword] |> List.sort) |]
+        |> List.concat
 
     File.WriteAllLines(filename, transformed)
 

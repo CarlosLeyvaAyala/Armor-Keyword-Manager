@@ -24,6 +24,21 @@ let AddKeyword edid keyword =
     addWordToKey (fun k -> items[k]) (fun k l -> items <- items.Add(k, l)) (fun k -> items.ContainsKey(k)) edid keyword
 
 let SaveToFile fileName =
+    let maxArmorsPerLine = 50
+
+    let rec dictToStr acc keyword list =
+
+        let listToStr l =
+            let txt = l |> List.map String.trim |> String.concat ","
+            sprintf "Keyword = %s|Armor|%s" keyword txt
+
+        match List.length list with
+        | full when full > maxArmorsPerLine ->
+            let s = list |> List.take maxArmorsPerLine |> listToStr
+            dictToStr (acc @ [ s ]) keyword (list |> List.skip maxArmorsPerLine)
+
+        | _ -> acc @ [ list |> listToStr ]
+
     let transformed =
         let mutable output: Data.OutputMap = Map.empty
 
@@ -37,10 +52,42 @@ let SaveToFile fileName =
                     armor
 
         [| for keyword in output.Keys do
-               let txt = output[keyword] |> String.concat ","
-               sprintf "Keyword = %s|Armor|%s" keyword txt |]
+               dictToStr [] keyword (output[keyword] |> List.sort) |]
+        |> List.concat
 
     File.WriteAllLines(fileName, transformed)
+
+let mutable output: Data.OutputMap = Map.empty
+
+for armor in items.Keys do
+    for keyword in items[armor] do
+        addWordToKey
+            (fun k -> output[k])
+            (fun k l -> output <- output.Add(k, l))
+            (fun k -> output.ContainsKey(k))
+            keyword
+            armor
+
+let rec dictToStr acc keyword list =
+    let maxArmorsPerLine = 50
+
+    let listToStr l =
+        let txt = l |> List.map String.trim |> String.concat ","
+        sprintf "Keyword = %s|Armor|%s" keyword txt
+
+    match List.length list with
+    | full when full > maxArmorsPerLine ->
+        let s = list |> List.take maxArmorsPerLine |> listToStr
+        dictToStr (acc @ [ s ]) keyword (list |> List.skip maxArmorsPerLine)
+
+    | _ -> acc @ [ list |> listToStr ]
+
+[| for keyword in output.Keys do
+       dictToStr [] keyword (output[keyword] |> List.sort) |]
+|> List.concat
+
+let kwd = "MagicDisallowEnchanting"
+dictToStr [] kwd (output[kwd] |> List.sort)
 
 SaveToFile @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors_KID.ini"
 

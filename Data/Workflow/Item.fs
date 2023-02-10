@@ -1,6 +1,7 @@
 ﻿module Data.Items
 
 open DMLib
+open DMLib.Combinators
 open System.IO
 
 let mutable private items: ArmorMap = Map.empty
@@ -72,3 +73,19 @@ let ExportToKID filename =
     File.WriteAllLines(filename, transformed)
 
 let SaveJson filename = items |> Json.writeToFile true filename
+
+
+module Import =
+    let private addArmors (text: string) =
+        let addArmorEDID edid =
+            match items.ContainsKey(edid) with
+            | true -> ()
+            | false -> items <- items.Add(edid, [])
+
+        text.Split("\n")
+        |> Array.map String.trim
+        |> Array.filter (isNot System.String.IsNullOrEmpty)
+        |> Array.iter addArmorEDID
+
+    let FromClipboard () =
+        TextCopy.Clipboard().GetText() |> addArmors

@@ -13,71 +13,85 @@
   <Window.Resources>
     <Thickness x:Key="MarginStd">10</Thickness>
   </Window.Resources>
-  <Grid Margin="{DynamicResource MarginStd}">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="*" />
-      <RowDefinition Height="auto" />
-    </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="3*" />
-      <ColumnDefinition Width="3*" />
-      <ColumnDefinition Width="2*" />
-    </Grid.ColumnDefinitions>
-    <TextBox
-      x:Name="tbItemName"
-      Grid.Row="0"
-      Grid.Column="1"
-      Margin="{DynamicResource MarginStd}"
-      HorizontalAlignment="Stretch"
-      VerticalAlignment="Top"
-      Text="Editor ID"
-      TextWrapping="Wrap" />
-    <GroupBox
-      Grid.Row="1"
-      Grid.Column="1"
-      Margin="{DynamicResource MarginStd}"
-      Header="Item keywords">
-      <ListBox
-        x:Name="lstItemKeywords"
+  <DockPanel>
+    <Menu DockPanel.Dock="Top">
+      <MenuItem Header="_File">
+        <MenuItem Header="_Open" />
+        <MenuItem Header="_Save" />
+        <Separator />
+        <MenuItem Header="_Export" />
+      </MenuItem>
+      <MenuItem Header="_Items">
+        <MenuItem Click="OnImportFromClipboard" Header="Get from _clipboard" />
+      </MenuItem>
+    </Menu>
+
+    <Grid Margin="{DynamicResource MarginStd}">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="auto" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="3*" />
+        <ColumnDefinition Width="3*" />
+        <ColumnDefinition Width="2*" />
+      </Grid.ColumnDefinitions>
+      <TextBox
+        x:Name="tbItemName"
+        Grid.Row="0"
+        Grid.Column="1"
         Margin="{DynamicResource MarginStd}"
-        d:ItemsSource="{d:SampleData ItemCount=5}"
-        SelectionMode="Extended" />
-    </GroupBox>
-    <GroupBox Grid.RowSpan="2" Header="Navigate">
-      <DockPanel>
-        <TextBox Margin="{DynamicResource MarginStd}" DockPanel.Dock="Top" />
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Top"
+        Text="Editor ID"
+        TextWrapping="Wrap" />
+      <GroupBox
+        Grid.Row="1"
+        Grid.Column="1"
+        Margin="{DynamicResource MarginStd}"
+        Header="Item keywords">
         <ListBox
-          x:Name="lstNavItems"
+          x:Name="lstItemKeywords"
           Margin="{DynamicResource MarginStd}"
           d:ItemsSource="{d:SampleData ItemCount=5}"
-          SelectionChanged="LstNavItems_SelectionChanged" />
-      </DockPanel>
-    </GroupBox>
-    <GroupBox
-      Grid.RowSpan="2"
-      Grid.Column="2"
-      Header="Keywords">
-      <DockPanel>
-        <ListBox
-          x:Name="lstKeywords"
-          Margin="{DynamicResource MarginStd}"
-          d:ItemsSource="{d:SampleData ItemCount=5}"
-          KeyDown="LstKeywords_KeyDown"
-          MouseDoubleClick="LstKeywords_MouseDoubleClick" />
-      </DockPanel>
-    </GroupBox>
-    <Button
-      x:Name="btnSave"
-      Grid.Row="2"
-      Grid.Column="0"
-      Click="BtnSaveClick"
-      Content="_Save" />
-    <Button
-      x:Name="btnExport"
-      Grid.Row="2"
-      Grid.Column="2"
-      Click="BtnExportClick"
-      Content="_Export" />
-  </Grid>
+          SelectionMode="Extended" />
+      </GroupBox>
+      <GroupBox Grid.RowSpan="2" Header="Navigate">
+        <DockPanel>
+          <TextBox Margin="{DynamicResource MarginStd}" DockPanel.Dock="Top" />
+          <ListBox
+            x:Name="lstNavItems"
+            Margin="{DynamicResource MarginStd}"
+            d:ItemsSource="{d:SampleData ItemCount=5}"
+            SelectionChanged="LstNavItems_SelectionChanged" />
+        </DockPanel>
+      </GroupBox>
+      <GroupBox
+        Grid.RowSpan="2"
+        Grid.Column="2"
+        Header="Keywords">
+        <DockPanel>
+          <ListBox
+            x:Name="lstKeywords"
+            Margin="{DynamicResource MarginStd}"
+            d:ItemsSource="{d:SampleData ItemCount=5}"
+            KeyDown="LstKeywords_KeyDown"
+            MouseDoubleClick="LstKeywords_MouseDoubleClick" />
+        </DockPanel>
+      </GroupBox>
+      <Button
+        x:Name="btnSave"
+        Grid.Row="2"
+        Grid.Column="0"
+        Click="BtnSaveClick"
+        Content="_Save" />
+      <Button
+        x:Name="btnExport"
+        Grid.Row="2"
+        Grid.Column="2"
+        Click="BtnExportClick"
+        Content="_Export" />
+    </Grid>
+  </DockPanel>
 </Window>

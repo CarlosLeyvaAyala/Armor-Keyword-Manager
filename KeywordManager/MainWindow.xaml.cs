@@ -30,8 +30,11 @@ public partial class MainWindow : Window {
     lstItemKeywords.ItemsSource = Items.GetKeywords(name);
   }
 
-  private void AddKeyword() {
-    Items.AddKeyword(lstNavItems.SelectedItem.ToString(), lstKeywords.SelectedItem.ToString());
+  private void AddKeywords() {
+    foreach (var item in lstNavItems.SelectedItems)
+      foreach (var keyword in lstKeywords.SelectedItems)
+        Items.AddKeyword(item.ToString(), keyword.ToString());
+
     ReloadSelectedItem();
   }
 
@@ -43,10 +46,10 @@ public partial class MainWindow : Window {
   }
 
   private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) => ReloadSelectedItem();
-  private void LstKeywords_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) => AddKeyword();
+  private void LstKeywords_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) => AddKeywords();
 
   private void LstKeywords_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
-    if (e.Key == System.Windows.Input.Key.Return) { AddKeyword(); }
+    if (e.Key == System.Windows.Input.Key.Return) { AddKeywords(); }
   }
 
   private static void ExportToKID() {

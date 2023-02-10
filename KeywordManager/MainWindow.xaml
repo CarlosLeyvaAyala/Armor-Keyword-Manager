@@ -64,7 +64,8 @@
             x:Name="lstNavItems"
             Margin="{DynamicResource MarginStd}"
             d:ItemsSource="{d:SampleData ItemCount=5}"
-            SelectionChanged="LstNavItems_SelectionChanged" />
+            SelectionChanged="LstNavItems_SelectionChanged"
+            SelectionMode="Extended" />
         </DockPanel>
       </GroupBox>
       <GroupBox
@@ -77,7 +78,8 @@
             Margin="{DynamicResource MarginStd}"
             d:ItemsSource="{d:SampleData ItemCount=5}"
             KeyDown="LstKeywords_KeyDown"
-            MouseDoubleClick="LstKeywords_MouseDoubleClick" />
+            MouseDoubleClick="LstKeywords_MouseDoubleClick"
+            SelectionMode="Extended" />
         </DockPanel>
       </GroupBox>
       <Button

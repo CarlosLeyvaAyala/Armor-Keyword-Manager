@@ -38,6 +38,13 @@ let private addWordToKey getWords addWord hasKey key word =
 let AddKeyword (edid, keyword) =
     addWordToKey (fun k -> items[k]) (fun k l -> items <- items.Add(k, l)) (fun k -> items.ContainsKey(k)) edid keyword
 
+let DelKeyword (edid, keyword) =
+    let newKeywords =
+        items[edid]
+        |> List.filter (fun a -> not (a = keyword))
+
+    items <- items.Add(edid, newKeywords)
+
 let ExportToKID filename =
     let maxArmorsPerLine = 50
 

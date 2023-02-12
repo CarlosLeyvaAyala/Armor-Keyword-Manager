@@ -10,16 +10,27 @@
   Height="490"
   Loaded="Window_Loaded"
   mc:Ignorable="d">
+
+  <Window.CommandBindings>
+    <CommandBinding
+      CanExecute="CmdDeleteCanExecute"
+      Command="EditingCommands.Delete"
+      Executed="CmdDeleteExecuted" />
+  </Window.CommandBindings>
+
   <Window.Resources>
     <Thickness x:Key="MarginStd">10</Thickness>
   </Window.Resources>
+
   <DockPanel>
-    <Menu DockPanel.Dock="Top">
+    <Menu Margin="0,0,0,5" DockPanel.Dock="Top">
       <MenuItem Header="_File">
         <MenuItem Header="_Open" />
         <MenuItem Header="_Save" />
+        <MenuItem Header="_Save as..." />
         <Separator />
         <MenuItem Header="_Export" />
+        <MenuItem Header="_Export as..." />
       </MenuItem>
       <MenuItem Header="_Items">
         <MenuItem Click="OnImportFromClipboard" Header="Get from _clipboard" />
@@ -45,7 +56,8 @@
         HorizontalAlignment="Stretch"
         VerticalAlignment="Top"
         Text="Editor ID"
-        TextWrapping="Wrap" />
+        TextWrapping="Wrap"
+        Visibility="Collapsed" />
       <GroupBox
         Grid.Row="1"
         Grid.Column="1"
@@ -55,7 +67,13 @@
           x:Name="lstItemKeywords"
           Margin="{DynamicResource MarginStd}"
           d:ItemsSource="{d:SampleData ItemCount=5}"
-          SelectionMode="Extended" />
+          SelectionMode="Extended">
+          <ListBox.ContextMenu>
+            <ContextMenu>
+              <MenuItem Command="EditingCommands.Delete" />
+            </ContextMenu>
+          </ListBox.ContextMenu>
+        </ListBox>
       </GroupBox>
       <GroupBox Grid.RowSpan="2" Header="Navigate">
         <DockPanel>

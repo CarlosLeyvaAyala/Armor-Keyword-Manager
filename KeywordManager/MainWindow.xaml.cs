@@ -38,11 +38,11 @@ public partial class MainWindow : Window {
     ReloadSelectedItem();
   }
 
-  private readonly string dummyFile = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors.json";
+  private readonly string workingFile = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors.json";
 
   private void Window_Loaded(object sender, RoutedEventArgs e) {
     LoadKeywords();
-    OpenFile(dummyFile);
+    OpenFile(workingFile);
   }
 
   private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) => ReloadSelectedItem();
@@ -61,11 +61,22 @@ public partial class MainWindow : Window {
 
   private void BtnExportClick(object sender, RoutedEventArgs e) => ExportToKID();
 
-  private void BtnSaveClick(object sender, RoutedEventArgs e) => Items.SaveJson(dummyFile);
+  private void BtnSaveClick(object sender, RoutedEventArgs e) => Items.SaveJson(workingFile);
 
   private void OnImportFromClipboard(object sender, RoutedEventArgs e) {
     Items.Import.FromClipboard();
     LoadNavItems();
     InfoBox("New items were successfuly imported.", "Success");
+  }
+
+  private void CmdDeleteExecuted(object sender, System.Windows.Input.ExecutedRoutedEventArgs e) {
+    foreach (var item in lstNavItems.SelectedItems)
+      foreach (var keyword in lstItemKeywords.SelectedItems)
+        Items.DelKeyword(item.ToString(), keyword.ToString());
+    ReloadSelectedItem();
+  }
+
+  private void CmdDeleteCanExecute(object sender, System.Windows.Input.CanExecuteRoutedEventArgs e) {
+    e.CanExecute = lstItemKeywords.SelectedItem != null;
   }
 }

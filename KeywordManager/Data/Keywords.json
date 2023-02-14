@@ -1,206 +1,257 @@
 {
   "EroticArmor": {
     "image": "jpg",
-    "description": "Relatively less skimpy than bikini armor but somewhat\nexposed and suggestive. Belly and thighs exposed or\nemphasis on breasts can be categorized here."
+    "description": "Relatively less skimpy than bikini armor but somewhat\nexposed and suggestive. Belly and thighs exposed or\nemphasis on breasts can be categorized here.",
+    "color": 1
   },
   "MagicDisallowEnchanting": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 4
   },
   "SLA_AnalPlug": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 3
   },
   "SLA_AnalPlugBeads": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 3
   },
   "SLA_AnalPlugTail": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 3
   },
   "SLA_ArmorBondage": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 0
   },
   "SLA_ArmorCapeFull": {
     "image": "jpg",
-    "description": "A long cape. Long enough cover the body. With a cape on,\npeople may not notice that you are fully naked."
+    "description": "A long cape. Long enough cover the body. With a cape on,\npeople may not notice that you are fully naked.",
+    "color": 3
   },
   "SLA_ArmorCapeMini": {
     "image": "jpg",
-    "description": "It\u0027s more like a shawl. A cape but rather short. Not long\nenough cover ass"
+    "description": "It\u0027s more like a shawl. A cape but rather short. Not long\nenough cover ass",
+    "color": 3
   },
   "SLA_ArmorCurtain": {
     "image": "jpg",
-    "description": "Every man definitely wants to unveil that curtain. Her privates\nwill be fully exposed unless she wears underwear. This kind\nof clothes is normally SMPfied (If not, there\u0027s no point of\nusing it)."
+    "description": "Every man definitely wants to unveil that curtain. Her privates\nwill be fully exposed unless she wears underwear. This kind\nof clothes is normally SMPfied (If not, there\u0027s no point of\nusing it).",
+    "color": 1
   },
   "SLA_ArmorFemaleOnly": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 0
   },
   "SLA_ArmorHalfNaked": {
     "image": "jpg",
-    "description": "Cover? Why cover? That's for pussies. A woman must be\nready for sex at any time. A completely whorish outfit could\nfit this category."
+    "description": "Cover? Why cover? That\u0027s for pussies. A woman must be\nready for sex at any time. A completely whorish outfit could\nfit this category.",
+    "color": 1
   },
   "SLA_ArmorHalfNakedBikini": {
     "image": "jpg",
-    "description": "Cover privates only! You might want to wear a cape to cover\nyour silky skin. You better be extra careful not to get\nstripped. A single slip can easily reveal your secrets."
+    "description": "Cover privates only! You might want to wear a cape to cover\nyour silky skin. You better be extra careful not to get\nstripped. A single slip can easily reveal your secrets.",
+    "color": 1
   },
   "SLA_ArmorHarness": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 0
   },
   "SLA_ArmorIllegal": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 0
   },
   "SLA_ArmorLewdLeotard": {
     "image": "jpg",
-    "description": "Very tight lewd leotard type clothes."
+    "description": "Very tight lewd leotard type clothes.",
+    "color": 1
   },
   "SLA_ArmorPartBottom": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 0
   },
   "SLA_ArmorPartTop": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 0
   },
   "SLA_ArmorPretty": {
     "image": "jpg",
-    "description": "This indicates non-skimpy but girly clothes. Cute and pretty."
+    "description": "This indicates non-skimpy but girly clothes. Cute and pretty.",
+    "color": 1
   },
   "SLA_ArmorRubber": {
     "image": "jpg",
-    "description": "Similar to Spandex but more specific. Made of rubber.\nAdded by Monoman for Bikinifier mod."
+    "description": "Similar to Spandex but more specific. Made of rubber.\nAdded by Monoman for Bikinifier mod.\n\nNot using right now. Please use SLA_ArmorSpendex instead.",
+    "color": 6
   },
   "SLA_ArmorSpendex": {
     "image": "jpg",
-    "description": "Spandex, latex... What else do you need for explanation?\nPeople will see her the whole body lines.\nPeople might even notice the shapes of nipples, pussy. Quite\nlewd."
+    "description": "Spandex, latex... What else do you need for explanation?\nPeople will see her the whole body lines.\nPeople might even notice the shapes of nipples, pussy. Quite\nlewd.",
+    "color": 1
   },
   "SLA_ArmorTransparent": {
     "image": "jpg",
-    "description": "You wear but you don\u0027t wear. See-through clothes. Very\nrevealing and not very different than being naked."
+    "description": "You wear but you don\u0027t wear. See-through clothes. Very\nrevealing and not very different than being naked.",
+    "color": 1
   },
   "SLA_BootsHeels": {
     "image": "",
-    "description": ""
+    "description": "Boots with heels.",
+    "color": 3
   },
   "SLA_Brabikini": {
     "image": "jpg",
-    "description": "The armor that does not contain underwear. Specifically, it\ncovers only breasts. It can be used if armor is divided to\nmany parts."
+    "description": "The armor that does not contain underwear. Specifically, it\ncovers only breasts. It can be used if armor is divided to\nmany parts.",
+    "color": 3
   },
   "SLA_Earrings": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 3
   },
   "SLA_FullSkirt": {
     "image": "jpg",
-    "description": "A normal skirt. No skimpy at all."
+    "description": "A normal skirt. No skimpy at all.",
+    "color": 3
   },
   "SLA_HasLeggings": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 3
   },
   "SLA_HasSleeves": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 3
   },
   "SLA_HasStockings": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 3
   },
   "SLA_ImpossibleClothes": {
-    "image": "",
-    "description": ""
+    "image": "jpg",
+    "description": "",
+    "color": 0
   },
   "SLA_KillerHeels": {
     "image": "",
-    "description": ""
+    "description": "High heels.",
+    "color": 3
   },
   "SLA_MicroHotpants": {
     "image": "jpg",
-    "description": "(Normally Armor Slot 52)\nI don\u0027t see a difference between this and thong."
+    "description": "(Normally Armor Slot 52)\nI don\u0027t see a difference between this and thong.",
+    "color": 3
   },
   "SLA_MicroSkirt": {
     "image": "jpg",
-    "description": "Micro! What is the point of wearing this kind of tiny thing!\nMake sure you wear underwear."
+    "description": "Micro! What is the point of wearing this kind of tiny thing!\nMake sure you wear underwear.",
+    "color": 3
   },
   "SLA_MiniSkirt": {
     "image": "jpg",
-    "description": "Mini! Sexier but still cute. There\u0027s a slight chance your\nunderwear gets exposed."
+    "description": "Mini! Sexier but still cute. There\u0027s a slight chance your\nunderwear gets exposed.",
+    "color": 3
   },
   "SLA_PantiesNormal": {
     "image": "jpg",
-    "description": "(Normally Armor Slot 52)\nJust a normal underwear. Cute but not sexy enough."
+    "description": "(Normally Armor Slot 52)\nJust a normal underwear. Cute but not sexy enough.",
+    "color": 3
   },
   "SLA_PantsNormal": {
     "image": "jpg",
-    "description": "(Normally Armor Slot 52)\nPants. Yes, pants."
+    "description": "(Normally Armor Slot 52)\nPants. Yes, pants.",
+    "color": 3
   },
   "SLA_PastiesCrotch": {
-    "image": "",
-    "description": ""
+    "image": "jpg",
+    "description": "",
+    "color": 3
   },
   "SLA_PastiesNipple": {
-    "image": "",
-    "description": ""
+    "image": "jpg",
+    "description": "",
+    "color": 3
   },
   "SLA_PelvicCurtain": {
     "image": "jpg",
-    "description": "A cloth covers crotch. If you don\u0027t wear underwear, people\ncan see your pussy whenever you move."
+    "description": "A cloth covers crotch. If you don\u0027t wear underwear, people\ncan see your pussy whenever you move.",
+    "color": 3
   },
   "SLA_PiercingBelly": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 0
   },
   "SLA_PiercingClit": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 3
   },
   "SLA_PiercingLips": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 3
   },
   "SLA_PiercingNipple": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 3
   },
   "SLA_PiercingNose": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 3
   },
   "SLA_PiercingVulva": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 3
   },
   "SLA_ShowgirlSkirt": {
     "image": "jpg",
-    "description": "A skirt but front open type."
+    "description": "A skirt but front open type.",
+    "color": 3
   },
   "SLA_ThongCString": {
     "image": "jpg",
-    "description": "(Normally Armor Slot 52)\nC String. Normally, no strings are attached, but it isn\u0027t\nnecessary. People may misunderstand you aren\u0027t wearing\nunderwear."
+    "description": "(Normally Armor Slot 52)\nC String. Normally, no strings are attached, but it isn\u0027t\nnecessary. People may misunderstand you aren\u0027t wearing\nunderwear.",
+    "color": 3
   },
   "SLA_ThongGstring": {
     "image": "jpg",
-    "description": "(Normally Armor Slot 52)\nVery very very micro. barely covers privates."
+    "description": "(Normally Armor Slot 52)\nVery very very micro. barely covers privates.",
+    "color": 3
   },
   "SLA_ThongLowleg": {
     "image": "jpg",
-    "description": "(Normally Armor Slot 52)\nSo-called lowleg thong. Micro! Nothing much to describe it."
+    "description": "(Normally Armor Slot 52)\nSo-called lowleg thong. Micro! Nothing much to describe it.",
+    "color": 3
   },
   "SLA_ThongT": {
     "image": "jpg",
-    "description": "(Normally Armor Slot 52)\nGeneral thong type underwear. Not that micro."
+    "description": "(Normally Armor Slot 52)\nGeneral thong type underwear. Not that micro.",
+    "color": 3
   },
   "SLA_VaginalBeads": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 3
   },
   "SLA_VaginalDildo": {
     "image": "",
-    "description": ""
+    "description": "",
+    "color": 3
   }
 }

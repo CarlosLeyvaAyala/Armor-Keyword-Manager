@@ -10,19 +10,25 @@ open DMLib.String
 let mutable ImagePath = ""
 let mutable JsonPath = ""
 
-type KeywordGUI(key: string, imgPath: string, description: string) =
+type KeywordGUI(key: string, imgPath: string, description: string, color: int) =
     member val Name = key with get, set
     member val Image = imgPath with get, set
+    member val Color = color with get, set
 
     member val Description =
         match description with
-        | IsEmptyStr -> key
+        | IsEmptyStr -> "<No description available>"
         | _ -> description with get, set
 
     override this.ToString() = this.Name
 
 type Keyword = string
-type KeywordData = { image: string; description: string }
+
+type KeywordData =
+    { image: string
+      description: string
+      color: int }
+
 type KeywordMap = Map<Keyword, KeywordData>
 
 [<AutoOpen>]
@@ -49,7 +55,8 @@ module private Helpers =
         let processed = k |> Map.map transform
 
         [| for k in processed.Keys do
-               KeywordGUI(k, processed[k].image, processed[ k ].description.Trim ()) |]
+               let x = processed[k]
+               KeywordGUI(k, x.image, x.description.Trim(), x.color) |]
         |> Collections.ArrayToObservableCollection
 
     let returnGUI () = keywords |> generateGUI ImagePath

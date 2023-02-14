@@ -20,6 +20,7 @@
   </Window.CommandBindings>
 
   <Window.Resources>
+    <local:IntToKeywordColor x:Key="IntToKeywordColor" />
     <Thickness x:Key="MarginStd">10</Thickness>
   </Window.Resources>
 
@@ -101,7 +102,7 @@
             SelectionMode="Extended">
             <ListBox.ItemTemplate>
               <DataTemplate>
-                <Grid ToolTip="{Binding Description}">
+                <Grid>
                   <ToolTipService.InitialShowDelay>100</ToolTipService.InitialShowDelay>
                   <Grid.Resources>
                     <System:Double x:Key="ImgSize">80</System:Double>
@@ -117,23 +118,52 @@
                     Height="{DynamicResource ImgSize}"
                     HorizontalAlignment="Left"
                     Source="{Binding Image}"
-                    Stretch="UniformToFill" />
+                    Stretch="UniformToFill">
+                    <Image.ToolTip>
+                      <StackPanel>
+                        <TextBlock
+                          Margin="0,0,0,5"
+                          FontSize="13"
+                          FontWeight="DemiBold"
+                          Text="{Binding Name}" />
+                        <TextBlock Text="{Binding Description}" />
+                      </StackPanel>
+                    </Image.ToolTip>
+                  </Image>
 
                   <TextBlock
                     Grid.Column="1"
                     VerticalAlignment="Center"
                     FontWeight="SemiBold"
-                    Foreground="{DynamicResource ColorKeywordDefault}"
+                    Foreground="{Binding Color, Converter={StaticResource IntToKeywordColor}}"
                     Text="{Binding Name}" />
                 </Grid>
               </DataTemplate>
             </ListBox.ItemTemplate>
             <ListBox.ContextMenu>
               <ContextMenu>
+                <ContextMenu.Resources>
+                  <Style x:Key="MenuItemColor" TargetType="MenuItem">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                    <Setter Property="FontSize" Value="25" />
+                    <!--<Setter Property="Header" Value="●" />-->
+                  </Style>
+                </ContextMenu.Resources>
                 <MenuItem Header="_New keyword" />
                 <MenuItem Header="_Delete" />
                 <Separator />
                 <MenuItem Click="OnChangeKeywordPic" Header="Change _picture" />
+                <Separator />
+                <MenuItem Header="Keyword color">
+                  <MenuItem Background="{DynamicResource ColorKeywordDefault}" Style="{StaticResource MenuItemColor}" />
+                  <MenuItem Background="{DynamicResource ColorKeywordRed}" Style="{StaticResource MenuItemColor}" />
+                  <MenuItem Background="{DynamicResource ColorKeywordOrange}" Style="{StaticResource MenuItemColor}" />
+                  <MenuItem Background="{DynamicResource ColorKeywordPurple}" Style="{StaticResource MenuItemColor}" />
+                  <MenuItem Background="{DynamicResource ColorKeywordBlue}" Style="{StaticResource MenuItemColor}" />
+                  <MenuItem Background="{DynamicResource ColorKeywordGreen}" Style="{StaticResource MenuItemColor}" />
+                  <MenuItem Background="{DynamicResource ColorKeywordGray}" Style="{StaticResource MenuItemColor}" />
+                </MenuItem>
               </ContextMenu>
             </ListBox.ContextMenu>
           </ListBox>

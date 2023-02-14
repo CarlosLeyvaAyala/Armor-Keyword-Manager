@@ -1,5 +1,9 @@
 ﻿using Data;
+using Microsoft.Win32;
+using System.Collections;
+using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -9,10 +13,11 @@ public partial class MainWindow : Window {
   public MainWindow() {
     InitializeComponent();
     lstItemKeywords.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("", System.ComponentModel.ListSortDirection.Ascending));
+    Keywords.ImagePath = Path.Combine(Directory.GetCurrentDirectory(), "Data");
+    Keywords.JsonPath = Path.Combine(Keywords.ImagePath, "Keywords.json");
   }
 
-  private static string KeywordsPath() => Path.Combine(Directory.GetCurrentDirectory(), @"Data\Keywords.json");
-  private void LoadKeywords() => lstKeywords.ItemsSource = Keywords.LoadFromFile(KeywordsPath());
+  private void LoadKeywords(IEnumerable? list) => lstKeywords.ItemsSource = list;
   private static void LstSelectFirst(ListBox lst) => lst.SelectedIndex = lst.Items.Count > 0 ? 0 : -1;
   private void LoadNavItems() {
     lstNavItems.ItemsSource = Items.GetNames();
@@ -41,7 +46,7 @@ public partial class MainWindow : Window {
   private readonly string workingFile = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors.json";
 
   private void Window_Loaded(object sender, RoutedEventArgs e) {
-    LoadKeywords();
+    LoadKeywords(Keywords.LoadFromFile());
     OpenFile(workingFile);
   }
 
@@ -78,5 +83,17 @@ public partial class MainWindow : Window {
 
   private void CmdDeleteCanExecute(object sender, System.Windows.Input.CanExecuteRoutedEventArgs e) {
     e.CanExecute = lstItemKeywords.SelectedItem != null;
+  }
+
+  private void OnChangeKeywordPic(object sender, RoutedEventArgs e) {
+    var dlg = new OpenFileDialog {
+      Filter = "Image files (*.png, *.jpg, *.svg)|*.png;*.jpg;*.svg"
+    };
+    var r = dlg.ShowDialog();
+    if (r != true)
+      return;
+    var source = dlg.FileName;
+    var keyword = lstKeywords.SelectedItem.ToString();
+    LoadKeywords(Keywords.SetImage(keyword, source));
   }
 }

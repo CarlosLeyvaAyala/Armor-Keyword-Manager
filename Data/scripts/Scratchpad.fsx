@@ -6,6 +6,7 @@ open System
 open System.IO
 open DMLib
 open DMLib.Combinators
+open DMLib.IO.Path
 
 let inF = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors.json"
 let mutable items = inF |> Json.getFromFile<Data.Items.ArmorMap>
@@ -36,27 +37,17 @@ let f =
 let keys = Json.getFromFile<KeywordMap> f
 let mutable m: KeywordMap = Map.empty
 
-let randomFill _ _ =
-    let r () = Random().Next(0, 100)
+let path =
+    @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\KeywordManager\Data"
 
-    let v =
-        match r () with
-        | v when v > 60 -> "png"
-        | _ -> ""
+let fileName = @"C:\Users\Osrail\Desktop\2023-02-13 18_19_03-Texture generator.png"
+let k = "SLA_ArmorFemaleOnly"
 
-    { image = v }
+fileName
+|> getExt
+|> (changeExtension |> swap) k
+|> combine2 path
 
-let generateFullImgPath key ext =
-    let v =
-        match ext.image with
-        | "" -> ""
-        | e ->
-            let p = Path.GetDirectoryName(f)
-            Path.Combine(p, Path.ChangeExtension(key, ext.image))
+Path.Combine(path, Path.ChangeExtension(k, Path.GetExtension fileName))
 
-    { image = v }
-
-let processed = keys |> Map.map generateFullImgPath
-
-[ for k in processed.Keys do
-      KeywordGUI(k, processed[k].image) ]
+(getExt fileName)[1..]

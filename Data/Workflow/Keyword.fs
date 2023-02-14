@@ -3,6 +3,11 @@
 open DMLib
 open System.IO
 open DMLib.IO.Path
+open DMLib.Combinators
+
+/// Path to the folder with the keywords images. Must be set by client before using this library.
+let mutable ImagePath = ""
+let mutable JsonPath = ""
 
 type KeywordGUI(key: string, imgPath: string) =
     member val Name = key with get, set
@@ -17,10 +22,8 @@ type KeywordMap = Map<Keyword, KeywordData>
 module private Helpers =
     let mutable keywords: KeywordMap = Map.empty
 
-    let generateFullImgPath (jsonFile: string) key ext =
-        let genPath s =
-            let p = Path.GetDirectoryName(jsonFile)
-            Path.Combine(p, s)
+    let generateFullImgPath (imgPath: string) key ext =
+        let genPath s = Path.Combine(imgPath, s)
 
         let blank = genPath "_.png"
 
@@ -34,15 +37,40 @@ module private Helpers =
 
         { image = v }
 
-    let generateGUI jsonFile k =
-        let transform = generateFullImgPath jsonFile
+    let generateGUI imgPath k =
+        let transform = generateFullImgPath imgPath
         let processed = k |> Map.map transform
 
         [| for k in processed.Keys do
                KeywordGUI(k, processed[k].image) |]
         |> Collections.ArrayToObservableCollection
 
+    let returnGUI () = keywords |> generateGUI ImagePath
+
+    let createImage keyword sourceFileName =
+        let dest =
+            sourceFileName
+            |> getExt
+            |> (changeExtension |> swap) keyword
+            |> combine2 ImagePath
+
+        // TODO: Fix file locking by loading the bitmap in the GUI object itself
+        if File.Exists dest then
+            failwith "File replacing not implemented"
+
+        File.Copy(sourceFileName, dest)
+        (getExt dest)[1..]
+
 /// Loads keywords from a file as a C# list.
-let LoadFromFile f =
-    keywords <- Json.getFromFile<KeywordMap> f
-    keywords |> generateGUI f
+let LoadFromFile () =
+    keywords <- Json.getFromFile<KeywordMap> JsonPath
+    returnGUI ()
+
+let SaveToFile () = Json.writeToFile true JsonPath keywords
+
+/// Given a file name and a keyword, generates the file name for the keyword.
+let SetImage (keyword, sourceFileName) =
+    let ext = createImage keyword sourceFileName
+    keywords <- keywords.Add(keyword, { keywords[keyword] with image = ext })
+    SaveToFile()
+    returnGUI ()

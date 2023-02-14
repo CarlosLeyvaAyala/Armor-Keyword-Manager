@@ -4,6 +4,12 @@ open DMLib
 open DMLib.Combinators
 open System.IO
 
+type EDID = string
+type Keyword = string
+type ArmorMap = Map<EDID, Keyword list>
+
+type OutputMap = Map<Keyword, EDID list>
+
 let mutable private items: ArmorMap = Map.empty
 
 let LoadDataFromFile path =
@@ -62,7 +68,7 @@ let ExportToKID filename =
         | _ -> acc @ [ list |> listToStr ]
 
     let transformed =
-        let mutable output: Data.OutputMap = Map.empty
+        let mutable output: OutputMap = Map.empty
 
         for armor in items.Keys do
             for keyword in items[armor] do

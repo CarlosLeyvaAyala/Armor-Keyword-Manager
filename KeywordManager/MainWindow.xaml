@@ -6,7 +6,7 @@
   xmlns:local="clr-namespace:KeywordManager"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   Title="Keyword Manager"
-  Width="900"
+  Width="1000"
   Height="490"
   Loaded="Window_Loaded"
   mc:Ignorable="d">
@@ -44,9 +44,9 @@
         <RowDefinition Height="auto" />
       </Grid.RowDefinitions>
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="3*" />
-        <ColumnDefinition Width="3*" />
-        <ColumnDefinition Width="2*" />
+        <ColumnDefinition Width="5*" />
+        <ColumnDefinition Width="6*" />
+        <ColumnDefinition Width="5*" />
       </Grid.ColumnDefinitions>
       <TextBox
         x:Name="tbItemName"
@@ -97,7 +97,31 @@
             d:ItemsSource="{d:SampleData ItemCount=5}"
             KeyDown="LstKeywords_KeyDown"
             MouseDoubleClick="LstKeywords_MouseDoubleClick"
-            SelectionMode="Extended" />
+            SelectionMode="Extended">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70" />
+                    <ColumnDefinition Width="*" />
+                  </Grid.ColumnDefinitions>
+
+                  <Image
+                    Grid.Column="0"
+                    Width="60"
+                    Height="60"
+                    HorizontalAlignment="Left"
+                    Source="{Binding Image}"
+                    Stretch="UniformToFill" />
+
+                  <TextBlock
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Text="{Binding Name}" />
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
         </DockPanel>
       </GroupBox>
       <Button

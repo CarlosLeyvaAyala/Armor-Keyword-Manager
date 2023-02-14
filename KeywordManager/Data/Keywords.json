@@ -1,53 +1,155 @@
-[
-  "EroticArmor",
-  "MagicDisallowEnchanting",
-  "SLA_AnalPlug",
-  "SLA_AnalPlugBeads",
-  "SLA_AnalPlugTail",
-  "SLA_ArmorBondage",
-  "SLA_ArmorCapeFull",
-  "SLA_ArmorCapeMini",
-  "SLA_ArmorCurtain",
-  "SLA_ArmorFemaleOnly",
-  "SLA_ArmorHalfNaked",
-  "SLA_ArmorHalfNakedBikini",
-  "SLA_ArmorHarness",
-  "SLA_ArmorIllegal",
-  "SLA_ArmorLewdLeotard",
-  "SLA_ArmorPartBottom",
-  "SLA_ArmorPartTop",
-  "SLA_ArmorPretty",
-  "SLA_ArmorRubber",
-  "SLA_ArmorSpendex",
-  "SLA_ArmorTransparent",
-  "SLA_BootsHeels",
-  "SLA_Brabikini",
-  "SLA_Earrings",
-  "SLA_FullSkirt",
-  "SLA_HasLeggings",
-  "SLA_HasSleeves",
-  "SLA_HasStockings",
-  "SLA_ImpossibleClothes",
-  "SLA_KillerHeels",
-  "SLA_MicroHotpants",
-  "SLA_MicroSkirt",
-  "SLA_MiniSkirt",
-  "SLA_PantiesNormal",
-  "SLA_PantsNormal",
-  "SLA_PastiesCrotch",
-  "SLA_PastiesNipple",
-  "SLA_PelvicCurtain",
-  "SLA_PiercingBelly",
-  "SLA_PiercingClit",
-  "SLA_PiercingLips",
-  "SLA_PiercingNipple",
-  "SLA_PiercingNose",
-  "SLA_PiercingVulva",
-  "SLA_ShowgirlSkirt",
-  "SLA_ThongCString",
-  "SLA_ThongGstring",
-  "SLA_ThongLowleg",
-  "SLA_ThongT",
-  "SLA_VaginalBeads",
-  "SLA_VaginalDildo"
-]
+{
+  "EroticArmor": {
+    "image": ""
+  },
+  "MagicDisallowEnchanting": {
+    "image": ""
+  },
+  "SLA_AnalPlug": {
+    "image": ""
+  },
+  "SLA_AnalPlugBeads": {
+    "image": ""
+  },
+  "SLA_AnalPlugTail": {
+    "image": ""
+  },
+  "SLA_ArmorBondage": {
+    "image": ""
+  },
+  "SLA_ArmorCapeFull": {
+    "image": ""
+  },
+  "SLA_ArmorCapeMini": {
+    "image": ""
+  },
+  "SLA_ArmorCurtain": {
+    "image": "png"
+  },
+  "SLA_ArmorFemaleOnly": {
+    "image": ""
+  },
+  "SLA_ArmorHalfNaked": {
+    "image": "png"
+  },
+  "SLA_ArmorHalfNakedBikini": {
+    "image": ""
+  },
+  "SLA_ArmorHarness": {
+    "image": ""
+  },
+  "SLA_ArmorIllegal": {
+    "image": ""
+  },
+  "SLA_ArmorLewdLeotard": {
+    "image": ""
+  },
+  "SLA_ArmorPartBottom": {
+    "image": ""
+  },
+  "SLA_ArmorPartTop": {
+    "image": ""
+  },
+  "SLA_ArmorPretty": {
+    "image": ""
+  },
+  "SLA_ArmorRubber": {
+    "image": ""
+  },
+  "SLA_ArmorSpendex": {
+    "image": ""
+  },
+  "SLA_ArmorTransparent": {
+    "image": ""
+  },
+  "SLA_BootsHeels": {
+    "image": ""
+  },
+  "SLA_Brabikini": {
+    "image": ""
+  },
+  "SLA_Earrings": {
+    "image": ""
+  },
+  "SLA_FullSkirt": {
+    "image": ""
+  },
+  "SLA_HasLeggings": {
+    "image": ""
+  },
+  "SLA_HasSleeves": {
+    "image": ""
+  },
+  "SLA_HasStockings": {
+    "image": ""
+  },
+  "SLA_ImpossibleClothes": {
+    "image": ""
+  },
+  "SLA_KillerHeels": {
+    "image": ""
+  },
+  "SLA_MicroHotpants": {
+    "image": ""
+  },
+  "SLA_MicroSkirt": {
+    "image": ""
+  },
+  "SLA_MiniSkirt": {
+    "image": ""
+  },
+  "SLA_PantiesNormal": {
+    "image": ""
+  },
+  "SLA_PantsNormal": {
+    "image": ""
+  },
+  "SLA_PastiesCrotch": {
+    "image": ""
+  },
+  "SLA_PastiesNipple": {
+    "image": ""
+  },
+  "SLA_PelvicCurtain": {
+    "image": ""
+  },
+  "SLA_PiercingBelly": {
+    "image": ""
+  },
+  "SLA_PiercingClit": {
+    "image": ""
+  },
+  "SLA_PiercingLips": {
+    "image": ""
+  },
+  "SLA_PiercingNipple": {
+    "image": ""
+  },
+  "SLA_PiercingNose": {
+    "image": ""
+  },
+  "SLA_PiercingVulva": {
+    "image": ""
+  },
+  "SLA_ShowgirlSkirt": {
+    "image": ""
+  },
+  "SLA_ThongCString": {
+    "image": ""
+  },
+  "SLA_ThongGstring": {
+    "image": ""
+  },
+  "SLA_ThongLowleg": {
+    "image": ""
+  },
+  "SLA_ThongT": {
+    "image": ""
+  },
+  "SLA_VaginalBeads": {
+    "image": ""
+  },
+  "SLA_VaginalDildo": {
+    "image": ""
+  }
+}

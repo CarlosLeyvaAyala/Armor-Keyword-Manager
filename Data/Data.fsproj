@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Domain\Globals.fs" />
     <Compile Include="Workflow\Keyword.fs" />
     <Compile Include="Workflow\Item.fs" />
     <None Include="scripts\Scratchpad.fsx" />
@@ -14,11 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="carlos.leyva.ayala.dmlib" Version="1.0.0" />
     <PackageReference Include="TextCopy" Version="6.2.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\DMLib-FSharp\DMLib-FSharp.fsproj" />
+    <Folder Include="Domain\" />
   </ItemGroup>
 
 </Project>

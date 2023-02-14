@@ -12,7 +12,6 @@ namespace KeywordManager;
 public partial class MainWindow : Window {
   public MainWindow() {
     InitializeComponent();
-    lstItemKeywords.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("", System.ComponentModel.ListSortDirection.Ascending));
     var cd = Directory.GetCurrentDirectory();
     Keywords.ImagePath = Path.Combine(cd, @"Data\Img\Keywords");
     Keywords.JsonPath = Path.Combine(cd, @"Data\Keywords.json");

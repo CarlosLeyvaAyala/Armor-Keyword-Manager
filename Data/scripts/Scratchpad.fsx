@@ -1,7 +1,7 @@
 ﻿#r "nuget: carlos.leyva.ayala.dmlib"
 #r "nuget: TextCopy"
-#load "../Workflow/Item.fs"
 #load "../Workflow/Keyword.fs"
+#load "../Workflow/Item.fs"
 
 open System
 open System.IO
@@ -9,7 +9,6 @@ open DMLib
 open DMLib.Combinators
 open DMLib.String
 open DMLib.IO.Path
-open Data.Keywords
 
 let inF = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors.json"
 let mutable items = inF |> Json.getFromFile<Data.Items.ArmorMap>
@@ -17,47 +16,20 @@ let mutable items = inF |> Json.getFromFile<Data.Items.ArmorMap>
 let fk =
     @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\KeywordManager\Data\Keywords.json"
 
-let fd =
-    @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\KeywordManager\Data\descriptions.md"
+Data.Keywords.ImagePath <-
+    @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\KeywordManager\bin\Debug\net7.0-windows\Data\Img\Keywords\"
 
-let keys = Json.getFromFile<KeywordMap> fk
-let mutable m: KeywordMap = Map.empty
+Data.Keywords.JsonPath <- fk
+Data.Keywords.LoadFromFile()
 
-let c = fd |> File.ReadAllLines
-let t = c |> Array.fold (fun acc s -> acc + "\n" + s) ""
-let k = c |> Array.filter (fun l -> l.StartsWith("#"))
-let split (sep: string) (s: string) = s.Split(sep)
+let keys = Json.getFromFile<Data.Keywords.KeywordMap> fk
+let mutable m: Data.Keywords.KeywordMap = Map.empty
 
-let getDesc key =
-    let x =
-        t
-        |> split key
-        |> Array.skip 1
-        |> Array.item 0
-        |> trim
-        |> split "# "
+/// Gets the keyword data for an item
+let getKeywordsData keywordList =
+    keys
+    |> Map.filter (fun k _ -> keywordList |> List.contains k)
 
-    (key[2..], trim x[0])
-
-let descriptions = k |> Array.map getDesc
-
-type KeywordDataReloaded = { image: string; description: string }
-type KeywordMapR = Map<Keyword, KeywordDataReloaded>
-
-let mutable mr: KeywordMapR = Map.empty
-
-for k in keys.Keys do
-    mr <-
-        mr.Add(
-            k,
-            { image = keys[k].image
-              description = "" }
-        )
-
-let getD (k, d) =
-    match mr.ContainsKey k with
-    | false -> printfn "*** %s ***" k
-    | true -> mr <- mr.Add(k, { mr[k] with description = d })
-
-descriptions |> Array.iter getD
-mr |> Json.writeToFile true fk
+getKeywordsData items["00AR_LakeElf2"]
+|> Data.Keywords.Helpers.processFullImgPath
+    @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\KeywordManager\bin\Debug\net7.0-windows\Data\Img\Keywords\"

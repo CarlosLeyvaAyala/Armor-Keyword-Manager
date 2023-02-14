@@ -24,10 +24,22 @@ let GetNames () =
     |> Collections.ListToCList
 
 let GetKeywords itemName =
+    let toCList (list: System.Collections.ObjectModel.ObservableCollection<Keywords.KeywordGUI>) =
+        let l = System.Collections.Generic.List<Keywords.KeywordGUI>()
+
+        for i in list do
+            l.Add(i)
+
+        l
+
     match items.ContainsKey(itemName) with
-    | true -> items[itemName]
-    | false -> []
-    |> Collections.ListToCList
+    | true ->
+        items[itemName]
+        |> List.sort
+        |> Keywords.Items.getKeywordsData
+        |> Keywords.Items.generateGUI
+        |> toCList
+    | false -> [] |> Collections.ListToCList
 
 let private addWordToKey getWords addWord hasKey key word =
     let addIfNotExisting () =

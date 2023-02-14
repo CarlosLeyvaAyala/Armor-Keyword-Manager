@@ -35,24 +35,29 @@ type KeywordMap = Map<Keyword, KeywordData>
 module private Helpers =
     let mutable keywords: KeywordMap = Map.empty
 
-    let generateFullImgPath (imgPath: string) key ext =
+    let generateFullImgPath (imgPath: string) key data =
         let genPath s = Path.Combine(imgPath, s)
 
         let blank = genPath "_.png"
 
         let v =
-            match ext.image with
+            match data.image with
             | "" -> blank
             | e ->
-                match Path.ChangeExtension(key, ext.image) |> genPath with
+                match Path.ChangeExtension(key, data.image) |> genPath with
                 | FileExists ff -> ff
-                | _ -> blank
+                | f ->
+                    printfn "File does not exist %s" f
+                    blank
 
-        { keywords[key] with image = v }
+        { data with image = v }
 
-    let generateGUI imgPath k =
-        let transform = generateFullImgPath imgPath
-        let processed = k |> Map.map transform
+    let processFullImgPath imgPath keywordMap =
+        keywordMap
+        |> Map.map (generateFullImgPath imgPath)
+
+    let generateGUI imgPath keywordMap =
+        let processed = processFullImgPath imgPath keywordMap
 
         [| for k in processed.Keys do
                let x = processed[k]
@@ -75,6 +80,8 @@ module private Helpers =
         File.Copy(sourceFileName, dest)
         (getExt dest)[1..]
 
+open Helpers
+
 /// Loads keywords from a file as a C# list.
 let LoadFromFile () =
     keywords <- Json.getFromFile<KeywordMap> JsonPath
@@ -88,3 +95,13 @@ let SetImage (keyword, sourceFileName) =
     keywords <- keywords.Add(keyword, { keywords[keyword] with image = ext })
     SaveToFile()
     returnGUI ()
+
+
+/// Used by item keywords
+module internal Items =
+    let generateGUI klist = generateGUI ImagePath klist
+
+    /// Gets the keyword data for an item
+    let getKeywordsData keywordList =
+        keywords
+        |> Map.filter (fun k _ -> keywordList |> List.contains k)

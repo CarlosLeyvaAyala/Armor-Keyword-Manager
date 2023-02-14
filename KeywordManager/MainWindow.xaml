@@ -7,9 +7,10 @@
   xmlns:local="clr-namespace:KeywordManager"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   Title="Keyword Manager"
-  Width="1000"
-  Height="490"
+  Width="1100"
+  Height="690"
   Loaded="Window_Loaded"
+  WindowStartupLocation="CenterScreen"
   mc:Ignorable="d">
 
   <Window.CommandBindings>
@@ -75,6 +76,26 @@
               <MenuItem Command="EditingCommands.Delete" />
             </ContextMenu>
           </ListBox.ContextMenu>
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Foreground="{Binding Color, Converter={StaticResource IntToKeywordColor}}" Text="{Binding Name}">
+                <TextBlock.ToolTip>
+                  <StackPanel Orientation="Horizontal">
+                    <Image
+                      Grid.Column="0"
+                      Width="50"
+                      Height="50"
+                      Margin="0,0,10,0"
+                      HorizontalAlignment="Left"
+                      Cursor="Help"
+                      Source="{Binding Image}"
+                      Stretch="UniformToFill" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Description}" />
+                  </StackPanel>
+                </TextBlock.ToolTip>
+              </TextBlock>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
         </ListBox>
       </GroupBox>
       <GroupBox Grid.RowSpan="2" Header="Navigate">
@@ -117,6 +138,7 @@
                     Width="{DynamicResource ImgSize}"
                     Height="{DynamicResource ImgSize}"
                     HorizontalAlignment="Left"
+                    Cursor="Help"
                     Source="{Binding Image}"
                     Stretch="UniformToFill">
                     <Image.ToolTip>

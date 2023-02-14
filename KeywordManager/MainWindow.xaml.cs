@@ -13,8 +13,9 @@ public partial class MainWindow : Window {
   public MainWindow() {
     InitializeComponent();
     lstItemKeywords.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("", System.ComponentModel.ListSortDirection.Ascending));
-    Keywords.ImagePath = Path.Combine(Directory.GetCurrentDirectory(), "Data");
-    Keywords.JsonPath = Path.Combine(Keywords.ImagePath, "Keywords.json");
+    var cd = Directory.GetCurrentDirectory();
+    Keywords.ImagePath = Path.Combine(cd, @"Data\Img\Keywords");
+    Keywords.JsonPath = Path.Combine(cd, @"Data\Keywords.json");
   }
 
   private void LoadKeywords(IEnumerable? list) => lstKeywords.ItemsSource = list;

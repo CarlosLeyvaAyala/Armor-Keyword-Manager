@@ -45,9 +45,9 @@
         <RowDefinition Height="auto" />
       </Grid.RowDefinitions>
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="5*" />
-        <ColumnDefinition Width="6*" />
-        <ColumnDefinition Width="5*" />
+        <ColumnDefinition Width="10*" />
+        <ColumnDefinition Width="8*" />
+        <ColumnDefinition Width="7*" />
       </Grid.ColumnDefinitions>
       <TextBox
         x:Name="tbItemName"
@@ -101,7 +101,8 @@
             SelectionMode="Extended">
             <ListBox.ItemTemplate>
               <DataTemplate>
-                <Grid>
+                <Grid ToolTip="{Binding Description}">
+                  <ToolTipService.InitialShowDelay>100</ToolTipService.InitialShowDelay>
                   <Grid.Resources>
                     <System:Double x:Key="ImgSize">80</System:Double>
                   </Grid.Resources>
@@ -121,6 +122,8 @@
                   <TextBlock
                     Grid.Column="1"
                     VerticalAlignment="Center"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource ColorKeywordDefault}"
                     Text="{Binding Name}" />
                 </Grid>
               </DataTemplate>

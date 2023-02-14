@@ -4,18 +4,25 @@ open DMLib
 open System.IO
 open DMLib.IO.Path
 open DMLib.Combinators
+open DMLib.String
 
 /// Path to the folder with the keywords images. Must be set by client before using this library.
 let mutable ImagePath = ""
 let mutable JsonPath = ""
 
-type KeywordGUI(key: string, imgPath: string) =
+type KeywordGUI(key: string, imgPath: string, description: string) =
     member val Name = key with get, set
     member val Image = imgPath with get, set
+
+    member val Description =
+        match description with
+        | IsEmptyStr -> key
+        | _ -> description with get, set
+
     override this.ToString() = this.Name
 
 type Keyword = string
-type KeywordData = { image: string }
+type KeywordData = { image: string; description: string }
 type KeywordMap = Map<Keyword, KeywordData>
 
 [<AutoOpen>]
@@ -35,14 +42,14 @@ module private Helpers =
                 | FileExists ff -> ff
                 | _ -> blank
 
-        { image = v }
+        { keywords[key] with image = v }
 
     let generateGUI imgPath k =
         let transform = generateFullImgPath imgPath
         let processed = k |> Map.map transform
 
         [| for k in processed.Keys do
-               KeywordGUI(k, processed[k].image) |]
+               KeywordGUI(k, processed[k].image, processed[ k ].description.Trim ()) |]
         |> Collections.ArrayToObservableCollection
 
     let returnGUI () = keywords |> generateGUI ImagePath

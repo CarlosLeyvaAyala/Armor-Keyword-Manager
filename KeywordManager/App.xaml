@@ -4,5 +4,13 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:local="clr-namespace:KeywordManager"
   StartupUri="MainWindow.xaml">
-  <Application.Resources />
+  <Application.Resources>
+    <SolidColorBrush x:Key="ColorKeywordDefault" Color="#E5000000" />
+    <SolidColorBrush x:Key="ColorKeywordRed" Color="#FFc40233" />
+    <SolidColorBrush x:Key="ColorKeywordBlue" Color="#FF0000E0" />
+    <SolidColorBrush x:Key="ColorKeywordOrange" Color="#FFf16f7e" />
+    <SolidColorBrush x:Key="ColorKeywordGreen" Color="#FF487f30" />
+    <SolidColorBrush x:Key="ColorKeywordPurple" Color="#FF7d148a" />
+    <SolidColorBrush x:Key="ColorKeywordGray" Color="#FFABA8BE" />
+  </Application.Resources>
 </Application>

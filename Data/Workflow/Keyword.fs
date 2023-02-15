@@ -56,12 +56,21 @@ module private Helpers =
         keywordMap
         |> Map.map (generateFullImgPath imgPath)
 
+    let sortGuiByColor (arr: KeywordGUI array) =
+        query {
+            for o in arr do
+                sortBy o.Color
+                thenBy o.Name
+        }
+        |> Seq.toArray
+
     let generateGUI imgPath keywordMap =
         let processed = processFullImgPath imgPath keywordMap
 
         [| for k in processed.Keys do
                let x = processed[k]
                KeywordGUI(k, x.image, x.description.Trim(), x.color) |]
+        |> sortGuiByColor
         |> Collections.ArrayToObservableCollection
 
     let returnGUI () = keywords |> generateGUI ImagePath

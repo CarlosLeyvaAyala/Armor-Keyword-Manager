@@ -27,7 +27,7 @@
   "SLA_ArmorBondage": {
     "image": "",
     "description": "",
-    "color": 0
+    "color": 1000
   },
   "SLA_ArmorCapeFull": {
     "image": "jpg",
@@ -47,7 +47,7 @@
   "SLA_ArmorFemaleOnly": {
     "image": "",
     "description": "",
-    "color": 0
+    "color": 1000
   },
   "SLA_ArmorHalfNaked": {
     "image": "jpg",
@@ -62,12 +62,12 @@
   "SLA_ArmorHarness": {
     "image": "",
     "description": "",
-    "color": 0
+    "color": 1000
   },
   "SLA_ArmorIllegal": {
     "image": "",
     "description": "",
-    "color": 0
+    "color": 1000
   },
   "SLA_ArmorLewdLeotard": {
     "image": "jpg",
@@ -77,12 +77,12 @@
   "SLA_ArmorPartBottom": {
     "image": "",
     "description": "",
-    "color": 0
+    "color": 1000
   },
   "SLA_ArmorPartTop": {
     "image": "",
     "description": "",
-    "color": 0
+    "color": 1000
   },
   "SLA_ArmorPretty": {
     "image": "jpg",
@@ -142,7 +142,7 @@
   "SLA_ImpossibleClothes": {
     "image": "jpg",
     "description": "",
-    "color": 0
+    "color": 1000
   },
   "SLA_KillerHeels": {
     "image": "",
@@ -192,7 +192,7 @@
   "SLA_PiercingBelly": {
     "image": "",
     "description": "",
-    "color": 0
+    "color": 1000
   },
   "SLA_PiercingClit": {
     "image": "",

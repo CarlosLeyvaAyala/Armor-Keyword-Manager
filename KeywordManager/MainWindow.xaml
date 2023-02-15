@@ -51,6 +51,15 @@
         <ColumnDefinition Width="8*" />
         <ColumnDefinition Width="7*" />
       </Grid.ColumnDefinitions>
+      <ComboBox
+        Grid.Row="0"
+        Grid.Column="1"
+        Margin="{DynamicResource MarginStd}"
+        SelectedIndex="0">
+        <ComboBoxItem Content="Armor" />
+        <ComboBoxItem Content="﻿Weapon" />
+        <ComboBoxItem Content="Ammo" />
+      </ComboBox>
       <TextBox
         x:Name="tbItemName"
         Grid.Row="0"

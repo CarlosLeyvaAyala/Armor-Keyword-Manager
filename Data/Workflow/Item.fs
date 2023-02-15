@@ -4,13 +4,35 @@ open DMLib
 open DMLib.Combinators
 open System.IO
 
+type FileExtension = string
+type Full = string
+type Tag = string
+
 type EDID = string
 type Keyword = string
-type ArmorMap = Map<EDID, Keyword list>
+
+type ItemData =
+    { keywords: Keyword list
+      comments: string
+      tags: Tag list
+      image: FileExtension
+      name: Full
+      itemType: int }
+
+type ArmorMap = Map<EDID, ItemData>
 
 type OutputMap = Map<Keyword, EDID list>
 
 let mutable private items: ArmorMap = Map.empty
+
+module private ArmorMap =
+    let empty =
+        { keywords = []
+          comments = ""
+          tags = []
+          image = ""
+          name = ""
+          itemType = 0 }
 
 let LoadDataFromFile path =
     items <- Json.getFromFile<ArmorMap> path
@@ -34,7 +56,7 @@ let GetKeywords itemName =
 
     match items.ContainsKey(itemName) with
     | true ->
-        items[itemName]
+        items[itemName].keywords
         |> List.sort
         |> Keywords.Items.getKeywordsData
         |> Keywords.Items.generateGUI
@@ -54,14 +76,19 @@ let private addWordToKey getWords addWord hasKey key word =
     | false -> addWord key [ word ]
 
 let AddKeyword (edid, keyword) =
-    addWordToKey (fun k -> items[k]) (fun k l -> items <- items.Add(k, l)) (fun k -> items.ContainsKey(k)) edid keyword
+    addWordToKey
+        (fun k -> items[k].keywords)
+        (fun k l -> items <- items.Add(k, { items[k] with keywords = l }))
+        (fun k -> items.ContainsKey(k))
+        edid
+        keyword
 
 let DelKeyword (edid, keyword) =
     let newKeywords =
-        items[edid]
+        items[edid].keywords
         |> List.filter (fun a -> not (a = keyword))
 
-    items <- items.Add(edid, newKeywords)
+    items <- items.Add(edid, { items[edid] with keywords = newKeywords })
 
 let ExportToKID filename =
     let maxArmorsPerLine = 50
@@ -83,7 +110,7 @@ let ExportToKID filename =
         let mutable output: OutputMap = Map.empty
 
         for armor in items.Keys do
-            for keyword in items[armor] do
+            for keyword in items[armor].keywords do
                 addWordToKey
                     (fun k -> output[k])
                     (fun k l -> output <- output.Add(k, l))
@@ -105,7 +132,7 @@ module Import =
         let addArmorEDID edid =
             match items.ContainsKey(edid) with
             | true -> ()
-            | false -> items <- items.Add(edid, [])
+            | false -> items <- items.Add(edid, ArmorMap.empty)
 
         text.Split("\n")
         |> Array.map String.trim

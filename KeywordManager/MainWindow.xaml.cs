@@ -20,11 +20,11 @@ public partial class MainWindow : Window {
   private void LoadKeywords(IEnumerable? list) => lstKeywords.ItemsSource = list;
   private static void LstSelectFirst(ListBox lst) => lst.SelectedIndex = lst.Items.Count > 0 ? 0 : -1;
   private void LoadNavItems() {
-    lstNavItems.ItemsSource = Items.GetNames();
+    lstNavItems.ItemsSource = Items.UI.GetNav();
   }
 
   private void OpenFile(string path) {
-    Items.LoadDataFromFile(path);
+    Items.OpenJson(path);
     LoadNavItems();
     LstSelectFirst(lstNavItems);
   }

@@ -1,8 +1,10 @@
 ﻿module Data.Items
 
 open DMLib
+open DMLib.String
 open DMLib.Combinators
 open System.IO
+open System
 
 type FileExtension = string
 type Full = string
@@ -26,7 +28,7 @@ type ItemData =
 
 type ArmorMap = Map<UniqueId, ItemData>
 
-module private ArmorMap =
+module internal ItemData =
     let empty: ItemData =
         { keywords = []
           comments = ""
@@ -41,6 +43,9 @@ module private ArmorMap =
 
 module private EDID =
     let toStr (EDID e) = e
+
+module private UniqueId =
+    let create esp id = $"{esp}|{id}"
 
 let mutable private items: ArmorMap = Map.empty
 
@@ -220,16 +225,60 @@ let DelKeyword (id, keyword) =
     items <- items.Add(id, { items[id] with keywords = newKeywords })
 
 module Import =
-    let private addArmors (text: string) =
-        let addArmorEDID edid =
-            match items.ContainsKey(edid) with
-            | true -> ()
-            | false -> items <- items.Add(edid, ArmorMap.empty)
+    type ParsedLine =
+        { edid: EDID
+          esp: string
+          formId: string
+          signature: int
+          full: string }
 
-        text.Split("\n")
-        |> Array.map String.trim
-        |> Array.filter (isNot System.String.IsNullOrEmpty)
-        |> Array.iter addArmorEDID
+    type ItemTypes =
+        | ARMO = 0
+        | WEAP = 1
+        | AMMO = 2
+
+    [<AutoOpen>]
+    module private H =
+        let parseLine (s: string) : ParsedLine =
+            let signatureToInt (signature: string) =
+                let mutable r = ItemTypes.ARMO
+
+                match Enum.TryParse(signature, &r) with
+                | true -> int r
+                | false -> 0
+
+            let a = s.Split("|")
+
+            { edid = EDID a[0]
+              esp = a[1]
+              formId = a[2]
+              signature = a[3] |> signatureToInt
+              full = a[4] }
+
+        let addItem (pl: ParsedLine) =
+            let uid = UniqueId.create pl.esp pl.formId
+
+            let v =
+                match items.ContainsKey uid with
+                | true -> items[uid]
+                | false -> ItemData.empty
+
+            let d =
+                { v with
+                    edid = pl.edid
+                    esp = pl.esp
+                    formId = pl.formId
+                    itemType = pl.signature
+                    name = pl.full }
+
+            items <- items.Add(uid, d)
+
+        let addItems (text: string) =
+            text.Trim().Split("\n")
+            |> Array.map trim
+            |> Array.filter (isNot isNullOrEmpty)
+            |> Array.map parseLine
+            |> Array.iter addItem
 
     let FromClipboard () =
-        TextCopy.Clipboard().GetText() |> addArmors
+        TextCopy.Clipboard().GetText() |> addItems

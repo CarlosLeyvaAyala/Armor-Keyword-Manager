@@ -30,6 +30,8 @@ public partial class MainWindow : Window {
   }
 
   private void ReloadSelectedItem() {
+    if (lstNavItems.SelectedItem == null)
+      return;
     var name = lstNavItems.SelectedItem.ToString();
     tbItemName.Text = name;
     lstItemKeywords.ItemsSource = Items.GetKeywords(name);

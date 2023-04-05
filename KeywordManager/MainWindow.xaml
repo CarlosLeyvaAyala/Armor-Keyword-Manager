@@ -46,8 +46,14 @@
         <MenuItem Command="ApplicationCommands.Save" Header="_Save" />
         <MenuItem Header="_Save as..." />
         <Separator />
-        <MenuItem Command="c:AppCmds.Export" Header="_Export" />
-        <MenuItem Command="c:AppCmds.ExportAs" Header="_Export as..." />
+        <MenuItem
+          Command="c:AppCmds.Export"
+          Header="_Export"
+          ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+        <MenuItem
+          Command="c:AppCmds.ExportAs"
+          Header="_Export as..."
+          ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
       </MenuItem>
       <MenuItem Header="_Items">
         <MenuItem Click="OnImportFromClipboard" Header="Get from _clipboard" />

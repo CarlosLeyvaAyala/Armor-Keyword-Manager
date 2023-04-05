@@ -45,7 +45,7 @@ public partial class MainWindow : Window {
     ReloadSelectedItem();
   }
 
-  private readonly string workingFile = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors and outfits.json";
+  private readonly string workingFile = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors and outfits.skyitms";
 
   private void Window_Loaded(object sender, RoutedEventArgs e) {
     LoadKeywords(Keywords.LoadFromFile());

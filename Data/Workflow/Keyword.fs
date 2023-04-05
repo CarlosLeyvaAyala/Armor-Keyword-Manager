@@ -3,6 +3,7 @@
 open DMLib
 open System.IO
 open DMLib.IO.Path
+open DMLib.IO
 open DMLib.Combinators
 open DMLib.String
 

@@ -64,28 +64,20 @@ module private Internals =
 [<Sealed>]
 type AppCmds private () =
     static let create = createCmd (fun () -> typeof<AppCmds>)
-    static let exportTxt = "Generates the data that will be used by the mod"
+    static let exportTxt = "Generates all files used by Skyrim"
 
-    static member val Export =
-        { name = "Export"
+    static member val ExportAs =
+        { name = "ExportAs"
           text = exportTxt
           keyDisplay = "Ctrl+F9"
           key = Key.F9
           modifiers = ModifierKeys.Control }
         |> create
 
-    static member val QuickExport =
-        { name = "QuickExport"
-          text = $"{exportTxt} using the last used settings"
+    static member val Export =
+        { name = "Export"
+          text = $"{exportTxt} in the last used exporting folder"
           keyDisplay = "F9"
           key = Key.F9
           modifiers = ModifierKeys.None }
-        |> create
-
-    static member val OpenAppDirs =
-        { name = "QuickExport"
-          text = $"{exportTxt} using the last used settings"
-          keyDisplay = "Ctrl+Shift+O"
-          key = Key.O
-          modifiers = ModifierKeys.Shift ||| ModifierKeys.Control }
         |> create

@@ -1,10 +1,4 @@
-﻿open System.IO
-open System.IO
-open System.IO.Compression
-open System.IO.Compression
-
-
-#r "nuget: carlos.leyva.ayala.dmlib"
+﻿#r "nuget: carlos.leyva.ayala.dmlib"
 #r "nuget: TextCopy"
 #load "../Common.fs"
 #load "../IO/Item.fs"
@@ -46,3 +40,19 @@ let ttt = decompressString testF
 
 ttt = contents
 //StreamReader
+
+open DMLib.IO.Path
+open System.Text.RegularExpressions
+
+let fn = getFileNameWithoutExtension inF
+let dir = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors"
+
+let getBaseName fn =
+    let repl = MatchEvaluator(fun m -> m.Value.ToUpper().Trim())
+    let cl = Regex(@"\s+\w").Replace(fn, repl)
+    Regex(@"\s+").Replace(cl, "")
+
+let baseName = fn |> getBaseName
+
+[ "KID.ini" ] // Put here "DISTR.ini" for outfits and so on
+|> List.map (fun t -> $"{baseName}_{t}" |> combine2 dir)

@@ -38,12 +38,12 @@ namespace KeywordManager.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string mostRecentKIDExport {
+        public string mostRecentExportDir {
             get {
-                return ((string)(this["mostRecentKIDExport"]));
+                return ((string)(this["mostRecentExportDir"]));
             }
             set {
-                this["mostRecentKIDExport"] = value;
+                this["mostRecentExportDir"] = value;
             }
         }
     }

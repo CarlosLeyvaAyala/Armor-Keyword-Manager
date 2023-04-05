@@ -159,9 +159,7 @@ module UI =
         |> List.sortBy (fun o -> o.Name.ToLower())
         |> Collections.ListToCList
 
-let OpenJson filename = items <- IO.loadFromFile filename
-let SaveJson filename = items |> IO.saveToFile filename
-let ExportToKID filename = items |> IO.exportToKID filename
+let internal exportToKID filename = items |> IO.exportToKID filename
 let internal toJson () = items |> IO.mapToJson
 let internal ofJson data = items <- IO.mapFromJson data
 

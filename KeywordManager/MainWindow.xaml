@@ -22,6 +22,16 @@
       CanExecute="CmdDeleteCanExecute"
       Command="EditingCommands.Delete"
       Executed="CmdDeleteExecuted" />
+
+    <CommandBinding
+      CanExecute="OnCanExportAs"
+      Command="c:AppCmds.ExportAs"
+      Executed="OnExportAs" />
+
+    <CommandBinding
+      CanExecute="OnCanExport"
+      Command="c:AppCmds.Export"
+      Executed="OnExport" />
   </Window.CommandBindings>
 
   <Window.Resources>
@@ -36,8 +46,8 @@
         <MenuItem Command="ApplicationCommands.Save" Header="_Save" />
         <MenuItem Header="_Save as..." />
         <Separator />
-        <MenuItem Header="_Export" />
-        <MenuItem Header="_Export as..." />
+        <MenuItem Command="c:AppCmds.Export" Header="_Export" />
+        <MenuItem Command="c:AppCmds.ExportAs" Header="_Export as..." />
       </MenuItem>
       <MenuItem Header="_Items">
         <MenuItem Click="OnImportFromClipboard" Header="Get from _clipboard" />
@@ -45,11 +55,41 @@
     </Menu>
 
     <StatusBar DockPanel.Dock="Bottom">
+      <StatusBar.ItemsPanel>
+        <ItemsPanelTemplate>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="auto" />
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+          </Grid>
+        </ItemsPanelTemplate>
+      </StatusBar.ItemsPanel>
+
       <StatusBarItem>
+        <TextBlock x:Name="txtStatusTime" />
+      </StatusBarItem>
+
+      <Separator Grid.Column="1">
+        <Separator.Style>
+          <Style TargetType="Separator">
+            <Setter Property="Margin" Value="5,0" />
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding Text, ElementName=txtStatusTime}" Value="">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Setter Property="Margin" Value="0" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </Separator.Style>
+      </Separator>
+
+      <StatusBarItem Grid.Column="2">
         <TextBlock
           x:Name="txtStatus"
-          Margin="5,0"
-          Text="Exported" />
+          Margin="0"
+          Text="" />
       </StatusBarItem>
     </StatusBar>
 
@@ -57,7 +97,6 @@
       <Grid.RowDefinitions>
         <RowDefinition Height="auto" />
         <RowDefinition Height="*" />
-        <RowDefinition Height="auto" />
       </Grid.RowDefinitions>
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="10*" />
@@ -254,12 +293,6 @@
           </ListBox>
         </DockPanel>
       </GroupBox>
-      <Button
-        x:Name="btnExport"
-        Grid.Row="2"
-        Grid.Column="2"
-        Click="BtnExportClick"
-        Content="_Export" />
     </Grid>
   </DockPanel>
 </Window>

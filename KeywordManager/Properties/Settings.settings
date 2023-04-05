@@ -5,7 +5,7 @@
     <Setting Name="mostRecetFile" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="mostRecentKIDExport" Type="System.String" Scope="User">
+    <Setting Name="mostRecentExportDir" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

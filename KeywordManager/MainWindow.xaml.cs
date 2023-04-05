@@ -1,5 +1,6 @@
 ﻿using Data;
 using Microsoft.Win32;
+using System;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
@@ -15,13 +16,12 @@ public partial class MainWindow : Window {
     var cd = Directory.GetCurrentDirectory();
     Keywords.ImagePath = Path.Combine(cd, @"Data\Img\Keywords");
     Keywords.JsonPath = Path.Combine(cd, @"Data\Keywords.json");
+    CreateFileWatcher("F:\\Skyrim SE\\Tools\\SSEEdit 4_x\\Edit Scripts");
   }
 
   private void LoadKeywords(IEnumerable? list) => lstKeywords.ItemsSource = list;
   private static void LstSelectFirst(ListBox lst) => lst.SelectedIndex = lst.Items.Count > 0 ? 0 : -1;
-  private void LoadNavItems() {
-    lstNavItems.ItemsSource = Items.UI.GetNav();
-  }
+  private void LoadNavItems() => lstNavItems.ItemsSource = Items.UI.GetNav();
 
   private void OpenFile(string path) {
     Items.OpenJson(path);
@@ -59,22 +59,25 @@ public partial class MainWindow : Window {
     if (e.Key == System.Windows.Input.Key.Return) { AddKeywords(); }
   }
 
-  private static void ExportToKID() {
+  private void ExportToKID() {
     Items.ExportToKID("F:\\Skyrim SE\\MO2\\mods\\DM-Dynamic-Armors\\Armors_KID.ini");
     InfoBox("File exported.", "Success");
   }
 
-  private static void InfoBox(string text, string title) => MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Information);
+  private void InfoBox(string text, string title) => MessageBox.Show(this, text, title, MessageBoxButton.OK, MessageBoxImage.Information);
 
   private void BtnExportClick(object sender, RoutedEventArgs e) => ExportToKID();
 
   private void BtnSaveClick(object sender, RoutedEventArgs e) => Items.SaveJson(workingFile);
 
-  private void OnImportFromClipboard(object sender, RoutedEventArgs e) {
-    Items.Import.FromClipboard();
+  private void ImportItems(Action Import) {
+    Import();
     LoadNavItems();
     InfoBox("New items were successfuly imported.", "Success");
   }
+
+  private void ImportFromFile(string filename) => ImportItems(() => Items.Import.FromFile(filename));
+  private void OnImportFromClipboard(object sender, RoutedEventArgs e) => ImportItems(Items.Import.FromClipboard);
 
   private void CmdDeleteExecuted(object sender, System.Windows.Input.ExecutedRoutedEventArgs e) {
     foreach (var item in lstNavItems.SelectedItems)
@@ -97,5 +100,40 @@ public partial class MainWindow : Window {
     var source = dlg.FileName;
     var keyword = lstKeywords.SelectedItem.ToString();
     LoadKeywords(Keywords.SetImage(keyword, source));
+  }
+
+  FileSystemWatcher? watcher = null;
+  DateTime lastGenerated = DateTime.Now;
+
+  private void CreateFileWatcher(string path) {
+    Debug.WriteLine($"Adding watcher: {path}");
+
+    // Create a new FileSystemWatcher and set its properties.
+    watcher = new FileSystemWatcher() {
+      Path = path,
+      NotifyFilter = NotifyFilters.LastWrite,
+      Filter = "*.kid"
+    };
+
+    // Add event handlers.
+    watcher.Changed += new FileSystemEventHandler(OnChanged);
+    watcher.Created += new FileSystemEventHandler(OnChanged);
+
+    // Begin watching.
+    watcher.EnableRaisingEvents = true;
+  }
+
+  private void OnChanged(object source, FileSystemEventArgs e) {
+    var td = DateTime.Now.Subtract(lastGenerated).TotalMilliseconds;
+    if (td < 500)
+      return;
+
+    Debug.WriteLine($"File: {e.FullPath} {e.ChangeType} {DateTime.Now}");
+
+    // Avoid thread error due to this function running in a non UI thread.
+    Dispatcher.Invoke(new Action(() => {
+      ImportFromFile(e.FullPath);
+      lastGenerated = DateTime.Now;
+    }));
   }
 }

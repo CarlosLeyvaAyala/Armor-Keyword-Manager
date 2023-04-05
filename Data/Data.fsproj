@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="IO\Item.fs" />
     <Compile Include="Workflow\Keyword.fs" />
     <Compile Include="Workflow\Item.fs" />
     <None Include="scripts\Scratchpad.fsx" />
@@ -15,10 +16,6 @@
   <ItemGroup>
     <PackageReference Include="carlos.leyva.ayala.dmlib" Version="1.0.1" />
     <PackageReference Include="TextCopy" Version="6.2.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Domain\" />
   </ItemGroup>
 
 </Project>

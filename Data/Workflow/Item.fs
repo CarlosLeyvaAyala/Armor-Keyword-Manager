@@ -62,7 +62,7 @@ let private addWordToKey getWords addWord hasKey key word =
     | false -> addWord key [ word ]
 
 /// Not meant to be used by client
-module IO =
+module private IO =
     type JsonWaedEnch = { formId: string; level: int }
 
     type JsonData =
@@ -282,3 +282,6 @@ module Import =
 
     let FromClipboard () =
         TextCopy.Clipboard().GetText() |> addItems
+
+    let FromFile filename =
+        filename |> File.ReadAllText |> addItems

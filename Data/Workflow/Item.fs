@@ -146,18 +146,14 @@ module UI =
         member val EDID = edid with get, set
         member val UniqueId = uniqueId with get, set
         override this.ToString() = this.Name
-
-    [<AutoOpen>]
-    module private H =
-        let dataToNav uId (d: ItemData) =
-            NavItem(uId, d.name, d.esp, EDID.toStr d.edid)
+        new(uId, d: ItemData) = NavItem(uId, d.name, d.esp, EDID.toStr d.edid)
 
     let GetNav () =
         items
-        |> Map.toList
-        |> List.map (fun (k, v) -> dataToNav k v)
-        |> List.sortBy (fun o -> o.Name.ToLower())
-        |> Collections.ListToCList
+        |> Map.toArray
+        |> Array.Parallel.map NavItem
+        |> Array.sortBy (fun o -> o.Name.ToLower())
+        |> Collections.ArrayToCList
 
 let internal exportToKID filename = items |> IO.exportToKID filename
 let internal toJson () = items |> IO.mapToJson

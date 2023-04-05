@@ -4,9 +4,10 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using static GUI.Dialogs;
+using Settings = KeywordManager.Properties.Settings;
 
 namespace KeywordManager;
 
@@ -25,6 +26,7 @@ public partial class MainWindow : Window {
 
   private void OpenFile(string path) {
     IO.PropietaryFile.Open(path);
+    workingFile = path;
     LoadNavItems();
     LstSelectFirst(lstNavItems);
   }
@@ -45,11 +47,13 @@ public partial class MainWindow : Window {
     ReloadSelectedItem();
   }
 
-  private readonly string workingFile = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors and outfits.skyitms";
+  private string workingFile = "";
 
   private void Window_Loaded(object sender, RoutedEventArgs e) {
     LoadKeywords(Keywords.LoadFromFile());
-    OpenFile(workingFile);
+    var fn = Settings.Default.mostRecetFile;
+    if (File.Exists(fn))
+      OpenFile(fn);
   }
 
   private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) => ReloadSelectedItem();
@@ -67,8 +71,6 @@ public partial class MainWindow : Window {
   private void InfoBox(string text, string title) => MessageBox.Show(this, text, title, MessageBoxButton.OK, MessageBoxImage.Information);
 
   private void BtnExportClick(object sender, RoutedEventArgs e) => ExportToKID();
-
-  private void BtnSaveClick(object sender, RoutedEventArgs e) => IO.PropietaryFile.Save(workingFile);
 
   private void ImportItems(Action Import) {
     Import();
@@ -135,5 +137,26 @@ public partial class MainWindow : Window {
       ImportFromFile(e.FullPath);
       lastGenerated = DateTime.Now;
     }));
+  }
+
+  private void OnSaveFile(object sender, System.Windows.Input.ExecutedRoutedEventArgs e) {
+    IO.PropietaryFile.Save(workingFile);
+    System.Media.SystemSounds.Asterisk.Play();
+  }
+
+  private void OnOpenFile(object sender, System.Windows.Input.ExecutedRoutedEventArgs e) {
+    try {
+      var fn = OpenFileDialogFull("Skyrim Items File (*.skyitms)|*.skyitms", "Select a file to open", "", "1e2be86c-8d55-4894-82e9-65e8a3a027a5");
+      if (fn == null || fn == "")
+        return;
+
+      OpenFile(fn);
+      Settings.Default.mostRecetFile = fn;
+      Settings.Default.Save();
+      System.Media.SystemSounds.Asterisk.Play();
+    }
+    catch (Exception ex) {
+      MessageBox.Show(this, ex.Message);
+    }
   }
 }

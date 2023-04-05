@@ -3,6 +3,7 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:System="clr-namespace:System;assembly=System.Runtime"
+  xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:KeywordManager"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -14,6 +15,9 @@
   mc:Ignorable="d">
 
   <Window.CommandBindings>
+    <CommandBinding Command="ApplicationCommands.Open" Executed="OnOpenFile" />
+    <CommandBinding Command="ApplicationCommands.Save" Executed="OnSaveFile" />
+
     <CommandBinding
       CanExecute="CmdDeleteCanExecute"
       Command="EditingCommands.Delete"
@@ -28,8 +32,8 @@
   <DockPanel>
     <Menu Margin="0,0,0,5" DockPanel.Dock="Top">
       <MenuItem Header="_File">
-        <MenuItem Header="_Open" />
-        <MenuItem Header="_Save" />
+        <MenuItem Command="ApplicationCommands.Open" Header="_Open" />
+        <MenuItem Command="ApplicationCommands.Save" Header="_Save" />
         <MenuItem Header="_Save as..." />
         <Separator />
         <MenuItem Header="_Export" />
@@ -241,12 +245,6 @@
           </ListBox>
         </DockPanel>
       </GroupBox>
-      <Button
-        x:Name="btnSave"
-        Grid.Row="2"
-        Grid.Column="0"
-        Click="BtnSaveClick"
-        Content="_Save" />
       <Button
         x:Name="btnExport"
         Grid.Row="2"

@@ -24,7 +24,7 @@ public partial class MainWindow : Window {
   private void LoadNavItems() => lstNavItems.ItemsSource = Items.UI.GetNav();
 
   private void OpenFile(string path) {
-    Items.OpenJson(path);
+    IO.PropietaryFile.Open(path);
     LoadNavItems();
     LstSelectFirst(lstNavItems);
   }
@@ -45,7 +45,7 @@ public partial class MainWindow : Window {
     ReloadSelectedItem();
   }
 
-  private readonly string workingFile = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors.json";
+  private readonly string workingFile = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors and outfits.json";
 
   private void Window_Loaded(object sender, RoutedEventArgs e) {
     LoadKeywords(Keywords.LoadFromFile());
@@ -68,7 +68,7 @@ public partial class MainWindow : Window {
 
   private void BtnExportClick(object sender, RoutedEventArgs e) => ExportToKID();
 
-  private void BtnSaveClick(object sender, RoutedEventArgs e) => Items.SaveJson(workingFile);
+  private void BtnSaveClick(object sender, RoutedEventArgs e) => IO.PropietaryFile.Save(workingFile);
 
   private void ImportItems(Action Import) {
     Import();

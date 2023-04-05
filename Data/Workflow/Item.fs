@@ -5,13 +5,13 @@ open DMLib.String
 open DMLib.Combinators
 open System.IO
 open System
+open Common
 
 type FileExtension = string
 type Full = string
 type Tag = string
 type UniqueId = string
-type EDID = EDID of string
-type Keyword = string
+
 type WaedEnchantment = { formId: UniqueId; level: int }
 
 type ItemData =
@@ -26,10 +26,7 @@ type ItemData =
       formId: string
       itemType: int }
 
-type ArmorMap = Map<UniqueId, ItemData>
-
-module internal ItemData =
-    let empty: ItemData =
+    static member empty =
         { keywords = []
           comments = ""
           edid = EDID ""
@@ -41,8 +38,7 @@ module internal ItemData =
           name = ""
           itemType = 0 }
 
-module private EDID =
-    let toStr (EDID e) = e
+type ArmorMap = Map<UniqueId, ItemData>
 
 module private UniqueId =
     let create esp id = $"{esp}|{id}"
@@ -63,22 +59,7 @@ let private addWordToKey getWords addWord hasKey key word =
 
 /// Not meant to be used by client
 module private IO =
-    type JsonWaedEnch = { formId: string; level: int }
-
-    type JsonData =
-        { keywords: string list
-          comments: string
-          tags: string list
-          image: string
-          name: string
-          edid: string
-          esp: string
-          enchantments: JsonWaedEnch list
-          formId: string
-          itemType: int }
-
-    type JsonArmorMap = Map<string, JsonData>
-    type OutputMap = Map<Keyword, string list>
+    open IO.Item
 
     let dataToJson (d: ItemData) : JsonData =
         let convEnch (e: WaedEnchantment) : JsonWaedEnch = { formId = e.formId; level = e.level }
@@ -141,7 +122,7 @@ module private IO =
             | _ -> acc @ [ list |> listToStr ]
 
         let transformed =
-            let mutable output: OutputMap = Map.empty
+            let mutable output: KIDItemMap = Map.empty
 
             for id in jsonMap.Keys do
                 for keyword in jsonMap[id].keywords do
@@ -181,6 +162,8 @@ module UI =
 let OpenJson filename = items <- IO.loadFromFile filename
 let SaveJson filename = items |> IO.saveToFile filename
 let ExportToKID filename = items |> IO.exportToKID filename
+let internal toJson () = items |> IO.mapToJson
+let internal ofJson data = items <- IO.mapFromJson data
 
 let GetNames () =
     query {

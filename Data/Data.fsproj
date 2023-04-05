@@ -6,9 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Common.fs" />
     <Compile Include="IO\Item.fs" />
+    <Compile Include="IO\Outfit.fs" />
     <Compile Include="Workflow\Keyword.fs" />
     <Compile Include="Workflow\Item.fs" />
+    <Compile Include="PropietaryFile.fs" />
     <None Include="scripts\Scratchpad.fsx" />
     <None Include="scripts\Ini to Json.fsx" />
   </ItemGroup>

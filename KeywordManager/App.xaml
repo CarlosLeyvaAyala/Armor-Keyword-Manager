@@ -3,14 +3,18 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:local="clr-namespace:KeywordManager"
+  xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
   StartupUri="MainWindow.xaml">
   <Application.Resources>
-    <SolidColorBrush x:Key="ColorKeywordDefault" Color="#E5000000" />
-    <SolidColorBrush x:Key="ColorKeywordRed" Color="#FFc40233" />
-    <SolidColorBrush x:Key="ColorKeywordBlue" Color="#FF0000E0" />
-    <SolidColorBrush x:Key="ColorKeywordOrange" Color="#FFf16f7e" />
-    <SolidColorBrush x:Key="ColorKeywordGreen" Color="#FF487f30" />
-    <SolidColorBrush x:Key="ColorKeywordPurple" Color="#FF7d148a" />
-    <SolidColorBrush x:Key="ColorKeywordGray" Color="#FFABA8BE" />
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <md:BundledTheme
+          BaseTheme="Light"
+          PrimaryColor="LightBlue"
+          SecondaryColor="Orange" />
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dictionaries/KeywordColors.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
   </Application.Resources>
 </Application>

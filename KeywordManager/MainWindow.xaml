@@ -7,13 +7,20 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:KeywordManager"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
   Title="Skyrim Item Manager"
   Width="1100"
   Height="690"
+  Background="{DynamicResource MaterialDesignPaper}"
+  FontFamily="{DynamicResource MaterialDesignFont}"
   Loaded="Window_Loaded"
+  TextElement.FontSize="13"
+  TextElement.FontWeight="Regular"
+  TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+  TextOptions.TextFormattingMode="Ideal"
+  TextOptions.TextRenderingMode="Auto"
   WindowStartupLocation="CenterScreen"
   mc:Ignorable="d">
-
   <Window.CommandBindings>
     <CommandBinding Command="ApplicationCommands.Open" Executed="OnOpenFile" />
     <CommandBinding Command="ApplicationCommands.Save" Executed="OnSaveFile" />
@@ -147,7 +154,11 @@
             </ListBox.ContextMenu>
             <ListBox.ItemTemplate>
               <DataTemplate>
-                <TextBlock Foreground="{Binding Color, Converter={StaticResource IntToKeywordColor}}" Text="{Binding Name}">
+                <TextBlock
+                  Cursor="Help"
+                  Foreground="{Binding Color, Converter={StaticResource IntToKeywordColor}}"
+                  Text="{Binding Name}"
+                  ToolTipService.InitialShowDelay="100">
                   <TextBlock.ToolTip>
                     <StackPanel Orientation="Horizontal">
                       <Image
@@ -170,7 +181,11 @@
 
       </DockPanel>
 
-      <GroupBox Grid.RowSpan="2" Header="Navigate">
+      <GroupBox
+        Grid.RowSpan="2"
+        md:ColorZoneAssist.Mode="PrimaryDark"
+        Header="Navigate"
+        Style="{StaticResource MaterialDesignCardGroupBox}">
         <DockPanel>
           <TextBox Margin="{DynamicResource MarginStd}" DockPanel.Dock="Top" />
           <ListBox
@@ -217,6 +232,8 @@
           </ListBox>
         </DockPanel>
       </GroupBox>
+
+      <!--  KEYWORDS  -->
       <GroupBox
         Grid.RowSpan="2"
         Grid.Column="2"
@@ -232,7 +249,6 @@
             <ListBox.ItemTemplate>
               <DataTemplate>
                 <Grid>
-                  <ToolTipService.InitialShowDelay>100</ToolTipService.InitialShowDelay>
                   <Grid.Resources>
                     <System:Double x:Key="ImgSize">80</System:Double>
                   </Grid.Resources>
@@ -248,7 +264,8 @@
                     HorizontalAlignment="Left"
                     Cursor="Help"
                     Source="{Binding Image}"
-                    Stretch="UniformToFill">
+                    Stretch="UniformToFill"
+                    ToolTipService.InitialShowDelay="50">
                     <Image.ToolTip>
                       <StackPanel>
                         <TextBlock
@@ -264,6 +281,7 @@
                   <TextBlock
                     Grid.Column="1"
                     VerticalAlignment="Center"
+                    FontSize="11"
                     FontWeight="SemiBold"
                     Foreground="{Binding Color, Converter={StaticResource IntToKeywordColor}}"
                     Text="{Binding Name}" />

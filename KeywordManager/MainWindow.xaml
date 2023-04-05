@@ -7,7 +7,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:KeywordManager"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  Title="Keyword Manager"
+  Title="Skyrim Item Manager"
   Width="1100"
   Height="690"
   Loaded="Window_Loaded"

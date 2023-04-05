@@ -34,5 +34,17 @@ namespace KeywordManager.Properties {
                 this["mostRecetFile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string mostRecentKIDExport {
+            get {
+                return ((string)(this["mostRecentKIDExport"]));
+            }
+            set {
+                this["mostRecentKIDExport"] = value;
+            }
+        }
     }
 }

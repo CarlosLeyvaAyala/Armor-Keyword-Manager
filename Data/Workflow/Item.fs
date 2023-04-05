@@ -145,7 +145,7 @@ module UI =
         member val Esp = esp with get, set
         member val EDID = edid with get, set
         member val UniqueId = uniqueId with get, set
-        override this.ToString() = this.UniqueId
+        override this.ToString() = this.Name
 
     [<AutoOpen>]
     module private H =

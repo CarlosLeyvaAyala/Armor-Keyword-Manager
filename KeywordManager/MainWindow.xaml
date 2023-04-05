@@ -44,6 +44,15 @@
       </MenuItem>
     </Menu>
 
+    <StatusBar DockPanel.Dock="Bottom">
+      <StatusBarItem>
+        <TextBlock
+          x:Name="txtStatus"
+          Margin="5,0"
+          Text="Exported" />
+      </StatusBarItem>
+    </StatusBar>
+
     <Grid Margin="{DynamicResource MarginStd}">
       <Grid.RowDefinitions>
         <RowDefinition Height="auto" />

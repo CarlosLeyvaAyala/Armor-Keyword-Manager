@@ -31,10 +31,12 @@ public partial class MainWindow : Window {
     LstSelectFirst(lstNavItems);
   }
 
+  string UId(object o) => ((Items.UI.NavItem)o).UniqueId;
+
   private void ReloadSelectedItem() {
     if (lstNavItems.SelectedItem == null)
       return;
-    var name = lstNavItems.SelectedItem.ToString();
+    var name = UId(lstNavItems.SelectedItem);
     tbItemName.Text = name;
     lstItemKeywords.ItemsSource = Items.GetKeywords(name);
   }
@@ -42,7 +44,7 @@ public partial class MainWindow : Window {
   private void AddKeywords() {
     foreach (var item in lstNavItems.SelectedItems)
       foreach (var keyword in lstKeywords.SelectedItems)
-        Items.AddKeyword(item.ToString(), keyword.ToString());
+        Items.AddKeyword(UId(item), keyword.ToString());
 
     ReloadSelectedItem();
   }
@@ -84,7 +86,7 @@ public partial class MainWindow : Window {
   private void CmdDeleteExecuted(object sender, System.Windows.Input.ExecutedRoutedEventArgs e) {
     foreach (var item in lstNavItems.SelectedItems)
       foreach (var keyword in lstItemKeywords.SelectedItems)
-        Items.DelKeyword(item.ToString(), keyword.ToString());
+        Items.DelKeyword(UId(item), keyword.ToString());
     ReloadSelectedItem();
   }
 

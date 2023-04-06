@@ -15,7 +15,7 @@ open DMLib.Combinators
 open DMLib.String
 open DMLib.IO.Path
 open System.IO.Compression
-open System.Text
+open System.Text.RegularExpressions
 
 let inF = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors and outfits.skyitms"
 
@@ -35,3 +35,8 @@ let filterSimple word =
     filterItems f word
 
 filterSimple "christmas"
+
+try
+    Regex(@"\\") |> ignore
+with
+| e -> printfn "%A" e.Message

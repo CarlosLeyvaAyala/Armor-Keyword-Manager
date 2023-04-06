@@ -1,0 +1,293 @@
+﻿<UserControl
+  x:Class="KeywordManager.Pages.PP_Items"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:System="clr-namespace:System;assembly=System.Runtime"
+  xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:lcl="clr-namespace:KeywordManager"
+  xmlns:local="clr-namespace:KeywordManager.Pages"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+  d:DesignHeight="450"
+  d:DesignWidth="800"
+  Loaded="OnLoaded"
+  mc:Ignorable="d">
+  <UserControl.CommandBindings>
+    <CommandBinding
+      CanExecute="CmdDeleteCanExecute"
+      Command="EditingCommands.Delete"
+      Executed="CmdDeleteExecuted" />
+  </UserControl.CommandBindings>
+
+  <UserControl.Resources>
+    <lcl:IntToKeywordColor x:Key="IntToKeywordColor" />
+  </UserControl.Resources>
+
+  <Grid Margin="20">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="9*" />
+      <ColumnDefinition Width="{DynamicResource GridSepHorizontal}" />
+      <ColumnDefinition Width="8*" />
+      <ColumnDefinition Width="{DynamicResource GridSepHorizontal}" />
+      <ColumnDefinition Width="8*" />
+    </Grid.ColumnDefinitions>
+
+    <!--  ITEM DATA  -->
+    <GroupBox
+      Grid.Column="2"
+      md:ColorZoneAssist.Mode="SecondaryMid"
+      Header="Item data">
+      <GroupBox.Style>
+        <Style BasedOn="{StaticResource MaterialDesignCardGroupBox}" TargetType="GroupBox">
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding ElementName=lstNavItems, Path=SelectedIndex}" Value="-1">
+              <Setter Property="IsEnabled" Value="False" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </GroupBox.Style>
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="auto" />
+          <RowDefinition Height="{StaticResource GridSepVerticalNarrow}" />
+          <RowDefinition Height="2*" />
+          <RowDefinition Height="{StaticResource GridSepVerticalNarrow}" />
+          <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <!--  ITEM TYPE  -->
+        <ComboBox
+          Margin="{StaticResource MarginStd}"
+          VerticalAlignment="Top"
+          SelectedIndex="0">
+          <ComboBoxItem Content="Armor" />
+          <ComboBoxItem Content="﻿Weapon" />
+          <ComboBoxItem Content="Ammo" />
+        </ComboBox>
+
+        <!--  ITEM KEYWORDS  -->
+        <GroupBox
+          Grid.Row="2"
+          md:ColorZoneAssist.Mode="PrimaryLight"
+          BorderThickness="0"
+          Header="Keywords">
+          <ListBox
+            x:Name="lstItemKeywords"
+            d:ItemsSource="{d:SampleData ItemCount=5}"
+            SelectionMode="Extended">
+            <ListBox.ContextMenu>
+              <ContextMenu>
+                <MenuItem Command="EditingCommands.Delete" />
+              </ContextMenu>
+            </ListBox.ContextMenu>
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock
+                  Cursor="Help"
+                  Foreground="{Binding Color, Converter={StaticResource IntToKeywordColor}}"
+                  Text="{Binding Name}"
+                  ToolTipService.InitialShowDelay="100">
+                  <TextBlock.ToolTip>
+                    <StackPanel Orientation="Horizontal">
+                      <Image
+                        Grid.Column="0"
+                        Width="50"
+                        Height="50"
+                        Margin="0,0,10,0"
+                        HorizontalAlignment="Left"
+                        Cursor="Help"
+                        Source="{Binding Image}"
+                        Stretch="UniformToFill" />
+                      <TextBlock VerticalAlignment="Center" Text="{Binding Description}" />
+                    </StackPanel>
+                  </TextBlock.ToolTip>
+                </TextBlock>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </GroupBox>
+
+        <!--  TAGS  -->
+        <GroupBox
+          Grid.Row="4"
+          md:ColorZoneAssist.Mode="PrimaryLight"
+          BorderThickness="0"
+          Header="Tags">
+          <StackPanel>
+            <ScrollViewer
+              MaxHeight="100"
+              HorizontalScrollBarVisibility="Hidden"
+              VerticalScrollBarVisibility="Auto">
+              <ItemsControl x:Name="lstItemTags" Width="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <WrapPanel />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <md:Chip
+                      Content="{Binding}"
+                      DeleteClick="OnDeleteTag"
+                      IsDeletable="True" />
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </ScrollViewer>
+
+            <ComboBox
+              x:Name="cbItemTags"
+              Margin="{StaticResource MgTopNaarrow}"
+              IsEditable="True"
+              KeyDown="OnCbTagsAdd" />
+          </StackPanel>
+        </GroupBox>
+      </Grid>
+    </GroupBox>
+
+    <!--  NAVIGATOR  -->
+    <GroupBox
+      md:ColorZoneAssist.Mode="PrimaryMid"
+      Header="Navigate"
+      Style="{StaticResource MaterialDesignCardGroupBox}">
+      <DockPanel>
+        <TextBox
+          Margin="{DynamicResource MgGrpContent}"
+          md:HintAssist.Hint="Search..."
+          DockPanel.Dock="Top"
+          TextChanged="OnFilterItems" />
+
+        <ListBox
+          x:Name="lstNavItems"
+          Margin="{DynamicResource MarginStd}"
+          HorizontalContentAlignment="Stretch"
+          d:ItemsSource="{d:SampleData ItemCount=5}"
+          SelectionChanged="LstNavItems_SelectionChanged"
+          SelectionMode="Extended">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <Grid Margin="0,5">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="auto" />
+                  <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="auto" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                  Grid.ColumnSpan="2"
+                  FontSize="13"
+                  Text="{Binding Name}" />
+                <TextBlock
+                  Grid.Row="1"
+                  Grid.Column="1"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Bottom"
+                  FontSize="11"
+                  Opacity="0.5"
+                  Text="{Binding EDID}" />
+                <TextBlock
+                  Grid.Row="1"
+                  Grid.Column="0"
+                  VerticalAlignment="Bottom"
+                  FontSize="10"
+                  Opacity="0.5"
+                  Text="{Binding Esp}" />
+
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </DockPanel>
+    </GroupBox>
+
+    <!--  KEYWORDS  -->
+    <GroupBox
+      Grid.Column="4"
+      md:ColorZoneAssist.Mode="PrimaryMid"
+      Header="Keywords"
+      Style="{StaticResource MaterialDesignCardGroupBox}">
+      <DockPanel>
+        <ListBox
+          x:Name="lstKeywords"
+          Margin="{DynamicResource MarginStd}"
+          d:ItemsSource="{d:SampleData ItemCount=5}"
+          KeyDown="LstKeywords_KeyDown"
+          MouseDoubleClick="LstKeywords_MouseDoubleClick"
+          SelectionMode="Extended">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <Grid>
+                <Grid.Resources>
+                  <System:Double x:Key="ImgSize">80</System:Double>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="90" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Image
+                  Grid.Column="0"
+                  Width="{DynamicResource ImgSize}"
+                  Height="{DynamicResource ImgSize}"
+                  HorizontalAlignment="Left"
+                  Cursor="Help"
+                  Source="{Binding Image}"
+                  Stretch="UniformToFill"
+                  ToolTipService.InitialShowDelay="50">
+                  <Image.ToolTip>
+                    <StackPanel>
+                      <TextBlock
+                        Margin="0,0,0,5"
+                        FontSize="13"
+                        FontWeight="DemiBold"
+                        Text="{Binding Name}" />
+                      <TextBlock Text="{Binding Description}" />
+                    </StackPanel>
+                  </Image.ToolTip>
+                </Image>
+
+                <TextBlock
+                  Grid.Column="1"
+                  VerticalAlignment="Center"
+                  FontSize="11"
+                  FontWeight="SemiBold"
+                  Foreground="{Binding Color, Converter={StaticResource IntToKeywordColor}}"
+                  Text="{Binding Name}" />
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+          <ListBox.ContextMenu>
+            <ContextMenu>
+              <ContextMenu.Resources>
+                <Style x:Key="MenuItemColor" TargetType="MenuItem">
+                  <Setter Property="HorizontalAlignment" Value="Center" />
+                  <Setter Property="VerticalAlignment" Value="Center" />
+                  <Setter Property="FontSize" Value="25" />
+                  <!--<Setter Property="Header" Value="●" />-->
+                </Style>
+              </ContextMenu.Resources>
+              <MenuItem Header="_New keyword" />
+              <MenuItem Header="_Delete" />
+              <Separator />
+              <MenuItem Click="OnChangeKeywordPic" Header="Change _picture" />
+              <Separator />
+              <MenuItem Header="Keyword color">
+                <MenuItem Background="{DynamicResource ColorKeywordDefault}" Style="{StaticResource MenuItemColor}" />
+                <MenuItem Background="{DynamicResource ColorKeywordRed}" Style="{StaticResource MenuItemColor}" />
+                <MenuItem Background="{DynamicResource ColorKeywordOrange}" Style="{StaticResource MenuItemColor}" />
+                <MenuItem Background="{DynamicResource ColorKeywordPurple}" Style="{StaticResource MenuItemColor}" />
+                <MenuItem Background="{DynamicResource ColorKeywordBlue}" Style="{StaticResource MenuItemColor}" />
+                <MenuItem Background="{DynamicResource ColorKeywordGreen}" Style="{StaticResource MenuItemColor}" />
+                <MenuItem Background="{DynamicResource ColorKeywordGray}" Style="{StaticResource MenuItemColor}" />
+              </MenuItem>
+            </ContextMenu>
+          </ListBox.ContextMenu>
+        </ListBox>
+      </DockPanel>
+    </GroupBox>
+  </Grid>
+
+</UserControl>

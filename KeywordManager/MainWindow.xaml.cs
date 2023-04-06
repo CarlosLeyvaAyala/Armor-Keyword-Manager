@@ -1,11 +1,5 @@
-﻿using Data;
-using GUI;
-using IO;
-using MaterialDesignThemes.Wpf;
-using Microsoft.Win32;
+﻿using IO;
 using System;
-using System.Collections;
-using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,138 +10,30 @@ using Settings = KeywordManager.Properties.Settings;
 namespace KeywordManager;
 
 public partial class MainWindow : Window {
+  private string workingFile = "";
 
   public MainWindow() {
     InitializeComponent();
-    var cd = Directory.GetCurrentDirectory();
-    Keywords.ImagePath = Path.Combine(cd, @"Data\Img\Keywords");
-    Keywords.JsonPath = Path.Combine(cd, @"Data\Keywords.json");
-    CreateFileWatcher("F:\\Skyrim SE\\Tools\\SSEEdit 4_x\\Edit Scripts");
+    //var cd = Directory.GetCurrentDirectory();
+    //Keywords.ImagePath = Path.Combine(cd, @"Data\Img\Keywords");
+    //Keywords.JsonPath = Path.Combine(cd, @"Data\Keywords.json");
+    //CreateFileWatcher("F:\\Skyrim SE\\Tools\\SSEEdit 4_x\\Edit Scripts");
   }
-
-  private void LoadKeywords(IEnumerable? list) => lstKeywords.ItemsSource = list;
-  private static void LstSelectFirst(ListBox lst) => lst.SelectedIndex = lst.Items.Count > 0 ? 0 : -1;
-  private void LoadNavItems() => lstNavItems.ItemsSource = Items.UI.GetNav();
-  private void LoadNavItems(string filter) => lstNavItems.ItemsSource = Items.UI.GetNavFiltered(filter);
-
-  private void OpenFile(string path) {
-    PropietaryFile.Open(path);
-    workingFile = path;
-    LoadNavItems();
-    LstSelectFirst(lstNavItems);
-  }
-
-  static string UId(object o) => ((Items.UI.NavItem)o).UniqueId;
-  string UId() => UId(lstNavItems.SelectedItem);
-
-  private void ReloadSelectedItem() {
-    if (lstNavItems.SelectedItem == null) {
-      lstItemKeywords.ItemsSource = null;
-      lstItemTags.ItemsSource = null;
-      cbItemTags.ItemsSource = null;
-      return;
-    }
-    var uId = UId();
-    lstItemKeywords.ItemsSource = Items.GetKeywords(uId);
-    lstItemTags.ItemsSource = Items.GetTags(uId);
-    cbItemTags.ItemsSource = Items.GetMissingTags(uId);
-  }
-
-  void ForEachSelectedItem(Action<string> DoSomething) {
-    foreach (var item in lstNavItems.SelectedItems)
-      DoSomething(UId(item));
-
-    ReloadSelectedItem();
-  }
-
-  private void AddKeywords() {
-    ForEachSelectedItem((uId) => {
-      foreach (var keyword in lstKeywords.SelectedItems)
-        Items.AddKeyword(uId, keyword.ToString());
-    });
-  }
-
-  private string workingFile = "";
 
   private void Window_Loaded(object sender, RoutedEventArgs e) {
-    LoadKeywords(Keywords.LoadFromFile());
+    //LoadKeywords(Keywords.LoadFromFile());
     var fn = Settings.Default.mostRecetFile;
     if (File.Exists(fn))
       OpenFile(fn);
   }
 
-  private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) => ReloadSelectedItem();
-  private void LstKeywords_MouseDoubleClick(object sender, MouseButtonEventArgs e) => AddKeywords();
+  public static void LstSelectFirst(ListBox lst) => lst.SelectedIndex = lst.Items.Count > 0 ? 0 : -1;
+  public void InfoBox(string text, string title) => MessageBox.Show(this, text, title, MessageBoxButton.OK, MessageBoxImage.Information);
 
-  private void LstKeywords_KeyDown(object sender, KeyEventArgs e) {
-    if (e.Key == Key.Return) { AddKeywords(); }
-  }
-
-  private void InfoBox(string text, string title) => MessageBox.Show(this, text, title, MessageBoxButton.OK, MessageBoxImage.Information);
-
-  private void ImportItems(Action Import) {
-    Import();
-    LoadNavItems();
-    InfoBox("New items were successfuly imported.", "Success");
-  }
-
-  private void ImportFromFile(string filename) => ImportItems(() => Items.Import.FromFile(filename));
-  private void OnImportFromClipboard(object sender, RoutedEventArgs e) => ImportItems(Items.Import.FromClipboard);
-
-  private void CmdDeleteExecuted(object sender, ExecutedRoutedEventArgs e) {
-    ForEachSelectedItem((uId) => {
-      foreach (var keyword in lstItemKeywords.SelectedItems)
-        Items.DelKeyword(uId, keyword.ToString());
-    });
-  }
-
-  private void CmdDeleteCanExecute(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = lstItemKeywords.SelectedItem != null;
-
-  private void OnChangeKeywordPic(object sender, RoutedEventArgs e) {
-    var dlg = new OpenFileDialog {
-      Filter = "Image files (*.png, *.jpg, *.svg)|*.png;*.jpg;*.svg"
-    };
-    var r = dlg.ShowDialog();
-    if (r != true)
-      return;
-    var source = dlg.FileName;
-    var keyword = lstKeywords.SelectedItem.ToString();
-    LoadKeywords(Keywords.SetImage(keyword, source));
-  }
-
-  FileSystemWatcher? watcher = null;
-  DateTime lastGenerated = DateTime.Now;
-
-  private void CreateFileWatcher(string path) {
-    Debug.WriteLine($"Adding watcher: {path}");
-
-    // Create a new FileSystemWatcher and set its properties.
-    watcher = new FileSystemWatcher() {
-      Path = path,
-      NotifyFilter = NotifyFilters.LastWrite,
-      Filter = "*.kid"
-    };
-
-    // Add event handlers.
-    watcher.Changed += new FileSystemEventHandler(OnChanged);
-    watcher.Created += new FileSystemEventHandler(OnChanged);
-
-    // Begin watching.
-    watcher.EnableRaisingEvents = true;
-  }
-
-  private void OnChanged(object source, FileSystemEventArgs e) {
-    var td = DateTime.Now.Subtract(lastGenerated).TotalMilliseconds;
-    if (td < 500)
-      return;
-
-    Debug.WriteLine($"File: {e.FullPath} {e.ChangeType} {DateTime.Now}");
-
-    // Avoid thread error due to this function running in a non UI thread.
-    Dispatcher.Invoke(new Action(() => {
-      ImportFromFile(e.FullPath);
-      lastGenerated = DateTime.Now;
-    }));
+  private void OpenFile(string path) {
+    PropietaryFile.Open(path);
+    workingFile = path;
+    ppItems.FileOpened();
   }
 
   private void OnSaveFile(object sender, ExecutedRoutedEventArgs e) {
@@ -190,44 +76,5 @@ public partial class MainWindow : Window {
     txtStatus.Text = m;
     txtStatusTime.Text = DateTime.Now.ToString("HH:mm:ss");
     System.Media.SystemSounds.Asterisk.Play();
-  }
-
-  private void OnDeleteTag(object sender, RoutedEventArgs e) {
-    var tag = ((Chip)sender).Content.ToString();
-    ForEachSelectedItem(uId => {
-      Items.DelTag(uId, tag);
-    });
-  }
-
-  private void OnCbTagsAdd(object sender, KeyEventArgs e) {
-    if (e.Key != Key.Return)
-      return;
-
-    var tag = cbItemTags.Text.ToLower().Trim();
-    if (tag == "")
-      return;
-
-    cbItemTags.Text = "";
-
-    ForEachSelectedItem(uId => {
-      Items.AddTag(uId, tag);
-    });
-  }
-
-  private void OnFilterItems(object sender, TextChangedEventArgs e) {
-    if (sender is not TextBox tb || !tb.IsFocused)
-      return;
-
-    var f = tb.Text.Trim();
-    if (f.Length == 0) {
-      LoadNavItems();
-      ReloadSelectedItem();
-      return;
-    }
-    else if (f.Length < 3)
-      return;
-
-    LoadNavItems(f);
-    ReloadSelectedItem();
   }
 }

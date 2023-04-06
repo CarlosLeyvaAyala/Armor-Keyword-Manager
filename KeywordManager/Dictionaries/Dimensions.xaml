@@ -4,6 +4,7 @@
   <Thickness x:Key="MgTopNaarrow">0,10,0,0</Thickness>
   <Thickness x:Key="MgTopNarrow">0,15,0,0</Thickness>
   <Thickness x:Key="MgTopNormal">0,20,0,0</Thickness>
+  <Thickness x:Key="MarginStd">10</Thickness>
   <GridLength x:Key="GridSepHorizontal">20</GridLength>
   <GridLength x:Key="GridSepVertical">30</GridLength>
   <GridLength x:Key="GridSepVerticalNarrow">20</GridLength>

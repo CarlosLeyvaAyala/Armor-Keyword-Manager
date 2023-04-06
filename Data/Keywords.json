@@ -1,0 +1,7 @@
+{
+  "blank": {
+    "image": "",
+    "description": "Used so Visual Studio stops complaining about inexistent files",
+    "color": 0
+  }
+}

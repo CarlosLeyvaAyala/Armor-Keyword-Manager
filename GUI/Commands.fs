@@ -26,45 +26,17 @@ module private Internals =
           key = Key.None
           modifiers = ModifierKeys.None }
 
-    let basicCmd name text =
+    let basicCmd (create: Cmd -> RoutedUICommand) name text =
         { blankCmd with
             name = name
             text = text }
-
-    /// Move commands are always Ctrl+Num key.
-    let private moveCmd name getMsg key =
-        let display = sprintf "Ctrl+Num%d" key
-
-        let k =
-            match key with
-            | 0 -> Key.NumPad0
-            | 1 -> Key.NumPad1
-            | 2 -> Key.NumPad2
-            | 3 -> Key.NumPad3
-            | 4 -> Key.NumPad4
-            | 5 -> Key.NumPad5
-            | 6 -> Key.NumPad6
-            | 7 -> Key.NumPad7
-            | 8 -> Key.NumPad8
-            | 9 -> Key.NumPad9
-            | _ -> Key.None
-
-        { name = name
-          text = getMsg display
-          keyDisplay = display
-          key = k
-          modifiers = ModifierKeys.Control }
-
-    let sendTop = moveCmd "SendTop"
-    let sendBottom = moveCmd "SendBottom"
-    let moveNext = moveCmd "MoveNext"
-    let moveBack = moveCmd "MoveBack"
-
+        |> create
 
 [<Sealed>]
 type AppCmds private () =
     static let create = createCmd (fun () -> typeof<AppCmds>)
     static let exportTxt = "Generates all files used by Skyrim"
+    static let basic = basicCmd create
 
     static member val ExportAs =
         { name = "ExportAs"
@@ -76,8 +48,11 @@ type AppCmds private () =
 
     static member val Export =
         { name = "Export"
-          text = $"{exportTxt} in the last used exporting folder"
+          text = $"{exportTxt} in the last used output folder"
           keyDisplay = "F9"
           key = Key.F9
           modifiers = ModifierKeys.None }
         |> create
+
+    static member val FileJsonExport = basic "FileJsonExport" $"Exports file to json"
+    static member val FileJsonImport = basic "FileJsonImport" $"Imports file from json"

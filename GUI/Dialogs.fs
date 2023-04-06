@@ -4,16 +4,36 @@ open System.Windows
 open Microsoft.WindowsAPICodePack.Dialogs
 open DMLib.String
 
-let OpenFileDialogFull filter title fileName guid =
-    let mutable dlg = new System.Windows.Forms.OpenFileDialog()
-    dlg.Title <- title
-    dlg.Filter <- filter
-    dlg.FileName <- fileName
-    dlg.ClientGuid <- new System.Guid(guid: string)
+[<Sealed>]
+type File private () =
+    [<Literal>]
+    static let Empty = ""
 
-    match dlg.ShowDialog() with
-    | System.Windows.Forms.DialogResult.OK -> dlg.FileName
-    | _ -> null
+    static let Dlg (dlgClass: unit -> System.Windows.Forms.FileDialog) filter guid title fileName =
+        use mutable dlg = dlgClass ()
+        dlg.Filter <- filter
+
+        match title with
+        | Empty -> ()
+        | t -> dlg.Title <- t
+
+        match fileName with
+        | Empty -> ()
+        | f -> dlg.FileName <- f
+
+        match guid with
+        | Empty -> ()
+        | g -> dlg.ClientGuid <- new System.Guid(g)
+
+        match dlg.ShowDialog() with
+        | System.Windows.Forms.DialogResult.OK -> dlg.FileName
+        | _ -> null
+
+    static member Save filter guid title fileName =
+        Dlg (fun () -> new System.Windows.Forms.SaveFileDialog()) filter guid title fileName
+
+    static member Open filter guid title fileName =
+        Dlg (fun () -> new System.Windows.Forms.OpenFileDialog()) filter guid title fileName
 
 let SelectDir startingDir =
     use mutable dlg = new CommonOpenFileDialog()

@@ -36,6 +36,16 @@
       CanExecute="OnCanExport"
       Command="c:AppCmds.Export"
       Executed="OnExport" />
+
+    <CommandBinding
+      CanExecute="OnCanFileJsonExport"
+      Command="c:AppCmds.FileJsonExport"
+      Executed="OnFileJsonExport" />
+
+    <CommandBinding
+      CanExecute="OnCanFileJsonImport"
+      Command="c:AppCmds.FileJsonImport"
+      Executed="OnFileJsonImport" />
   </Window.CommandBindings>
 
   <Window.Resources>
@@ -50,6 +60,7 @@
     <Style x:Key="txtNav" TargetType="TextBlock">
       <Setter Property="HorizontalAlignment" Value="Center" />
       <Setter Property="FontSize" Value="10" />
+      <Setter Property="TextAlignment" Value="Center" />
       <Setter Property="Margin" Value="{StaticResource MgTopNaarrow}" />
     </Style>
   </Window.Resources>
@@ -66,13 +77,26 @@
           <MenuItem Command="ApplicationCommands.Save" Header="_Save" />
           <MenuItem Header="_Save as..." />
           <Separator />
+          <MenuItem Header="_Export">
+            <MenuItem
+              Command="c:AppCmds.FileJsonExport"
+              Header="_Json"
+              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+          </MenuItem>
+          <MenuItem Header="_Import">
+            <MenuItem
+              Command="c:AppCmds.FileJsonImport"
+              Header="_Json"
+              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+          </MenuItem>
+          <Separator />
           <MenuItem
             Command="c:AppCmds.Export"
-            Header="_Export"
+            Header="_Generate"
             ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
           <MenuItem
             Command="c:AppCmds.ExportAs"
-            Header="_Export as..."
+            Header="Generate _at..."
             ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
         </MenuItem>
       </Menu>

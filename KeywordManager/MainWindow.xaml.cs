@@ -1,10 +1,10 @@
-﻿using IO;
+﻿using GUI;
+using IO;
 using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using static GUI.Dialogs;
 using Settings = KeywordManager.Properties.Settings;
 
 namespace KeywordManager;
@@ -42,8 +42,8 @@ public partial class MainWindow : Window {
 
   private void OnOpenFile(object sender, ExecutedRoutedEventArgs e) {
     try {
-      var fn = OpenFileDialogFull("Skyrim Items File (*.skyitms)|*.skyitms", "Select a file to open", "", "1e2be86c-8d55-4894-82e9-65e8a3a027a5");
-      if (fn == null || fn == "")
+      var fn = Dialogs.File.Open("Skyrim Items (*.skyitms)|*.skyitms", "1e2be86c-8d55-4894-82e9-65e8a3a027a5", "", "");
+      if (string.IsNullOrWhiteSpace(fn))
         return;
 
       OpenFile(fn);
@@ -58,7 +58,7 @@ public partial class MainWindow : Window {
 
   private void OnCanExportAs(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnExportAs(object sender, ExecutedRoutedEventArgs e) {
-    var d = SelectDir(Settings.Default.mostRecentExportDir);
+    var d = Dialogs.SelectDir(Settings.Default.mostRecentExportDir);
     if (d == null)
       return;
     Settings.Default.mostRecentExportDir = d;
@@ -74,6 +74,24 @@ public partial class MainWindow : Window {
     var m = PropietaryFile.Generate(workingFile, d);
     txtStatus.Text = m;
     txtStatusTime.Text = DateTime.Now.ToString("HH:mm:ss");
+    System.Media.SystemSounds.Asterisk.Play();
+  }
+
+  private void OnCanFileJsonExport(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = File.Exists(workingFile);
+  private void OnFileJsonExport(object sender, ExecutedRoutedEventArgs e) {
+    var fn = Dialogs.File.Save("Json (*.json)|*.json", "5e8659d3-6722-4e8d-982d-fbaa75b1519b", "", "");
+    if (string.IsNullOrWhiteSpace(fn))
+      return;
+    PropietaryFile.SaveJson(fn);
+  }
+
+  private void OnCanFileJsonImport(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
+  private void OnFileJsonImport(object sender, ExecutedRoutedEventArgs e) {
+    var fn = Dialogs.File.Open("Json (*.json)|*.json", "5e8659d3-6722-4e8d-982d-fbaa75b1519b", "", "");
+    if (string.IsNullOrWhiteSpace(fn))
+      return;
+    PropietaryFile.OpenJson(fn);
+    workingFile = "";
     System.Media.SystemSounds.Asterisk.Play();
   }
 }

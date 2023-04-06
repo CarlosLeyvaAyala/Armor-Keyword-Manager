@@ -16,6 +16,7 @@ using Settings = KeywordManager.Properties.Settings;
 namespace KeywordManager;
 
 public partial class MainWindow : Window {
+
   public MainWindow() {
     InitializeComponent();
     var cd = Directory.GetCurrentDirectory();
@@ -42,18 +43,23 @@ public partial class MainWindow : Window {
     if (lstNavItems.SelectedItem == null)
       return;
     var uId = UId();
-    //tbItemName.Text = uId;
     lstItemKeywords.ItemsSource = Items.GetKeywords(uId);
     lstItemTags.ItemsSource = Items.GetTags(uId);
     cbItemTags.ItemsSource = Items.GetMissingTags(uId);
   }
 
-  private void AddKeywords() {
+  void ForEachSelectedItem(Action<string> DoSomething) {
     foreach (var item in lstNavItems.SelectedItems)
-      foreach (var keyword in lstKeywords.SelectedItems)
-        Items.AddKeyword(UId(item), keyword.ToString());
+      DoSomething(UId(item));
 
     ReloadSelectedItem();
+  }
+
+  private void AddKeywords() {
+    ForEachSelectedItem((uId) => {
+      foreach (var keyword in lstKeywords.SelectedItems)
+        Items.AddKeyword(uId, keyword.ToString());
+    });
   }
 
   private string workingFile = "";
@@ -84,10 +90,10 @@ public partial class MainWindow : Window {
   private void OnImportFromClipboard(object sender, RoutedEventArgs e) => ImportItems(Items.Import.FromClipboard);
 
   private void CmdDeleteExecuted(object sender, ExecutedRoutedEventArgs e) {
-    foreach (var item in lstNavItems.SelectedItems)
+    ForEachSelectedItem((uId) => {
       foreach (var keyword in lstItemKeywords.SelectedItems)
-        Items.DelKeyword(UId(item), keyword.ToString());
-    ReloadSelectedItem();
+        Items.DelKeyword(uId, keyword.ToString());
+    });
   }
 
   private void CmdDeleteCanExecute(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = lstItemKeywords.SelectedItem != null;
@@ -183,8 +189,9 @@ public partial class MainWindow : Window {
 
   private void OnDeleteTag(object sender, RoutedEventArgs e) {
     var tag = ((Chip)sender).Content.ToString();
-    Items.DelTag(UId(), tag);
-    ReloadSelectedItem();
+    ForEachSelectedItem(uId => {
+      Items.DelTag(uId, tag);
+    });
   }
 
   private void OnCbTagsAdd(object sender, KeyEventArgs e) {
@@ -195,8 +202,10 @@ public partial class MainWindow : Window {
     if (tag == "")
       return;
 
-    Items.AddTag(UId(), tag);
-    ReloadSelectedItem();
     cbItemTags.Text = "";
+
+    ForEachSelectedItem(uId => {
+      Items.AddTag(uId, tag);
+    });
   }
 }

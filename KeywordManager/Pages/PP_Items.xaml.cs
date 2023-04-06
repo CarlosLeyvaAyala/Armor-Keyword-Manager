@@ -28,7 +28,7 @@ public partial class PP_Items : UserControl {
 
   public void FileOpened() {
     LoadNavItems();
-    MainWindow.LstSelectFirst(lstNavItems);
+    GoToFirst();
   }
 
   #region UI
@@ -36,7 +36,16 @@ public partial class PP_Items : UserControl {
   public void LoadNavItems() => lstNavItems.ItemsSource = Items.UI.GetNav();
   private void LoadNavItems(string filter) => lstNavItems.ItemsSource = Items.UI.GetNavFiltered(filter);
   private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) => ReloadSelectedItem();
-  private void OnLoaded(object sender, RoutedEventArgs e) => LoadKeywords(Keywords.LoadFromFile());
+
+  private void GoToFirst() {
+    MainWindow.LstSelectFirst(lstNavItems);
+    ReloadSelectedItem();
+  }
+
+  private void OnLoaded(object sender, RoutedEventArgs e) {
+    LoadKeywords(Keywords.LoadFromFile());
+    GoToFirst();
+  }
 
   private void ReloadSelectedItem() {
     if (lstNavItems.SelectedItem == null) {

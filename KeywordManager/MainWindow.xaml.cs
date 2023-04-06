@@ -21,7 +21,6 @@ public partial class MainWindow : Window {
   }
 
   private void Window_Loaded(object sender, RoutedEventArgs e) {
-    //LoadKeywords(Keywords.LoadFromFile());
     var fn = Settings.Default.mostRecetFile;
     if (File.Exists(fn))
       OpenFile(fn);

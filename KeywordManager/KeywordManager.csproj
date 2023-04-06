@@ -6,7 +6,12 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <AssemblyName>SkyrimItemManager</AssemblyName>
+    <ApplicationIcon>leather-armor.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="leather-armor.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="carlos.leyva.ayala.dmlib" Version="1.2.21" />

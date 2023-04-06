@@ -121,67 +121,33 @@
         md:ColorZoneAssist.Mode="SecondaryMid"
         Header="Item data"
         Style="{StaticResource MaterialDesignCardGroupBox}">
-        <DockPanel>
-          <StackPanel DockPanel.Dock="Top">
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="{StaticResource GridSepVerticalNarrow}" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="{StaticResource GridSepVerticalNarrow}" />
+            <RowDefinition Height="auto" />
+          </Grid.RowDefinitions>
 
-            <ComboBox Margin="{DynamicResource MgGrpContent}" SelectedIndex="0">
-              <ComboBoxItem Content="Armor" />
-              <ComboBoxItem Content="﻿Weapon" />
-              <ComboBoxItem Content="Ammo" />
-            </ComboBox>
+          <!--  ITEM TYPE  -->
+          <ComboBox
+            Margin="{StaticResource MarginStd}"
+            VerticalAlignment="Top"
+            SelectedIndex="0">
+            <ComboBoxItem Content="Armor" />
+            <ComboBoxItem Content="﻿Weapon" />
+            <ComboBoxItem Content="Ammo" />
+          </ComboBox>
 
-            <TextBox
-              x:Name="tbItemName"
-              Grid.Row="0"
-              Grid.Column="1"
-              Margin="{DynamicResource MarginStd}"
-              HorizontalAlignment="Stretch"
-              VerticalAlignment="Top"
-              Text="Editor ID"
-              TextWrapping="Wrap"
-              Visibility="Collapsed" />
-
-          </StackPanel>
-
+          <!--  ITEM KEYWORDS  -->
           <GroupBox
-            Margin="{DynamicResource MgTopNormal}"
+            Grid.Row="2"
             md:ColorZoneAssist.Mode="PrimaryLight"
             BorderThickness="0"
-            DockPanel.Dock="Bottom"
-            Header="Tags">
-            <StackPanel>
-
-              <ScrollViewer
-                MaxHeight="100"
-                HorizontalScrollBarVisibility="Hidden"
-                VerticalScrollBarVisibility="Auto">
-                <ItemsControl x:Name="lstItemTags" Width="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}}">
-                  <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                      <WrapPanel />
-                    </ItemsPanelTemplate>
-                  </ItemsControl.ItemsPanel>
-                  <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                      <md:Chip Content="{Binding}" IsDeletable="True" />
-                    </DataTemplate>
-                  </ItemsControl.ItemTemplate>
-                </ItemsControl>
-              </ScrollViewer>
-
-              <ComboBox x:Name="cbItemTags" IsEditable="True" />
-            </StackPanel>
-          </GroupBox>
-
-          <GroupBox
-            Margin="{DynamicResource MgTopNormal}"
-            md:ColorZoneAssist.Mode="PrimaryLight"
-            BorderThickness="0"
-            DockPanel.Dock="Bottom"
             Header="Keywords">
             <ListBox
               x:Name="lstItemKeywords"
-              Margin="{DynamicResource MarginStd}"
               d:ItemsSource="{d:SampleData ItemCount=5}"
               SelectionMode="Extended">
               <ListBox.ContextMenu>
@@ -216,7 +182,38 @@
             </ListBox>
           </GroupBox>
 
-        </DockPanel>
+          <!--  TAGS  -->
+          <GroupBox
+            Grid.Row="4"
+            md:ColorZoneAssist.Mode="PrimaryLight"
+            BorderThickness="0"
+            Header="Tags">
+            <StackPanel>
+              <ScrollViewer
+                MaxHeight="100"
+                HorizontalScrollBarVisibility="Hidden"
+                VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="lstItemTags" Width="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}}">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <WrapPanel />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <md:Chip Content="{Binding}" IsDeletable="True" DeleteClick="OnDeleteTag" />
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </ScrollViewer>
+
+              <ComboBox
+                x:Name="cbItemTags"
+                Margin="{StaticResource MgTopNaarrow}" KeyDown="OnCbTagsAdd"
+                IsEditable="True" />
+            </StackPanel>
+          </GroupBox>
+        </Grid>
       </GroupBox>
 
       <!--  NAVIGATOR  -->

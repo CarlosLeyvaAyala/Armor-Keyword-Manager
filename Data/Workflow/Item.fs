@@ -216,20 +216,34 @@ let GetMissingTags itemName =
     |> Set.toArray
     |> ArrayToCList
 
-let AddKeyword (id, keyword) =
-    addWordToKey
-        (fun k -> items[k].keywords)
-        (fun k l -> items <- items.Add(k, { items[k] with keywords = l }))
-        (fun k -> items.ContainsKey(k))
-        id
-        keyword
+[<AutoOpen>]
+module private Manipulate =
+    let addWord wordList newData id word =
+        addWordToKey
+            (fun _ -> wordList)
+            (fun k l -> items <- items.Add(k, newData k l))
+            (fun k -> items.ContainsKey(k))
+            id
+            word
 
-let DelKeyword (id, keyword) =
-    let newKeywords =
-        items[id].keywords
-        |> List.filter (fun a -> not (a = keyword))
+    let delWord wordList newItem id word =
+        let newList = wordList |> List.filter (fun a -> not (a = word))
+        items <- items.Add(id, newItem id newList)
 
-    items <- items.Add(id, { items[id] with keywords = newKeywords })
+    let changeKeywords id l = { items[id] with keywords = l }
+    let changeTags id l = { items[id] with tags = l }
+
+let AddKeyword id keyword =
+    addWord items[id].keywords changeKeywords id keyword
+
+let DelKeyword id keyword =
+    delWord items[id].keywords changeKeywords id keyword
+
+let AddTag id tag =
+    addWord items[id].tags changeTags id tag
+
+let DelTag id tag =
+    delWord items[id].tags changeTags id tag
 
 module Import =
     type ParsedLine =

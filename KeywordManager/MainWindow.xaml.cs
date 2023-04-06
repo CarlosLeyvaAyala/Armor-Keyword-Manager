@@ -1,6 +1,7 @@
 ﻿using Data;
 using GUI;
 using IO;
+using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using System;
 using System.Collections;
@@ -35,15 +36,16 @@ public partial class MainWindow : Window {
   }
 
   static string UId(object o) => ((Items.UI.NavItem)o).UniqueId;
+  string UId() => UId(lstNavItems.SelectedItem);
 
   private void ReloadSelectedItem() {
     if (lstNavItems.SelectedItem == null)
       return;
-    var name = UId(lstNavItems.SelectedItem);
-    tbItemName.Text = name;
-    lstItemKeywords.ItemsSource = Items.GetKeywords(name);
-    lstItemTags.ItemsSource = Items.GetTags(name);
-    cbItemTags.ItemsSource = Items.GetMissingTags(name);
+    var uId = UId();
+    //tbItemName.Text = uId;
+    lstItemKeywords.ItemsSource = Items.GetKeywords(uId);
+    lstItemTags.ItemsSource = Items.GetTags(uId);
+    cbItemTags.ItemsSource = Items.GetMissingTags(uId);
   }
 
   private void AddKeywords() {
@@ -67,7 +69,7 @@ public partial class MainWindow : Window {
   private void LstKeywords_MouseDoubleClick(object sender, MouseButtonEventArgs e) => AddKeywords();
 
   private void LstKeywords_KeyDown(object sender, KeyEventArgs e) {
-    if (e.Key == System.Windows.Input.Key.Return) { AddKeywords(); }
+    if (e.Key == Key.Return) { AddKeywords(); }
   }
 
   private void InfoBox(string text, string title) => MessageBox.Show(this, text, title, MessageBoxButton.OK, MessageBoxImage.Information);
@@ -168,7 +170,6 @@ public partial class MainWindow : Window {
     OnExport(sender, e);
   }
 
-
   private void OnCanExport(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = Directory.Exists(Settings.Default.mostRecentExportDir);
   private void OnExport(object sender, ExecutedRoutedEventArgs e) {
     var d = Settings.Default.mostRecentExportDir;
@@ -180,4 +181,22 @@ public partial class MainWindow : Window {
     System.Media.SystemSounds.Asterisk.Play();
   }
 
+  private void OnDeleteTag(object sender, RoutedEventArgs e) {
+    var tag = ((Chip)sender).Content.ToString();
+    Items.DelTag(UId(), tag);
+    ReloadSelectedItem();
+  }
+
+  private void OnCbTagsAdd(object sender, KeyEventArgs e) {
+    if (e.Key != Key.Return)
+      return;
+
+    var tag = cbItemTags.Text.ToLower().Trim();
+    if (tag == "")
+      return;
+
+    Items.AddTag(UId(), tag);
+    ReloadSelectedItem();
+    cbItemTags.Text = "";
+  }
 }

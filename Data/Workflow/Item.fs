@@ -149,12 +149,26 @@ module UI =
         override this.ToString() = this.Name
         new(uId, d: ItemData) = NavItem(uId, d.name, d.esp, EDID.toStr d.edid)
 
-    let GetNav () =
+    type private FilterFunc = (UniqueId * ItemData) array -> (UniqueId * ItemData) array
+
+    let private filterItems f a =
+        a
+        |> Array.Parallel.filter (fun (_, v) -> f v.name || f v.esp || f (v.edid.toStr ()))
+
+    let private filterSimple word a =
+        let f = containsIC word
+        filterItems f a
+
+    let private getNav (filter: FilterFunc) =
         items
         |> Map.toArray
+        |> filter
         |> Array.Parallel.map NavItem
         |> Array.sortBy (fun o -> o.Name.ToLower())
         |> Collections.ArrayToCList
+
+    let GetNav () = getNav id
+    let GetNavFiltered word = getNav (filterSimple word)
 
 let internal exportToKID filename = items |> IO.exportToKID filename
 let internal toJson () = items |> IO.mapToJson

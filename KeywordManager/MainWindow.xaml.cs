@@ -28,9 +28,10 @@ public partial class MainWindow : Window {
   private void LoadKeywords(IEnumerable? list) => lstKeywords.ItemsSource = list;
   private static void LstSelectFirst(ListBox lst) => lst.SelectedIndex = lst.Items.Count > 0 ? 0 : -1;
   private void LoadNavItems() => lstNavItems.ItemsSource = Items.UI.GetNav();
+  private void LoadNavItems(string filter) => lstNavItems.ItemsSource = Items.UI.GetNavFiltered(filter);
 
   private void OpenFile(string path) {
-    IO.PropietaryFile.Open(path);
+    PropietaryFile.Open(path);
     workingFile = path;
     LoadNavItems();
     LstSelectFirst(lstNavItems);
@@ -207,5 +208,20 @@ public partial class MainWindow : Window {
     ForEachSelectedItem(uId => {
       Items.AddTag(uId, tag);
     });
+  }
+
+  private void OnFilterItems(object sender, TextChangedEventArgs e) {
+    if (sender is not TextBox tb || !tb.IsFocused)
+      return;
+
+    var f = tb.Text.Trim();
+    if (f.Length == 0) {
+      LoadNavItems();
+      return;
+    }
+    else if (f.Length < 3)
+      return;
+
+    LoadNavItems(f);
   }
 }

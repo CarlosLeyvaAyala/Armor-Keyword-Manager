@@ -201,7 +201,10 @@
                   </ItemsControl.ItemsPanel>
                   <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                      <md:Chip Content="{Binding}" IsDeletable="True" DeleteClick="OnDeleteTag" />
+                      <md:Chip
+                        Content="{Binding}"
+                        DeleteClick="OnDeleteTag"
+                        IsDeletable="True" />
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -209,8 +212,9 @@
 
               <ComboBox
                 x:Name="cbItemTags"
-                Margin="{StaticResource MgTopNaarrow}" KeyDown="OnCbTagsAdd"
-                IsEditable="True" />
+                Margin="{StaticResource MgTopNaarrow}"
+                IsEditable="True"
+                KeyDown="OnCbTagsAdd" />
             </StackPanel>
           </GroupBox>
         </Grid>
@@ -225,7 +229,8 @@
           <TextBox
             Margin="{DynamicResource MgGrpContent}"
             md:HintAssist.Hint="Search..."
-            DockPanel.Dock="Top" />
+            DockPanel.Dock="Top"
+            TextChanged="OnFilterItems" />
 
           <ListBox
             x:Name="lstNavItems"

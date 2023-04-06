@@ -23,14 +23,15 @@ IO.PropietaryFile.Open inF
 
 let items = Data.Items.itemsTest ()
 
-let allTags =
+let word = "christ"
+
+let filterItems f word =
     items
     |> Map.toArray
-    |> Array.Parallel.map (fun (_, d) -> d.tags |> List.toArray)
-    |> Array.Parallel.collect id
-    |> Array.distinct
-    |> Array.sort
+    |> Array.Parallel.filter (fun (_, v) -> f v.name || f v.esp || f (v.edid.toStr ()))
 
-let existing = (items["BnS Yukata.esp|806"]).tags |> Set.ofList
-let all = allTags |> Set.ofArray
-Set.difference all existing
+let filterSimple word =
+    let f = containsIC word
+    filterItems f word
+
+filterSimple "christmas"

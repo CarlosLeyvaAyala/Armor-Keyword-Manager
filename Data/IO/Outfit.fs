@@ -3,7 +3,8 @@
 type OutfitData =
     { name: string
       img: string
-      tags: string list }
+      tags: string list
+      active: bool }
 
 type EDID = string
 

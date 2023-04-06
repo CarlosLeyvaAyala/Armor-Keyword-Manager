@@ -25,7 +25,8 @@ type ItemData =
       esp: string
       enchantments: WaedEnchantment list
       formId: string
-      itemType: int }
+      itemType: int
+      active: bool }
 
     static member empty =
         { keywords = []
@@ -37,7 +38,8 @@ type ItemData =
           formId = ""
           image = ""
           name = ""
-          itemType = 0 }
+          itemType = 0
+          active = true }
 
 type ArmorMap = Map<UniqueId, ItemData>
 
@@ -74,7 +76,8 @@ module private IO =
           esp = d.esp
           enchantments = d.enchantments |> List.map convEnch
           formId = d.formId
-          itemType = d.itemType }
+          itemType = d.itemType
+          active = d.active }
 
     let dataFromJson (d: JsonData) : ItemData =
         let convEnch (e: JsonWaedEnch) : WaedEnchantment = { formId = e.formId; level = e.level }
@@ -88,18 +91,13 @@ module private IO =
           esp = d.esp
           enchantments = d.enchantments |> List.map convEnch
           formId = d.formId
-          itemType = d.itemType }
+          itemType = d.itemType
+          active = d.active }
 
     let mapFromJson (m: JsonArmorMap) : ArmorMap =
         m |> Map.map (fun k v -> dataFromJson v)
 
     let mapToJson (m: ArmorMap) : JsonArmorMap = m |> Map.map (fun k v -> dataToJson v)
-
-    let loadFromFile p =
-        p |> Json.getFromFile<JsonArmorMap> |> mapFromJson
-
-    let saveToFile p m =
-        m |> mapToJson |> Json.writeToFile true p
 
     let exportToKID filename rawMap =
         let maxArmorsPerLine = 50
@@ -126,13 +124,16 @@ module private IO =
             let mutable output: KIDItemMap = Map.empty
 
             for id in jsonMap.Keys do
-                for keyword in jsonMap[id].keywords do
-                    addWordToKey
-                        (fun k -> output[k])
-                        (fun k l -> output <- output.Add(k, l))
-                        (fun k -> output.ContainsKey(k))
-                        keyword
-                        jsonMap[id].edid
+                let it = jsonMap[id]
+
+                if it.active then
+                    for keyword in it.keywords do
+                        addWordToKey
+                            (fun k -> output[k])
+                            (fun k l -> output <- output.Add(k, l))
+                            (fun k -> output.ContainsKey(k))
+                            keyword
+                            jsonMap[id].edid
 
             [| for id in output.Keys do
                    dictToStr [] id (output[id] |> List.sort) |]

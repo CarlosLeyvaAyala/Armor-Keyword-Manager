@@ -1,6 +1,7 @@
 ﻿namespace IO.Item
 
 open Common
+open System
 
 type JsonWaedEnch = { formId: string; level: int }
 
@@ -14,7 +15,8 @@ type JsonData =
       esp: string
       enchantments: JsonWaedEnch list
       formId: string
-      itemType: int }
+      itemType: int
+      active: bool }
 
 type JsonArmorMap = Map<string, JsonData>
 type KIDItemMap = Map<Keyword, string list>

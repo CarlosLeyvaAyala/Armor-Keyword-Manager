@@ -119,8 +119,16 @@
       <GroupBox
         Grid.Column="2"
         md:ColorZoneAssist.Mode="SecondaryMid"
-        Header="Item data"
-        Style="{StaticResource MaterialDesignCardGroupBox}">
+        Header="Item data">
+        <GroupBox.Style>
+          <Style BasedOn="{StaticResource MaterialDesignCardGroupBox}" TargetType="GroupBox">
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding ElementName=lstNavItems, Path=SelectedIndex}" Value="-1">
+                <Setter Property="IsEnabled" Value="False" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </GroupBox.Style>
         <Grid>
           <Grid.RowDefinitions>
             <RowDefinition Height="auto" />

@@ -41,8 +41,12 @@ public partial class MainWindow : Window {
   string UId() => UId(lstNavItems.SelectedItem);
 
   private void ReloadSelectedItem() {
-    if (lstNavItems.SelectedItem == null)
+    if (lstNavItems.SelectedItem == null) {
+      lstItemKeywords.ItemsSource = null;
+      lstItemTags.ItemsSource = null;
+      cbItemTags.ItemsSource = null;
       return;
+    }
     var uId = UId();
     lstItemKeywords.ItemsSource = Items.GetKeywords(uId);
     lstItemTags.ItemsSource = Items.GetTags(uId);
@@ -217,11 +221,13 @@ public partial class MainWindow : Window {
     var f = tb.Text.Trim();
     if (f.Length == 0) {
       LoadNavItems();
+      ReloadSelectedItem();
       return;
     }
     else if (f.Length < 3)
       return;
 
     LoadNavItems(f);
+    ReloadSelectedItem();
   }
 }

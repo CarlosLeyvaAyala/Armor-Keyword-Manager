@@ -24,12 +24,12 @@
     <lcl:IntToKeywordColor x:Key="IntToKeywordColor" />
   </UserControl.Resources>
 
-  <Grid Margin="20">
+  <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="9*" />
-      <ColumnDefinition Width="{DynamicResource GridSepHorizontal}" />
+      <ColumnDefinition Width="{DynamicResource GridSepHorizontalWide}" />
       <ColumnDefinition Width="8*" />
-      <ColumnDefinition Width="{DynamicResource GridSepHorizontal}" />
+      <ColumnDefinition Width="{DynamicResource GridSepHorizontalWide}" />
       <ColumnDefinition Width="8*" />
     </Grid.ColumnDefinitions>
 

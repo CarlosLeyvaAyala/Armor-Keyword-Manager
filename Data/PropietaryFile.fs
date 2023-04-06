@@ -37,12 +37,13 @@ let SaveJson filename =
     { itemKeywords = Data.Items.toJson () }
     |> Json.writeToFile true filename
 
-let Open filename =
-    let d =
-        filename
-        |> decompressFile
-        |> Json.deserialize<PropietaryFile>
+let internal openFile filename =
+    filename
+    |> decompressFile
+    |> Json.deserialize<PropietaryFile>
 
+let Open filename =
+    let d = openFile filename
     Data.Items.ofJson d.itemKeywords
     ()
 

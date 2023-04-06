@@ -1,4 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Thickness x:Key="MgGrpContent">15</Thickness>
   <Thickness x:Key="MgTopNormal">0,20,0,0</Thickness>
+  <GridLength x:Key="GridSepHorizontal">20</GridLength>
+  <GridLength x:Key="GridSepVertical">30</GridLength>
+  <GridLength x:Key="GridSepVerticalNarrow">20</GridLength>
 </ResourceDictionary>

@@ -42,6 +42,8 @@ public partial class MainWindow : Window {
     var name = UId(lstNavItems.SelectedItem);
     tbItemName.Text = name;
     lstItemKeywords.ItemsSource = Items.GetKeywords(name);
+    lstItemTags.ItemsSource = Items.GetTags(name);
+    cbItemTags.ItemsSource = Items.GetMissingTags(name);
   }
 
   private void AddKeywords() {
@@ -68,14 +70,7 @@ public partial class MainWindow : Window {
     if (e.Key == System.Windows.Input.Key.Return) { AddKeywords(); }
   }
 
-  //private void ExportToKID() {
-  //  Items.ExportToKID("F:\\Skyrim SE\\MO2\\mods\\DM-Dynamic-Armors\\Armors_KID.ini");
-  //  InfoBox("File exported.", "Success");
-  //}
-
   private void InfoBox(string text, string title) => MessageBox.Show(this, text, title, MessageBoxButton.OK, MessageBoxImage.Information);
-
-  //private void BtnExportClick(object sender, RoutedEventArgs e) => ExportToKID();
 
   private void ImportItems(Action Import) {
     Import();

@@ -6,6 +6,7 @@ open DMLib.Combinators
 open System.IO
 open System
 open Common
+open DMLib.Collections
 
 type FileExtension = string
 type Full = string
@@ -158,6 +159,7 @@ module UI =
 let internal exportToKID filename = items |> IO.exportToKID filename
 let internal toJson () = items |> IO.mapToJson
 let internal ofJson data = items <- IO.mapFromJson data
+let internal itemsTest () = items
 
 let GetNames () =
     query {
@@ -167,6 +169,7 @@ let GetNames () =
     |> Seq.toList
     |> Collections.ListToCList
 
+/// Gets the list of keywords of some item.
 let GetKeywords itemName =
     let toCList (list: System.Collections.ObjectModel.ObservableCollection<Keywords.KeywordGUI>) =
         let l = System.Collections.Generic.List<Keywords.KeywordGUI>()
@@ -185,6 +188,33 @@ let GetKeywords itemName =
         |> Keywords.Items.generateGUI
         |> toCList
     | false -> [] |> Collections.ListToCList
+
+/// Gets the list of tags of some item.
+let GetTags itemName =
+    match items.ContainsKey(itemName) with
+    | true -> items[itemName].tags |> List.sort
+    | false -> []
+    |> Collections.ListToCList
+
+let getAllTags () =
+    items
+    |> Map.toArray
+    |> Array.Parallel.map (fun (_, d) -> d.tags |> List.toArray)
+    |> Array.Parallel.collect id
+    |> Array.distinct
+    |> Array.sort
+
+/// Gets all tags in items database
+let GetAllTags () = getAllTags () |> ArrayToCList
+
+/// Gets the tags an item lacks from the whole set
+let GetMissingTags itemName =
+    let existing = (items[itemName]).tags |> Set.ofList
+    let all = getAllTags () |> Set.ofArray
+
+    Set.difference all existing
+    |> Set.toArray
+    |> ArrayToCList
 
 let AddKeyword (id, keyword) =
     addWordToKey

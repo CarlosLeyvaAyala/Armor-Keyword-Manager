@@ -5,7 +5,6 @@
   xmlns:System="clr-namespace:System;assembly=System.Runtime"
   xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-  xmlns:lcl="clr-namespace:KeywordManager"
   xmlns:local="clr-namespace:KeywordManager.Pages"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -13,10 +12,6 @@
   d:DesignWidth="1200"
   Loaded="OnLoaded"
   mc:Ignorable="d">
-
-  <UserControl.Resources>
-    <lcl:IntToKeywordColor x:Key="IntToKeywordColor" />
-  </UserControl.Resources>
 
   <UserControl.CommandBindings>
     <CommandBinding
@@ -303,7 +298,7 @@
                   Height="{DynamicResource ImgSize}"
                   HorizontalAlignment="Left"
                   Cursor="Help"
-                  Source="{Binding Image}"
+                  Source="{Binding Image, Converter={StaticResource StringToImgConverter}}"
                   Stretch="UniformToFill"
                   ToolTipService.InitialShowDelay="50">
                   <Image.ToolTip>

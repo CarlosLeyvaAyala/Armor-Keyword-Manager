@@ -49,8 +49,6 @@
   </Window.CommandBindings>
 
   <Window.Resources>
-    <local:IntToKeywordColor x:Key="IntToKeywordColor" />
-
     <Style x:Key="piNav" TargetType="md:PackIcon">
       <Setter Property="Width" Value="24" />
       <Setter Property="Height" Value="24" />

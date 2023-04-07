@@ -83,9 +83,8 @@ module private Helpers =
             |> (changeExtension |> swap) keyword
             |> combine2 ImagePath
 
-        // TODO: Fix file locking by loading the bitmap in the GUI object itself
         if File.Exists dest then
-            failwith "File replacing not implemented"
+            File.Delete dest
 
         File.Copy(sourceFileName, dest)
         (getExt dest)[1..]

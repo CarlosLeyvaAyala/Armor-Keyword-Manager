@@ -284,9 +284,6 @@
           <ListBox.ItemTemplate>
             <DataTemplate>
               <Grid>
-                <Grid.Resources>
-                  <System:Double x:Key="ImgSize">80</System:Double>
-                </Grid.Resources>
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="90" />
                   <ColumnDefinition Width="*" />
@@ -294,8 +291,8 @@
 
                 <Image
                   Grid.Column="0"
-                  Width="{DynamicResource ImgSize}"
-                  Height="{DynamicResource ImgSize}"
+                  Width="{DynamicResource ImgListPreviewSize}"
+                  Height="{DynamicResource ImgListPreviewSize}"
                   HorizontalAlignment="Left"
                   Cursor="Help"
                   Source="{Binding Image, Converter={StaticResource StringToImgConverter}}"

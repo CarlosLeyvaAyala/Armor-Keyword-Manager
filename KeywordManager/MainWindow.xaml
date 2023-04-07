@@ -149,6 +149,9 @@
       SnapsToDevicePixels="True"
       Style="{StaticResource MaterialDesignNavigationRailTabControl}"
       TabStripPlacement="Left">
+      <TabControl.Resources>
+        <Thickness x:Key="MgTabContent">30,0,20,20</Thickness>
+      </TabControl.Resources>
       <!--  ITEMS  -->
       <TabItem>
         <TabItem.Header>
@@ -157,8 +160,10 @@
             <TextBlock Style="{StaticResource txtNav}" Text="Items" />
           </StackPanel>
         </TabItem.Header>
-        <pp:PP_Items x:Name="ppItems" Margin="30,0,20,20" />
+        <pp:PP_Items x:Name="ppItems" Margin="{StaticResource MgTabContent}" />
       </TabItem>
+
+      <!--  OUTFITS  -->
       <TabItem>
         <TabItem.Header>
           <StackPanel Width="auto" Height="auto">
@@ -166,7 +171,10 @@
             <TextBlock Style="{StaticResource txtNav}" Text="Outfits" />
           </StackPanel>
         </TabItem.Header>
+        <pp:PP_Outfits x:Name="ppOutfits" Margin="{StaticResource MgTabContent}" />
       </TabItem>
+
+      <!--  ENCHANTMENTS  -->
       <TabItem>
         <TabItem.Header>
           <StackPanel Width="auto" Height="auto">

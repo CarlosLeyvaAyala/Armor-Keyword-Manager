@@ -11,6 +11,8 @@
     <Compile Include="IO\Outfit.fs" />
     <Compile Include="Workflow\Keyword.fs" />
     <Compile Include="Workflow\Item.fs" />
+    <Compile Include="Workflow\Outfit.fs" />
+    <Compile Include="UI\Outfit.fs" />
     <Compile Include="PropietaryFile.fs" />
     <None Include="scripts\Scratchpad.fsx" />
     <None Include="scripts\Ini to Json.fsx" />

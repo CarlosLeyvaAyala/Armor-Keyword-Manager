@@ -10,7 +10,7 @@ namespace KeywordManager;
 
 [ValueConversion(typeof(int), typeof(SolidColorBrush))]
 public class IntToKeywordColor : IValueConverter {
-  Func<string, SolidColorBrush> getKey = (k) => (SolidColorBrush)Application.Current.Resources[k];
+  readonly Func<string, SolidColorBrush> getKey = (k) => (SolidColorBrush)Application.Current.Resources[k];
 
   public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
     int v = (int)value;

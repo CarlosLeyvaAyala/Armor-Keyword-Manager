@@ -72,7 +72,7 @@ module private Helpers =
                let x = processed[k]
                KeywordGUI(k, x.image, x.description.Trim(), x.color) |]
         |> sortGuiByColor
-        |> Collections.ArrayToObservableCollection
+        |> Collections.toObservableCollection
 
     let returnGUI () = keywords |> generateGUI ImagePath
 

@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="carlos.leyva.ayala.dmlib" Version="1.2.21" />
+    <PackageReference Include="carlos.leyva.ayala.dmlib" Version="1.2.22" />
     <PackageReference Include="TextCopy" Version="6.2.1" />
   </ItemGroup>
 

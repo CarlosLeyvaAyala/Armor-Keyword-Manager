@@ -102,4 +102,4 @@ let toObservableCollection<'a> (s: seq<'a>) =
     l
 
 [ 1..5 ] |> toObservableCollection
-new UniqueId("", "")
+new UniqueId("", 3)

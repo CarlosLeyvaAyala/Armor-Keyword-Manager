@@ -166,7 +166,7 @@ module UI =
         |> filter
         |> Array.Parallel.map NavItem
         |> Array.sortBy (fun o -> o.Name.ToLower())
-        |> Collections.ArrayToCList
+        |> Collections.toCList
 
     let GetNav () = getNav id
     let GetNavFiltered word = getNav (filterSimple word)
@@ -182,7 +182,7 @@ let GetNames () =
             sortBy name
     }
     |> Seq.toList
-    |> Collections.ListToCList
+    |> Collections.toCList
 
 /// Gets the list of keywords of some item.
 let GetKeywords itemName =
@@ -202,14 +202,14 @@ let GetKeywords itemName =
         |> Keywords.Items.getKeywordsData
         |> Keywords.Items.generateGUI
         |> toCList
-    | false -> [] |> Collections.ListToCList
+    | false -> [] |> Collections.toCList
 
 /// Gets the list of tags of some item.
 let GetTags itemName =
     match items.ContainsKey(itemName) with
     | true -> items[itemName].tags |> List.sort
     | false -> []
-    |> Collections.ListToCList
+    |> Collections.toCList
 
 let getAllTags () =
     items
@@ -220,7 +220,7 @@ let getAllTags () =
     |> Array.sort
 
 /// Gets all tags in items database
-let GetAllTags () = getAllTags () |> ArrayToCList
+let GetAllTags () = getAllTags () |> toCList
 
 /// Gets the tags an item lacks from the whole set
 let GetMissingTags itemName =
@@ -229,7 +229,7 @@ let GetMissingTags itemName =
 
     Set.difference all existing
     |> Set.toArray
-    |> ArrayToCList
+    |> toCList
 
 [<AutoOpen>]
 module private Manipulate =

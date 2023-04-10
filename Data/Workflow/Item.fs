@@ -47,6 +47,16 @@ module private UniqueId =
     let create esp id = $"{esp}|{id}"
 
 let mutable private items: ArmorMap = Map.empty
+let mutable private tags: Tag array = [||]
+
+let private preCalculateTags () =
+    tags <-
+        items
+        |> Map.toArray
+        |> Array.Parallel.map (fun (_, d) -> d.tags |> List.toArray)
+        |> Array.Parallel.collect id
+        |> Array.distinct
+        |> Array.sort
 
 let private addWordToKey getWords addWord hasKey key word =
     let addIfNotExisting () =
@@ -100,44 +110,25 @@ module private IO =
     let mapToJson (m: ArmorMap) : JsonArmorMap = m |> Map.map (fun k v -> dataToJson v)
 
     let exportToKID filename rawMap =
-        let maxArmorsPerLine = 50
-        let jsonMap = rawMap |> mapToJson
-
-        let rec dictToStr acc keyword list =
-            let listToStr l =
-                let txt =
-                    l
-                    |> List.map (fun i -> string i)
-                    |> List.map String.trim
-                    |> String.concat ","
-
-                sprintf "Keyword = %s|Armor|%s" keyword txt
-
-            match List.length list with
-            | full when full > maxArmorsPerLine ->
-                let s = list |> List.take maxArmorsPerLine |> listToStr
-                dictToStr (acc @ [ s ]) keyword (list |> List.skip maxArmorsPerLine)
-
-            | _ -> acc @ [ list |> listToStr ]
+        let maxArmorsPerLine = 20
 
         let transformed =
-            let mutable output: KIDItemMap = Map.empty
-
-            for id in jsonMap.Keys do
-                let it = jsonMap[id]
-
-                if it.active then
-                    for keyword in it.keywords do
-                        addWordToKey
-                            (fun k -> output[k])
-                            (fun k l -> output <- output.Add(k, l))
-                            (fun k -> output.ContainsKey(k))
-                            keyword
-                            jsonMap[id].edid
-
-            [| for id in output.Keys do
-                   dictToStr [] id (output[id] |> List.sort) |]
-            |> List.concat
+            items
+            |> Map.toArray
+            |> Array.Parallel.map (fun (_, v) ->
+                ([| v.edid.toStr () |], v.keywords |> List.toArray)
+                ||> Array.allPairs) // Asociate each armor with each keyword
+            |> Array.Parallel.collect id
+            |> Array.groupBy (fun (_, keyword) -> keyword)
+            |> Array.Parallel.map (fun (keyword, arr) ->
+                arr
+                |> Array.Parallel.map (fun (edid, _) -> edid) // Remove excess keyword from groupBy
+                |> Array.chunkBySize maxArmorsPerLine
+                |> Array.Parallel.map (fun a ->
+                    let armors = a |> Array.fold (smartFold ",") ""
+                    sprintf "Keyword = %s|Armor|%s" keyword armors)) // Transform chunks into final text
+            |> Array.Parallel.collect id
+            |> Array.sort
 
         File.WriteAllLines(filename, transformed)
 
@@ -171,9 +162,14 @@ module UI =
     let GetNav () = getNav id
     let GetNavFiltered word = getNav (filterSimple word)
 
+
 let internal exportToKID filename = items |> IO.exportToKID filename
 let internal toJson () = items |> IO.mapToJson
-let internal ofJson data = items <- IO.mapFromJson data
+
+let internal ofJson data =
+    items <- IO.mapFromJson data
+    preCalculateTags ()
+
 let internal itemsTest () = items
 
 let GetNames () =
@@ -211,13 +207,7 @@ let GetTags itemName =
     | false -> []
     |> Collections.toCList
 
-let getAllTags () =
-    items
-    |> Map.toArray
-    |> Array.Parallel.map (fun (_, d) -> d.tags |> List.toArray)
-    |> Array.Parallel.collect id
-    |> Array.distinct
-    |> Array.sort
+let internal getAllTags () = tags
 
 /// Gets all tags in items database
 let GetAllTags () = getAllTags () |> toCList
@@ -256,9 +246,11 @@ let DelKeyword id keyword =
 
 let AddTag id tag =
     addWord items[id].tags changeTags id tag
+    preCalculateTags ()
 
 let DelTag id tag =
     delWord items[id].tags changeTags id tag
+    preCalculateTags ()
 
 module Import =
     type ParsedLine =

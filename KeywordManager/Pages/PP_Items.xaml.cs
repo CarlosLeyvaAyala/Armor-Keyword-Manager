@@ -1,4 +1,5 @@
 ﻿using Data;
+using KeywordManager.UserControls;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using System;
@@ -179,7 +180,7 @@ public partial class PP_Items : UserControl {
   }
 
   private void OnDeleteTag(object sender, RoutedEventArgs e) {
-    var tag = ((Chip)sender).Content.ToString();
+    var tag = ((DeleteTagEventArgs)e).Tag;
     ForEachSelectedItem(uId => {
       Items.DelTag(uId, tag);
     });

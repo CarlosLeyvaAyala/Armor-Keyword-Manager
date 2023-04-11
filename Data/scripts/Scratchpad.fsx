@@ -20,6 +20,7 @@ open System.IO.Compression
 open System.Text.RegularExpressions
 open DMLib.Types
 open DMLib.Types.Skyrim
+open Data.Items
 
 fsi.AddPrinter(fun (r: NonEmptyString) -> r.ToString())
 fsi.AddPrinter(fun (r: UniqueId) -> r.ToString())
@@ -33,6 +34,39 @@ try
 with
 | e -> printfn "%A" e.Message
 
+#r "nuget: FSharpx.Collections, 3.1.0"
+open FSharpx.Collections
+
+
+let searchAnd searchFor searchIn =
+    searchIn
+    |> List.map (fun tags -> searchFor |> List.tryFind (fun t -> t = tags))
+    |> List.catOptions
+    |> fun l -> l.Length = searchFor.Length
+
+let searchOr searchFor searchIn =
+    searchIn
+    |> List.allPairs searchFor
+    |> List.tryFind (fun (a, b) -> a = b)
+    |> Option.isSome
+
+let searchInKeywordsAndTags (v: ItemData) = v.tags |> List.append v.keywords
+
+let searchFor = [ "japanese2"; "smp" ]
+let searchIn = items["Dragon Lilly.esp|807"].tags
+
+items
+|> Map.toArray
+|> Array.Parallel.filter (fun (_, v) ->
+    v
+    |> searchInKeywordsAndTags
+    |> searchAnd searchFor)
+
+let anEvenSum a b =
+    printfn "%d - %d" a b
+    0 = (a + b) % 2
+
+([ 1..4 ], [ 2..5 ]) ||> List.exists2 anEvenSum
 ///////////////////////////////////////////////////
 open Data.Outfit
 open Data.Outfit.Database
@@ -89,7 +123,7 @@ let toCList<'a> (s: seq<'a>) =
 
 seq { 1..10 } |> toCList
 [ 1..10 ] |> toCList
-[ 1..10 ] |> Collections.ListToCList
+[ 1..10 ] |> Collections.toCList
 
 open System.Collections.ObjectModel
 

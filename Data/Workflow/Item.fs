@@ -7,6 +7,7 @@ open System.IO
 open System
 open Common
 open DMLib.Collections
+open FSharpx.Collections
 
 type FileExtension = string
 type Full = string
@@ -143,6 +144,29 @@ module UI =
 
     type private FilterFunc = (UniqueId * ItemData) array -> (UniqueId * ItemData) array
 
+    let searchAnd searchFor searchIn =
+        searchIn
+        |> List.map (fun tags -> searchFor |> List.tryFind (fun t -> t = tags))
+        |> List.catOptions
+        |> fun l -> l.Length = searchFor.Length
+
+    let searchOr searchFor searchIn =
+        searchIn
+        |> List.allPairs searchFor
+        |> List.tryFind (fun (a, b) -> a = b)
+        |> Option.isSome
+
+    let searchInKeywordsAndTags (v: ItemData) = v.tags |> List.append v.keywords
+
+    let filterTagsKeywords searchFunc (list: System.Collections.Generic.List<string>) (a: (UniqueId * ItemData) array) =
+        let searchFor = [ for i in list -> i ]
+
+        a
+        |> Array.Parallel.filter (fun (_, v) ->
+            v
+            |> searchInKeywordsAndTags
+            |> searchFunc searchFor)
+
     let private filterItems f a =
         a
         |> Array.Parallel.filter (fun (_, v) -> f v.name || f v.esp || f (v.edid.toStr ()))
@@ -162,6 +186,11 @@ module UI =
     let GetNav () = getNav id
     let GetNavFiltered word = getNav (filterSimple word)
 
+    let GetNavFilterTagOr list =
+        getNav (filterTagsKeywords searchOr list)
+
+    let GetNavFilterTagAnd list =
+        getNav (filterTagsKeywords searchAnd list)
 
 let internal exportToKID filename = items |> IO.exportToKID filename
 let internal toJson () = items |> IO.mapToJson

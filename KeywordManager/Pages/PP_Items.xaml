@@ -8,6 +8,7 @@
   xmlns:local="clr-namespace:KeywordManager.Pages"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+  xmlns:uc="clr-namespace:KeywordManager.UserControls"
   d:DesignHeight="800"
   d:DesignWidth="1200"
   Loaded="OnLoaded"
@@ -178,26 +179,10 @@
             BorderThickness="0"
             Header="Tags">
             <StackPanel>
-              <ScrollViewer
+              <uc:TagViewer
+                x:Name="lstItemTags"
                 MaxHeight="150"
-                HorizontalScrollBarVisibility="Hidden"
-                VerticalScrollBarVisibility="Auto">
-                <ItemsControl x:Name="lstItemTags" Width="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}}">
-                  <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                      <WrapPanel />
-                    </ItemsPanelTemplate>
-                  </ItemsControl.ItemsPanel>
-                  <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                      <md:Chip
-                        Content="{Binding}"
-                        DeleteClick="OnDeleteTag"
-                        IsDeletable="True" />
-                    </DataTemplate>
-                  </ItemsControl.ItemTemplate>
-                </ItemsControl>
-              </ScrollViewer>
+                DeleteClick="OnDeleteTag" />
 
               <ComboBox
                 x:Name="cbItemTags"

@@ -9,6 +9,7 @@
   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
   d:DesignHeight="800"
   d:DesignWidth="1200"
+  Loaded="OnLoaded"
   mc:Ignorable="d">
 
   <Grid>
@@ -54,43 +55,45 @@
       Header="Outfit data"
       Style="{StaticResource MaterialDesignCardGroupBox}">
 
-      <Grid Margin="{StaticResource MgGrpContent}">
-        <Grid.RowDefinitions>
-          <RowDefinition Height="*" />
-          <RowDefinition Height="{StaticResource GridSepVertical}" />
-          <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="{StaticResource GridSepHorizontal}" />
-          <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+      <ScrollViewer>
+        <Grid Margin="{StaticResource MgGrpContent}">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="{StaticResource GridSepVertical}" />
+            <RowDefinition Height="auto" />
+          </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="{StaticResource GridSepHorizontal}" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
 
-        <GroupBox
-          md:ColorZoneAssist.Mode="PrimaryLight"
-          BorderThickness="0"
-          Header="Tags">
-          <!--  eu  -->
-        </GroupBox>
+          <GroupBox
+            md:ColorZoneAssist.Mode="PrimaryLight"
+            BorderThickness="0"
+            Header="Tags">
+            <!--  eu  -->
+          </GroupBox>
 
-        <GroupBox
-          Grid.Column="2"
-          md:ColorZoneAssist.Mode="PrimaryLight"
-          BorderThickness="0"
-          Header="Armor pieces">
-          <ListBox IsEnabled="False" />
-        </GroupBox>
+          <GroupBox
+            Grid.Column="2"
+            md:ColorZoneAssist.Mode="PrimaryLight"
+            BorderThickness="0"
+            Header="Armor pieces">
+            <ListBox IsEnabled="False" />
+          </GroupBox>
 
-        <GroupBox
-          Grid.Row="2"
-          Grid.ColumnSpan="3"
-          md:ColorZoneAssist.Mode="PrimaryLight"
-          BorderThickness="0"
-          Header="Image">
-          <Image />
-        </GroupBox>
+          <GroupBox
+            Grid.Row="2"
+            Grid.ColumnSpan="3"
+            md:ColorZoneAssist.Mode="PrimaryLight"
+            BorderThickness="0"
+            Header="Image">
+            <Image x:Name="imgTest" />
+          </GroupBox>
 
-      </Grid>
+        </Grid>
+      </ScrollViewer>
     </GroupBox>
   </Grid>
 </UserControl>

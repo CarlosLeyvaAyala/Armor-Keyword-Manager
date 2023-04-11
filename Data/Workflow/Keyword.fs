@@ -114,3 +114,8 @@ module internal Items =
     let getKeywordsData keywordList =
         keywords
         |> Map.filter (fun k _ -> keywordList |> List.contains k)
+
+let internal getAllKeywords () =
+    keywords
+    |> Map.toArray
+    |> Array.Parallel.map (fun (k, _) -> k)

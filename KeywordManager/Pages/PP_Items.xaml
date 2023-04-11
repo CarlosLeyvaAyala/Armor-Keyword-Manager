@@ -30,8 +30,46 @@
       <ColumnDefinition Width="8*" />
     </Grid.ColumnDefinitions>
 
+    <Grid.RowDefinitions>
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="{StaticResource GridSepVertical}" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <!--  TAG FILTER  -->
+    <md:Card Grid.ColumnSpan="5">
+      <DockPanel Margin="{StaticResource MgGrpContent}" md:ElevationAssist.Elevation="Dp12">
+        <StackPanel
+          Margin="20,0,0,0"
+          VerticalAlignment="Top"
+          DockPanel.Dock="Right"
+          Orientation="Vertical">
+          <RadioButton
+            x:Name="rbTagsOr"
+            Click="OnFilterAndOr"
+            Content="OR"
+            IsChecked="True"
+            Style="{StaticResource MaterialDesignTabRadioButtonBottom}" />
+          <RadioButton
+            x:Name="rbTagsAnd"
+            Margin="{StaticResource MgTopNaarrow}"
+            Click="OnFilterAndOr"
+            Content="AND"
+            IsChecked="False"
+            Style="{StaticResource MaterialDesignTabRadioButtonBottom}" />
+        </StackPanel>
+
+        <uc:TagViewer
+          x:Name="tagFilter"
+          Height="200"
+          FilterTagClick="OnFilter"
+          IsFilterable="True" />
+      </DockPanel>
+    </md:Card>
+
     <!--  ITEM DATA  -->
     <GroupBox
+      Grid.Row="2"
       Grid.Column="2"
       md:ColorZoneAssist.Mode="SecondaryMid"
       Header="Item data">
@@ -182,7 +220,8 @@
               <uc:TagViewer
                 x:Name="lstItemTags"
                 MaxHeight="150"
-                DeleteClick="OnDeleteTag" />
+                IsDeletable="True"
+                TagDeleteClick="OnDeleteTag" />
 
               <ComboBox
                 x:Name="cbItemTags"
@@ -197,11 +236,13 @@
 
     <!--  NAVIGATOR  -->
     <GroupBox
+      Grid.Row="2"
       md:ColorZoneAssist.Mode="PrimaryMid"
       Header="Navigate"
       Style="{StaticResource MaterialDesignCardGroupBox}">
       <DockPanel>
         <TextBox
+          x:Name="edtFilter"
           Margin="{DynamicResource MgGrpContent}"
           md:HintAssist.Hint="Search..."
           DockPanel.Dock="Top"
@@ -254,6 +295,7 @@
 
     <!--  KEYWORDS  -->
     <GroupBox
+      Grid.Row="2"
       Grid.Column="4"
       md:ColorZoneAssist.Mode="PrimaryMid"
       Header="Keywords"

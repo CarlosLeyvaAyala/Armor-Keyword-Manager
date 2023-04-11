@@ -158,22 +158,30 @@ module UI =
 
     let searchInKeywordsAndTags (v: ItemData) = v.tags |> List.append v.keywords
 
+    let private filterNothing a = id a
+
     let filterTagsKeywords searchFunc (list: System.Collections.Generic.List<string>) (a: (UniqueId * ItemData) array) =
         let searchFor = [ for i in list -> i ]
 
-        a
-        |> Array.Parallel.filter (fun (_, v) ->
-            v
-            |> searchInKeywordsAndTags
-            |> searchFunc searchFor)
+        match searchFor with
+        | [] -> filterNothing a
+        | _ ->
+            a
+            |> Array.Parallel.filter (fun (_, v) ->
+                v
+                |> searchInKeywordsAndTags
+                |> searchFunc searchFor)
 
     let private filterItems f a =
         a
         |> Array.Parallel.filter (fun (_, v) -> f v.name || f v.esp || f (v.edid.toStr ()))
 
     let private filterSimple word a =
-        let f = containsIC word
-        filterItems f a
+        match word with
+        | IsEmptyStr -> filterNothing a
+        | w ->
+            let f = containsIC word
+            filterItems f a
 
     let private getNav (filter: FilterFunc) =
         items
@@ -184,13 +192,16 @@ module UI =
         |> Collections.toCList
 
     let GetNav () = getNav id
-    let GetNavFiltered word = getNav (filterSimple word)
+    //let GetNavFiltered word = getNav (filterSimple word)
 
-    let GetNavFilterTagOr list =
-        getNav (filterTagsKeywords searchOr list)
+    let filterOr l = filterTagsKeywords searchOr l
+    let filterAnd l = filterTagsKeywords searchAnd l
 
-    let GetNavFilterTagAnd list =
-        getNav (filterTagsKeywords searchAnd list)
+    let GetNavFilterOr word list =
+        getNav ((filterOr list) >> (filterSimple word))
+
+    let GetNavFilterAnd word list =
+        getNav ((filterAnd list) >> (filterSimple word))
 
 let internal exportToKID filename = items |> IO.exportToKID filename
 let internal toJson () = items |> IO.mapToJson

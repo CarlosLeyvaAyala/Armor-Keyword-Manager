@@ -4,6 +4,7 @@ using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -35,8 +36,13 @@ public partial class PP_Items : UserControl {
   #region UI
   private void LoadKeywords(IEnumerable? list) => lstKeywords.ItemsSource = list;
   public void LoadNavItems() => lstNavItems.ItemsSource = Items.UI.GetNav();
-  private void LoadNavItems(string filter) => lstNavItems.ItemsSource = Items.UI.GetNavFiltered(filter);
+  private void LoadNavItems(string filter, List<string> tags) =>
+    lstNavItems.ItemsSource = rbTagsAnd.IsChecked == true ?
+      Items.UI.GetNavFilterAnd(filter, tags) :
+      Items.UI.GetNavFilterOr(filter, tags);
+
   private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) => ReloadSelectedItem();
+  private void LoadFilters() => tagFilter.ItemsSource = Data.UI.Tags.Get.AllTagsAndKeywords();
 
   private void GoToFirst() {
     MainWindow.LstSelectFirst(lstNavItems);
@@ -46,6 +52,7 @@ public partial class PP_Items : UserControl {
   private void OnLoaded(object sender, RoutedEventArgs e) {
     LoadKeywords(Keywords.LoadFromFile());
     GoToFirst();
+    LoadFilters();
   }
 
   private void ReloadSelectedItem() {
@@ -65,7 +72,7 @@ public partial class PP_Items : UserControl {
     if (sender is not TextBox tb || !tb.IsFocused)
       return;
 
-    var f = tb.Text.Trim();
+    var f = tb.Text;
     if (f.Length == 0) {
       LoadNavItems();
       ReloadSelectedItem();
@@ -74,8 +81,17 @@ public partial class PP_Items : UserControl {
     else if (f.Length < 3)
       return;
 
-    LoadNavItems(f);
+    ApplyFilter(f, tagFilter.GetCheckedTags());
+  }
+
+  void ApplyFilter(string filter, List<string> tags) {
+    LoadNavItems(filter, tags);
     ReloadSelectedItem();
+  }
+
+  private void OnFilter(object sender, RoutedEventArgs e) => ApplyFilter(edtFilter.Text, ((FilterTagEventArgs)e).Tags);
+  private void OnFilterAndOr(object sender, RoutedEventArgs e) {
+    ApplyFilter(edtFilter.Text, tagFilter.GetCheckedTags());
   }
   #endregion
 
@@ -180,7 +196,7 @@ public partial class PP_Items : UserControl {
   }
 
   private void OnDeleteTag(object sender, RoutedEventArgs e) {
-    var tag = ((DeleteTagEventArgs)e).Tag;
+    var tag = ((ClickTagEventArgs)e).Tag;
     ForEachSelectedItem(uId => {
       Items.DelTag(uId, tag);
     });

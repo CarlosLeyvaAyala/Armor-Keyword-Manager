@@ -30,7 +30,7 @@ public partial class TagViewer : UserControl {
     lstTags.DataContext = this;
   }
 
-  public IEnumerable ItemsSource {
+  public IEnumerable? ItemsSource {
     get { return lstTags.ItemsSource; }
     set { lstTags.ItemsSource = value; }
   }
@@ -134,7 +134,11 @@ public partial class TagViewer : UserControl {
   protected virtual void OnFilterChipClick(List<string> tags) => RaiseEvent(new FilterTagEventArgs(FilterTagClickEvent, this, tags));
 
   private void FilterChipClick(object sender, RoutedEventArgs e) {
-    // Get all checked tags
+    OnFilterChipClick(GetCheckedTags());
+    e.Handled = true;
+  }
+
+  public List<string> GetCheckedTags() {
     var tags = new List<string>();
 
     foreach (var item in lstTags.Items) {
@@ -147,7 +151,6 @@ public partial class TagViewer : UserControl {
       tags.Add(chk.Content.ToString() ?? "");
     }
 
-    OnFilterChipClick(tags);
-    e.Handled = true;
+    return tags;
   }
 }

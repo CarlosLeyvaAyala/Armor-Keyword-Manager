@@ -53,7 +53,14 @@
           x:Name="tagFilter"
           Height="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type md:DrawerHost}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.5}"
           FilterTagClick="OnFilter"
-          IsFilterable="True" />
+          IsFilterable="True">
+
+          <uc:TagViewer.ContextMenu>
+            <ContextMenu Visibility="{Binding IsFilterable, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
+              <MenuItem Click="OnClearFiltersClick" Header="_Clear filters" />
+            </ContextMenu>
+          </uc:TagViewer.ContextMenu>
+        </uc:TagViewer>
       </DockPanel>
     </md:DrawerHost.TopDrawerContent>
 

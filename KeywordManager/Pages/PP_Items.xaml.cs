@@ -82,7 +82,7 @@ public partial class PP_Items : UserControl, IFilterable {
     else if (f.Length < 3)
       return;
 
-    ApplyFilter(f, tagFilter.GetCheckedTags());
+    ApplyFilter(f, tagFilter.CheckedTags);
   }
 
   void ApplyFilter(string filter, List<string> tags) {
@@ -91,9 +91,7 @@ public partial class PP_Items : UserControl, IFilterable {
   }
 
   private void OnFilter(object sender, RoutedEventArgs e) => ApplyFilter(edtFilter.Text, ((FilterTagEventArgs)e).Tags);
-  private void OnFilterAndOr(object sender, RoutedEventArgs e) {
-    ApplyFilter(edtFilter.Text, tagFilter.GetCheckedTags());
-  }
+  private void OnFilterAndOr(object sender, RoutedEventArgs e) => ApplyFilter(edtFilter.Text, tagFilter.CheckedTags);
   #endregion
 
   #region Data manipulation
@@ -217,4 +215,9 @@ public partial class PP_Items : UserControl, IFilterable {
   #endregion
 
   public void FilterDialogToggle() => dhMain.IsTopDrawerOpen = !dhMain.IsTopDrawerOpen;
+
+  private void OnClearFiltersClick(object sender, RoutedEventArgs e) {
+    tagFilter.ClearTags();
+    ApplyFilter(edtFilter.Text, tagFilter.CheckedTags);
+  }
 }

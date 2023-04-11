@@ -1,4 +1,5 @@
 ﻿using MaterialDesignThemes.Wpf;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -138,19 +139,29 @@ public partial class TagViewer : UserControl {
     e.Handled = true;
   }
 
-  public List<string> GetCheckedTags() {
+  private List<string> GetCheckedTags() {
     var tags = new List<string>();
 
+    ForEachFilterTag((chk) => {
+      bool isChecked = chk.IsChecked == true;
+      if (!isChecked)
+        return;
+      tags.Add(chk.Content.ToString() ?? "");
+    });
+
+    return tags;
+  }
+
+  public List<string> CheckedTags => GetCheckedTags();
+
+  void ForEachFilterTag(Action<CheckBox> DoSomething) {
     foreach (var item in lstTags.Items) {
       ContentPresenter c = (ContentPresenter)lstTags.ItemContainerGenerator.ContainerFromItem(item);
       if (c.ContentTemplate.FindName("chkFilter", c) is not CheckBox chk)
         continue;
-      bool isChecked = chk.IsChecked == true;
-      if (!isChecked)
-        continue;
-      tags.Add(chk.Content.ToString() ?? "");
+      DoSomething(chk);
     }
-
-    return tags;
   }
+
+  public void ClearTags() => ForEachFilterTag((chk) => chk.IsChecked = false);
 }

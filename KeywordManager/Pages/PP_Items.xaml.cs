@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace KeywordManager.Pages;
 
-public partial class PP_Items : UserControl {
+public partial class PP_Items : UserControl, IFilterable {
   FileSystemWatcher? watcher = null;
   DateTime lastGenerated = DateTime.Now;
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
@@ -215,4 +215,6 @@ public partial class PP_Items : UserControl {
 
   private void OnImportFromClipboard(object sender, RoutedEventArgs e) => ImportItems(Items.Import.FromClipboard);
   #endregion
+
+  public void FilterDialogToggle() => dhMain.IsTopDrawerOpen = !dhMain.IsTopDrawerOpen;
 }

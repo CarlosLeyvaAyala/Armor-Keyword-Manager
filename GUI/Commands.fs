@@ -54,5 +54,18 @@ type AppCmds private () =
           modifiers = ModifierKeys.None }
         |> create
 
+    static member val Filter =
+        { name = "Filter"
+          text = "Filter by tag/keyword"
+          keyDisplay = "Ctrl+F"
+          key = Key.F
+          modifiers = ModifierKeys.Control }
+        |> create
+
     static member val FileJsonExport = basic "FileJsonExport" $"Exports file to json"
     static member val FileJsonImport = basic "FileJsonImport" $"Imports file from json"
+
+
+[<Sealed>]
+type ItemCmds private () =
+    static let create = createCmd (fun () -> typeof<ItemCmds>)

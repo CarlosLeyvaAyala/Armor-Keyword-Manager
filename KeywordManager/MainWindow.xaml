@@ -46,6 +46,11 @@
       CanExecute="OnCanFileJsonImport"
       Command="c:AppCmds.FileJsonImport"
       Executed="OnFileJsonImport" />
+
+    <CommandBinding
+      CanExecute="OnCanFilter"
+      Command="c:AppCmds.Filter"
+      Executed="OnFilter" />
   </Window.CommandBindings>
 
   <Window.Resources>
@@ -97,6 +102,12 @@
             Header="Generate _at..."
             ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
         </MenuItem>
+        <MenuItem Header="_Data">
+          <MenuItem
+            Command="c:AppCmds.Filter"
+            Header="_Filter"
+            ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+        </MenuItem>
       </Menu>
     </md:ColorZone>
 
@@ -141,6 +152,7 @@
 
     <!--  CONTENTS  -->
     <TabControl
+      x:Name="tbcMain"
       Margin="0"
       HorizontalContentAlignment="Center"
       md:ColorZoneAssist.Mode="PrimaryLight"

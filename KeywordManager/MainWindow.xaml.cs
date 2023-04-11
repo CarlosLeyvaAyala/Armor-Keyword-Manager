@@ -1,6 +1,7 @@
 ﻿using GUI;
 using IO;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -94,4 +95,14 @@ public partial class MainWindow : Window {
     workingFile = "";
     System.Media.SystemSounds.Asterisk.Play();
   }
+
+  private void OnCanFilter(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = CurrentPage is IFilterable;
+  private void OnFilter(object sender, ExecutedRoutedEventArgs e) {
+    if (CurrentPage is not IFilterable pp)
+      return;
+
+    pp.FilterDialogToggle();
+  }
+
+  object CurrentPage => tbcMain.SelectedContent;
 }

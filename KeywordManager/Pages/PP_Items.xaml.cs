@@ -21,7 +21,6 @@ public partial class PP_Items : UserControl, IFilterable {
 #pragma warning restore IDE0052 // Remove unread private members
   readonly Action<Action> NoRapidFire;
 
-  DateTime lastGenerated = DateTime.Now;
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
   static string UId(object o) => ((Items.UI.NavItem)o).UniqueId;
   string UId() => UId(lstNavItems.SelectedItem);
@@ -33,7 +32,6 @@ public partial class PP_Items : UserControl, IFilterable {
     Keywords.JsonPath = Path.Combine(cd, @"Data\Keywords.json");
     watcher = FileWatcher.Create(Settings.Default.xEditDir, "*.items", OnFileChanged);
     NoRapidFire = Misc.AvoidRapidFire();
-    //CreateFileWatcher("F:\\Skyrim SE\\Tools\\SSEEdit 4_x\\Edit Scripts");
   }
 
   public void FileOpened() {

@@ -17,6 +17,7 @@
         <ResourceDictionary Source="pack://application:,,,/Dictionaries/Dimensions.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Dictionaries/SVG.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Dictionaries/Converters.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dictionaries/Nav.xaml" />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Application.Resources>

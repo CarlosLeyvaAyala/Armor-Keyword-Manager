@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="carlos.leyva.ayala.dmlib" Version="1.2.24" />
+    <PackageReference Include="carlos.leyva.ayala.dmlib" Version="1.2.25" />
     <PackageReference Include="FSharp.Core.Wpf.Core" Version="5.0.3" />
     <PackageReference Include="WindowsAPICodePack" Version="7.0.4" />
   </ItemGroup>

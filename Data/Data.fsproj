@@ -8,10 +8,10 @@
   <ItemGroup>
     <Compile Include="Common.fs" />
     <Compile Include="IO\Item.fs" />
-    <Compile Include="IO\Outfit.fs" />
     <Compile Include="Workflow\Keyword.fs" />
     <Compile Include="Workflow\Item.fs" />
     <Compile Include="Workflow\Outfit.fs" />
+    <Compile Include="IOProper\Outfit.fs" />
     <Compile Include="UI\Outfit.fs" />
     <Compile Include="UI\Tags.fs" />
     <Compile Include="PropietaryFile.fs" />
@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="carlos.leyva.ayala.dmlib" Version="1.2.24" />
+    <PackageReference Include="carlos.leyva.ayala.dmlib" Version="1.2.25" />
     <PackageReference Include="FSharpx.Collections" Version="3.1.0" />
     <PackageReference Include="TextCopy" Version="6.2.1" />
   </ItemGroup>

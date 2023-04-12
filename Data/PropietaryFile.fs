@@ -6,7 +6,9 @@ open DMLib.IO.Path
 open System.Text.RegularExpressions
 open DMLib.String
 
-type PropietaryFile = { itemKeywords: IO.Item.JsonArmorMap }
+type PropietaryFile =
+    { itemKeywords: IO.Item.JsonArmorMap
+      outfits: IO.Outfit.JsonMap }
 
 [<AutoOpen>]
 module private Ops =
@@ -28,29 +30,32 @@ module private Ops =
         let a = output.ToArray()
         Encoding.UTF8.GetString(a, 0, a.Length)
 
+let private getDomainData () =
+    { itemKeywords = Data.Items.toJson ()
+      outfits = IO.Outfit.File.toJson () }
+
 let Save filename =
-    { itemKeywords = Data.Items.toJson () }
+    getDomainData ()
     |> Json.serialize false
     |> compressString filename
 
 let SaveJson filename =
-    { itemKeywords = Data.Items.toJson () }
-    |> Json.writeToFile true filename
+    getDomainData () |> Json.writeToFile true filename
 
-let internal openFile filename =
+let private setDomainData (d: PropietaryFile) =
+    Data.Items.ofJson d.itemKeywords
+    IO.Outfit.File.ofJson d.outfits
+    ()
+
+let Open filename =
     filename
     |> decompressFile
     |> Json.deserialize<PropietaryFile>
-
-let Open filename =
-    let d = openFile filename
-    Data.Items.ofJson d.itemKeywords
-    ()
+    |> setDomainData
 
 let OpenJson filename =
-    let d = Json.getFromFile<PropietaryFile> filename
-    Data.Items.ofJson d.itemKeywords
-    ()
+    Json.getFromFile<PropietaryFile> filename
+    |> setDomainData
 
 [<AutoOpen>]
 module private Gen =

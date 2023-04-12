@@ -24,12 +24,12 @@
       <DockPanel>
 
         <ListBox
+          x:Name="lstNav"
           HorizontalContentAlignment="Stretch"
-          d:DataContext="{d:DesignInstance Type=guiobjs:NavItem}"
           d:ItemsSource="{d:SampleData ItemCount=10}">
           <ListBox.ItemTemplate>
             <DataTemplate>
-              <Grid>
+              <Grid d:DataContext="{d:DesignInstance Type=guiobjs:NavItem}">
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="auto" />
                   <ColumnDefinition Width="10" />
@@ -38,8 +38,11 @@
                 <Image Width="{DynamicResource ImgListPreviewSize}" Height="{DynamicResource ImgListPreviewSize}" />
 
                 <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                  <TextBlock Text="{Binding}" />
-                  <TextBlock Margin="{StaticResource MgTopNaaarrow}" Text="{Binding}" />
+                  <TextBlock Style="{StaticResource NavTxtMain}" Text="{Binding Name}" />
+                  <TextBlock
+                    Margin="{StaticResource MgTopNaaarrow}"
+                    Style="{StaticResource NavTxtD1}"
+                    Text="{Binding EDID}" />
                 </StackPanel>
               </Grid>
             </DataTemplate>

@@ -96,7 +96,7 @@ and Raw =
 
 type Database = Map<UniqueId, Data>
 
-module Database =
+module internal Database =
     let mutable db: Database = Map.empty
 
     let inline toArray () = db |> Map.toArray

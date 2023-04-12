@@ -6,6 +6,7 @@ open DMLib.IO.Path
 open DMLib.IO
 open DMLib.Combinators
 open DMLib.String
+open Common.Images
 
 /// Path to the folder with the keywords images. Must be set by client before using this library.
 let mutable ImagePath = ""
@@ -76,18 +77,18 @@ module private Helpers =
 
     let returnGUI () = keywords |> generateGUI ImagePath
 
-    let createImage keyword sourceFileName =
-        let dest =
-            sourceFileName
-            |> getExt
-            |> (changeExtension |> swap) keyword
-            |> combine2 ImagePath
+//let createImage keyword sourceFileName =
+//let dest =
+//    sourceFileName
+//    |> getExt
+//    |> (changeExtension |> swap) keyword
+//    |> combine2 ImagePath
 
-        if File.Exists dest then
-            File.Delete dest
+//if File.Exists dest then
+//    File.Delete dest
 
-        File.Copy(sourceFileName, dest)
-        (getExt dest)[1..]
+//File.Copy(sourceFileName, dest)
+//(getExt dest)[1..]
 
 open Helpers
 
@@ -100,7 +101,7 @@ let SaveToFile () = Json.writeToFile true JsonPath keywords
 
 /// Given a file name and a keyword, generates the file name for the keyword.
 let SetImage (keyword, sourceFileName) =
-    let ext = createImage keyword sourceFileName
+    let ext = copyImage ImagePath keyword sourceFileName
     keywords <- keywords.Add(keyword, { keywords[keyword] with image = ext })
     SaveToFile()
     returnGUI ()

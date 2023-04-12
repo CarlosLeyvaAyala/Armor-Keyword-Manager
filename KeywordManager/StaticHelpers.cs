@@ -1,9 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Windows;
 
 namespace KeywordManager;
 
-class FileWatcher {
+static class FileWatcher {
   public static FileSystemWatcher? Create(string path,
                                           string filter,
                                           Action<object, FileSystemEventArgs> OnFileChanged) {
@@ -27,7 +28,7 @@ class FileWatcher {
   }
 }
 
-class Misc {
+static class Misc {
   public static Action<Action> AvoidRapidFire(int timeTolerance = 500) {
     var lastCalled = DateTime.Now;
 
@@ -40,5 +41,14 @@ class Misc {
       lastCalled = DateTime.Now;
     };
 
+  }
+}
+
+static class FileHelper {
+  public static string GetDroppedFile(DragEventArgs e) {
+    if (e.Data.GetDataPresent(DataFormats.FileDrop))
+      return ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
+    else
+      return "";
   }
 }

@@ -7,6 +7,7 @@
   xmlns:local="clr-namespace:KeywordManager.Pages"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+  xmlns:uc="clr-namespace:KeywordManager.UserControls"
   d:DesignHeight="800"
   d:DesignWidth="1200"
   Loaded="OnLoaded"
@@ -35,10 +36,16 @@
                   <ColumnDefinition Width="10" />
                   <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Image Width="{DynamicResource ImgListPreviewSize}" Height="{DynamicResource ImgListPreviewSize}" />
+                <Image
+                  Width="{DynamicResource ImgListPreviewSize}"
+                  Height="{DynamicResource ImgListPreviewSize}"
+                  Source="{Binding Img, Mode=OneWay, Converter={StaticResource StringToImgConverter}}"
+                  ToolTip="{Binding Img}"
+                  ToolTipService.InitialShowDelay="0" />
 
                 <StackPanel Grid.Column="2" VerticalAlignment="Center">
                   <TextBlock Style="{StaticResource NavTxtMain}" Text="{Binding Name}" />
+                  <TextBlock Style="{StaticResource NavTxtD2}" Text="{Binding Img}" />
                   <TextBlock
                     Margin="{StaticResource MgTopNaaarrow}"
                     Style="{StaticResource NavTxtD1}"
@@ -92,9 +99,12 @@
             md:ColorZoneAssist.Mode="PrimaryLight"
             BorderThickness="0"
             Header="Image">
-            <Image x:Name="imgTest" />
+            <uc:SelectImagePrompt
+              Height="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+              Margin="{StaticResource MgGrpContent}"
+              Button.Click="OnSetImgClick"
+              Button.Drop="OnSetImgDrop" />
           </GroupBox>
-
         </Grid>
       </ScrollViewer>
     </GroupBox>

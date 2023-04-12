@@ -1,7 +1,10 @@
-﻿using Data.UI.Outfit;
+﻿using Data;
+using Data.UI.Outfit;
+using GUI;
 using IO.Outfit;
 using KeywordManager.Properties;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,6 +21,8 @@ public partial class PP_Outfits : UserControl {
 
   public PP_Outfits() {
     InitializeComponent();
+    var cd = Directory.GetCurrentDirectory();
+    Edit.ImagePath = Path.Combine(cd, @"Data\Img\Outfits");
     watcher = FileWatcher.Create(Settings.Default.xEditDir, "*.outfits", OnFileChanged);
     NoRapidFire = Misc.AvoidRapidFire();
   }
@@ -34,9 +39,13 @@ public partial class PP_Outfits : UserControl {
   }
 
   void NavLoad() => lstNav.ItemsSource = Nav.Load();
+  NavItem SelectedNav => (NavItem)lstNav.SelectedItem;
+  string UId => SelectedNav.UId;
 
   private void OnLoaded(object sender, RoutedEventArgs e) {
     NavLoad();
+    MainWindow.LstSelectFirst(lstNav);
+    ReloadSelectedItem();
     //var uri = new Uri(@"C:\Users\Osrail\Desktop\stargazer.jpg", UriKind.Absolute);
     //var img = new BitmapImage();
     //img.BeginInit();
@@ -46,5 +55,25 @@ public partial class PP_Outfits : UserControl {
     //img.EndInit();
     //imgTest.Source = img;
 
+  }
+
+  private void ReloadSelectedItem() {
+    if (lstNav.SelectedItem == null) {
+      return;
+    }
+    var uId = UId;
+  }
+
+  private void OnSetImgClick(object sender, RoutedEventArgs e) =>
+    SetImage(Dialogs.File.Open("Image files (*.jpg;*.png;*.bmp;*.jpeg)|*.jpg;*.png;*.bmp;*.jpeg",
+                          "f07db2f1-a50e-4487-b3b2-8f384d3732aa", "", ""));
+
+  private void OnSetImgDrop(object sender, DragEventArgs e) => SetImage(FileHelper.GetDroppedFile(e));
+
+  void SetImage(string filename) {
+    if (!Path.Exists(filename))
+      return;
+    SelectedNav.Img = Edit.Image(UId, filename);
+    Debug.WriteLine(SelectedNav.Img);
   }
 }

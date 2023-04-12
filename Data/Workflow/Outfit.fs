@@ -60,6 +60,8 @@ type Data =
           pieces = t.pieces |> List.map ArmorPiece.toString
           active = t.active.toBool () }
 
+    static member toRaw(t: Data) = t.toRaw ()
+
 and Raw =
     { name: string
       edid: string
@@ -107,6 +109,13 @@ module internal Database =
 
     let upsert uId data =
         db <- db |> Map.add (UniqueId uId) (Data.ofRaw data)
+
+    let update uId transform =
+        db
+        |> Map.find (UniqueId uId)
+        |> Data.toRaw
+        |> transform
+        |> upsert uId
 
     let delete uId = db <- db |> Map.remove (UniqueId uId)
 

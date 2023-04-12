@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Common\Images.fs" />
     <Compile Include="Common.fs" />
     <Compile Include="IO\Item.fs" />
     <Compile Include="Workflow\Keyword.fs" />

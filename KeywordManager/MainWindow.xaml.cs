@@ -12,6 +12,7 @@ namespace KeywordManager;
 
 public partial class MainWindow : Window {
   private string workingFile = "";
+  private bool isLoaded = false;
 
   public MainWindow() {
     InitializeComponent();
@@ -25,6 +26,8 @@ public partial class MainWindow : Window {
     var fn = Settings.Default.mostRecetFile;
     if (File.Exists(fn))
       OpenFile(fn);
+    tbcMain.SelectedIndex = Settings.Default.lastTab;
+    isLoaded = true;
   }
 
   public static void LstSelectFirst(ListBox lst) => lst.SelectedIndex = lst.Items.Count > 0 ? 0 : -1;
@@ -105,4 +108,13 @@ public partial class MainWindow : Window {
   }
 
   object CurrentPage => tbcMain.SelectedContent;
+
+  private void OnChangeTab(object sender, SelectionChangedEventArgs e) {
+    if (!isLoaded)
+      return;
+
+    Settings.Default.lastTab = tbcMain.SelectedIndex;
+    Settings.Default.Save();
+    Debug.WriteLine(Settings.Default.lastTab);
+  }
 }

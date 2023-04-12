@@ -160,6 +160,7 @@
       md:NavigationRailAssist.ShowSelectionBackground="True"
       SnapsToDevicePixels="True"
       Style="{StaticResource MaterialDesignNavigationRailTabControl}"
+      SelectionChanged="OnChangeTab"
       TabStripPlacement="Left">
       <TabControl.Resources>
         <Thickness x:Key="MgTabContent">30,0,20,20</Thickness>

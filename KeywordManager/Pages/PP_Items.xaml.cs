@@ -16,6 +16,8 @@ using Settings = KeywordManager.Properties.Settings;
 namespace KeywordManager.Pages;
 
 public partial class PP_Items : UserControl, IFilterable {
+  bool hasLoaded = false;
+
 #pragma warning disable IDE0052 // Remove unread private members
   readonly FileSystemWatcher? watcher = null;
 #pragma warning restore IDE0052 // Remove unread private members
@@ -56,9 +58,13 @@ public partial class PP_Items : UserControl, IFilterable {
   }
 
   private void OnLoaded(object sender, RoutedEventArgs e) {
+    if (hasLoaded)
+      return;
+
     LoadKeywords(Keywords.LoadFromFile());
     GoToFirst();
     LoadFilters();
+    hasLoaded = true;
   }
 
   private void ReloadSelectedItem() {

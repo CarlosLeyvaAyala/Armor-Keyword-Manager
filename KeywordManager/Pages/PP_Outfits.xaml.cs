@@ -18,6 +18,7 @@ public partial class PP_Outfits : UserControl {
 #pragma warning restore IDE0052 // Remove unread private members
   readonly Action<Action> NoRapidFire;
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
+  bool hasLoaded = false;
 
   public PP_Outfits() {
     InitializeComponent();
@@ -43,18 +44,13 @@ public partial class PP_Outfits : UserControl {
   string UId => SelectedNav.UId;
 
   private void OnLoaded(object sender, RoutedEventArgs e) {
+    if (hasLoaded)
+      return;
+
     NavLoad();
     MainWindow.LstSelectFirst(lstNav);
     ReloadSelectedItem();
-    //var uri = new Uri(@"C:\Users\Osrail\Desktop\stargazer.jpg", UriKind.Absolute);
-    //var img = new BitmapImage();
-    //img.BeginInit();
-    //img.CacheOption = BitmapCacheOption.OnLoad;
-    //img.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-    //img.UriSource = uri;
-    //img.EndInit();
-    //imgTest.Source = img;
-
+    hasLoaded = true;
   }
 
   private void ReloadSelectedItem() {

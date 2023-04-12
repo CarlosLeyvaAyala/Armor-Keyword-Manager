@@ -40,12 +40,10 @@
                   Width="{DynamicResource ImgListPreviewSize}"
                   Height="{DynamicResource ImgListPreviewSize}"
                   Source="{Binding Img, Mode=OneWay, Converter={StaticResource StringToImgConverter}}"
-                  ToolTip="{Binding Img}"
                   ToolTipService.InitialShowDelay="0" />
 
                 <StackPanel Grid.Column="2" VerticalAlignment="Center">
                   <TextBlock Style="{StaticResource NavTxtMain}" Text="{Binding Name}" />
-                  <TextBlock Style="{StaticResource NavTxtD2}" Text="{Binding Img}" />
                   <TextBlock
                     Margin="{StaticResource MgTopNaaarrow}"
                     Style="{StaticResource NavTxtD1}"

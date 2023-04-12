@@ -8,5 +8,8 @@
     <Setting Name="mostRecentExportDir" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="xEditDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">F:\Skyrim SE\Tools\SSEEdit 4_x\Edit Scripts</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

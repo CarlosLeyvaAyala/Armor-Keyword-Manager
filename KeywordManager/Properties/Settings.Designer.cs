@@ -46,5 +46,17 @@ namespace KeywordManager.Properties {
                 this["mostRecentExportDir"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("F:\\Skyrim SE\\Tools\\SSEEdit 4_x\\Edit Scripts")]
+        public string xEditDir {
+            get {
+                return ((string)(this["xEditDir"]));
+            }
+            set {
+                this["xEditDir"] = value;
+            }
+        }
     }
 }

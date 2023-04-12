@@ -11,11 +11,16 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Settings = KeywordManager.Properties.Settings;
 
 namespace KeywordManager.Pages;
 
 public partial class PP_Items : UserControl, IFilterable {
-  FileSystemWatcher? watcher = null;
+#pragma warning disable IDE0052 // Remove unread private members
+  readonly FileSystemWatcher? watcher = null;
+#pragma warning restore IDE0052 // Remove unread private members
+  readonly Action<Action> NoRapidFire;
+
   DateTime lastGenerated = DateTime.Now;
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
   static string UId(object o) => ((Items.UI.NavItem)o).UniqueId;
@@ -26,7 +31,9 @@ public partial class PP_Items : UserControl, IFilterable {
     var cd = Directory.GetCurrentDirectory();
     Keywords.ImagePath = Path.Combine(cd, @"Data\Img\Keywords");
     Keywords.JsonPath = Path.Combine(cd, @"Data\Keywords.json");
-    CreateFileWatcher("F:\\Skyrim SE\\Tools\\SSEEdit 4_x\\Edit Scripts");
+    watcher = FileWatcher.Create(Settings.Default.xEditDir, "*.items", OnFileChanged);
+    NoRapidFire = Misc.AvoidRapidFire();
+    //CreateFileWatcher("F:\\Skyrim SE\\Tools\\SSEEdit 4_x\\Edit Scripts");
   }
 
   public void FileOpened() {
@@ -173,36 +180,13 @@ public partial class PP_Items : UserControl, IFilterable {
   #region Data importing
   private void ImportFromFile(string filename) => ImportItems(() => Items.Import.FromFile(filename));
 
-  private void CreateFileWatcher(string path) {
-    Debug.WriteLine($"Adding watcher: {path}");
-
-    // Create a new FileSystemWatcher and set its properties.
-    watcher = new FileSystemWatcher() {
-      Path = path,
-      NotifyFilter = NotifyFilters.LastWrite,
-      Filter = "*.items"
-    };
-
-    // Add event handlers.
-    watcher.Changed += new FileSystemEventHandler(OnFileChanged);
-    watcher.Created += new FileSystemEventHandler(OnFileChanged);
-
-    // Begin watching.
-    watcher.EnableRaisingEvents = true;
-  }
-
   private void OnFileChanged(object source, FileSystemEventArgs e) {
-    var td = DateTime.Now.Subtract(lastGenerated).TotalMilliseconds;
-    if (td < 500)
-      return;
-
-    Debug.WriteLine($"File: {e.FullPath} {e.ChangeType} {DateTime.Now}");
-
-    // Avoid thread error due to this function running in a non UI thread.
-    Dispatcher.Invoke(new Action(() => {
-      ImportFromFile(e.FullPath);
-      lastGenerated = DateTime.Now;
-    }));
+    NoRapidFire(() => {
+      // Avoid thread error due to this function running in a non UI thread.
+      Dispatcher.Invoke(new Action(() => {
+        ImportFromFile(e.FullPath);
+      }));
+    });
   }
 
   private void ImportItems(Action Import) {

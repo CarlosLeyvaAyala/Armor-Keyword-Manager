@@ -180,7 +180,7 @@ public partial class PP_Items : UserControl, IFilterable {
     watcher = new FileSystemWatcher() {
       Path = path,
       NotifyFilter = NotifyFilters.LastWrite,
-      Filter = "*.kid"
+      Filter = "*.items"
     };
 
     // Add event handlers.

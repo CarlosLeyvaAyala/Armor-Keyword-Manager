@@ -2,8 +2,10 @@
 
 type OutfitData =
     { name: string
+      edid: string
       img: string
       tags: string list
+      comment: string
       pieces: string list
       active: bool }
 

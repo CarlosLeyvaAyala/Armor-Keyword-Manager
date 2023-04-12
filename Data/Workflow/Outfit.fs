@@ -19,6 +19,8 @@ type Image =
         | EmptyImage -> ""
         | Image fn -> fn
 
+    member t.Value = t.toString ()
+
 type Tag =
     | Tag of NonEmptyString
 
@@ -103,7 +105,7 @@ module internal Database =
 
     let inline toArray () = db |> Map.toArray
 
-    let inline toArrayOfRaw () =
+    let toArrayOfRaw () =
         toArray ()
         |> Array.Parallel.map (fun (uId, v) -> uId.Value, v.toRaw ())
 
@@ -133,3 +135,6 @@ module internal Database =
         |> upsert uId
 
     let importMany lines = lines |> Seq.iter import
+
+    let find uId =
+        db |> Map.find (UniqueId uId) |> Data.toRaw

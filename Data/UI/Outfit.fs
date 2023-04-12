@@ -1,11 +1,11 @@
 ﻿namespace Data.UI.Outfit
 
 open Data.Outfit
+open DMLib
 open DMLib.Collections
 open DMLib.String
 open Common.Images
 open DMLib.IO.Path
-open Common
 
 module DB = Data.Outfit.Database
 
@@ -48,5 +48,6 @@ type NavItem(uId: string, d: Raw) =
 module Nav =
     let Load () =
         DB.toArrayOfRaw ()
+        |> Array.sortBy (fun (_, v) -> v.name)
         |> Array.Parallel.map NavItem
         |> toObservableCollection

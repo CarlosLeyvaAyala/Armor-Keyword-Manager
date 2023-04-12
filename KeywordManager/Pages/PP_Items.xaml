@@ -261,7 +261,7 @@
             SelectionMode="Extended">
             <ListBox.ItemTemplate>
               <DataTemplate>
-                <Grid Margin="0,5">
+                <Grid Margin="0,5" ToolTip="{Binding OutfitImg, IsAsync=true}">
                   <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
@@ -287,7 +287,6 @@
                     VerticalAlignment="Bottom"
                     Style="{StaticResource NavTxtD2}"
                     Text="{Binding Esp}" />
-
                 </Grid>
               </DataTemplate>
             </ListBox.ItemTemplate>

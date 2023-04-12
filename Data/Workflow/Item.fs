@@ -8,6 +8,7 @@ open System
 open Common
 open DMLib.Collections
 open FSharpx.Collections
+open System.Diagnostics
 
 type FileExtension = string
 type Full = string
@@ -140,6 +141,11 @@ module UI =
         member val EDID = edid with get, set
         member val UniqueId = uniqueId with get, set
         override this.ToString() = this.Name
+
+        member t.OutfitImg =
+            Debug.WriteLine($"Lazy evaluate {t.EDID}")
+            "Lazy evaluate"
+
         new(uId, d: ItemData) = NavItem(uId, d.name, d.esp, EDID.toStr d.edid)
 
     type private FilterFunc = (UniqueId * ItemData) array -> (UniqueId * ItemData) array

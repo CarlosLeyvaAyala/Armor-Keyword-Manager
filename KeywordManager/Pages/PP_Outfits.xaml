@@ -43,11 +43,11 @@
                   ToolTipService.InitialShowDelay="0" />
 
                 <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                  <TextBlock Style="{StaticResource NavTxtMain}" Text="{Binding Name}" />
+                  <TextBlock Style="{StaticResource NavTxtMain}" Text="{Binding Name, FallbackValue=Name}" />
                   <TextBlock
                     Margin="{StaticResource MgTopNaaarrow}"
                     Style="{StaticResource NavTxtD1}"
-                    Text="{Binding EDID}" />
+                    Text="{Binding EDID, FallbackValue=EDID}" />
                 </StackPanel>
               </Grid>
             </DataTemplate>

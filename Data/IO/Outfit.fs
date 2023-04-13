@@ -5,7 +5,7 @@ open DMLib.Objects
 
 module DB = Data.Outfit.Database
 
-type OutfitData =
+type JsonData =
     { name: string
       edid: string
       img: string
@@ -23,7 +23,7 @@ type OutfitData =
           pieces = d.pieces
           active = d.active }
 
-    static member ofRaw(d: Data.Outfit.Raw) : OutfitData =
+    static member ofRaw(d: Data.Outfit.Raw) : JsonData =
         { name = d.name
           edid = d.edid
           img = d.img
@@ -32,9 +32,11 @@ type OutfitData =
           pieces = d.pieces
           active = d.active }
 
+    static member toRaw(t: JsonData) = t.toRaw ()
+
 type EDID = string
 
-type JsonMap = Map<EDID, OutfitData>
+type JsonMap = Map<EDID, JsonData>
 
 [<RequireQualifiedAccess>]
 module Import =
@@ -46,12 +48,14 @@ module internal File =
     let ofJson (d: JsonMap) =
         match d with
         | IsNull -> ()
-        | _ ->
-            d
-            |> Map.toArray
-            |> Array.Parallel.map (fun (k, v) -> k, v.toRaw ())
-            |> Array.iter (fun (k, v) -> DB.upsert k v)
+        | _ -> IO.Common.ofJson JsonData.toRaw DB.upsert d
+    //d
+    //|> Map.toArray
+    //|> Array.Parallel.map (fun (k, v) -> k, v.toRaw ())
+    //|> Array.iter (fun (k, v) -> DB.upsert k v)
 
     let toJson () =
+        //DB.toArrayOfRaw ()
+        //|> Array.fold (fun (acc: JsonMap) (k, v) -> acc.Add(k, JsonData.ofRaw v)) Map.empty
         DB.toArrayOfRaw ()
-        |> Array.fold (fun (acc: JsonMap) (k, v) -> acc.Add(k, OutfitData.ofRaw v)) Map.empty
+        |> IO.Common.toJson JsonData.ofRaw

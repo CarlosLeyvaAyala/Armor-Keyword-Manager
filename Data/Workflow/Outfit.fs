@@ -5,42 +5,20 @@ open DMLib.String
 open DMLib.Types.Skyrim
 open DMLib.Types
 
-type Image =
-    | Image of string
-    | EmptyImage
-
-    static member ofString s =
-        match s with
-        | IsWhiteSpaceStr -> EmptyImage
-        | fn -> Image fn
-
-    member t.toString() =
-        match t with
-        | EmptyImage -> ""
-        | Image fn -> fn
-
-    member t.Value = t.toString ()
-
-type Tag =
-    | Tag of NonEmptyString
-
-    static member ofString s = s |> NonEmptyString |> Tag
-    static member toString(Tag t) = t.Value
-    member t.toString() = Tag.toString t
-
 type ArmorPiece =
     | ArmorPiece of UniqueId
 
     static member ofString s = UniqueId s |> ArmorPiece
     static member toString(ArmorPiece a) = a.Value
     member t.toString() = ArmorPiece.toString t
+    member t.Value = t.toString ()
 
 type Data =
     { name: NonEmptyString
       edid: EDID
       img: Image
       tags: Tag list
-      comment: string
+      comment: Comment
       pieces: ArmorPiece list
       active: ActiveStatus }
 
@@ -121,6 +99,9 @@ module internal Database =
 
     let delete uId = db <- db |> Map.remove (UniqueId uId)
 
+    let find uId =
+        db |> Map.find (UniqueId uId) |> Data.toRaw
+
     let import line =
         let uId, d = Raw.fromxEdit line
 
@@ -135,6 +116,3 @@ module internal Database =
         |> upsert uId
 
     let importMany lines = lines |> Seq.iter import
-
-    let find uId =
-        db |> Map.find (UniqueId uId) |> Data.toRaw

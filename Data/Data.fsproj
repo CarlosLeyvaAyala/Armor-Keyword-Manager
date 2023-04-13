@@ -6,13 +6,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Common\Images.fs" />
     <Compile Include="Common.fs" />
-    <Compile Include="IO\Item.fs" />
+    <Compile Include="Common\Images.fs" />
     <Compile Include="Workflow\Keyword.fs" />
     <Compile Include="Workflow\Item.fs" />
     <Compile Include="Workflow\Outfit.fs" />
-    <Compile Include="IOProper\Outfit.fs" />
+    <Compile Include="IO\Common.fs" />
+    <Compile Include="IO\Item.fs" />
+    <Compile Include="IO\Outfit.fs" />
+    <Compile Include="UI\Common.fs" />
+    <Compile Include="UI\Edit\Item.fs" />
+    <Compile Include="UI\Edit\Outfit.fs" />
+    <Compile Include="UI\Item.fs" />
     <Compile Include="UI\Outfit.fs" />
     <Compile Include="UI\Tags.fs" />
     <Compile Include="PropietaryFile.fs" />

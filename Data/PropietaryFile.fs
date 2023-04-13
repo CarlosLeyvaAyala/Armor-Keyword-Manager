@@ -7,7 +7,7 @@ open System.Text.RegularExpressions
 open DMLib.String
 
 type PropietaryFile =
-    { itemKeywords: IO.Item.JsonArmorMap
+    { itemKeywords: IO.Items.JsonMap
       outfits: IO.Outfit.JsonMap }
 
 [<AutoOpen>]
@@ -31,7 +31,7 @@ module private Ops =
         Encoding.UTF8.GetString(a, 0, a.Length)
 
 let private getDomainData () =
-    { itemKeywords = Data.Items.toJson ()
+    { itemKeywords = IO.Items.File.toJson ()
       outfits = IO.Outfit.File.toJson () }
 
 let Save filename =
@@ -43,7 +43,7 @@ let SaveJson filename =
     getDomainData () |> Json.writeToFile true filename
 
 let private setDomainData (d: PropietaryFile) =
-    Data.Items.ofJson d.itemKeywords
+    IO.Items.File.ofJson d.itemKeywords
     IO.Outfit.File.ofJson d.outfits
     ()
 
@@ -71,7 +71,7 @@ let Generate workingFile dir =
         |> getBaseName
 
     let fileGen =
-        [| Data.Items.exportToKID, "KID.ini" |] // Put here "DISTR.ini" for outfits and so on
+        [| IO.Items.Export.KID, "KID.ini" |] // Put here "DISTR.ini" for outfits and so on
         |> Array.map (fun (f, t) -> f, $"{baseName}_{t}" |> combine2 dir)
 
     fileGen |> Array.Parallel.iter (fun (f, t) -> f t)

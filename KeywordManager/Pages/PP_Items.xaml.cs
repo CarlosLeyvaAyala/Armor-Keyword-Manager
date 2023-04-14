@@ -190,6 +190,7 @@ public partial class PP_Items : UserControl, IFilterable {
       // Avoid thread error due to this function running in a non UI thread.
       Dispatcher.Invoke(new Action(() => {
         ImportFromFile(e.FullPath);
+        Owner.ReloadSelectedOutfit();
       }));
     });
   }

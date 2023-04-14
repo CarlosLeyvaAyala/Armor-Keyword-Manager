@@ -1,5 +1,4 @@
-﻿using Data;
-using Data.UI.Outfit;
+﻿using Data.UI.Outfit;
 using GUI;
 using IO.Outfit;
 using KeywordManager.Properties;
@@ -8,7 +7,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 
 namespace KeywordManager.Pages;
 
@@ -38,7 +36,7 @@ public partial class PP_Outfits : UserControl {
   }
 
   void NavLoad() => lstNav.ItemsSource = Nav.Load();
-  NavItem SelectedNav => (NavItem)lstNav.SelectedItem;
+  NavList SelectedNav => (NavList)lstNav.SelectedItem;
   string UId => SelectedNav.UId;
 
   private void OnLoaded(object sender, RoutedEventArgs e) {
@@ -51,11 +49,15 @@ public partial class PP_Outfits : UserControl {
     hasLoaded = true;
   }
 
-  private void ReloadSelectedItem() {
+  public void ReloadSelectedItem() {
     if (lstNav.SelectedItem == null) {
+      lstArmorPieces.ItemsSource = null;
       return;
     }
-    //var uId = UId;
+    var it = Nav.GetItem(UId);
+    lstArmorPieces.ItemsSource = it.ArmorPieces;
+    lstTags.ItemsSource = it.Tags;
+    grpImg.DataContext = it;
   }
 
   private void OnSetImgClick(object sender, RoutedEventArgs e) =>
@@ -69,5 +71,8 @@ public partial class PP_Outfits : UserControl {
       return;
     SelectedNav.Img = Edit.Image(UId, filename);
     Debug.WriteLine(SelectedNav.Img);
+    ReloadSelectedItem();
   }
+
+  private void OnNavSelectionChanged(object sender, SelectionChangedEventArgs e) => ReloadSelectedItem();
 }

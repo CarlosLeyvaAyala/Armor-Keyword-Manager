@@ -15,6 +15,7 @@
 #time "on"
 
 open System
+open DMLib.Collections
 open TextCopy
 open System.IO
 open DMLib
@@ -67,11 +68,41 @@ Outfits.db
 |> Map.toArray
 |> Array.map (fun (uId, img) -> uId.Value, img.Value)
 
-// Find pieces in database
-let find uId =
-    Outfits.db
-    |> Map.find (UniqueId uId)
-    |> Data.toRaw
+let tryFind uId =
+    Items.db
+    |> Map.tryFind (UniqueId uId)
+    |> Option.map Data.Items.Data.toRaw
 
-//(find "Assassins Dress.esp|83f").pieces
-//|> List.map (fun p -> items.TryFind p)
+let outfit =
+    Outfits.find "[Christine] Ida Elf Archer.esp|83e" (*"Assassins Dress.esp|83f"*)
+
+let pieces =
+    outfit.pieces
+    |> List.map (fun uid -> uid, tryFind uid)
+
+pieces
+|> List.map (fun (_, v) -> v)
+|> List.catOptions
+|> List.map (fun i -> i.tags)
+|> List.collect id
+|> List.append outfit.tags
+|> List.distinct
+|> List.sort
+
+type ArmorPiece(uId: string, d: Data.Items.Raw option) =
+    member _.Name =
+        match d with
+        | Some v -> v.name
+        | None -> uId
+
+    member _.IsInDB = d.IsSome
+
+
+query {
+    for piece in pieces |> List.map ArmorPiece do
+        sortBy piece.IsInDB
+        thenBy piece.Name
+}
+|> toCList
+
+outfit

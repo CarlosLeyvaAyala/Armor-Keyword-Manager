@@ -114,4 +114,6 @@ public partial class MainWindow : Window {
     Settings.Default.Save();
     Debug.WriteLine(Settings.Default.lastTab);
   }
+
+  public void ReloadSelectedOutfit() => ppOutfits.ReloadSelectedItem();
 }

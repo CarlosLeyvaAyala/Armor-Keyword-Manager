@@ -27,10 +27,11 @@
         <ListBox
           x:Name="lstNav"
           HorizontalContentAlignment="Stretch"
-          d:ItemsSource="{d:SampleData ItemCount=10}">
+          d:ItemsSource="{d:SampleData ItemCount=10}"
+          SelectionChanged="OnNavSelectionChanged">
           <ListBox.ItemTemplate>
             <DataTemplate>
-              <Grid d:DataContext="{d:DesignInstance Type=guiobjs:NavItem}">
+              <Grid d:DataContext="{d:DesignInstance Type=guiobjs:NavList}">
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="auto" />
                   <ColumnDefinition Width="10" />
@@ -76,22 +77,47 @@
             <ColumnDefinition Width="*" />
           </Grid.ColumnDefinitions>
 
+          <!--  TAGS  -->
           <GroupBox
             md:ColorZoneAssist.Mode="PrimaryLight"
             BorderThickness="0"
             Header="Tags">
-            <!--  eu  -->
+            <ListBox x:Name="lstTags" MaxHeight="200" />
           </GroupBox>
 
+          <!--  ARMOR PIECES  -->
           <GroupBox
             Grid.Column="2"
+            d:DataContext="{d:DesignInstance Type=guiobjs:NavItem}"
             md:ColorZoneAssist.Mode="PrimaryLight"
             BorderThickness="0"
             Header="Armor pieces">
-            <ListBox IsEnabled="False" />
+            <ListBox
+              x:Name="lstArmorPieces"
+              MaxHeight="200"
+              d:ItemsSource="{d:SampleData ItemCount=10}">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding Name}">
+                    <TextBlock.Style>
+                      <Style BasedOn="{StaticResource MaterialDesignTextBlock}" TargetType="TextBlock">
+                        <Style.Triggers>
+                          <DataTrigger Binding="{Binding IsInDB}" Value="False">
+                            <Setter Property="Opacity" Value="0.5" />
+                            <Setter Property="ToolTipService.InitialShowDelay" Value="100" />
+                            <Setter Property="ToolTip" Value="This item has not been added to this database" />
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </TextBlock.Style>
+                  </TextBlock>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
           </GroupBox>
 
           <GroupBox
+            x:Name="grpImg"
             Grid.Row="2"
             Grid.ColumnSpan="3"
             md:ColorZoneAssist.Mode="PrimaryLight"
@@ -99,9 +125,23 @@
             Header="Image">
             <uc:SelectImagePrompt
               Height="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource Self}}"
-              Margin="{StaticResource MgGrpContent}"
+              d:DataContext="{d:DesignInstance Type=guiobjs:NavItem}"
               Button.Click="OnSetImgClick"
-              Button.Drop="OnSetImgDrop" />
+              Button.Drop="OnSetImgDrop"
+              Image="{Binding Img, Converter={StaticResource StringToImgConverter}}">
+              <uc:SelectImagePrompt.Style>
+                <Style TargetType="uc:SelectImagePrompt">
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding HasImg}" Value="False">
+                      <Setter Property="IsPromptVisible" Value="True" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding HasImg}" Value="True">
+                      <Setter Property="IsPromptVisible" Value="False" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </uc:SelectImagePrompt.Style>
+            </uc:SelectImagePrompt>
           </GroupBox>
         </Grid>
       </ScrollViewer>

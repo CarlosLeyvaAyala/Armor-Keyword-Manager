@@ -35,6 +35,8 @@ public class IntToKeywordColor : IValueConverter {
 public class StringToImgConverter : IValueConverter {
   public object? Convert(object value, Type targetType, object parameter, CultureInfo culture) {
     var fn = (string)value;
+    if (!File.Exists(fn))
+      return null;
     var uri = new Uri(fn, UriKind.Absolute);
     var img = new BitmapImage();
     img.BeginInit();

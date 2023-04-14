@@ -29,9 +29,8 @@ module Paths =
         let private copyImage imageDirPath name sourceFileName =
             let dest =
                 sourceFileName
-                |> uIdToFileName
                 |> getExt
-                |> (changeExtension |> swap) name
+                |> (changeExtension |> swap) (uIdToFileName name)
                 |> combine2 imageDirPath
 
             if File.Exists dest then

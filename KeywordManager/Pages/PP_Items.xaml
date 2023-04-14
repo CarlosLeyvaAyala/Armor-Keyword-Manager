@@ -265,7 +265,10 @@
             SelectionMode="Extended">
             <ListBox.ItemTemplate>
               <DataTemplate>
-                <Grid Margin="0,5" ToolTipService.InitialShowDelay="200">
+                <Grid
+                  Margin="0,5"
+                  ToolTipService.BetweenShowDelay="1000"
+                  ToolTipService.InitialShowDelay="1000">
                   <Grid.ToolTip>
                     <Grid>
                       <TextBlock Text="This item belongs to no outfits with preview images" Visibility="{Binding TooltipVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />

@@ -214,8 +214,15 @@ module Database =
 
     let delete uId = db <- db |> Map.remove (UniqueId uId)
 
+    //let private _find f uId = db |> f (UniqueId uId) |> Data.toRaw
+
     let find uId =
         db |> Map.find (UniqueId uId) |> Data.toRaw
+
+    let tryFind uId =
+        db
+        |> Map.tryFind (UniqueId uId)
+        |> Option.map Data.toRaw
 
     let import line =
         let pl = Raw.fromxEdit line

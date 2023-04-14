@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-
 namespace KeywordManager.UserControls;
 
 public partial class SelectImagePrompt : UserControl {
@@ -44,7 +43,7 @@ public partial class SelectImagePrompt : UserControl {
 
   private void IsPromptVisiblePropertyChanged(bool value) {
     grdPrompt.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
-    grdBlackContainer.Background = new SolidColorBrush(value ? Colors.Black : Colors.Transparent);
+    grdBlackContainer.Background = new SolidColorBrush(value ? Colors.LightSlateGray : Colors.Transparent);
   }
   #endregion
 

@@ -12,5 +12,5 @@ let Image uId filename =
     expandImg uId ext
 
 /// Creates an outfit that doesn't belong to an esp using a unique id list of armor pieces.
-let CreateUnbound (l: System.Collections.Generic.List<string>) =
-    [ for uid in l -> uid ] |> DB.addUnbound
+let CreateUnbound (l: System.Collections.Generic.List<string>) name =
+    [ for uid in l -> uid ] |> DB.addUnbound name

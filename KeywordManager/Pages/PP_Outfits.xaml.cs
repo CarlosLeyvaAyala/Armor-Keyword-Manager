@@ -35,7 +35,7 @@ public partial class PP_Outfits : UserControl {
     });
   }
 
-  void NavLoad() => lstNav.ItemsSource = Nav.Load();
+  public void NavLoad() => lstNav.ItemsSource = Nav.Load();
   NavList SelectedNav => (NavList)lstNav.SelectedItem;
   string UId => SelectedNav.UId;
 
@@ -70,7 +70,6 @@ public partial class PP_Outfits : UserControl {
     if (!Path.Exists(filename))
       return;
     SelectedNav.Img = Edit.Image(UId, filename);
-    Debug.WriteLine(SelectedNav.Img);
     ReloadSelectedItem();
   }
 

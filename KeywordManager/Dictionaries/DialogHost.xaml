@@ -1,0 +1,55 @@
+﻿<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+  xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+  <Style x:Key="DialogHostGrid" TargetType="Grid">
+    <Setter Property="Margin" Value="{StaticResource MgGrpContent}" />
+  </Style>
+
+  <Style
+    x:Key="DialogHostEdt"
+    BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}"
+    TargetType="TextBox">
+    <Setter Property="Margin" Value="{StaticResource MgTopNaaarrow}" />
+    <Setter Property="FontSize" Value="18" />
+    <Setter Property="Grid.Row" Value="0" />
+  </Style>
+
+  <Style x:Key="DialogHostPnl" TargetType="StackPanel">
+    <Setter Property="Grid.Row" Value="1" />
+    <Setter Property="Orientation" Value="Horizontal" />
+    <Setter Property="Margin" Value="{StaticResource MgTopNarrow}" />
+  </Style>
+
+  <Style
+    x:Key="DialogHostOk"
+    BasedOn="{StaticResource MaterialDesignFlatButton}"
+    TargetType="Button">
+    <Setter Property="IsDefault" Value="True" />
+    <Setter Property="Content" Value="ACCEPT" />
+    <Setter Property="Command" Value="{x:Static md:DialogHost.CloseDialogCommand}" />
+    <Setter Property="CommandParameter">
+      <Setter.Value>
+        <sys:Boolean>True</sys:Boolean>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style
+    x:Key="DialogHostCancel"
+    BasedOn="{StaticResource MaterialDesignFlatButton}"
+    TargetType="Button">
+    <Setter Property="Margin" Value="8,0,0,0" />
+    <Setter Property="IsCancel" Value="True" />
+    <Setter Property="Content" Value="CANCEL" />
+    <Setter Property="Command" Value="{x:Static md:DialogHost.CloseDialogCommand}" />
+    <Setter Property="CommandParameter">
+      <Setter.Value>
+        <sys:Boolean>False</sys:Boolean>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+</ResourceDictionary>

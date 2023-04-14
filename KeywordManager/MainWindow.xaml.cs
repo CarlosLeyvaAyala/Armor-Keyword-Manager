@@ -1,8 +1,12 @@
-﻿using GUI;
+﻿using DMLib;
+using GUI;
 using IO;
+using KeywordManager.UserControls;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -112,8 +116,17 @@ public partial class MainWindow : Window {
 
     Settings.Default.lastTab = tbcMain.SelectedIndex;
     Settings.Default.Save();
-    Debug.WriteLine(Settings.Default.lastTab);
+  }
+
+  public static async Task<string?> ShowAcceptCancelDlg(string textHint = "Value",
+                                                        string text = "") =>
+    await AcceptCancelDlg.ExecuteAsync("MainDlgHost", textHint, text);
+
+  public enum TabId {
+    Items, Outfits
   }
 
   public void ReloadSelectedOutfit() => ppOutfits.ReloadSelectedItem();
+  public void ReloadOutfitsNav() => ppOutfits.NavLoad();
+  public void GoToTab(TabId tab) => tbcMain.SelectedIndex = (int)tab;
 }

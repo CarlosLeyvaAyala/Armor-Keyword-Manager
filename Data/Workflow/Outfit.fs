@@ -165,7 +165,7 @@ module internal Database =
                 + 1
 
     /// An "unbound" outfit belongs to no esp and is used for player documentation
-    let addUnbound selected =
+    let addUnbound name selected =
         let n = nextUnboundId
 
         selected
@@ -175,8 +175,6 @@ module internal Database =
         |> List.fold (smartFold ",") ""
         |> fun pieces -> $"{UnboundEDID}{n}|{UnboundEsp}|{n}|OTFT|{pieces}"
         |> Raw.fromxEdit
-        |> fun (uid, r) ->
-            let (name, _) = r.pieces[0] |> Skyrim.UniqueId.Split
-            upsert uid { r with name = $"{getFileNameWithoutExtension name}" }
+        |> fun (uid, r) -> upsert uid { r with name = name }
 
         setNextUnboundId ()

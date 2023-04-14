@@ -5,9 +5,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -194,11 +192,17 @@ public partial class PP_Items : UserControl, IFilterable {
       .Select((s) => s.IsArmor)
       .All((b) => b);
 
-  private void OnCreateUnboundOutfit(object sender, ExecutedRoutedEventArgs e) {
+  private async void OnCreateUnboundOutfit(object sender, ExecutedRoutedEventArgs e) {
+    var name = await MainWindow.ShowAcceptCancelDlg("Outfit name");
+    if (string.IsNullOrEmpty(name))
+      return;
+
     var uIds = lstNavItems.SelectedItems.OfType<NavList>()
       .Select((s) => s.UniqueId)
       .ToList();
-    Debug.WriteLine(uIds.Aggregate((a, b) => a + ", " + b));
+    Data.UI.Outfit.Edit.CreateUnbound(uIds, name);
+    Owner.ReloadOutfitsNav();
+    Owner.GoToTab(MainWindow.TabId.Outfits);
   }
   #endregion
 

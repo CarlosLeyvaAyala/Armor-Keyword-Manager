@@ -3,12 +3,14 @@
 #r "nuget: FSharpx.Collections"
 //
 #load "../Common.fs"
-#load "../IO/Item.fs"
 #load "../Common/Images.fs"
 #load "../Workflow/Keyword.fs"
 #load "../Workflow/Item.fs"
 #load "../Workflow/Outfit.fs"
-#load "../IOProper/Outfit.fs"
+#load "../IO/Common.fs"
+#load "../IO/Item.fs"
+#load "../IO/Outfit.fs"
+#load "../UI/Common.fs"
 #load "../PropietaryFile.fs"
 #time "on"
 
@@ -19,18 +21,18 @@ open DMLib
 open DMLib.Combinators
 open DMLib.String
 open DMLib.IO.Path
-open System.IO.Compression
 open System.Text.RegularExpressions
 open DMLib.Types
-open Data.Items
+open DMLib.Types.Skyrim
 
 fsi.AddPrinter(fun (r: NonEmptyString) -> r.ToString())
 fsi.AddPrinter(fun (r: UniqueId) -> r.ToString())
+module Items = Data.Items.Database
 module Outfits = Data.Outfit.Database
 
 let inF = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors and outfits.skyitms"
 IO.PropietaryFile.Open inF
-let items = Data.Items.itemsTest ()
+let items = Items.toArrayOfRaw ()
 let outfits = Outfits.toArrayOfRaw ()
 
 try
@@ -67,5 +69,5 @@ let find uId =
     |> Map.find (UniqueId uId)
     |> Data.toRaw
 
-(find "Assassins Dress.esp|83f").pieces
-|> List.map (fun p -> items.TryFind p)
+//(find "Assassins Dress.esp|83f").pieces
+//|> List.map (fun p -> items.TryFind p)

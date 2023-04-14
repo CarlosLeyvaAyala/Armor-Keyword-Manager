@@ -45,6 +45,7 @@ let SaveJson filename =
 let private setDomainData (d: PropietaryFile) =
     IO.Items.File.ofJson d.itemKeywords
     IO.Outfit.File.ofJson d.outfits
+    Data.UI.Common.Tags.precalculate ()
     ()
 
 let Open filename =

@@ -4,20 +4,48 @@ open FSharpx.Collections
 module DB = Data.Items.Database
 
 open Data.Items
-open DMLib.Types.Skyrim
 open DMLib.String
 open DMLib
+open DMLib.Collections
+open Data.UI.Common
+open Data.UI.AppSettings.Paths.Img.Outfit
 
-type NavItem(uniqueId: string, name: string, esp: string, edid: string) =
+module Outfits = Data.Outfit.Database
+
+type NavList(uniqueId: string, name: string, esp: string, edid: string) =
     member val Name = name with get, set
     member val Esp = esp with get, set
     member val EDID = edid with get, set
     member val UniqueId = uniqueId with get, set
     override this.ToString() = this.Name
 
-    member t.OutfitImg = "Lazy evaluate"
+    // TODO: MEH
+    member t.OutfitImg =
+        Outfits.outfitsWithPieces t.UniqueId
+        |> Array.map (fun (uId, ext) -> expandImg uId ext)
+        |> toCList
 
-    new(uId, d: Raw) = NavItem(uId, d.name, d.esp, d.edid)
+    new(uId, d: Raw) = NavList(uId, d.name, d.esp, d.edid)
+
+type NavItem(uniqueId: string) =
+    let d = DB.find uniqueId
+
+    member t.Keywords =
+        d.keywords
+        |> List.sort
+        |> Data.Keywords.Items.getKeywordsData
+        |> Data.Keywords.Items.generateGUI
+        |> toCList
+
+    member t.Tags = d.tags |> List.sort |> toCList
+
+    member t.MissingTags =
+        let existing = d.tags |> Set.ofList
+        let all = Tags.getAll () |> Set.ofArray
+
+        Set.difference all existing
+        |> Set.toArray
+        |> toCList
 
 type private FilterFunc<'a, 'b> = ('a * 'b) array -> ('a * 'b) array
 
@@ -65,7 +93,7 @@ module private Ops =
     let getNav (filter: FilterFunc<string, Raw>) =
         DB.toArrayOfRaw ()
         |> filter
-        |> Array.Parallel.map NavItem
+        |> Array.Parallel.map NavList
         |> Array.sortBy (fun o -> o.Name.ToLower())
         |> Collections.toCList
 
@@ -82,3 +110,5 @@ module Nav =
 
     let GetFilterAnd word list =
         getNav ((filterAnd list) >> (filterSimple word))
+
+    let GetItem uId = NavItem(uId)

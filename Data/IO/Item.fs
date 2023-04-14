@@ -22,7 +22,6 @@ type JsonData =
       edid: string
       esp: string
       enchantments: JsonWaedEnch list
-      formId: string
       itemType: int
       active: bool }
 
@@ -35,7 +34,6 @@ type JsonData =
           edid = r.edid
           esp = r.esp
           enchantments = r.enchantments |> List.map JsonWaedEnch.toRaw
-          formId = r.formId
           itemType = r.itemType
           active = r.active }
 
@@ -48,7 +46,6 @@ type JsonData =
           edid = r.edid
           esp = r.esp
           enchantments = r.enchantments |> List.map JsonWaedEnch.ofRaw
-          formId = r.formId
           itemType = r.itemType
           active = r.active }
 

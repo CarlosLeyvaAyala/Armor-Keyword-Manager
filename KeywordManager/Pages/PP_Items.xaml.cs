@@ -23,8 +23,8 @@ public partial class PP_Items : UserControl, IFilterable {
   readonly Action<Action> NoRapidFire;
 
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
-  static string UId(object o) => ((NavItem)o).UniqueId;
-  string UId() => UId(lstNavItems.SelectedItem);
+  static string UId(object o) => ((NavList)o).UniqueId;
+  string uId => UId(lstNavItems.SelectedItem);
 
   public PP_Items() {
     InitializeComponent();
@@ -68,16 +68,17 @@ public partial class PP_Items : UserControl, IFilterable {
 
   private void ReloadSelectedItem() {
     if (lstNavItems.SelectedItem == null) {
+      grpItemData.DataContext = null;
       lstItemKeywords.ItemsSource = null;
       lstItemTags.ItemsSource = null;
       cbItemTags.ItemsSource = null;
       return;
     }
-    var uId = UId();
-    // TODO: Create object
-    //lstItemKeywords.ItemsSource = Items.GetKeywords(uId);
-    //lstItemTags.ItemsSource = Items.GetTags(uId);
-    //cbItemTags.ItemsSource = Items.GetMissingTags(uId);
+    var it = Nav.GetItem(uId);
+    grpItemData.DataContext = it;
+    lstItemKeywords.ItemsSource = it.Keywords;
+    lstItemTags.ItemsSource = it.Tags;
+    cbItemTags.ItemsSource = it.MissingTags;
   }
 
   private void OnFilterItems(object sender, TextChangedEventArgs e) {

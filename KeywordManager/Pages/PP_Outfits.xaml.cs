@@ -22,8 +22,6 @@ public partial class PP_Outfits : UserControl {
 
   public PP_Outfits() {
     InitializeComponent();
-    var cd = Directory.GetCurrentDirectory();
-    Edit.ImagePath = Path.Combine(cd, @"Data\Img\Outfits");
     watcher = FileWatcher.Create(Settings.Default.xEditDir, "*.outfits", OnFileChanged);
     NoRapidFire = Misc.AvoidRapidFire();
   }
@@ -57,7 +55,7 @@ public partial class PP_Outfits : UserControl {
     if (lstNav.SelectedItem == null) {
       return;
     }
-    var uId = UId;
+    //var uId = UId;
   }
 
   private void OnSetImgClick(object sender, RoutedEventArgs e) =>

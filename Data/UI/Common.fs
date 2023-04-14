@@ -1,7 +1,7 @@
 ﻿module internal Data.UI.Common
 
 [<RequireQualifiedAccess>]
-module Tags =
+module internal Tags =
     let mutable private tags: string array = [||]
 
     let precalculate () =

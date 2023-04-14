@@ -17,6 +17,3 @@ let copyImage imageDirPath name sourceFileName =
 
     File.Copy(sourceFileName, dest)
     (getExt dest)[1..]
-
-let uIdToFileName uId =
-    uId |> replace "|" "___" |> replace "." "__"

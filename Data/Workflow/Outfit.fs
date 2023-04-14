@@ -4,6 +4,7 @@ open Common
 open DMLib.String
 open DMLib.Types.Skyrim
 open DMLib.Types
+open FSharpx.Collections
 
 type ArmorPiece =
     | ArmorPiece of UniqueId
@@ -116,3 +117,14 @@ module internal Database =
         |> upsert uId
 
     let importMany lines = lines |> Seq.iter import
+
+    let outfitsWithPieces armorPiece =
+        let ap = armorPiece |> UniqueId |> ArmorPiece
+
+        db
+        |> Map.choose (fun _ v ->
+            v.pieces
+            |> List.tryFind (fun p -> ap = p)
+            |> Option.map (fun _ -> v.img))
+        |> Map.toArray
+        |> Array.map (fun (uId, img) -> uId.Value, img.toString ())

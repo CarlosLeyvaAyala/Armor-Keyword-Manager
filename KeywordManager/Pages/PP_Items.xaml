@@ -5,6 +5,7 @@
   xmlns:System="clr-namespace:System;assembly=System.Runtime"
   xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:guiobjs="clr-namespace:Data.UI.Items;assembly=Data"
   xmlns:local="clr-namespace:KeywordManager.Pages"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -75,6 +76,7 @@
 
       <!--  ITEM DATA  -->
       <GroupBox
+        x:Name="grpItemData"
         Grid.Column="2"
         md:ColorZoneAssist.Mode="SecondaryMid"
         Header="Item data">
@@ -175,6 +177,7 @@
             <!--  ITEM KEYWORDS  -->
             <GroupBox
               Grid.Row="2"
+              d:DataContext="{d:DesignInstance Type=guiobjs:NavItem}"
               md:ColorZoneAssist.Mode="PrimaryLight"
               BorderThickness="0"
               Header="Keywords">
@@ -182,6 +185,7 @@
                 x:Name="lstItemKeywords"
                 MinHeight="30"
                 d:ItemsSource="{d:SampleData ItemCount=5}"
+                DataContext="{Binding Keywords}"
                 SelectionMode="Extended">
                 <ListBox.ContextMenu>
                   <ContextMenu>
@@ -261,7 +265,21 @@
             SelectionMode="Extended">
             <ListBox.ItemTemplate>
               <DataTemplate>
-                <Grid Margin="0,5" ToolTip="{Binding OutfitImg, IsAsync=true}">
+                <Grid Margin="0,5" ToolTipService.InitialShowDelay="100">
+                  <Grid.ToolTip>
+                    <ItemsControl ItemsSource="{Binding OutfitImg, IsAsync=true}">
+                      <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <WrapPanel />
+                        </ItemsPanelTemplate>
+                      </ItemsControl.ItemsPanel>
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                          <Image Height="400" Source="{Binding Converter={StaticResource StringToImgConverter}}" />
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                  </Grid.ToolTip>
                   <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />

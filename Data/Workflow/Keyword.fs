@@ -77,19 +77,6 @@ module private Helpers =
 
     let returnGUI () = keywords |> generateGUI ImagePath
 
-//let createImage keyword sourceFileName =
-//let dest =
-//    sourceFileName
-//    |> getExt
-//    |> (changeExtension |> swap) keyword
-//    |> combine2 ImagePath
-
-//if File.Exists dest then
-//    File.Delete dest
-
-//File.Copy(sourceFileName, dest)
-//(getExt dest)[1..]
-
 open Helpers
 
 /// Loads keywords from a file as a C# list.

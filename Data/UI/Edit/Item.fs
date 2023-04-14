@@ -7,18 +7,6 @@ open DMLib
 
 module DB = Data.Items.Database
 
-//let private addWordToKey getWords addWord hasKey key word =
-//    let addIfNotExisting () =
-//        let wordList = getWords (key)
-
-//        match wordList |> List.tryFind (fun k -> k = word) with
-//        | Some _ -> ()
-//        | None -> addWord key (word :: wordList)
-
-//    match hasKey key with
-//    | true -> addIfNotExisting ()
-//    | false -> addWord key [ word ]
-
 [<AutoOpen>]
 module private Manipulate =
     let addWord word wordList =

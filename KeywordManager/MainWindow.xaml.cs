@@ -16,10 +16,7 @@ public partial class MainWindow : Window {
 
   public MainWindow() {
     InitializeComponent();
-    //var cd = Directory.GetCurrentDirectory();
-    //Keywords.ImagePath = Path.Combine(cd, @"Data\Img\Keywords");
-    //Keywords.JsonPath = Path.Combine(cd, @"Data\Keywords.json");
-    //CreateFileWatcher("F:\\Skyrim SE\\Tools\\SSEEdit 4_x\\Edit Scripts");
+    Data.UI.AppSettings.Paths.SetApp(Directory.GetCurrentDirectory());
   }
 
   private void Window_Loaded(object sender, RoutedEventArgs e) {

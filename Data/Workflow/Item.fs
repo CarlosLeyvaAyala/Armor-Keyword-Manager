@@ -15,13 +15,6 @@ type FULL =
     member t.toString() = FULL.toString t
     member t.Value = t.toString ()
 
-type Esp =
-    | Esp of string
-    static member ofString s = Esp s
-    static member toString(Esp s) = s
-    member t.Value = Esp.toString t
-    member t.toString() = t.Value
-
 type WaedEnchantment =
     { formId: UniqueId
       level: int }
@@ -57,7 +50,7 @@ type Data =
       image: Image
       name: FULL
       edid: EDID
-      esp: Esp
+      esp: EspFileName
       enchantments: WaedEnchantment list
       itemType: ItemType
       active: ActiveStatus }
@@ -69,7 +62,7 @@ type Data =
           image = r.image |> Image.ofString
           name = r.name |> FULL.ofString
           edid = r.edid |> EDID
-          esp = r.esp |> Esp.ofString
+          esp = r.esp |> EspFileName
           enchantments = r.enchantments |> List.map WaedEnchantment.ofRaw
           itemType = enum<ItemType> r.itemType
           active = r.active |> ActiveStatus.ofBool }
@@ -130,69 +123,6 @@ and Raw =
 
 type Database = Map<UniqueId, Data>
 
-/////////////////////////////////////////////////////////////////////////////////////////
-//module Import =
-//    type ParsedLine =
-//        { edid: EDID
-//          esp: string
-//          formId: string
-//          signature: int
-//          full: string }
-
-//type ItemTypes =
-//    | ARMO = 0
-//    | WEAP = 1
-//    | AMMO = 2
-
-//[<AutoOpen>]
-//module private H =
-//    let parseLine (s: string) : ParsedLine =
-//        let signatureToInt (signature: string) =
-//            let mutable r = ItemType.Armor
-
-//            match Enum.TryParse(signature, &r) with
-//            | true -> int r
-//            | false -> int ItemType.Armor
-
-//        let a = s.Split("|")
-
-//        { edid = EDID a[0]
-//          esp = a[1]
-//          formId = a[2]
-//          signature = a[3] |> signatureToInt
-//          full = a[4] }
-
-//    let addItem (pl: ParsedLine) =
-//        let uid = new UniqueId(pl.esp, pl.formId)
-
-//        let v =
-//            match items.ContainsKey uid with
-//            | true -> items[uid]
-//            | false -> Data.empty
-
-//        let d =
-//            { v with
-//                edid = pl.edid
-//                esp = pl.esp
-//                formId = pl.formId
-//                itemType = pl.signature
-//                name = pl.full }
-
-//        items <- items.Add(uid, d)
-
-//    let addItems (text: string) =
-//        text.Trim().Split("\n")
-//        |> Array.map trim
-//        |> Array.filter (isNot isNullOrEmpty)
-//        |> Array.map parseLine
-//        |> Array.iter addItem
-
-//let FromClipboard () =
-//    TextCopy.Clipboard().GetText() |> addItems
-
-//let FromFile filename =
-//    filename |> File.ReadAllText |> addItems
-
 module Database =
     let mutable db: Database = Map.empty
 
@@ -213,8 +143,6 @@ module Database =
         |> upsert uId
 
     let delete uId = db <- db |> Map.remove (UniqueId uId)
-
-    //let private _find f uId = db |> f (UniqueId uId) |> Data.toRaw
 
     let find uId =
         db |> Map.find (UniqueId uId) |> Data.toRaw

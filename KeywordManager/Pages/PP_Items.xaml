@@ -20,6 +20,16 @@
       CanExecute="CmdDeleteCanExecute"
       Command="EditingCommands.Delete"
       Executed="CmdDeleteExecuted" />
+
+    <CommandBinding
+      CanExecute="OnCanDelKeyword"
+      Command="c:ItemCmds.DelKeyword"
+      Executed="OnDelKeyword" />
+
+    <CommandBinding
+      CanExecute="OnCanCreateUnboundOutfit"
+      Command="c:ItemCmds.CreateUnboundOutfit"
+      Executed="OnCreateUnboundOutfit" />
   </UserControl.CommandBindings>
 
   <md:DrawerHost
@@ -326,6 +336,11 @@
                 </Grid>
               </DataTemplate>
             </ListBox.ItemTemplate>
+            <ListBox.ContextMenu>
+              <ContextMenu>
+                <MenuItem Command="c:ItemCmds.CreateUnboundOutfit" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+              </ContextMenu>
+            </ListBox.ContextMenu>
           </ListBox>
         </DockPanel>
       </GroupBox>

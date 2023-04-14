@@ -49,13 +49,9 @@ module internal File =
         match d with
         | IsNull -> ()
         | _ -> IO.Common.ofJson JsonData.toRaw DB.upsert d
-    //d
-    //|> Map.toArray
-    //|> Array.Parallel.map (fun (k, v) -> k, v.toRaw ())
-    //|> Array.iter (fun (k, v) -> DB.upsert k v)
+
+        DB.setNextUnboundId ()
 
     let toJson () =
-        //DB.toArrayOfRaw ()
-        //|> Array.fold (fun (acc: JsonMap) (k, v) -> acc.Add(k, JsonData.ofRaw v)) Map.empty
         DB.toArrayOfRaw ()
         |> IO.Common.toJson JsonData.ofRaw

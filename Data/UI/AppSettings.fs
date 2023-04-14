@@ -37,7 +37,7 @@ module Paths =
                 File.Delete dest
 
             File.Copy(sourceFileName, dest)
-            (getExt dest)[1..]
+            getExtNoDot dest
 
         module Outfit =
             let dir () = combine2 app @"Data\Img\Outfits"

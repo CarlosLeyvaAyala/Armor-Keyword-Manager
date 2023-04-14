@@ -12,11 +12,14 @@ open Data.UI.AppSettings.Paths.Img.Outfit
 
 module Outfits = Data.Outfit.Database
 
-type NavList(uniqueId: string, name: string, esp: string, edid: string) =
-    member val Name = name with get, set
-    member val Esp = esp with get, set
-    member val EDID = edid with get, set
+type NavList(uniqueId: string, d: Raw) =
+    member val Name = d.name with get, set
+    member val Esp = d.esp with get, set
+    member val EDID = d.edid with get, set
     member val UniqueId = uniqueId with get, set
+    member val IsArmor = d.itemType = int ItemType.Armor
+    member val IsWeapon = d.itemType = int ItemType.Weapon
+    member val IsAmmo = d.itemType = int ItemType.Ammo
     override this.ToString() = this.Name
 
     member t.OutfitImg =
@@ -26,7 +29,6 @@ type NavList(uniqueId: string, name: string, esp: string, edid: string) =
 
     member t.TooltipVisible = t.OutfitImg.Count > 0
 
-    new(uId, d: Raw) = NavList(uId, d.name, d.esp, d.edid)
 
 type NavItem(uniqueId: string) =
     let d = DB.find uniqueId

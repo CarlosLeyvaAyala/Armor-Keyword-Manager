@@ -5,7 +5,9 @@ using Microsoft.Win32;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -179,6 +181,24 @@ public partial class PP_Items : UserControl, IFilterable {
         Edit.DelTag(uId, tag);
       });
     });
+  }
+
+  private void OnCanDelKeyword(object sender, CanExecuteRoutedEventArgs e) =>
+    e.CanExecute = lstItemKeywords.IsFocused && lstItemKeywords.SelectedItems.Count > 0;
+  private void OnDelKeyword(object sender, ExecutedRoutedEventArgs e) {
+
+  }
+
+  private void OnCanCreateUnboundOutfit(object sender, CanExecuteRoutedEventArgs e) =>
+    e.CanExecute = lstNavItems.SelectedItems.OfType<NavList>()
+      .Select((s) => s.IsArmor)
+      .All((b) => b);
+
+  private void OnCreateUnboundOutfit(object sender, ExecutedRoutedEventArgs e) {
+    var uIds = lstNavItems.SelectedItems.OfType<NavList>()
+      .Select((s) => s.UniqueId)
+      .ToList();
+    Debug.WriteLine(uIds.Aggregate((a, b) => a + ", " + b));
   }
   #endregion
 

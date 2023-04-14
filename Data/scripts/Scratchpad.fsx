@@ -53,56 +53,53 @@ open FSharpx.Collections
 open DMLib.Types.Skyrim
 open Common
 
-// Find outfits that contain this piece
-let ap = ArmorPiece.ofString "OverQueen.esp|d69"
+// Create new unbound outfit
+[<Literal>]
+let UnboundEDID = "__DMSIM__"
+
+[<Literal>]
+let UnboundEsp = "__DMUnboundItemManagerOutfit__.esm"
+
+let addUnbound n selected =
+    selected
+    |> List.map (fun k -> k |> replace Skyrim.UniqueId.Separator "~")
+    |> List.fold (smartFold ",") ""
+    |> fun pieces -> $"{UnboundEDID}{n}|{UnboundEsp}|{n}|OTFT|{pieces}"
+    |> Data.Outfit.Raw.fromxEdit
+    |> fun (uid, r) ->
+        let (name, _) = r.pieces[0] |> Skyrim.UniqueId.Split
+        Outfits.upsert uid { r with name = $"{getFileNameWithoutExtension name}" }
+
+// Get max
+let getNextUnboundId () =
+    Outfits.toArrayOfRaw ()
+    |> Array.Parallel.choose (fun (k, _) ->
+        match k with
+        | Contains UnboundEsp ->
+            let (_, m) = Skyrim.UniqueId.Split(k)
+            Int32.Parse m |> Some
+        | _ -> None)
+    |> fun a ->
+        match a with
+        | EmptyArray -> 0
+        | OneElemArray _
+        | ManyElemArray _ -> Array.max a
+        + 1
+
+
 
 Outfits.db
-|> Map.choose (fun _ v ->
-    v.pieces
-    |> List.tryFind (fun p -> ap = p)
-    |> Option.map (fun _ ->
-        match v.img with
-        | EmptyImage -> None
-        | _ -> Some v.img)
-    |> Option.flatten)
-|> Map.toArray
-|> Array.map (fun (uId, img) -> uId.Value, img.Value)
+|> Map.filter (fun k v -> k.Value |> containsIC UnboundEsp)
 
-let tryFind uId =
-    Items.db
-    |> Map.tryFind (UniqueId uId)
-    |> Option.map Data.Items.Data.toRaw
+Outfits.db <- Map.empty
 
-let outfit =
-    Outfits.find "[Christine] Ida Elf Archer.esp|83e" (*"Assassins Dress.esp|83f"*)
+let selectPieces s =
+    Items.toArrayOfRaw ()
+    |> Array.Parallel.choose (fun (k, _) ->
+        match k with
+        | ContainsIC s -> Some k
+        | _ -> None)
+    |> Array.toList
 
-let pieces =
-    outfit.pieces
-    |> List.map (fun uid -> uid, tryFind uid)
-
-pieces
-|> List.map (fun (_, v) -> v)
-|> List.catOptions
-|> List.map (fun i -> i.tags)
-|> List.collect id
-|> List.append outfit.tags
-|> List.distinct
-|> List.sort
-
-type ArmorPiece(uId: string, d: Data.Items.Raw option) =
-    member _.Name =
-        match d with
-        | Some v -> v.name
-        | None -> uId
-
-    member _.IsInDB = d.IsSome
-
-
-query {
-    for piece in pieces |> List.map ArmorPiece do
-        sortBy piece.IsInDB
-        thenBy piece.Name
-}
-|> toCList
-
-outfit
+selectPieces "akavir" |> addUnbound 1
+selectPieces "shadow assassin" |> addUnbound 2

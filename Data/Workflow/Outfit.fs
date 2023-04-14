@@ -1,10 +1,13 @@
 ﻿namespace Data.Outfit
 
+open DMLib
 open Common
 open DMLib.String
 open DMLib.Types.Skyrim
 open DMLib.Types
 open FSharpx.Collections
+open DMLib.IO.Path
+open System
 
 type ArmorPiece =
     | ArmorPiece of UniqueId
@@ -52,6 +55,8 @@ and Raw =
       pieces: string list
       active: bool }
 
+    static member pieceEspSep = "~"
+
     static member empty =
         { name = ""
           edid = ""
@@ -73,14 +78,24 @@ and Raw =
             pieces =
                 a[4]
                 |> split ","
-                |> Array.map (fun s -> s.Replace("~", "|"))
+                |> Array.map (fun s -> s.Replace(Raw.pieceEspSep, Skyrim.UniqueId.Separator))
                 |> Array.filter (fun s -> s.Trim() <> "")
                 |> Array.toList }
 
 type Database = Map<UniqueId, Data>
 
 module internal Database =
-    let mutable db: Database = Map.empty
+    [<Literal>]
+    let UnboundEDID = "__DMSIM__"
+
+    [<Literal>]
+    let UnboundEsp = "__DMUnboundItemManagerOutfit__.esm"
+
+    let mutable private nextUnboundId = 1
+    let mutable private db: Database = Map.empty
+
+    let testDb () = db
+    let clear () = db <- Map.empty
 
     let inline toArray () = db |> Map.toArray
 
@@ -132,3 +147,36 @@ module internal Database =
             |> Option.flatten)
         |> Map.toArray
         |> Array.map (fun (uId, img) -> uId.Value, img.Value)
+
+    let setNextUnboundId () =
+        nextUnboundId <-
+            toArrayOfRaw ()
+            |> Array.Parallel.choose (fun (k, _) ->
+                match k with
+                | Contains UnboundEsp ->
+                    let (_, m) = Skyrim.UniqueId.Split(k)
+                    Int32.Parse m |> Some
+                | _ -> None)
+            |> fun a ->
+                match a with
+                | EmptyArray -> 0
+                | OneElemArray _
+                | ManyElemArray _ -> Array.max a
+                + 1
+
+    /// An "unbound" outfit belongs to no esp and is used for player documentation
+    let addUnbound selected =
+        let n = nextUnboundId
+
+        selected
+        |> List.map (fun k ->
+            k
+            |> replace Skyrim.UniqueId.Separator Raw.pieceEspSep)
+        |> List.fold (smartFold ",") ""
+        |> fun pieces -> $"{UnboundEDID}{n}|{UnboundEsp}|{n}|OTFT|{pieces}"
+        |> Raw.fromxEdit
+        |> fun (uid, r) ->
+            let (name, _) = r.pieces[0] |> Skyrim.UniqueId.Split
+            upsert uid { r with name = $"{getFileNameWithoutExtension name}" }
+
+        setNextUnboundId ()

@@ -1,9 +1,6 @@
 ﻿[<RequireQualifiedAccess>]
 module Data.UI.Outfit.Edit
 
-open DMLib.String
-open Common.Images
-open DMLib.IO.Path
 open Data.UI.AppSettings.Paths.Img.Outfit
 
 module DB = Data.Outfit.Database
@@ -13,3 +10,7 @@ let Image uId filename =
     let ext = copyImg uId filename
     DB.update uId (fun d -> { d with img = ext })
     expandImg uId ext
+
+/// Creates an outfit that doesn't belong to an esp using a unique id list of armor pieces.
+let CreateUnbound (l: System.Collections.Generic.List<string>) =
+    [ for uid in l -> uid ] |> DB.addUnbound

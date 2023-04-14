@@ -16,6 +16,7 @@
         <ResourceDictionary Source="pack://application:,,,/Dictionaries/KeywordColors.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Dictionaries/Dimensions.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Dictionaries/SVG.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dictionaries/Colors.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Dictionaries/Converters.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Dictionaries/DialogHost.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Dictionaries/Nav.xaml" />

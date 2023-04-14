@@ -2,6 +2,7 @@
 
 open Data.Outfit
 open DMLib
+open DMLib.Types
 open DMLib.String
 open DMLib.Collections
 open Data.UI.AppSettings.Paths.Img.Outfit
@@ -18,8 +19,17 @@ type NavList(uId: string, d: Raw) =
     let mutable img = expandImg uId d.img
     let mutable name = d.name
 
+    member _.IsUnbound = d.edid |> contains DB.UnboundEDID
+
     member val UId = uId
     member val EDID = d.edid
+
+    member t.Esp =
+        match t.IsUnbound with
+        | true -> "<No plugin>"
+        | false ->
+            let (esp, _) = Skyrim.UniqueId.Split(uId)
+            esp
 
     member t.Name
         with get () = name

@@ -44,11 +44,30 @@
                   ToolTipService.InitialShowDelay="0" />
 
                 <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                  <TextBlock Style="{StaticResource NavTxtMain}" Text="{Binding Name, FallbackValue=Name}" />
+                  <TextBlock
+                    Style="{StaticResource NavTxtMain}"
+                    Text="{Binding Name, FallbackValue=Name}"
+                    ToolTip="Name will not be used outside this app" />
                   <TextBlock
                     Margin="{StaticResource MgTopNaaarrow}"
                     Style="{StaticResource NavTxtD1}"
-                    Text="{Binding EDID, FallbackValue=EDID}" />
+                    Text="{Binding EDID, FallbackValue=EDID}"
+                    ToolTip="Editor ID (EDID)" />
+                  <TextBlock Text="{Binding Esp, FallbackValue=Esp}">
+                    <TextBlock.Style>
+                      <Style BasedOn="{StaticResource NavTxtD1}" TargetType="TextBlock">
+                        <Setter Property="Margin" Value="{StaticResource MgTopNaaarrow}" />
+                        <Setter Property="ToolTip" Value="Plugin" />
+                        <Style.Triggers>
+                          <DataTrigger Binding="{Binding IsUnbound}" Value="True">
+                            <Setter Property="Foreground" Value="Red" />
+                            <Setter Property="FontWeight" Value="Bold" />
+                            <Setter Property="ToolTip" Value="This outfit does not belong to any plugin.&#x0a;It can not be used for SPID exporting." />
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </TextBlock.Style>
+                  </TextBlock>
                 </StackPanel>
               </Grid>
             </DataTemplate>

@@ -265,20 +265,28 @@
             SelectionMode="Extended">
             <ListBox.ItemTemplate>
               <DataTemplate>
-                <Grid Margin="0,5" ToolTipService.InitialShowDelay="100">
+                <Grid Margin="0,5" ToolTipService.InitialShowDelay="200">
                   <Grid.ToolTip>
-                    <ItemsControl ItemsSource="{Binding OutfitImg, IsAsync=true}">
-                      <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                          <WrapPanel />
-                        </ItemsPanelTemplate>
-                      </ItemsControl.ItemsPanel>
-                      <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                          <Image Height="400" Source="{Binding Converter={StaticResource StringToImgConverter}}" />
-                        </DataTemplate>
-                      </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    <Grid>
+                      <TextBlock Text="This item belongs to no outfits with preview images" Visibility="{Binding TooltipVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                      <ItemsControl ItemsSource="{Binding OutfitImg, IsAsync=true}">
+                        <ItemsControl.ItemsPanel>
+                          <ItemsPanelTemplate>
+                            <WrapPanel />
+                          </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                          <DataTemplate>
+                            <Grid>
+                              <Image
+                                MaxWidth="350"
+                                MaxHeight="350"
+                                Source="{Binding Converter={StaticResource StringToImgConverter}}" />
+                            </Grid>
+                          </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                      </ItemsControl>
+                    </Grid>
                   </Grid.ToolTip>
                   <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -288,10 +296,17 @@
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*" />
                   </Grid.ColumnDefinitions>
-                  <TextBlock
-                    Grid.ColumnSpan="2"
-                    Style="{StaticResource NavTxtMain}"
-                    Text="{Binding Name}" />
+                  <TextBlock Grid.ColumnSpan="2" Text="{Binding Name}">
+                    <TextBlock.Style>
+                      <Style BasedOn="{StaticResource NavTxtMain}" TargetType="TextBlock">
+                        <Style.Triggers>
+                          <DataTrigger Binding="{Binding TooltipVisible}" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource PrimaryHueDarkBrush}" />
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </TextBlock.Style>
+                  </TextBlock>
                   <TextBlock
                     Grid.Row="1"
                     Grid.Column="1"

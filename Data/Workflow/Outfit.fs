@@ -125,6 +125,10 @@ module internal Database =
         |> Map.choose (fun _ v ->
             v.pieces
             |> List.tryFind (fun p -> ap = p)
-            |> Option.map (fun _ -> v.img))
+            |> Option.map (fun _ ->
+                match v.img with
+                | EmptyImage -> None
+                | _ -> Some v.img)
+            |> Option.flatten)
         |> Map.toArray
-        |> Array.map (fun (uId, img) -> uId.Value, img.toString ())
+        |> Array.map (fun (uId, img) -> uId.Value, img.Value)

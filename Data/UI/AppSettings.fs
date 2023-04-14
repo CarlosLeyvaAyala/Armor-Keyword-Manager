@@ -8,7 +8,6 @@ open System.IO
 
 [<RequireQualifiedAccess>]
 module Paths =
-    let mutable private xEdit = ""
     let mutable private app = ""
 
     let SetApp dir = app <- dir

@@ -19,11 +19,12 @@ type NavList(uniqueId: string, name: string, esp: string, edid: string) =
     member val UniqueId = uniqueId with get, set
     override this.ToString() = this.Name
 
-    // TODO: MEH
     member t.OutfitImg =
         Outfits.outfitsWithPieces t.UniqueId
         |> Array.map (fun (uId, ext) -> expandImg uId ext)
         |> toCList
+
+    member t.TooltipVisible = t.OutfitImg.Count > 0
 
     new(uId, d: Raw) = NavList(uId, d.name, d.esp, d.edid)
 

@@ -50,7 +50,7 @@ open Data.Outfit
 open Data.Outfit.Database
 open FSharpx.Collections
 open DMLib.Types.Skyrim
-
+open Common
 
 // Find outfits that contain this piece
 let ap = ArmorPiece.ofString "OverQueen.esp|d69"
@@ -59,9 +59,13 @@ Outfits.db
 |> Map.choose (fun _ v ->
     v.pieces
     |> List.tryFind (fun p -> ap = p)
-    |> Option.map (fun _ -> v.img))
+    |> Option.map (fun _ ->
+        match v.img with
+        | EmptyImage -> None
+        | _ -> Some v.img)
+    |> Option.flatten)
 |> Map.toArray
-|> Array.map (fun (uId, img) -> uId.Value, img.toString ())
+|> Array.map (fun (uId, img) -> uId.Value, img.Value)
 
 // Find pieces in database
 let find uId =

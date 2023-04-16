@@ -2,6 +2,7 @@
   x:Class="KeywordManager.Pages.PP_Outfits"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:guiobjs="clr-namespace:Data.UI.Outfit;assembly=Data"
   xmlns:local="clr-namespace:KeywordManager.Pages"
@@ -12,6 +13,15 @@
   d:DesignWidth="1200"
   Loaded="OnLoaded"
   mc:Ignorable="d">
+
+  <UserControl.CommandBindings>
+
+    <CommandBinding
+      CanExecute="OnCanDel"
+      Command="c:OutfitCmds.Del"
+      Executed="OnDel" />
+
+  </UserControl.CommandBindings>
 
   <Grid>
     <Grid.ColumnDefinitions>
@@ -27,6 +37,8 @@
         <ListBox
           x:Name="lstNav"
           HorizontalContentAlignment="Stretch"
+          SelectionMode="Extended"
+          KeyDown="OnLstNavKeyDown"
           d:ItemsSource="{d:SampleData ItemCount=10}"
           SelectionChanged="OnNavSelectionChanged">
           <ListBox.ItemTemplate>
@@ -72,6 +84,11 @@
               </Grid>
             </DataTemplate>
           </ListBox.ItemTemplate>
+          <ListBox.ContextMenu>
+            <ContextMenu>
+              <MenuItem Command="c:OutfitCmds.Del" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+            </ContextMenu>
+          </ListBox.ContextMenu>
         </ListBox>
       </DockPanel>
     </GroupBox>

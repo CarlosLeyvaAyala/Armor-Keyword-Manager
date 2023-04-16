@@ -103,6 +103,22 @@ module internal Database =
         toArray ()
         |> Array.Parallel.map (fun (uId, v) -> uId.Value, v.toRaw ())
 
+    let setNextUnboundId () =
+        nextUnboundId <-
+            toArrayOfRaw ()
+            |> Array.Parallel.choose (fun (k, _) ->
+                match k with
+                | Contains UnboundEsp ->
+                    let (_, m) = Skyrim.UniqueId.Split(k)
+                    Int32.Parse m |> Some
+                | _ -> None)
+            |> fun a ->
+                match a with
+                | EmptyArray -> 0
+                | OneElemArray _
+                | ManyElemArray _ -> Array.max a
+                + 1
+
     let upsert uId data =
         db <- db |> Map.add (UniqueId uId) (Data.ofRaw data)
 
@@ -113,7 +129,9 @@ module internal Database =
         |> transform
         |> upsert uId
 
-    let delete uId = db <- db |> Map.remove (UniqueId uId)
+    let delete uId =
+        db <- db |> Map.remove (UniqueId uId)
+        setNextUnboundId ()
 
     let find uId =
         db |> Map.find (UniqueId uId) |> Data.toRaw
@@ -147,22 +165,6 @@ module internal Database =
             |> Option.flatten)
         |> Map.toArray
         |> Array.map (fun (uId, img) -> uId.Value, img.Value)
-
-    let setNextUnboundId () =
-        nextUnboundId <-
-            toArrayOfRaw ()
-            |> Array.Parallel.choose (fun (k, _) ->
-                match k with
-                | Contains UnboundEsp ->
-                    let (_, m) = Skyrim.UniqueId.Split(k)
-                    Int32.Parse m |> Some
-                | _ -> None)
-            |> fun a ->
-                match a with
-                | EmptyArray -> 0
-                | OneElemArray _
-                | ManyElemArray _ -> Array.max a
-                + 1
 
     /// An "unbound" outfit belongs to no esp and is used for player documentation
     let addUnbound name selected =

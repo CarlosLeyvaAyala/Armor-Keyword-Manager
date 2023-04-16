@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace KeywordManager.Pages;
 
@@ -38,7 +39,8 @@ public partial class PP_Outfits : UserControl {
 
   public void NavLoad() => lstNav.ItemsSource = Nav.Load();
   NavList SelectedNav => (NavList)lstNav.SelectedItem;
-  string UId => SelectedNav.UId;
+  string uId => SelectedNav.UId;
+  static string UId(object item) => ((NavList)item).UId;
 
   private void OnLoaded(object sender, RoutedEventArgs e) {
     if (hasLoaded)
@@ -55,7 +57,7 @@ public partial class PP_Outfits : UserControl {
       lstArmorPieces.ItemsSource = null;
       return;
     }
-    var it = Nav.GetItem(UId);
+    var it = Nav.GetItem(uId);
     lstArmorPieces.ItemsSource = it.ArmorPieces;
     lstTags.ItemsSource = it.Tags;
     grpImg.DataContext = it;
@@ -73,9 +75,33 @@ public partial class PP_Outfits : UserControl {
   void SetImage(string filename) {
     if (!Path.Exists(filename))
       return;
-    SelectedNav.Img = Edit.Image(UId, filename);
+    SelectedNav.Img = Edit.Image(uId, filename);
     ReloadSelectedItem();
   }
 
   private void OnNavSelectionChanged(object sender, SelectionChangedEventArgs e) => ReloadSelectedItem();
+
+  private void OnCanDel(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = lstNav.SelectedIndex > -1;
+  private void OnDel(object sender, ExecutedRoutedEventArgs e) {
+    var r = Dialogs.WarningYesNoMessageBox(
+      Owner,
+      "Deleting oufits can not be undone.\n\nDo you wish to continue?",
+      "Undoable operation");
+    if (r == MessageBoxResult.No)
+      return;
+
+    ForEachSelectedOutfit(Edit.Delete);
+    NavLoad();
+  }
+
+  void ForEachSelectedOutfit(Action<string> DoSomething) {
+    foreach (var item in lstNav.SelectedItems)
+      DoSomething(UId(item));
+  }
+
+  private void OnLstNavKeyDown(object sender, KeyEventArgs e) {
+    if (e.Key == Key.Delete)
+      GUI.Commands.OutfitCmds.Del.Execute(null, this);
+    e.Handled = true;
+  }
 }

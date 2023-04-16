@@ -1,7 +1,9 @@
 ﻿[<RequireQualifiedAccess>]
 module Data.UI.Outfit.Edit
 
+open DMLib.String
 open Data.UI.AppSettings.Paths.Img.Outfit
+open System.IO
 
 module DB = Data.Outfit.Database
 
@@ -14,3 +16,11 @@ let Image uId filename =
 /// Creates an outfit that doesn't belong to an esp using a unique id list of armor pieces.
 let CreateUnbound (l: System.Collections.Generic.List<string>) name =
     [ for uid in l -> uid ] |> DB.addUnbound name
+
+/// Deletes an outfit
+let Delete uid =
+    match (DB.find uid).img with
+    | IsWhiteSpaceStr -> ()
+    | img -> expandImg uid img |> File.Delete
+
+    DB.delete uid

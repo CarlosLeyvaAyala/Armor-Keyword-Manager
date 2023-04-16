@@ -47,3 +47,30 @@ let SelectDir startingDir =
         dlg.FileName
     else
         ""
+
+let private okMessageBox icon (owner: Window) text caption =
+    MessageBox.Show(owner, text, caption, MessageBoxButton.OK, icon)
+
+let private yesNoMessageBox icon (owner: Window) text caption =
+    MessageBox.Show(owner, text, caption, MessageBoxButton.YesNo, icon, MessageBoxResult.No)
+
+let AsteriskMessageBox owner text caption =
+    okMessageBox MessageBoxImage.Asterisk owner text caption
+
+let AsteriskYesNoMessageBox owner text caption =
+    yesNoMessageBox MessageBoxImage.Asterisk owner text caption
+
+let WarningMessageBox owner text caption =
+    okMessageBox MessageBoxImage.Warning owner text caption
+
+let WarningYesNoMessageBox owner text caption =
+    yesNoMessageBox MessageBoxImage.Warning owner text caption
+
+let ErrorMessageBox owner text caption =
+    okMessageBox MessageBoxImage.Error owner text caption
+
+let ErrorYesNoMessageBox owner text caption =
+    yesNoMessageBox MessageBoxImage.Error owner text caption
+
+let ExceptionMessageBox owner text =
+    ErrorMessageBox owner text "Unexpected error"

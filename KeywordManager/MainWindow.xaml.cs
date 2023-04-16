@@ -34,7 +34,6 @@ public partial class MainWindow : Window {
       MessageBox.Show(this, ex.Message);
     }
 
-
     tbcMain.SelectedIndex = Settings.Default.lastTab;
     isLoaded = true;
   }

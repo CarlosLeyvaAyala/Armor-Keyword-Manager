@@ -23,14 +23,13 @@ type NavList(uniqueId: string, d: Raw) =
     override this.ToString() = this.Name
 
     member t.Imgs =
-        let outfits =
-            Outfits.outfitsWithPieces t.UniqueId
-            |> Array.map (fun (uId, ext) -> Outfit.expandImg uId ext)
-
-        match d.image with
-        | "" -> [||]
-        | img -> [| Item.expandImg uniqueId img |]
-        |> Array.append outfits
+        Outfits.outfitsWithPieces t.UniqueId
+        |> Array.map (fun (uId, ext) -> Outfit.expandImg uId ext)
+        |> Array.append (
+            match d.image with
+            | "" -> [||]
+            | img -> [| Item.expandImg uniqueId img |]
+        )
         |> toCList
 
     member t.TooltipVisible = t.Imgs.Count > 0

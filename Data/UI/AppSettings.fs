@@ -5,12 +5,14 @@ open DMLib.String
 open Common.Images
 open DMLib.Combinators
 open System.IO
+open System
 
 [<RequireQualifiedAccess>]
 module Paths =
     let mutable private app = ""
 
     let SetApp dir = app <- dir
+    let internal data () = combine2 app "Data"
 
     [<RequireQualifiedAccess>]
     module Img =
@@ -48,3 +50,20 @@ module Paths =
         module Keywords =
             let dir () = combine2 app @"Data\Img\Keywords"
             let jsonDir () = combine2 app @"Data\Img\Keywords"
+
+[<RequireQualifiedAccess>]
+module Backup =
+    open System.IO.Compression
+
+    let SuggestedName () =
+        DateTime.Now.ToString("yyyy-MM-dd HH-mm")
+        |> sprintf "SIM %s.zip"
+
+    let Create filename =
+        if File.Exists filename then
+            File.Delete filename
+
+        ZipFile.CreateFromDirectory(Paths.data (), filename, CompressionLevel.Fastest, includeBaseDirectory = false)
+
+    let Restore filename =
+        ZipFile.ExtractToDirectory(filename, Paths.data (), overwriteFiles = true)

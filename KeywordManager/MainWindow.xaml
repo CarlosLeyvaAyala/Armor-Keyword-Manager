@@ -56,6 +56,16 @@
       CanExecute="OnCanTest"
       Command="c:AppCmds.Test"
       Executed="OnTest" />
+
+    <CommandBinding
+      CanExecute="OnCanRestoreSettings"
+      Command="c:AppCmds.RestoreSettings"
+      Executed="OnRestoreSettings" />
+
+    <CommandBinding
+      CanExecute="OnCanBackupSettings"
+      Command="c:AppCmds.BackupSettings"
+      Executed="OnBackupSettings" />
   </Window.CommandBindings>
 
   <Window.Resources>
@@ -112,6 +122,16 @@
             <MenuItem
               Command="c:AppCmds.Filter"
               Header="_Filter"
+              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+          </MenuItem>
+          <MenuItem Header="_Settings">
+            <MenuItem
+              Command="c:AppCmds.BackupSettings"
+              Header="Create _backup"
+              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+            <MenuItem
+              Command="c:AppCmds.RestoreSettings"
+              Header="_Restore backup"
               ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
           </MenuItem>
         </Menu>

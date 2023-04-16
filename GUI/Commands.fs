@@ -70,8 +70,11 @@ type AppCmds private () =
           modifiers = ModifierKeys.Control ||| ModifierKeys.Shift }
         |> create
 
-    static member val FileJsonExport = basic "FileJsonExport" $"Exports file to json"
-    static member val FileJsonImport = basic "FileJsonImport" $"Imports file from json"
+    static member val FileJsonExport = basic "FileJsonExport" "Exports file to json"
+    static member val FileJsonImport = basic "FileJsonImport" "Imports file from json"
+
+    static member val RestoreSettings = basic "RestoreSettings" "Restorses a previously saved backup"
+    static member val BackupSettings = basic "BackupSettings" "Creates a backup for the images and keywords in this app"
 
 
 [<Sealed>]

@@ -1,8 +1,8 @@
-﻿using DMLib;
+﻿using Data.UI;
+using DMLib;
 using GUI;
 using IO;
 using KeywordManager.UserControls;
-using KeywordManager.Windows;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -133,6 +133,34 @@ public partial class MainWindow : Window {
 
   private void OnCanTest(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnTest(object sender, ExecutedRoutedEventArgs e) {
-    CreateImage_Window.Execute();
+    //CreateImage_Window.Execute();
+  }
+
+  private void OnCanRestoreSettings(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
+  private void OnRestoreSettings(object sender, ExecutedRoutedEventArgs e) {
+    var fn = Dialogs.File.Open(
+      "Zip files (*.zip)|*.zip",
+      "e63aa357-ce5c-424d-a175-b2592aac7af3",
+      "",
+      "");
+
+    if (string.IsNullOrEmpty(fn))
+      return;
+
+    AppSettings.Backup.Restore(fn);
+  }
+
+  private void OnCanBackupSettings(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
+  private void OnBackupSettings(object sender, ExecutedRoutedEventArgs e) {
+    var fn = Dialogs.File.Save(
+      "Zip files (*.zip)|*.zip",
+      "e63aa357-ce5c-424d-a175-b2592aac7af3",
+      "",
+      AppSettings.Backup.SuggestedName());
+
+    if (string.IsNullOrEmpty(fn))
+      return;
+
+    AppSettings.Backup.Create(fn);
   }
 }

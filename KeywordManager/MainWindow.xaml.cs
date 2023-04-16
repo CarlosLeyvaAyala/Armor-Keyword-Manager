@@ -21,13 +21,20 @@ public partial class MainWindow : Window {
 
   public MainWindow() {
     InitializeComponent();
-    Data.UI.AppSettings.Paths.SetApp(Directory.GetCurrentDirectory());
+    AppSettings.Paths.SetApp(Directory.GetCurrentDirectory());
   }
 
   private void Window_Loaded(object sender, RoutedEventArgs e) {
-    var fn = Settings.Default.mostRecetFile;
-    if (File.Exists(fn))
-      OpenFile(fn);
+    try {
+      var fn = Settings.Default.mostRecetFile;
+      if (File.Exists(fn))
+        OpenFile(fn);
+    }
+    catch (Exception ex) {
+      MessageBox.Show(this, ex.Message);
+    }
+
+
     tbcMain.SelectedIndex = Settings.Default.lastTab;
     isLoaded = true;
   }
@@ -44,6 +51,23 @@ public partial class MainWindow : Window {
   private void OnSaveFile(object sender, ExecutedRoutedEventArgs e) {
     PropietaryFile.Save(workingFile);
     System.Media.SystemSounds.Asterisk.Play();
+  }
+
+  private void OnSaveFileAs(object sender, ExecutedRoutedEventArgs e) {
+    try {
+      var fn = Dialogs.File.Save("Skyrim Items (*.skyitms)|*.skyitms", "1e2be86c-8d55-4894-82e9-65e8a3a027a5", "", "");
+      if (string.IsNullOrWhiteSpace(fn))
+        return;
+
+      PropietaryFile.Save(fn);
+      workingFile = fn;
+      Settings.Default.mostRecetFile = fn;
+      Settings.Default.Save();
+      System.Media.SystemSounds.Asterisk.Play();
+    }
+    catch (Exception ex) {
+      MessageBox.Show(this, ex.Message);
+    }
   }
 
   private void OnOpenFile(object sender, ExecutedRoutedEventArgs e) {

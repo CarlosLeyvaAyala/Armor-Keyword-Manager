@@ -33,6 +33,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Data\Img\Items\_.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Data\Img\Outfits\_.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

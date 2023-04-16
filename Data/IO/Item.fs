@@ -17,7 +17,7 @@ type JsonData =
     { keywords: string list
       comments: string
       tags: string list
-      image: string
+      img: string
       name: string
       edid: string
       esp: string
@@ -29,7 +29,7 @@ type JsonData =
         { keywords = r.keywords
           comments = r.comments
           tags = r.tags
-          image = r.image
+          image = r.img
           name = r.name
           edid = r.edid
           esp = r.esp
@@ -41,7 +41,7 @@ type JsonData =
         { keywords = r.keywords
           comments = r.comments
           tags = r.tags
-          image = r.image
+          img = r.image
           name = r.name
           edid = r.edid
           esp = r.esp

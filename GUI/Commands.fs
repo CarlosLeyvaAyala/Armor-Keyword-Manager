@@ -62,6 +62,14 @@ type AppCmds private () =
           modifiers = ModifierKeys.Control }
         |> create
 
+    static member val Test =
+        { name = "Test"
+          text = "Test"
+          keyDisplay = "Shift+Ctrl+T"
+          key = Key.T
+          modifiers = ModifierKeys.Control ||| ModifierKeys.Shift }
+        |> create
+
     static member val FileJsonExport = basic "FileJsonExport" $"Exports file to json"
     static member val FileJsonImport = basic "FileJsonImport" $"Imports file from json"
 

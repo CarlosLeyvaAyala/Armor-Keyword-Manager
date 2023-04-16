@@ -51,6 +51,11 @@
       CanExecute="OnCanFilter"
       Command="c:AppCmds.Filter"
       Executed="OnFilter" />
+
+    <CommandBinding
+      CanExecute="OnCanTest"
+      Command="c:AppCmds.Test"
+      Executed="OnTest" />
   </Window.CommandBindings>
 
   <Window.Resources>

@@ -2,6 +2,7 @@
 using GUI;
 using IO;
 using KeywordManager.UserControls;
+using KeywordManager.Windows;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -129,4 +130,9 @@ public partial class MainWindow : Window {
   public void ReloadSelectedOutfit() => ppOutfits.ReloadSelectedItem();
   public void ReloadOutfitsNav() => ppOutfits.NavLoad();
   public void GoToTab(TabId tab) => tbcMain.SelectedIndex = (int)tab;
+
+  private void OnCanTest(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
+  private void OnTest(object sender, ExecutedRoutedEventArgs e) {
+    CreateImage_Window.Execute();
+  }
 }

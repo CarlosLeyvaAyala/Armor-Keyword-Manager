@@ -1,5 +1,7 @@
 ﻿using Data;
+using Data.UI;
 using Data.UI.Items;
+using GUI;
 using KeywordManager.UserControls;
 using Microsoft.Win32;
 using System;
@@ -204,6 +206,27 @@ public partial class PP_Items : UserControl, IFilterable {
     Owner.ReloadOutfitsNav();
     Owner.GoToTab(MainWindow.TabId.Outfits);
   }
+
+  private void OnCanSetImage(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
+  private void OnSetImage(object sender, ExecutedRoutedEventArgs e) {
+    try {
+      var fn = Dialogs.File.Open(
+        AppSettings.Paths.Img.filter,
+        "32518c2e-8d81-41e3-b872-2e4e0e06568a",
+        "",
+        "");
+      if (string.IsNullOrWhiteSpace(fn))
+        return;
+
+      ForEachSelectedItem((uId) => {
+        Edit.Image(uId, fn);
+      });
+    }
+    catch (Exception ex) {
+      MessageBox.Show(Owner, ex.Message);
+    }
+  }
+
   #endregion
 
   #region Data importing

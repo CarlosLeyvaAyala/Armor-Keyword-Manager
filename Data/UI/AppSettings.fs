@@ -14,8 +14,9 @@ module Paths =
     let SetApp dir = app <- dir
     let internal data () = combine2 app "Data"
 
-    [<RequireQualifiedAccess>]
     module Img =
+        let filter = "Image files (*.jpg;*.png;*.jpeg)|*.jpg;*.png;*.jpeg"
+
         let private uIdToFileName uId =
             uId |> replace "|" "___" |> replace "." "__"
 
@@ -43,6 +44,12 @@ module Paths =
 
         module Outfit =
             let dir () = combine2 app @"Data\Img\Outfits"
+            ///Converts an uId and extension to its corresponding full file path
+            let expandImg uId ext = expand (dir ()) uId ext
+            let copyImg name sourceFileName = copyImage (dir ()) name sourceFileName
+
+        module Item =
+            let dir () = combine2 app @"Data\Img\Items"
             ///Converts an uId and extension to its corresponding full file path
             let expandImg uId ext = expand (dir ()) uId ext
             let copyImg name sourceFileName = copyImage (dir ()) name sourceFileName

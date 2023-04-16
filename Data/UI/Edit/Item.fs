@@ -36,3 +36,10 @@ let AddTag id tag =
 let DelTag id tag =
     DB.update id (changeTags delWord tag)
     Tags.precalculate ()
+
+open Data.UI.AppSettings.Paths.Img.Item
+
+let Image uId filename =
+    let ext = copyImg uId filename
+    DB.update uId (fun d -> { d with image = ext })
+    expandImg uId ext

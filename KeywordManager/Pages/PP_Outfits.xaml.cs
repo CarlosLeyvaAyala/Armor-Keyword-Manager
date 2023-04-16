@@ -1,4 +1,5 @@
-﻿using Data.UI.Outfit;
+﻿using Data.UI;
+using Data.UI.Outfit;
 using GUI;
 using IO.Outfit;
 using KeywordManager.Properties;
@@ -61,8 +62,11 @@ public partial class PP_Outfits : UserControl {
   }
 
   private void OnSetImgClick(object sender, RoutedEventArgs e) =>
-    SetImage(Dialogs.File.Open("Image files (*.jpg;*.png;*.bmp;*.jpeg)|*.jpg;*.png;*.bmp;*.jpeg",
-                          "f07db2f1-a50e-4487-b3b2-8f384d3732aa", "", ""));
+    SetImage(Dialogs.File.Open(
+      AppSettings.Paths.Img.filter,
+      "f07db2f1-a50e-4487-b3b2-8f384d3732aa",
+      "",
+      ""));
 
   private void OnSetImgDrop(object sender, DragEventArgs e) => SetImage(FileHelper.GetDroppedFile(e));
 

@@ -30,6 +30,11 @@
       CanExecute="OnCanCreateUnboundOutfit"
       Command="c:ItemCmds.CreateUnboundOutfit"
       Executed="OnCreateUnboundOutfit" />
+
+    <CommandBinding
+      CanExecute="OnCanSetImage"
+      Command="c:ItemCmds.SetImage"
+      Executed="OnSetImage" />
   </UserControl.CommandBindings>
 
   <md:DrawerHost
@@ -282,8 +287,8 @@
                     ToolTipService.InitialShowDelay="1000">
                     <Grid.ToolTip>
                       <Grid>
-                        <TextBlock Text="This item belongs to no outfits with preview images" Visibility="{Binding TooltipVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
-                        <ItemsControl ItemsSource="{Binding OutfitImg, IsAsync=true}">
+                        <TextBlock Text="This item has no image and does not belong&#x0a;to any outfits with preview images" Visibility="{Binding TooltipVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                        <ItemsControl ItemsSource="{Binding Imgs, IsAsync=true}">
                           <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                               <WrapPanel />
@@ -339,6 +344,8 @@
               </ListBox.ItemTemplate>
               <ListBox.ContextMenu>
                 <ContextMenu>
+                  <MenuItem Command="c:ItemCmds.SetImage" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                  <Separator />
                   <MenuItem Command="c:ItemCmds.CreateUnboundOutfit" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
                 </ContextMenu>
               </ListBox.ContextMenu>

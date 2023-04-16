@@ -8,7 +8,7 @@ open DMLib.String
 open DMLib
 open DMLib.Collections
 open Data.UI.Common
-open Data.UI.AppSettings.Paths.Img.Outfit
+open Data.UI.AppSettings.Paths.Img
 
 module Outfits = Data.Outfit.Database
 
@@ -22,12 +22,18 @@ type NavList(uniqueId: string, d: Raw) =
     member val IsAmmo = d.itemType = int ItemType.Ammo
     override this.ToString() = this.Name
 
-    member t.OutfitImg =
-        Outfits.outfitsWithPieces t.UniqueId
-        |> Array.map (fun (uId, ext) -> expandImg uId ext)
+    member t.Imgs =
+        let outfits =
+            Outfits.outfitsWithPieces t.UniqueId
+            |> Array.map (fun (uId, ext) -> Outfit.expandImg uId ext)
+
+        match d.image with
+        | "" -> [||]
+        | img -> [| Item.expandImg uniqueId img |]
+        |> Array.append outfits
         |> toCList
 
-    member t.TooltipVisible = t.OutfitImg.Count > 0
+    member t.TooltipVisible = t.Imgs.Count > 0
 
 
 type NavItem(uniqueId: string) =

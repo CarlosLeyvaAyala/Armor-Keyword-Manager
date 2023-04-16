@@ -80,6 +80,7 @@ type AppCmds private () =
 [<Sealed>]
 type ItemCmds private () =
     static let create = createCmd (fun () -> typeof<ItemCmds>)
+    static let basic = basicCmd create
 
     static member val DelKeyword =
         { name = "DelKeyword"
@@ -89,10 +90,5 @@ type ItemCmds private () =
           modifiers = ModifierKeys.None }
         |> create
 
-    static member val CreateUnboundOutfit =
-        { name = "CreateUnboundOutfit"
-          text = "Create new outfit"
-          keyDisplay = ""
-          key = Key.None
-          modifiers = ModifierKeys.None }
-        |> create
+    static member val CreateUnboundOutfit = basic "CreateUnboundOutfit" "Create new outfit"
+    static member val SetImage = basic "SetImage" "Set image"

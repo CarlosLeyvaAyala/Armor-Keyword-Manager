@@ -328,7 +328,10 @@
                         Foreground="{StaticResource clbRbActive}"
                         Kind="TshirtCrew"
                         Visibility="{Binding BelongsToOutfit, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                      <TextBlock Grid.Column="1" Text="{Binding Name}">
+                      <TextBlock
+                        Grid.Column="1"
+                        Margin="0,0,5,0"
+                        Text="{Binding Name}">
                         <!--<TextBlock.Style>
                           <Style BasedOn="{StaticResource NavTxtMain}" TargetType="TextBlock">
                             <Style.Triggers>
@@ -339,6 +342,18 @@
                           </Style>
                         </TextBlock.Style>-->
                       </TextBlock>
+                      <md:PackIcon
+                        Margin="0,0,5,0"
+                        Foreground="{StaticResource clbRbInactive}"
+                        Kind="TagOutline"
+                        Opacity="0.25"
+                        Visibility="{Binding HasTags, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                      <md:PackIcon
+                        Margin="0,0,5,0"
+                        Foreground="{StaticResource clbRbInactive}"
+                        Kind="KeyOutline"
+                        Opacity="0.25"
+                        Visibility="{Binding HasKeywords, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     </StackPanel>
 
                     <!--  ESP  -->

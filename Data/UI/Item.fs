@@ -29,6 +29,9 @@ type NavList(uniqueId: string, d: Raw) =
     member _.IsWeapon = u.itemType = int ItemType.Weapon
     member _.IsAmmo = u.itemType = int ItemType.Ammo
     member _.HasImage = u.image <> ""
+    member _.HasTags = u.tags.Length > 0
+    member _.HasKeywords = u.keywords.Length > 0
+
     override this.ToString() = this.Name
 
     member _.Imgs =

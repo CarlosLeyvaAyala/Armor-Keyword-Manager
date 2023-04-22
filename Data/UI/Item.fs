@@ -13,6 +13,10 @@ open Data.UI.AppSettings.Paths.Img
 module Outfits = Data.Outfit.Database
 
 type NavList(uniqueId: string, d: Raw) =
+    let outfits =
+        Outfits.outfitsWithPieces uniqueId
+        |> Array.map (fun (uId, ext) -> Outfit.expandImg uId ext)
+
     member val Name = d.name with get, set
     member val Esp = d.esp with get, set
     member val EDID = d.edid with get, set
@@ -20,11 +24,11 @@ type NavList(uniqueId: string, d: Raw) =
     member val IsArmor = d.itemType = int ItemType.Armor
     member val IsWeapon = d.itemType = int ItemType.Weapon
     member val IsAmmo = d.itemType = int ItemType.Ammo
+    member val HasImage = d.image <> ""
     override this.ToString() = this.Name
 
     member t.Imgs =
-        Outfits.outfitsWithPieces t.UniqueId
-        |> Array.map (fun (uId, ext) -> Outfit.expandImg uId ext)
+        outfits
         |> Array.append (
             match d.image with
             | "" -> [||]
@@ -32,7 +36,8 @@ type NavList(uniqueId: string, d: Raw) =
         )
         |> toCList
 
-    member t.TooltipVisible = t.Imgs.Count > 0
+    member t.TooltipVisible = t.HasImage || t.BelongsToOutfit //t.Imgs.Count > 0
+    member _.BelongsToOutfit = outfits.Length > 0
 
 
 type NavItem(uniqueId: string) =

@@ -315,17 +315,41 @@
                       <ColumnDefinition Width="auto" />
                       <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.ColumnSpan="2" Text="{Binding Name}">
-                      <TextBlock.Style>
-                        <Style BasedOn="{StaticResource NavTxtMain}" TargetType="TextBlock">
-                          <Style.Triggers>
-                            <DataTrigger Binding="{Binding TooltipVisible}" Value="True">
-                              <Setter Property="Foreground" Value="{StaticResource PrimaryHueDarkBrush}" />
-                            </DataTrigger>
-                          </Style.Triggers>
-                        </Style>
-                      </TextBlock.Style>
-                    </TextBlock>
+
+                    <!--  NAME  -->
+                    <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal">
+                      <md:PackIcon
+                        Margin="0,0,5,0"
+                        Foreground="{StaticResource clbRbActive}"
+                        Kind="Image"
+                        Visibility="{Binding HasImage, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                      <md:PackIcon
+                        Margin="0,0,5,0"
+                        Foreground="{StaticResource clbRbActive}"
+                        Kind="TshirtCrew"
+                        Visibility="{Binding BelongsToOutfit, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                      <TextBlock Grid.Column="1" Text="{Binding Name}">
+                        <!--<TextBlock.Style>
+                          <Style BasedOn="{StaticResource NavTxtMain}" TargetType="TextBlock">
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding TooltipVisible}" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource PrimaryHueDarkBrush}" />
+                              </DataTrigger>
+                            </Style.Triggers>
+                          </Style>
+                        </TextBlock.Style>-->
+                      </TextBlock>
+                    </StackPanel>
+
+                    <!--  ESP  -->
+                    <TextBlock
+                      Grid.Row="1"
+                      Grid.Column="0"
+                      VerticalAlignment="Bottom"
+                      Style="{StaticResource NavTxtD2}"
+                      Text="{Binding Esp}" />
+
+                    <!--  EDID  -->
                     <TextBlock
                       Grid.Row="1"
                       Grid.Column="1"
@@ -333,12 +357,6 @@
                       VerticalAlignment="Bottom"
                       Style="{StaticResource NavTxtD1}"
                       Text="{Binding EDID}" />
-                    <TextBlock
-                      Grid.Row="1"
-                      Grid.Column="0"
-                      VerticalAlignment="Bottom"
-                      Style="{StaticResource NavTxtD2}"
-                      Text="{Binding Esp}" />
                   </Grid>
                 </DataTemplate>
               </ListBox.ItemTemplate>

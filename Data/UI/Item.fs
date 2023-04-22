@@ -13,32 +13,39 @@ open Data.UI.AppSettings.Paths.Img
 module Outfits = Data.Outfit.Database
 
 type NavList(uniqueId: string, d: Raw) =
+    inherit WPFBindable()
+
+    let mutable u = d
+
     let outfits =
         Outfits.outfitsWithPieces uniqueId
         |> Array.map (fun (uId, ext) -> Outfit.expandImg uId ext)
 
-    member val Name = d.name with get, set
-    member val Esp = d.esp with get, set
-    member val EDID = d.edid with get, set
-    member val UniqueId = uniqueId with get, set
-    member val IsArmor = d.itemType = int ItemType.Armor
-    member val IsWeapon = d.itemType = int ItemType.Weapon
-    member val IsAmmo = d.itemType = int ItemType.Ammo
-    member val HasImage = d.image <> ""
+    member _.Name = u.name
+    member _.Esp = u.esp
+    member _.EDID = u.edid
+    member _.UniqueId = uniqueId
+    member _.IsArmor = u.itemType = int ItemType.Armor
+    member _.IsWeapon = u.itemType = int ItemType.Weapon
+    member _.IsAmmo = u.itemType = int ItemType.Ammo
+    member _.HasImage = u.image <> ""
     override this.ToString() = this.Name
 
-    member t.Imgs =
+    member _.Imgs =
         outfits
         |> Array.append (
-            match d.image with
+            match u.image with
             | "" -> [||]
             | img -> [| Item.expandImg uniqueId img |]
         )
         |> toCList
 
-    member t.TooltipVisible = t.HasImage || t.BelongsToOutfit //t.Imgs.Count > 0
+    member t.TooltipVisible = t.HasImage || t.BelongsToOutfit
     member _.BelongsToOutfit = outfits.Length > 0
 
+    member t.Refresh() =
+        u <- DB.find uniqueId
+        t.OnPropertyChanged("")
 
 type NavItem(uniqueId: string) =
     let d = DB.find uniqueId
@@ -108,7 +115,7 @@ module private Ops =
         |> filter
         |> Array.Parallel.map NavList
         |> Array.sortBy (fun o -> o.Name.ToLower())
-        |> Collections.toCList
+        |> Collections.toObservableCollection
 
 
 [<RequireQualifiedAccess>]

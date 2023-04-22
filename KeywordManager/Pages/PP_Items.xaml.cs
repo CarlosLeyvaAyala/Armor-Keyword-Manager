@@ -110,8 +110,10 @@ public partial class PP_Items : UserControl, IFilterable {
 
   #region Data manipulation
   void ForEachSelectedItem(Action<string> DoSomething) {
-    foreach (var item in lstNavItems.SelectedItems)
+    foreach (NavList item in lstNavItems.SelectedItems) {
       DoSomething(UId(item));
+      item.Refresh();
+    }
 
     ReloadSelectedItem();
   }
@@ -218,9 +220,7 @@ public partial class PP_Items : UserControl, IFilterable {
       if (string.IsNullOrWhiteSpace(fn))
         return;
 
-      ForEachSelectedItem((uId) => {
-        Edit.Image(uId, fn);
-      });
+      ForEachSelectedItem((uId) => Edit.Image(uId, fn));
     }
     catch (Exception ex) {
       MessageBox.Show(Owner, ex.Message);

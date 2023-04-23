@@ -316,7 +316,6 @@
                       <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <!--  NAME  -->
                     <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal">
                       <md:PackIcon
                         Margin="0,0,5,0"
@@ -327,20 +326,22 @@
                         Margin="0,0,5,0"
                         Foreground="{StaticResource clbRbActive}"
                         Kind="TshirtCrew"
-                        Visibility="{Binding BelongsToOutfit, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        Visibility="{Binding BelongsToOutfitWithImg, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                      
+                      <!--  NAME  -->
                       <TextBlock
                         Grid.Column="1"
                         Margin="0,0,5,0"
                         Text="{Binding Name}">
-                        <!--<TextBlock.Style>
+                        <TextBlock.Style>
                           <Style BasedOn="{StaticResource NavTxtMain}" TargetType="TextBlock">
                             <Style.Triggers>
-                              <DataTrigger Binding="{Binding TooltipVisible}" Value="True">
+                              <DataTrigger Binding="{Binding BelongsToOutfit}" Value="True">
                                 <Setter Property="Foreground" Value="{StaticResource PrimaryHueDarkBrush}" />
                               </DataTrigger>
                             </Style.Triggers>
                           </Style>
-                        </TextBlock.Style>-->
+                        </TextBlock.Style>
                       </TextBlock>
                       <md:PackIcon
                         Margin="0,0,5,0"

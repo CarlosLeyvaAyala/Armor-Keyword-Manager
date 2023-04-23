@@ -15,11 +15,15 @@ module Outfits = Data.Outfit.Database
 type NavList(uniqueId: string, d: Raw) =
     inherit WPFBindable()
 
+    let getImgOutfits () =
+        Outfits.outfitsWithPiecesImg uniqueId
+        |> Array.map (fun (uId, ext) -> Outfit.expandImg uId ext)
+
     let mutable u = d
 
-    let outfits =
-        Outfits.outfitsWithPieces uniqueId
-        |> Array.map (fun (uId, ext) -> Outfit.expandImg uId ext)
+    let mutable outfitsImg = getImgOutfits ()
+    //Outfits.outfitsWithPiecesImg uniqueId
+    //|> Array.map (fun (uId, ext) -> Outfit.expandImg uId ext)
 
     member _.Name = u.name
     member _.Esp = u.esp
@@ -35,7 +39,7 @@ type NavList(uniqueId: string, d: Raw) =
     override this.ToString() = this.Name
 
     member _.Imgs =
-        outfits
+        outfitsImg
         |> Array.append (
             match u.image with
             | "" -> [||]
@@ -43,11 +47,13 @@ type NavList(uniqueId: string, d: Raw) =
         )
         |> toCList
 
-    member t.TooltipVisible = t.HasImage || t.BelongsToOutfit
-    member _.BelongsToOutfit = outfits.Length > 0
+    member t.TooltipVisible = t.HasImage || t.BelongsToOutfitWithImg
+    member _.BelongsToOutfitWithImg = outfitsImg.Length > 0
+    member _.BelongsToOutfit = (Outfits.outfitsWithPieces uniqueId |> Array.length) > 0
 
     member t.Refresh() =
         u <- DB.find uniqueId
+        outfitsImg <- getImgOutfits ()
         t.OnPropertyChanged("")
 
 type NavItem(uniqueId: string) =

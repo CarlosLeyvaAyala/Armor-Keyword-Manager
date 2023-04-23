@@ -151,7 +151,7 @@ module internal Database =
 
     let importMany lines = lines |> Seq.iter import
 
-    let outfitsWithPieces armorPiece =
+    let outfitsWithPiecesImg armorPiece =
         let ap = armorPiece |> UniqueId |> ArmorPiece
 
         db
@@ -165,6 +165,13 @@ module internal Database =
             |> Option.flatten)
         |> Map.toArray
         |> Array.map (fun (uId, img) -> uId.Value, img.Value)
+
+    let outfitsWithPieces armorPiece =
+        let ap = armorPiece |> UniqueId |> ArmorPiece
+
+        db
+        |> Map.toArray
+        |> Array.Parallel.choose (fun (_, v) -> v.pieces |> List.tryFind (fun p -> ap = p))
 
     /// An "unbound" outfit belongs to no esp and is used for player documentation
     let addUnbound name selected =

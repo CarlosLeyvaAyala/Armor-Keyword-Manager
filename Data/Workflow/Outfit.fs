@@ -161,10 +161,10 @@ module internal Database =
             |> Option.map (fun _ ->
                 match v.img with
                 | EmptyImage -> None
-                | _ -> Some v.img)
+                | _ -> Some(v.name, v.img))
             |> Option.flatten)
         |> Map.toArray
-        |> Array.map (fun (uId, img) -> uId.Value, img.Value)
+        |> Array.map (fun (uId, (name, img)) -> uId.Value, name.Value, img.Value)
 
     let outfitsWithPieces armorPiece =
         let ap = armorPiece |> UniqueId |> ArmorPiece

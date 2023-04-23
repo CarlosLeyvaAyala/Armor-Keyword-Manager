@@ -12,18 +12,48 @@ open Data.UI.AppSettings.Paths.Img
 
 module Outfits = Data.Outfit.Database
 
+type TooltipImage(name, img) =
+    member _.Name = name
+    member _.Src = img
+
 type NavList(uniqueId: string, d: Raw) =
     inherit WPFBindable()
+    static let maxImgNumber = 6
+
+    let shuffle xs =
+        let swap i j (array: _ []) =
+            let tmp = array.[i]
+            array.[i] <- array.[j]
+            array.[j] <- tmp
+
+        let rnd = System.Random()
+        let xArray = Seq.toArray xs
+        let n = Array.length xArray
+
+        for i in [ 0 .. (n - 2) ] do
+            let j = rnd.Next(i, n - 1)
+            swap i j xArray
+
+        xArray |> Seq.ofArray
 
     let getImgOutfits () =
-        Outfits.outfitsWithPiecesImg uniqueId
-        |> Array.map (fun (uId, ext) -> Outfit.expandImg uId ext)
+        let r =
+            Outfits.outfitsWithPiecesImg uniqueId
+            |> Array.map (fun (uId, name, ext) -> $"Outfit: {name}", Outfit.expandImg uId ext)
+
+        let maxOutfits = maxImgNumber - 1
+
+        if r.Length > maxOutfits then
+            r
+            |> shuffle
+            |> Array.ofSeq
+            |> Array.truncate maxOutfits
+        else
+            r
 
     let mutable u = d
 
     let mutable outfitsImg = getImgOutfits ()
-    //Outfits.outfitsWithPiecesImg uniqueId
-    //|> Array.map (fun (uId, ext) -> Outfit.expandImg uId ext)
 
     member _.Name = u.name
     member _.Esp = u.esp
@@ -43,8 +73,9 @@ type NavList(uniqueId: string, d: Raw) =
         |> Array.append (
             match u.image with
             | "" -> [||]
-            | img -> [| Item.expandImg uniqueId img |]
+            | img -> [| u.name, Item.expandImg uniqueId img |]
         )
+        |> Array.map TooltipImage
         |> toCList
 
     member t.TooltipVisible = t.HasImage || t.BelongsToOutfitWithImg

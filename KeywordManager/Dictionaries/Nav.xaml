@@ -1,4 +1,7 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes">
 
   <Style x:Key="NavTxtMain" TargetType="TextBlock">
     <Setter Property="FontSize" Value="13" />
@@ -12,5 +15,18 @@
   <Style x:Key="NavTxtD2" TargetType="TextBlock">
     <Setter Property="FontSize" Value="10" />
     <Setter Property="Opacity" Value="0.5" />
+  </Style>
+
+  <Style x:Key="piNav" TargetType="md:PackIcon">
+    <Setter Property="Width" Value="24" />
+    <Setter Property="Height" Value="24" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+  </Style>
+
+  <Style x:Key="txtNav" TargetType="TextBlock">
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="FontSize" Value="10" />
+    <Setter Property="TextAlignment" Value="Center" />
+    <Setter Property="Margin" Value="{StaticResource MgTopNaarrow}" />
   </Style>
 </ResourceDictionary>

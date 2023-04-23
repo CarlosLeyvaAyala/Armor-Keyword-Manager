@@ -37,10 +37,10 @@
         <ListBox
           x:Name="lstNav"
           HorizontalContentAlignment="Stretch"
-          SelectionMode="Extended"
-          KeyDown="OnLstNavKeyDown"
           d:ItemsSource="{d:SampleData ItemCount=10}"
-          SelectionChanged="OnNavSelectionChanged">
+          KeyDown="OnLstNavKeyDown"
+          SelectionChanged="OnNavSelectionChanged"
+          SelectionMode="Extended">
           <ListBox.ItemTemplate>
             <DataTemplate>
               <Grid d:DataContext="{d:DesignInstance Type=guiobjs:NavList}">
@@ -86,6 +86,8 @@
           </ListBox.ItemTemplate>
           <ListBox.ContextMenu>
             <ContextMenu>
+              <MenuItem Header="Batch Rename" Click="XXXXX" />
+              <Separator />
               <MenuItem Command="c:OutfitCmds.Del" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
             </ContextMenu>
           </ListBox.ContextMenu>

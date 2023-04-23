@@ -1,13 +1,11 @@
 ﻿using Data;
 using Data.UI;
 using Data.UI.Items;
-using GUI;
 using KeywordManager.UserControls;
 using Microsoft.Win32;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -222,7 +220,7 @@ public partial class PP_Items : UserControl, IFilterable {
   private void OnCanSetImage(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnSetImage(object sender, ExecutedRoutedEventArgs e) {
     try {
-      var fn = Dialogs.File.Open(
+      var fn = GUI.Dialogs.File.Open(
         AppSettings.Paths.Img.filter,
         "32518c2e-8d81-41e3-b872-2e4e0e06568a",
         "",

@@ -1,0 +1,112 @@
+﻿<Window
+  x:Class="KeywordManager.Dialogs.BatchRename_Window"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:KeywordManager.Dialogs"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+  Title="Batch Rename"
+  Width="600"
+  Height="650"
+  Background="{DynamicResource MaterialDesignPaper}"
+  FontFamily="{DynamicResource MaterialDesignFont}"
+  TextElement.FontSize="13"
+  TextElement.FontWeight="Regular"
+  TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+  TextOptions.TextFormattingMode="Ideal"
+  TextOptions.TextRenderingMode="Auto"
+  WindowStartupLocation="CenterOwner"
+  WindowStyle="ToolWindow"
+  mc:Ignorable="d">
+  <Grid Margin="{StaticResource MarginStd}">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <md:Card>
+      <StackPanel Margin="{StaticResource MgGrpContent}">
+        <TabControl
+          x:Name="tbcMain"
+          Margin="0"
+          HorizontalContentAlignment="Center"
+          md:ColorZoneAssist.Mode="PrimaryLight"
+          md:NavigationRailAssist.SelectionCornerRadius="0 0 20 20"
+          md:NavigationRailAssist.ShowSelectionBackground="True"
+          SelectedIndex="1"
+          SnapsToDevicePixels="True"
+          Style="{StaticResource MaterialDesignNavigationRailTabControl}"
+          TabStripPlacement="Top">
+
+          <TabItem Tag="insert">
+            <TabItem.Header>
+              <StackPanel Width="auto" Height="auto">
+                <md:PackIcon Kind="PlusBox" Style="{StaticResource piNav}" />
+                <TextBlock Style="{StaticResource txtNav}" Text="INSERT" />
+              </StackPanel>
+            </TabItem.Header>
+
+            <!--<TextBox Margin="{StaticResource MgTopNormal}" md:HintAssist.HelperText="Text to insert" />-->
+          </TabItem>
+
+          <TabItem Tag="delete">
+            <TabItem.Header>
+              <StackPanel Width="auto" Height="auto">
+                <md:PackIcon Kind="MinusBox" Style="{StaticResource piNav}" />
+                <TextBlock Style="{StaticResource txtNav}" Text="DELETE" />
+              </StackPanel>
+            </TabItem.Header>
+
+            <!--<TextBox Margin="{StaticResource MgTopNormal}" md:HintAssist.HelperText="Text to remove" />-->
+          </TabItem>
+
+          <TabItem Tag="regex">
+            <TabItem.Header>
+              <StackPanel Width="auto" Height="auto">
+                <md:PackIcon Kind="Regex" Style="{StaticResource piNav}" />
+                <TextBlock Style="{StaticResource txtNav}" Text="REGEX" />
+              </StackPanel>
+            </TabItem.Header>
+
+            <TextBox Margin="{StaticResource MgTopNormal}" md:HintAssist.HelperText="Regular expression" />
+          </TabItem>
+        </TabControl>
+
+        <TextBox
+          Margin="0,20,0,30"
+          md:HintAssist.HelperText="Text"
+          TextChanged="OnTxtParamMainChange" />
+      </StackPanel>
+    </md:Card>
+
+    <GroupBox
+      Grid.Row="1"
+      Margin="{StaticResource MgTopNormal}"
+      Header="Preview">
+      <ListBox
+        x:Name="lstPreview"
+        d:ItemsSource="{d:SampleData ItemCount=20}"
+        ItemsSource="{Binding}"
+        Style="{StaticResource MaterialDesignNavigationPrimaryListBox}">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <StackPanel Orientation="Horizontal">
+              <StackPanel.Resources>
+                <Style x:Key="txtDelim" TargetType="TextBlock">
+                  <Setter Property="Foreground" Value="{StaticResource SecondaryHueLightBrush}" />
+                  <Setter Property="Text" Value="&#xb6;" />
+                  <Setter Property="Margin" Value="1,0" />
+                  <Setter Property="Opacity" Value="0.7" />
+                </Style>
+              </StackPanel.Resources>
+              <TextBlock Style="{StaticResource txtDelim}" />
+              <TextBlock Text="{Binding}" />
+              <TextBlock Style="{StaticResource txtDelim}" />
+            </StackPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </GroupBox>
+  </Grid>
+</Window>

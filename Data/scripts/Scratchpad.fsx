@@ -1,7 +1,4 @@
-﻿open System.Console
-
-
-#r "nuget: carlos.leyva.ayala.dmlib"
+﻿#r "nuget: carlos.leyva.ayala.dmlib"
 #r "nuget: TextCopy"
 #r "nuget: FSharpx.Collections"
 //
@@ -81,3 +78,18 @@ let getOutfit (outfit: Data) k o =
 Outfits.testDb ()
 |> Map.toArray
 |> Array.Parallel.choose (fun (k, v) -> v.pieces |> List.tryFind (fun p -> ap = p))
+
+
+open System.Text.RegularExpressions
+let rx = new Regex("(.*)Dm Oft(.*)")
+
+[ "Dm Oft Atanis"
+  "Dm Oft Bifrost No Cape No Pauldrons"
+  "Dm Oft Black Hyacinth"
+  "Dm Oft Ancient Oasis"
+  "Dm Oft Atanis"
+  "Dm Oft Bifrost No Cape No Pauldrons"
+  "Dm Oft Black Hyacinth"
+  "Dm Oft Ancient Oasis"
+  "Dm Oft Atanis" ]
+|> List.map (fun s -> rx.Replace(s, "$1$2"))

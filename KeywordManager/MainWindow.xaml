@@ -69,21 +69,6 @@
       Executed="OnBackupSettings" />
   </Window.CommandBindings>
 
-  <Window.Resources>
-    <Style x:Key="piNav" TargetType="md:PackIcon">
-      <Setter Property="Width" Value="24" />
-      <Setter Property="Height" Value="24" />
-      <Setter Property="HorizontalAlignment" Value="Center" />
-    </Style>
-
-    <Style x:Key="txtNav" TargetType="TextBlock">
-      <Setter Property="HorizontalAlignment" Value="Center" />
-      <Setter Property="FontSize" Value="10" />
-      <Setter Property="TextAlignment" Value="Center" />
-      <Setter Property="Margin" Value="{StaticResource MgTopNaarrow}" />
-    </Style>
-  </Window.Resources>
-
   <md:DialogHost Identifier="MainDlgHost">
     <DockPanel>
       <md:ColorZone

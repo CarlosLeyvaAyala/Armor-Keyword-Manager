@@ -1,13 +1,7 @@
 ﻿using Data.UI;
-using DMLib;
-using GUI;
 using IO;
-using KeywordManager.Pages;
 using KeywordManager.UserControls;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
@@ -56,7 +50,7 @@ public partial class MainWindow : Window {
 
   private void OnSaveFileAs(object sender, ExecutedRoutedEventArgs e) {
     try {
-      var fn = Dialogs.File.Save("Skyrim Items (*.skyitms)|*.skyitms", "1e2be86c-8d55-4894-82e9-65e8a3a027a5", "", "");
+      var fn = GUI.Dialogs.File.Save("Skyrim Items (*.skyitms)|*.skyitms", "1e2be86c-8d55-4894-82e9-65e8a3a027a5", "", "");
       if (string.IsNullOrWhiteSpace(fn))
         return;
 
@@ -73,7 +67,7 @@ public partial class MainWindow : Window {
 
   private void OnOpenFile(object sender, ExecutedRoutedEventArgs e) {
     try {
-      var fn = Dialogs.File.Open("Skyrim Items (*.skyitms)|*.skyitms", "1e2be86c-8d55-4894-82e9-65e8a3a027a5", "", "");
+      var fn = GUI.Dialogs.File.Open("Skyrim Items (*.skyitms)|*.skyitms", "1e2be86c-8d55-4894-82e9-65e8a3a027a5", "", "");
       if (string.IsNullOrWhiteSpace(fn))
         return;
 
@@ -89,7 +83,7 @@ public partial class MainWindow : Window {
 
   private void OnCanExportAs(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnExportAs(object sender, ExecutedRoutedEventArgs e) {
-    var d = Dialogs.SelectDir(Settings.Default.mostRecentExportDir);
+    var d = GUI.Dialogs.SelectDir(Settings.Default.mostRecentExportDir);
     if (d == null)
       return;
     Settings.Default.mostRecentExportDir = d;
@@ -110,7 +104,7 @@ public partial class MainWindow : Window {
 
   private void OnCanFileJsonExport(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = File.Exists(workingFile);
   private void OnFileJsonExport(object sender, ExecutedRoutedEventArgs e) {
-    var fn = Dialogs.File.Save("Json (*.json)|*.json", "5e8659d3-6722-4e8d-982d-fbaa75b1519b", "", "");
+    var fn = GUI.Dialogs.File.Save("Json (*.json)|*.json", "5e8659d3-6722-4e8d-982d-fbaa75b1519b", "", "");
     if (string.IsNullOrWhiteSpace(fn))
       return;
     PropietaryFile.SaveJson(fn);
@@ -118,7 +112,7 @@ public partial class MainWindow : Window {
 
   private void OnCanFileJsonImport(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnFileJsonImport(object sender, ExecutedRoutedEventArgs e) {
-    var fn = Dialogs.File.Open("Json (*.json)|*.json", "5e8659d3-6722-4e8d-982d-fbaa75b1519b", "", "");
+    var fn = GUI.Dialogs.File.Open("Json (*.json)|*.json", "5e8659d3-6722-4e8d-982d-fbaa75b1519b", "", "");
     if (string.IsNullOrWhiteSpace(fn))
       return;
     PropietaryFile.OpenJson(fn);
@@ -163,7 +157,7 @@ public partial class MainWindow : Window {
 
   private void OnCanRestoreSettings(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnRestoreSettings(object sender, ExecutedRoutedEventArgs e) {
-    var fn = Dialogs.File.Open(
+    var fn = GUI.Dialogs.File.Open(
       "Zip files (*.zip)|*.zip",
       "e63aa357-ce5c-424d-a175-b2592aac7af3",
       "",
@@ -177,7 +171,7 @@ public partial class MainWindow : Window {
 
   private void OnCanBackupSettings(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnBackupSettings(object sender, ExecutedRoutedEventArgs e) {
-    var fn = Dialogs.File.Save(
+    var fn = GUI.Dialogs.File.Save(
       "Zip files (*.zip)|*.zip",
       "e63aa357-ce5c-424d-a175-b2592aac7af3",
       "",

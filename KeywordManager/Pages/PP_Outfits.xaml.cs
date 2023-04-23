@@ -1,11 +1,12 @@
 ﻿using Data.UI;
 using Data.UI.Outfit;
-using GUI;
 using IO.Outfit;
+using KeywordManager.Dialogs;
 using KeywordManager.Properties;
 using System;
-using System.Diagnostics;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -64,7 +65,7 @@ public partial class PP_Outfits : UserControl {
   }
 
   private void OnSetImgClick(object sender, RoutedEventArgs e) =>
-    SetImage(Dialogs.File.Open(
+    SetImage(GUI.Dialogs.File.Open(
       AppSettings.Paths.Img.filter,
       "f07db2f1-a50e-4487-b3b2-8f384d3732aa",
       "",
@@ -84,7 +85,7 @@ public partial class PP_Outfits : UserControl {
 
   private void OnCanDel(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = lstNav.SelectedIndex > -1;
   private void OnDel(object sender, ExecutedRoutedEventArgs e) {
-    var r = Dialogs.WarningYesNoMessageBox(
+    var r = GUI.Dialogs.WarningYesNoMessageBox(
       Owner,
       "Deleting oufits can not be undone.\n\nDo you wish to continue?",
       "Undoable operation");
@@ -104,5 +105,12 @@ public partial class PP_Outfits : UserControl {
     if (e.Key == Key.Delete)
       GUI.Commands.OutfitCmds.Del.Execute(null, this);
     e.Handled = true;
+  }
+
+  private void XXXXX(object sender, RoutedEventArgs e) {
+    var sel = lstNav.SelectedItems.OfType<NavList>()
+      .Select(i => new Data.UI.BatchRename.Item(i.UId, i.Name))
+      .ToArray();
+    BatchRename_Window.Execute(Owner, new ObservableCollection<Data.UI.BatchRename.Item>(sel));
   }
 }

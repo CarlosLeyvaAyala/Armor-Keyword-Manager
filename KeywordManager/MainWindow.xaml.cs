@@ -2,8 +2,10 @@
 using DMLib;
 using GUI;
 using IO;
+using KeywordManager.Pages;
 using KeywordManager.UserControls;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -186,4 +188,7 @@ public partial class MainWindow : Window {
 
     AppSettings.Backup.Create(fn);
   }
+
+  public void OnOutfitImgWasSet(string outfitId) => ppItems.OnOutfitImgWasSet(outfitId);
+
 }

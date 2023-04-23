@@ -77,6 +77,7 @@ public partial class PP_Outfits : UserControl {
       return;
     SelectedNav.Img = Edit.Image(uId, filename);
     ReloadSelectedItem();
+    Owner.OnOutfitImgWasSet(uId);
   }
 
   private void OnNavSelectionChanged(object sender, SelectionChangedEventArgs e) => ReloadSelectedItem();

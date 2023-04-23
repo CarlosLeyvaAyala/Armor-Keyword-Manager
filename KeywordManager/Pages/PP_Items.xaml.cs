@@ -7,6 +7,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -106,6 +107,15 @@ public partial class PP_Items : UserControl, IFilterable {
 
   private void OnFilter(object sender, RoutedEventArgs e) => ApplyFilter(edtFilter.Text, ((FilterTagEventArgs)e).Tags);
   private void OnFilterAndOr(object sender, RoutedEventArgs e) => ApplyFilter(edtFilter.Text, tagFilter.CheckedTags);
+
+  public void OnOutfitImgWasSet(string outfitId) {
+    var pieces = new HashSet<string>(Data.UI.Outfit.Edit.GetPieces(outfitId));
+    var navItems = lstNavItems.Items.OfType<NavList>()
+        .Where(n => pieces.Contains(n.UniqueId));
+
+    foreach (var navItem in navItems)
+      navItem.Refresh();
+  }
   #endregion
 
   #region Data manipulation

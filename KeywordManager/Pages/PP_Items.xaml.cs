@@ -6,6 +6,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -80,6 +81,9 @@ public partial class PP_Items : UserControl, IFilterable {
     lstItemKeywords.ItemsSource = it.Keywords;
     lstItemTags.ItemsSource = it.Tags;
     cbItemTags.ItemsSource = it.MissingTags;
+
+    foreach (RadioButton r in pnlItemType.Children)
+      r.IsChecked = int.Parse((string)r.Tag) == it.ItemType;
   }
 
   private void OnFilterItems(object sender, TextChangedEventArgs e) {
@@ -233,6 +237,11 @@ public partial class PP_Items : UserControl, IFilterable {
     catch (Exception ex) {
       MessageBox.Show(Owner, ex.Message);
     }
+  }
+
+  private void OnChangeItemType(object sender, RoutedEventArgs e) {
+    var r = (RadioButton)sender;
+    Edit.ItemType(uId, int.Parse((string)r.Tag));
   }
 
   #endregion

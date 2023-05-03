@@ -43,3 +43,6 @@ let Image uId filename =
     let ext = copyImg uId filename
     DB.update uId (fun d -> { d with image = ext })
     expandImg uId ext
+
+let ItemType uId t =
+    DB.update uId (fun d -> { d with itemType = t })

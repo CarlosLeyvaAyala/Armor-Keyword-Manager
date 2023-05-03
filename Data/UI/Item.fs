@@ -107,6 +107,8 @@ type NavItem(uniqueId: string) =
         |> Set.toArray
         |> toCList
 
+    member val ItemType = d.itemType
+
 type private FilterFunc<'a, 'b> = ('a * 'b) array -> ('a * 'b) array
 
 [<AutoOpen>]

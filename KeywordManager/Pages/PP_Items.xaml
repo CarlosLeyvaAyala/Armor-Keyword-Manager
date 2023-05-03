@@ -127,6 +127,7 @@
               </ComboBox>
 
               <StackPanel
+                x:Name="pnlItemType"
                 Margin="4"
                 HorizontalAlignment="Center"
                 Orientation="Horizontal">
@@ -142,6 +143,7 @@
                 </StackPanel.Resources>
                 <RadioButton
                   Margin="4"
+                  Click="OnChangeItemType"
                   IsChecked="True"
                   Style="{StaticResource MaterialDesignTabRadioButton}"
                   Tag="0">
@@ -158,6 +160,7 @@
                 </RadioButton>
                 <RadioButton
                   Margin="4"
+                  Click="OnChangeItemType"
                   IsChecked="False"
                   Style="{StaticResource MaterialDesignTabRadioButton}"
                   Tag="1">
@@ -174,6 +177,7 @@
                 </RadioButton>
                 <RadioButton
                   Margin="4"
+                  Click="OnChangeItemType"
                   IsChecked="False"
                   Style="{StaticResource MaterialDesignTabRadioButton}"
                   Tag="2">

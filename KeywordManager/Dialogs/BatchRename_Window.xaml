@@ -54,7 +54,7 @@
             <TabItem.Header>
               <StackPanel Width="auto" Height="auto">
                 <md:PackIcon Kind="MinusBox" Style="{StaticResource piNav}" />
-                <TextBlock Style="{StaticResource txtNav}" Text="DELETE" />
+                <TextBlock Style="{StaticResource txtNav}" Text="REPLACE" />
               </StackPanel>
             </TabItem.Header>
 

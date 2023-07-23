@@ -216,6 +216,27 @@
               FontWeight="Bold"
               Text="Soon&#8482;" />
           </Grid>
+          <!--<pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />-->
+        </TabItem>
+
+        <!--  ENCHANTMENTS  -->
+        <TabItem>
+          <TabItem.Header>
+            <StackPanel Width="auto" Height="auto">
+              <md:PackIcon Kind="ShieldAccount" Style="{StaticResource piNav}" />
+              <TextBlock Style="{StaticResource txtNav}" Text="Builds" />
+            </StackPanel>
+          </TabItem.Header>
+          <!--<Grid>
+            <TextBlock
+              Margin="0,-20,0,0"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              FontSize="100"
+              FontWeight="Bold"
+              Text="Soon&#8482;" />
+          </Grid>-->
+          <pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />
         </TabItem>
       </TabControl>
     </DockPanel>

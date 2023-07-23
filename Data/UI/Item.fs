@@ -9,6 +9,7 @@ open DMLib
 open DMLib.Collections
 open Data.UI.Common
 open Data.UI.AppSettings.Paths.Img
+open DMLib.Combinators
 
 module Outfits = Data.Outfit.Database
 
@@ -111,6 +112,11 @@ type NavItem(uniqueId: string) =
 
 type private FilterFunc<'a, 'b> = ('a * 'b) array -> ('a * 'b) array
 
+type FilterPicSettings =
+    | Either = 0
+    | OnlyIfHasPic = 1
+    | OnlyIfHasNoPic = 2
+
 [<AutoOpen>]
 module private Ops =
     let searchAnd searchFor searchIn =
@@ -145,6 +151,17 @@ module private Ops =
         a
         |> Array.Parallel.filter (fun (_, v) -> f v.name || f v.esp || f v.edid)
 
+    let filterPics settings (a: ('a * Raw) array) =
+        let filter f =
+            a
+            |> Array.Parallel.filter (fun (_, v) -> f v.image)
+
+        match settings with
+        | FilterPicSettings.Either -> filterNothing a
+        | FilterPicSettings.OnlyIfHasPic -> filter (Not String.isNullOrEmpty)
+        | FilterPicSettings.OnlyIfHasNoPic -> filter String.isNullOrEmpty
+        | x -> failwith $"({x}) is not a valid picture filtering mode"
+
     let filterSimple word a =
         match word with
         | IsEmptyStr -> filterNothing a
@@ -167,10 +184,18 @@ module Nav =
 
     let Get () = getNav id
 
-    let GetFilterOr word list =
-        getNav ((filterOr list) >> (filterSimple word))
+    let GetFilterOr word tags picMode =
+        getNav (
+            (filterOr tags)
+            >> (filterPics picMode)
+            >> (filterSimple word)
+        )
 
-    let GetFilterAnd word list =
-        getNav ((filterAnd list) >> (filterSimple word))
+    let GetFilterAnd word tags picMode =
+        getNav (
+            (filterAnd tags)
+            >> (filterPics picMode)
+            >> (filterSimple word)
+        )
 
     let GetItem uId = NavItem(uId)

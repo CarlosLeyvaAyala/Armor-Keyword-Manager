@@ -1,0 +1,104 @@
+﻿<UserControl
+  x:Class="KeywordManager.Pages.PP_Enchantments"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:KeywordManager.Pages"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+  d:DesignHeight="450"
+  d:DesignWidth="800"
+  mc:Ignorable="d">
+  <Grid>
+    <!--  BUILD NAVIGATOR  -->
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="2*" />
+      <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
+      <ColumnDefinition Width="6*" />
+    </Grid.ColumnDefinitions>
+    <GroupBox Header="Builds" Style="{StaticResource MaterialDesignCardGroupBox}">
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="4*" />
+          <RowDefinition Height="{StaticResource GridSepVertical}" />
+          <RowDefinition Height="3*" />
+        </Grid.RowDefinitions>
+        <!--  NAV  -->
+        <ListBox d:ItemsSource="{d:SampleData ItemCount=20}" />
+
+        <!--  BUILD NOTES  -->
+        <TextBox
+          Grid.Row="2"
+          Margin="0,0,0,20"
+          VerticalAlignment="Stretch"
+          VerticalContentAlignment="Top"
+          md:HintAssist.HelperText="Build notes"
+          md:HintAssist.Hint="Build description."
+          AcceptsReturn="True"
+          HorizontalScrollBarVisibility="Auto"
+          SpellCheck.IsEnabled="False"
+          VerticalScrollBarVisibility="Auto" />
+        <!--<GroupBox
+          Grid.Row="2"
+          md:ColorZoneAssist.Mode="PrimaryLight"
+          Header="Build notes"
+          Style="{StaticResource MaterialDesignCardGroupBox}">
+        </GroupBox>-->
+      </Grid>
+    </GroupBox>
+
+    <!--  ARMOR SETS  -->
+    <GroupBox
+      Grid.Column="2"
+      md:ColorZoneAssist.Mode="PrimaryDark"
+      Header="Armor sets"
+      Style="{StaticResource MaterialDesignCardGroupBox}">
+
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="3*" />
+          <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
+          <ColumnDefinition Width="6*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" />
+          <RowDefinition Height="{StaticResource GridSepVertical}" />
+          <RowDefinition Height="2*" />
+        </Grid.RowDefinitions>
+
+        <!--  ARMOR SET NAVIGATOR  -->
+        <ListBox Grid.ColumnSpan="3" d:ItemsSource="{d:SampleData ItemCount=5}" />
+
+        <!--  ARMOR PIECES  -->
+        <GroupBox
+          Grid.Row="2"
+          Grid.Column="0"
+          md:ColorZoneAssist.Mode="PrimaryLight"
+          Header="Armor pieces"
+          Style="{StaticResource MaterialDesignCardGroupBox}">
+          <ListBox d:ItemsSource="{d:SampleData ItemCount=10}" />
+        </GroupBox>
+
+        <!--  DATA  -->
+        <GroupBox
+          Grid.Row="2"
+          Grid.Column="2"
+          md:ColorZoneAssist.Mode="SecondaryLight"
+          Header="Armor piece data"
+          Style="{StaticResource MaterialDesignCardGroupBox}">
+          <StackPanel Margin="{StaticResource MgGrpContent}">
+            <ComboBox md:HintAssist.HelperText="Enchantment" SelectedIndex="0">
+              <ComboBoxItem>
+                &lt;NONE&gt;
+              </ComboBoxItem>
+            </ComboBox>
+            <TextBox
+              Margin="{StaticResource MgTopXWide}"
+              md:HintAssist.HelperText="New name"
+              md:HintAssist.Hint="Leave blank to keep original name" />
+          </StackPanel>
+        </GroupBox>
+      </Grid>
+    </GroupBox>
+  </Grid>
+</UserControl>

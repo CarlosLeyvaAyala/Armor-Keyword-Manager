@@ -39,7 +39,7 @@
 
   <md:DrawerHost
     x:Name="dhMain"
-    IsTopDrawerOpen="False"
+    IsTopDrawerOpen="true"
     OpenMode="Default"
     TopDrawerCornerRadius="0 0 20 20">
     <!--  TAG FILTER  -->
@@ -50,19 +50,62 @@
           VerticalAlignment="Top"
           DockPanel.Dock="Right"
           Orientation="Vertical">
-          <RadioButton
-            x:Name="rbTagsAnd"
-            Margin="{StaticResource MgTopNaarrow}"
-            Click="OnFilterAndOr"
-            Content="AND"
-            IsChecked="True"
-            Style="{StaticResource MaterialDesignTabRadioButtonBottom}" />
-          <RadioButton
-            x:Name="rbTagsOr"
-            Click="OnFilterAndOr"
-            Content="OR"
-            IsChecked="False"
-            Style="{StaticResource MaterialDesignTabRadioButtonBottom}" />
+
+          <!--  AND OR  -->
+          <StackPanel>
+            <RadioButton
+              x:Name="rbTagsAnd"
+              Margin="{StaticResource MgTopNaarrow}"
+              Click="OnFilterAndOr"
+              Content="AND"
+              IsChecked="True"
+              Style="{StaticResource MaterialDesignTabRadioButtonBottom}" />
+            <RadioButton
+              x:Name="rbTagsOr"
+              Click="OnFilterAndOr"
+              Content="OR"
+              IsChecked="False"
+              Style="{StaticResource MaterialDesignTabRadioButtonBottom}" />
+          </StackPanel>
+
+          <!--  PIC SETTINGS  -->
+          <StackPanel Margin="{StaticResource MgTopWide}">
+            <RadioButton
+              x:Name="rbPicSetHas"
+              Margin="{StaticResource MgTopNaarrow}"
+              Click="OnFilterAndOr"
+              IsChecked="False"
+              Style="{StaticResource MaterialDesignTabRadioButtonBottom}">
+              <StackPanel>
+                <md:PackIcon HorizontalAlignment="Center" Kind="Image" />
+                <TextBlock Margin="0,4,0,0" Text="HAS" />
+              </StackPanel>
+            </RadioButton>
+
+            <RadioButton
+              x:Name="rbPicSetHasNot"
+              Margin="{StaticResource MgTopNaarrow}"
+              Click="OnFilterAndOr"
+              IsChecked="False"
+              Style="{StaticResource MaterialDesignTabRadioButtonBottom}">
+              <StackPanel>
+                <md:PackIcon HorizontalAlignment="Center" Kind="ImageOff" />
+                <TextBlock Margin="0,4,0,0" Text="HAS NOT" />
+              </StackPanel>
+            </RadioButton>
+
+            <RadioButton
+              x:Name="rbPicSetEither"
+              Margin="{StaticResource MgTopNaarrow}"
+              Click="OnFilterAndOr"
+              IsChecked="True"
+              Style="{StaticResource MaterialDesignTabRadioButtonBottom}">
+              <StackPanel>
+                <md:PackIcon HorizontalAlignment="Center" Kind="ImageMultiple" />
+                <TextBlock Margin="0,4,0,0" Text="EITHER" />
+              </StackPanel>
+            </RadioButton>
+          </StackPanel>
         </StackPanel>
 
         <uc:TagViewer

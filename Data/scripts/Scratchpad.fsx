@@ -93,3 +93,113 @@ let rx = new Regex("(.*)Dm Oft(.*)")
   "Dm Oft Ancient Oasis"
   "Dm Oft Atanis" ]
 |> List.map (fun s -> rx.Replace(s, "$1$2"))
+
+///////////////////////////////////////////////////
+
+/// Equiment name options
+type EquipmentName =
+    | SameName // Don't export because the TS interface is optional
+    | ChangeName of string
+
+    member t.toRaw() =
+        match t with
+        | SameName -> ""
+        | ChangeName n -> n
+
+    static member toRaw(t: EquipmentName) = t.toRaw ()
+
+    static member ofRaw(t: RawEquipmentName) =
+        match t with
+        | IsEmptyStr -> SameName
+        | n -> ChangeName n
+
+and RawEquipmentName = string
+
+/// Armor piece data
+type Equipment =
+    { changedName: EquipmentName
+      enchantment: UniqueId }
+
+    member t.toRaw() : RawEquipment =
+        { changedName = t.changedName.toRaw ()
+          enchantment = t.enchantment.Value }
+
+    static member toRaw(t: Equipment) = t.toRaw ()
+
+    static member ofRaw(t: RawEquipment) =
+        { changedName = t.changedName |> EquipmentName.ofRaw
+          enchantment = t.enchantment |> UniqueId }
+
+and RawEquipment =
+    { changedName: RawEquipmentName
+      enchantment: string }
+
+/// Armor set data
+type ArmorSet =
+    { name: NonEmptyString
+      armors: Map<UniqueId, Equipment> }
+
+    member t.toRaw() : RawArmorSet =
+        { name = t.name.Value
+          armors =
+            t.armors
+            |> Map.toMap (fun (k, v) -> k.Value, v.toRaw ()) }
+
+    static member toRaw(t: ArmorSet) = t.toRaw ()
+
+    static member ofRaw(t: RawArmorSet) =
+        { name = t.name |> NonEmptyString
+          armors =
+            t.armors
+            |> Map.toMap (fun (k, v) -> UniqueId k, Equipment.ofRaw v) }
+
+and RawArmorSet =
+    { name: string
+      armors: Map<string, RawEquipment> }
+
+/// Character build data
+type Build =
+    { name: NonEmptyString
+      notes: string
+      armorSets: Map<RecordId, ArmorSet> }
+
+    member t.toRaw() : RawBuild =
+        { name = t.name.Value
+          notes = t.notes
+          armorSets =
+            t.armorSets
+            |> Map.toMap (fun (k, v) -> k.Value, v.toRaw ()) }
+
+    static member toRaw(t: Build) = t.toRaw ()
+
+    static member ofRaw(r: RawBuild) =
+        { name = r.name |> NonEmptyString
+          notes = r.notes
+          armorSets =
+            r.armorSets
+            |> Map.toMap (fun (k, v) -> RecordId k, ArmorSet.ofRaw v) }
+
+and RawBuild =
+    { name: string
+      notes: string
+      armorSets: Map<uint64, RawArmorSet> }
+
+/// Full database
+type Database = Map<RecordId, Build>
+
+let mutable db: Database = Map.empty
+
+let upsert id data =
+    db <- db |> Map.add (RecordId id) (Build.ofRaw data)
+
+
+db
+
+upsert
+    1UL
+    { name = "Papas"
+      notes = ""
+      armorSets = Map.empty }
+
+let maxId (map: Map<RecordId, 'a>) = map |> Map.keys |> Seq.max
+(maxId db).Next()

@@ -47,8 +47,13 @@ public partial class PP_Items : UserControl, IFilterable {
   public void LoadNavItems() => lstNavItems.ItemsSource = Nav.Get();
   private void LoadNavItems(string filter, List<string> tags) =>
     lstNavItems.ItemsSource = rbTagsOr.IsChecked == true ?
-      Nav.GetFilterOr(filter, tags) :
-      Nav.GetFilterAnd(filter, tags);
+      Nav.GetFilterOr(filter, tags, PicSettings) :
+      Nav.GetFilterAnd(filter, tags, PicSettings);
+
+  private FilterPicSettings PicSettings =>
+    rbPicSetHas.IsChecked == true ? FilterPicSettings.OnlyIfHasPic :
+      rbPicSetHasNot.IsChecked == true ? FilterPicSettings.OnlyIfHasNoPic :
+        FilterPicSettings.Either;
 
   private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) => ReloadSelectedItem();
   private void LoadFilters() => tagFilter.ItemsSource = Data.UI.Tags.Get.AllTagsAndKeywords();

@@ -35,11 +35,16 @@
       CanExecute="OnCanSetImage"
       Command="c:ItemCmds.SetImage"
       Executed="OnSetImage" />
+
+    <CommandBinding
+      CanExecute="OnCanNamesToClipboard"
+      Command="c:ItemCmds.NamesToClipboard"
+      Executed="OnNamesToClipboard" />
   </UserControl.CommandBindings>
 
   <md:DrawerHost
     x:Name="dhMain"
-    IsTopDrawerOpen="true"
+    IsTopDrawerOpen="False"
     OpenMode="Default"
     TopDrawerCornerRadius="0 0 20 20">
     <!--  TAG FILTER  -->
@@ -471,6 +476,7 @@
                   <MenuItem Command="c:ItemCmds.SetImage" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
                   <Separator />
                   <MenuItem Command="c:ItemCmds.CreateUnboundOutfit" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                  <MenuItem Command="c:ItemCmds.NamesToClipboard" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
                 </ContextMenu>
               </ListBox.ContextMenu>
             </ListBox>

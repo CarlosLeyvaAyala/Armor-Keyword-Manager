@@ -249,6 +249,15 @@ public partial class PP_Items : UserControl, IFilterable {
     Edit.ItemType(uId, int.Parse((string)r.Tag));
   }
 
+
+  private void OnCanNamesToClipboard(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = lstNavItems.SelectedItems.Count > 0;
+  private void OnNamesToClipboard(object sender, ExecutedRoutedEventArgs e) {
+    var s = lstNavItems.SelectedItems.OfType<NavList>()
+        .Select((selected) => selected.Name + "\t\t" + selected.UniqueId)
+        .Aggregate((acc, s) => $"{acc}\n{s}")
+        .Trim();
+    TextCopy.ClipboardService.SetText(s);
+  }
   #endregion
 
   #region Data importing

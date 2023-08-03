@@ -45,10 +45,13 @@ public partial class PP_Items : UserControl, IFilterable {
   #region UI
   private void LoadKeywords(IEnumerable? list) => lstKeywords.ItemsSource = list;
   public void LoadNavItems() => lstNavItems.ItemsSource = Nav.Get();
-  private void LoadNavItems(string filter, List<string> tags) =>
+  private void LoadNavItems(string filter, List<string> tags) {
+    var options = new FilterOptions(filter, tags, PicSettings, tbFilterByRegex.IsChecked == true);
+
     lstNavItems.ItemsSource = rbTagsOr.IsChecked == true ?
-      Nav.GetFilterOr(filter, tags, PicSettings) :
-      Nav.GetFilterAnd(filter, tags, PicSettings);
+      Nav.GetFilterOr(options) :
+      Nav.GetFilterAnd(options);
+  }
 
   private FilterPicSettings PicSettings =>
     rbPicSetHas.IsChecked == true ? FilterPicSettings.OnlyIfHasPic :
@@ -91,11 +94,14 @@ public partial class PP_Items : UserControl, IFilterable {
       r.IsChecked = int.Parse((string)r.Tag) == it.ItemType;
   }
 
-  private void OnFilterItems(object sender, TextChangedEventArgs e) {
-    if (sender is not TextBox tb || !tb.IsFocused)
+  private void OnFilterItems(object sender, TextChangedEventArgs e) => FilterByName(() => sender is not TextBox tb || !tb.IsFocused);
+  private void OnFilterNameByRegex(object sender, RoutedEventArgs e) => FilterByName(() => false);
+
+  private void FilterByName(Func<bool> CanNotFilter) {
+    if (CanNotFilter())
       return;
 
-    var f = tb.Text;
+    var f = edtFilter.Text;
     if (f.Length == 0) {
       LoadNavItems();
       ReloadSelectedItem();

@@ -10,6 +10,8 @@ open DMLib.Collections
 open Data.UI.Common
 open Data.UI.AppSettings.Paths.Img
 open DMLib.Combinators
+open System.Text.RegularExpressions
+open System.Diagnostics
 
 module Outfits = Data.Outfit.Database
 
@@ -117,6 +119,12 @@ type FilterPicSettings =
     | OnlyIfHasPic = 1
     | OnlyIfHasNoPic = 2
 
+type FilterOptions =
+    { filter: string
+      tags: System.Collections.Generic.List<string>
+      picMode: FilterPicSettings
+      useRegex: bool }
+
 [<AutoOpen>]
 module private Ops =
     let searchAnd searchFor searchIn =
@@ -162,12 +170,33 @@ module private Ops =
         | FilterPicSettings.OnlyIfHasNoPic -> filter String.isNullOrEmpty
         | x -> failwith $"({x}) is not a valid picture filtering mode"
 
-    let filterSimple word a =
+    let private filterSimple word a =
+        let f = containsIC word
+        filterItems f a
+
+    let private filterRegex regex a =
+        let f =
+            try
+                // Check if regex is valid. Otherwise, filter nothing.
+                Debug.WriteLine $"Tetst regex: {regex}"
+                let rx = Regex(regex, RegexOptions.IgnoreCase)
+                Debug.WriteLine "Regex check passed"
+                fun s -> rx.Match(s).Success
+            with
+            | _ ->
+                Debug.WriteLine $"Regex is invalid: {regex}"
+                fun _ -> false
+
+        filterItems f a
+
+    let filterWord word useRegex a =
         match word with
         | IsEmptyStr -> filterNothing a
         | w ->
-            let f = containsIC word
-            filterItems f a
+            if useRegex then
+                filterRegex w a
+            else
+                filterSimple w a
 
     let getNav (filter: FilterFunc<string, Raw>) =
         DB.toArrayOfRaw ()
@@ -184,18 +213,15 @@ module Nav =
 
     let Get () = getNav id
 
-    let GetFilterOr word tags picMode =
+    let private commonFilter orAndFunc (options: FilterOptions) =
         getNav (
-            (filterOr tags)
-            >> (filterPics picMode)
-            >> (filterSimple word)
+            (orAndFunc options.tags)
+            >> (filterPics options.picMode)
+            >> (filterWord options.filter options.useRegex)
         )
 
-    let GetFilterAnd word tags picMode =
-        getNav (
-            (filterAnd tags)
-            >> (filterPics picMode)
-            >> (filterSimple word)
-        )
+    let GetFilterOr (options: FilterOptions) = commonFilter filterOr options
+
+    let GetFilterAnd (options: FilterOptions) = commonFilter filterAnd options
 
     let GetItem uId = NavItem(uId)

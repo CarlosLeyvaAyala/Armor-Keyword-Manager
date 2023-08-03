@@ -317,12 +317,21 @@
           Header="Navigate"
           Style="{StaticResource MaterialDesignCardGroupBox}">
           <DockPanel>
-            <TextBox
-              x:Name="edtFilter"
-              Margin="{DynamicResource MgGrpContent}"
-              md:HintAssist.Hint="Search..."
-              DockPanel.Dock="Top"
-              TextChanged="OnFilterItems" />
+            <DockPanel DockPanel.Dock="Top">
+              <ToggleButton
+                x:Name="tbFilterByRegex"
+                Click="OnFilterNameByRegex"
+                Content="{md:PackIcon Kind=Regex}"
+                DockPanel.Dock="Right"
+                IsChecked="false"
+                Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}"
+                ToolTip="Use regular expression" />
+              <TextBox
+                x:Name="edtFilter"
+                Margin="{DynamicResource MgGrpContent}"
+                md:HintAssist.Hint="Search..."
+                TextChanged="OnFilterItems" />
+            </DockPanel>
 
             <ListBox
               x:Name="lstNavItems"

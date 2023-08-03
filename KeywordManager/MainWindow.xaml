@@ -70,164 +70,165 @@
   </Window.CommandBindings>
 
   <md:DialogHost Identifier="MainDlgHost">
-    <DockPanel>
-      <md:ColorZone
-        Margin="0,0,0,15"
-        md:ElevationAssist.Elevation="Dp2"
-        DockPanel.Dock="Top"
-        Mode="PrimaryMid">
-        <Menu>
-          <MenuItem Header="_File">
-            <MenuItem Command="ApplicationCommands.Open" Header="_Open" />
-            <MenuItem Command="ApplicationCommands.Save" Header="_Save" />
-            <MenuItem Command="ApplicationCommands.SaveAs" Header="_Save as..." />
-            <Separator />
-            <MenuItem Header="_Export">
+    <Grid>
+      <DockPanel>
+        <md:ColorZone
+          Margin="0,0,0,15"
+          md:ElevationAssist.Elevation="Dp2"
+          DockPanel.Dock="Top"
+          Mode="PrimaryMid">
+          <Menu>
+            <MenuItem Header="_File">
+              <MenuItem Command="ApplicationCommands.Open" Header="_Open" />
+              <MenuItem Command="ApplicationCommands.Save" Header="_Save" />
+              <MenuItem Command="ApplicationCommands.SaveAs" Header="_Save as..." />
+              <Separator />
+              <MenuItem Header="_Export">
+                <MenuItem
+                  Command="c:AppCmds.FileJsonExport"
+                  Header="_Json"
+                  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+              </MenuItem>
+              <MenuItem Header="_Import">
+                <MenuItem
+                  Command="c:AppCmds.FileJsonImport"
+                  Header="_Json"
+                  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+              </MenuItem>
+              <Separator />
               <MenuItem
-                Command="c:AppCmds.FileJsonExport"
-                Header="_Json"
+                Command="c:AppCmds.Export"
+                Header="_Generate"
+                ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+              <MenuItem
+                Command="c:AppCmds.ExportAs"
+                Header="Generate _at..."
                 ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
             </MenuItem>
-            <MenuItem Header="_Import">
+            <MenuItem Header="_Data">
               <MenuItem
-                Command="c:AppCmds.FileJsonImport"
-                Header="_Json"
+                Command="c:AppCmds.Filter"
+                Header="_Filter"
                 ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
             </MenuItem>
-            <Separator />
-            <MenuItem
-              Command="c:AppCmds.Export"
-              Header="_Generate"
-              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-            <MenuItem
-              Command="c:AppCmds.ExportAs"
-              Header="Generate _at..."
-              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-          </MenuItem>
-          <MenuItem Header="_Data">
-            <MenuItem
-              Command="c:AppCmds.Filter"
-              Header="_Filter"
-              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-          </MenuItem>
-          <MenuItem Header="_Settings">
-            <MenuItem
-              Command="c:AppCmds.BackupSettings"
-              Header="Create _backup"
-              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-            <MenuItem
-              Command="c:AppCmds.RestoreSettings"
-              Header="_Restore backup"
-              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-          </MenuItem>
-        </Menu>
-      </md:ColorZone>
+            <MenuItem Header="_Settings">
+              <MenuItem
+                Command="c:AppCmds.BackupSettings"
+                Header="Create _backup"
+                ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+              <MenuItem
+                Command="c:AppCmds.RestoreSettings"
+                Header="_Restore backup"
+                ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+            </MenuItem>
+          </Menu>
+        </md:ColorZone>
 
-      <StatusBar DockPanel.Dock="Bottom">
-        <StatusBar.ItemsPanel>
-          <ItemsPanelTemplate>
-            <Grid>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-              </Grid.ColumnDefinitions>
-            </Grid>
-          </ItemsPanelTemplate>
-        </StatusBar.ItemsPanel>
+        <StatusBar DockPanel.Dock="Bottom">
+          <StatusBar.ItemsPanel>
+            <ItemsPanelTemplate>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="auto" />
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+              </Grid>
+            </ItemsPanelTemplate>
+          </StatusBar.ItemsPanel>
 
-        <StatusBarItem>
-          <TextBlock x:Name="txtStatusTime" />
-        </StatusBarItem>
+          <StatusBarItem>
+            <TextBlock x:Name="txtStatusTime" />
+          </StatusBarItem>
 
-        <Separator Grid.Column="1">
-          <Separator.Style>
-            <Style TargetType="Separator">
-              <Setter Property="Margin" Value="5,0" />
-              <Style.Triggers>
-                <DataTrigger Binding="{Binding Text, ElementName=txtStatusTime}" Value="">
-                  <Setter Property="Visibility" Value="Collapsed" />
-                  <Setter Property="Margin" Value="0" />
-                </DataTrigger>
-              </Style.Triggers>
-            </Style>
-          </Separator.Style>
-        </Separator>
+          <Separator Grid.Column="1">
+            <Separator.Style>
+              <Style TargetType="Separator">
+                <Setter Property="Margin" Value="5,0" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Text, ElementName=txtStatusTime}" Value="">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Setter Property="Margin" Value="0" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Separator.Style>
+          </Separator>
 
-        <StatusBarItem Grid.Column="2">
-          <TextBlock
-            x:Name="txtStatus"
-            Margin="0"
-            Text="" />
-        </StatusBarItem>
-      </StatusBar>
-
-      <!--  CONTENTS  -->
-      <TabControl
-        x:Name="tbcMain"
-        Margin="0"
-        HorizontalContentAlignment="Center"
-        md:ColorZoneAssist.Mode="PrimaryLight"
-        md:NavigationRailAssist.SelectionCornerRadius="0 20 20 0"
-        md:NavigationRailAssist.ShowSelectionBackground="True"
-        SelectionChanged="OnChangeTab"
-        SnapsToDevicePixels="True"
-        Style="{StaticResource MaterialDesignNavigationRailTabControl}"
-        TabStripPlacement="Left">
-        <TabControl.Resources>
-          <Thickness x:Key="MgTabContent">30,0,20,20</Thickness>
-        </TabControl.Resources>
-        <!--  ITEMS  -->
-        <TabItem>
-          <TabItem.Header>
-            <StackPanel Width="auto" Height="auto">
-              <md:PackIcon Kind="Sword" Style="{StaticResource piNav}" />
-              <TextBlock Style="{StaticResource txtNav}" Text="Items" />
-            </StackPanel>
-          </TabItem.Header>
-          <pp:PP_Items x:Name="ppItems" Margin="{StaticResource MgTabContent}" />
-        </TabItem>
-
-        <!--  OUTFITS  -->
-        <TabItem>
-          <TabItem.Header>
-            <StackPanel Width="auto" Height="auto">
-              <md:PackIcon Kind="TshirtV" Style="{StaticResource piNav}" />
-              <TextBlock Style="{StaticResource txtNav}" Text="Outfits" />
-            </StackPanel>
-          </TabItem.Header>
-          <pp:PP_Outfits x:Name="ppOutfits" Margin="{StaticResource MgTabContent}" />
-        </TabItem>
-
-        <!--  ENCHANTMENTS  -->
-        <TabItem>
-          <TabItem.Header>
-            <StackPanel Width="auto" Height="auto">
-              <md:PackIcon Kind="MagicStaff" Style="{StaticResource piNav}" />
-              <TextBlock Style="{StaticResource txtNav}" Text="Enchantments" />
-            </StackPanel>
-          </TabItem.Header>
-          <Grid>
+          <StatusBarItem Grid.Column="2">
             <TextBlock
-              Margin="0,-20,0,0"
-              HorizontalAlignment="Center"
-              VerticalAlignment="Center"
-              FontSize="100"
-              FontWeight="Bold"
-              Text="Soon&#8482;" />
-          </Grid>
-          <!--<pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />-->
-        </TabItem>
+              x:Name="txtStatus"
+              Margin="0"
+              Text="" />
+          </StatusBarItem>
+        </StatusBar>
 
-        <!--  ENCHANTMENTS  -->
-        <TabItem>
-          <TabItem.Header>
-            <StackPanel Width="auto" Height="auto">
-              <md:PackIcon Kind="ShieldAccount" Style="{StaticResource piNav}" />
-              <TextBlock Style="{StaticResource txtNav}" Text="Builds" />
-            </StackPanel>
-          </TabItem.Header>
-          <!--<Grid>
+        <!--  CONTENTS  -->
+        <TabControl
+          x:Name="tbcMain"
+          Margin="0"
+          HorizontalContentAlignment="Center"
+          md:ColorZoneAssist.Mode="PrimaryLight"
+          md:NavigationRailAssist.SelectionCornerRadius="0 20 20 0"
+          md:NavigationRailAssist.ShowSelectionBackground="True"
+          SelectionChanged="OnChangeTab"
+          SnapsToDevicePixels="True"
+          Style="{StaticResource MaterialDesignNavigationRailTabControl}"
+          TabStripPlacement="Left">
+          <TabControl.Resources>
+            <Thickness x:Key="MgTabContent">30,0,20,20</Thickness>
+          </TabControl.Resources>
+          <!--  ITEMS  -->
+          <TabItem>
+            <TabItem.Header>
+              <StackPanel Width="auto" Height="auto">
+                <md:PackIcon Kind="Sword" Style="{StaticResource piNav}" />
+                <TextBlock Style="{StaticResource txtNav}" Text="Items" />
+              </StackPanel>
+            </TabItem.Header>
+            <pp:PP_Items x:Name="ppItems" Margin="{StaticResource MgTabContent}" />
+          </TabItem>
+
+          <!--  OUTFITS  -->
+          <TabItem>
+            <TabItem.Header>
+              <StackPanel Width="auto" Height="auto">
+                <md:PackIcon Kind="TshirtV" Style="{StaticResource piNav}" />
+                <TextBlock Style="{StaticResource txtNav}" Text="Outfits" />
+              </StackPanel>
+            </TabItem.Header>
+            <pp:PP_Outfits x:Name="ppOutfits" Margin="{StaticResource MgTabContent}" />
+          </TabItem>
+
+          <!--  ENCHANTMENTS  -->
+          <TabItem>
+            <TabItem.Header>
+              <StackPanel Width="auto" Height="auto">
+                <md:PackIcon Kind="MagicStaff" Style="{StaticResource piNav}" />
+                <TextBlock Style="{StaticResource txtNav}" Text="Enchantments" />
+              </StackPanel>
+            </TabItem.Header>
+            <Grid>
+              <TextBlock
+                Margin="0,-20,0,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="100"
+                FontWeight="Bold"
+                Text="Soon&#8482;" />
+            </Grid>
+            <!--<pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />-->
+          </TabItem>
+
+          <!--  ENCHANTMENTS  -->
+          <TabItem>
+            <TabItem.Header>
+              <StackPanel Width="auto" Height="auto">
+                <md:PackIcon Kind="ShieldAccount" Style="{StaticResource piNav}" />
+                <TextBlock Style="{StaticResource txtNav}" Text="Builds" />
+              </StackPanel>
+            </TabItem.Header>
+            <!--<Grid>
             <TextBlock
               Margin="0,-20,0,0"
               HorizontalAlignment="Center"
@@ -236,9 +237,11 @@
               FontWeight="Bold"
               Text="Soon&#8482;" />
           </Grid>-->
-          <pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />
-        </TabItem>
-      </TabControl>
-    </DockPanel>
+            <pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />
+          </TabItem>
+        </TabControl>
+      </DockPanel>
+      <md:Snackbar x:Name="snackBar" MessageQueue="{md:MessageQueue}" />
+    </Grid>
   </md:DialogHost>
 </Window>

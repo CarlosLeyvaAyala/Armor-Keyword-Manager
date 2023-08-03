@@ -3,6 +3,7 @@ using IO;
 using KeywordManager.UserControls;
 using System;
 using System.IO;
+using System.Media;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -45,7 +46,7 @@ public partial class MainWindow : Window {
 
   private void OnSaveFile(object sender, ExecutedRoutedEventArgs e) {
     PropietaryFile.Save(workingFile);
-    System.Media.SystemSounds.Asterisk.Play();
+    ShowToast("File saved successfully", playSound: SoundEffect.Success);
   }
 
   private void OnSaveFileAs(object sender, ExecutedRoutedEventArgs e) {
@@ -58,7 +59,7 @@ public partial class MainWindow : Window {
       workingFile = fn;
       Settings.Default.mostRecetFile = fn;
       Settings.Default.Save();
-      System.Media.SystemSounds.Asterisk.Play();
+      PlayWindowsSound(SoundEffect.Success);
     }
     catch (Exception ex) {
       MessageBox.Show(this, ex.Message);
@@ -74,7 +75,7 @@ public partial class MainWindow : Window {
       OpenFile(fn);
       Settings.Default.mostRecetFile = fn;
       Settings.Default.Save();
-      System.Media.SystemSounds.Asterisk.Play();
+      PlayWindowsSound(SoundEffect.Success);
     }
     catch (Exception ex) {
       MessageBox.Show(this, ex.Message);
@@ -98,8 +99,9 @@ public partial class MainWindow : Window {
       return;
     var m = PropietaryFile.Generate(workingFile, d);
     txtStatus.Text = m;
-    txtStatusTime.Text = DateTime.Now.ToString("HH:mm:ss");
-    System.Media.SystemSounds.Asterisk.Play();
+    var date = DateTime.Now.ToString("HH:mm:ss");
+    txtStatusTime.Text = d;
+    ShowToast($"Files exported successfully at {date}", playSound: SoundEffect.Success);
   }
 
   private void OnCanFileJsonExport(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = File.Exists(workingFile);
@@ -141,6 +143,31 @@ public partial class MainWindow : Window {
   public static async Task<string?> ShowAcceptCancelDlg(string textHint = "Value",
                                                         string text = "") =>
     await AcceptCancelDlg.ExecuteAsync("MainDlgHost", textHint, text);
+
+  public static void ShowToast(string message, double seconds = 2, SoundEffect playSound = SoundEffect.None) {
+    var w = GetWindow(App.Current.MainWindow) as MainWindow;
+    PlayWindowsSound(playSound);
+    w?.snackBar.MessageQueue?.Enqueue(
+      message,
+      null,
+      null,
+      null,
+      promote: false,
+      neverConsiderToBeDuplicate: true,
+      durationOverride: TimeSpan.FromSeconds(seconds));
+  }
+
+  public static void PlayWindowsSound(SoundEffect sound) {
+    var doNothing = () => { };
+    var exec = sound switch {
+      SoundEffect.None => doNothing,
+      SoundEffect.Success => SystemSounds.Exclamation.Play,
+      SoundEffect.Error => SystemSounds.Hand.Play,
+      SoundEffect.Hint => SystemSounds.Asterisk.Play,
+      _ => throw new NotImplementedException("")
+    };
+    exec();
+  }
 
   public enum TabId {
     Items, Outfits
@@ -185,4 +212,11 @@ public partial class MainWindow : Window {
 
   public void OnOutfitImgWasSet(string outfitId) => ppItems.OnOutfitImgWasSet(outfitId);
 
+}
+
+public enum SoundEffect {
+  None,
+  Success,
+  Hint,
+  Error
 }

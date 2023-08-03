@@ -178,14 +178,10 @@ module private Ops =
         let f =
             try
                 // Check if regex is valid. Otherwise, filter nothing.
-                Debug.WriteLine $"Tetst regex: {regex}"
                 let rx = Regex(regex, RegexOptions.IgnoreCase)
-                Debug.WriteLine "Regex check passed"
                 fun s -> rx.Match(s).Success
             with
-            | _ ->
-                Debug.WriteLine $"Regex is invalid: {regex}"
-                fun _ -> false
+            | _ -> fun _ -> false
 
         filterItems f a
 

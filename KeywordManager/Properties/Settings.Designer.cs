@@ -70,5 +70,29 @@ namespace KeywordManager.Properties {
                 this["lastTab"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool itemFilterNameByRegex {
+            get {
+                return ((bool)(this["itemFilterNameByRegex"]));
+            }
+            set {
+                this["itemFilterNameByRegex"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string dummy {
+            get {
+                return ((string)(this["dummy"]));
+            }
+            set {
+                this["dummy"] = value;
+            }
+        }
     }
 }

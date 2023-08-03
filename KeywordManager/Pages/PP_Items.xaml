@@ -323,7 +323,7 @@
                 Click="OnFilterNameByRegex"
                 Content="{md:PackIcon Kind=Regex}"
                 DockPanel.Dock="Right"
-                IsChecked="false"
+                IsChecked="{Binding Source={StaticResource appSettings}, Path=Default.itemFilterNameByRegex}"
                 Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}"
                 ToolTip="Use regular expression" />
               <TextBox

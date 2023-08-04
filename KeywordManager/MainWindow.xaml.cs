@@ -119,7 +119,7 @@ public partial class MainWindow : Window {
       return;
     PropietaryFile.OpenJson(fn);
     workingFile = "";
-    System.Media.SystemSounds.Asterisk.Play();
+    PlayWindowsSound(SoundEffect.Success);
   }
 
   private void OnCanFilter(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = CurrentPage is IFilterable;

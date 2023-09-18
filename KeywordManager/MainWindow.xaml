@@ -5,6 +5,7 @@
   xmlns:System="clr-namespace:System;assembly=System.Runtime"
   xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:diag="clr-namespace:System.Diagnostics;assembly=mscorlib"
   xmlns:local="clr-namespace:KeywordManager"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -72,6 +73,7 @@
   <md:DialogHost Identifier="MainDlgHost">
     <Grid>
       <DockPanel>
+        <!--  MENU  -->
         <md:ColorZone
           Margin="0,0,0,15"
           md:ElevationAssist.Elevation="Dp2"
@@ -116,6 +118,10 @@
                 Command="c:AppCmds.BackupSettings"
                 Header="Create _backup"
                 ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+              <MenuItem
+                Click="OnGitBackupClick"
+                Header="Create backup for _Github"
+                Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}" />
               <MenuItem
                 Command="c:AppCmds.RestoreSettings"
                 Header="_Restore backup"

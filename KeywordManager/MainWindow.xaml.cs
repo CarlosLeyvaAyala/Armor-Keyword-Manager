@@ -197,21 +197,17 @@ public partial class MainWindow : Window {
   }
 
   private void OnCanBackupSettings(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
-  private void OnBackupSettings(object sender, ExecutedRoutedEventArgs e) {
-    var fn = GUI.Dialogs.File.Save(
-      "Zip files (*.zip)|*.zip",
-      "e63aa357-ce5c-424d-a175-b2592aac7af3",
-      "",
-      AppSettings.Backup.SuggestedName());
+  private void OnBackupSettings(object sender, ExecutedRoutedEventArgs e) => CreateBackup(AppSettings.Backup.SuggestedName(), "e63aa357-ce5c-424d-a175-b2592aac7af3");
+  private void OnGitBackupClick(object sender, RoutedEventArgs e) => CreateBackup("SIM Backup", "E60CE530-7FA4-4B2C-8896-02B1F37F62B8");
 
-    if (string.IsNullOrEmpty(fn))
-      return;
+  static void CreateBackup(string suggestedName, string guid) {
+    var fn = GUI.Dialogs.File.Save("Zip files (*.zip)|*.zip", guid, "", suggestedName);
+    if (string.IsNullOrEmpty(fn)) return;
 
     AppSettings.Backup.Create(fn);
   }
 
   public void OnOutfitImgWasSet(string outfitId) => ppItems.OnOutfitImgWasSet(outfitId);
-
 }
 
 public enum SoundEffect {

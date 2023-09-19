@@ -174,7 +174,9 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable {
     });
 
   private void LstItemKeywords_KeyDown(object sender, KeyEventArgs e) {
-    if (e.Key == Key.Delete) DeleteKeywords();
+    if (e.Key != Key.Delete) return;
+    DeleteKeywords();
+    e.Handled = true;
   }
 
   private void CmdDeleteExecuted(object sender, ExecutedRoutedEventArgs e) => DeleteKeywords();

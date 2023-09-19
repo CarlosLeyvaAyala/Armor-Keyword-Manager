@@ -11,6 +11,8 @@
   Height="650"
   Background="{DynamicResource MaterialDesignPaper}"
   FontFamily="{DynamicResource MaterialDesignFont}"
+  Loaded="OnLoaded"
+  ShowInTaskbar="False"
   TextElement.FontSize="13"
   TextElement.FontWeight="Regular"
   TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -35,22 +37,27 @@
           md:NavigationRailAssist.SelectionCornerRadius="0 0 20 20"
           md:NavigationRailAssist.ShowSelectionBackground="True"
           SelectedIndex="{Binding Source={StaticResource appSettings}, Path=Default.batchRename_lastTab}"
+          SelectionChanged="OnReplaceModeChanged"
           SnapsToDevicePixels="True"
           Style="{StaticResource MaterialDesignNavigationRailTabControl}"
           TabStripPlacement="Top">
 
-          <TabItem Tag="insert">
+          <TabItem Tag="replace">
             <TabItem.Header>
               <StackPanel Width="auto" Height="auto">
-                <md:PackIcon Kind="PlusBox" Style="{StaticResource piNav}" />
-                <TextBlock Style="{StaticResource txtNav}" Text="INSERT" />
+                <md:PackIcon Kind="FindReplace" Style="{StaticResource piNav}" />
+                <TextBlock Style="{StaticResource txtNav}" Text="REPLACE" />
               </StackPanel>
             </TabItem.Header>
 
-            <!--<TextBox Margin="{StaticResource MgTopNormal}" md:HintAssist.HelperText="Text to insert" />-->
+            <TextBox
+              x:Name="edtReplace"
+              Margin="{StaticResource MgTopNormal}"
+              md:HintAssist.HelperText="Text"
+              TextChanged="OnTxtParamMainChange" />
           </TabItem>
 
-          <TabItem Tag="delete">
+          <!--<TabItem Tag="delete">
             <TabItem.Header>
               <StackPanel Width="auto" Height="auto">
                 <md:PackIcon Kind="MinusBox" Style="{StaticResource piNav}" />
@@ -58,8 +65,8 @@
               </StackPanel>
             </TabItem.Header>
 
-            <!--<TextBox Margin="{StaticResource MgTopNormal}" md:HintAssist.HelperText="Text to remove" />-->
-          </TabItem>
+            <TextBox Margin="{StaticResource MgTopNormal}" md:HintAssist.HelperText="Text to remove" />
+          </TabItem>-->
 
           <TabItem Tag="regex">
             <TabItem.Header>
@@ -92,7 +99,7 @@
         <TextBox
           x:Name="edtTextParam"
           Margin="0,20,0,30"
-          md:HintAssist.HelperText="Text"
+          md:HintAssist.HelperText="Replacement"
           TextChanged="OnTxtParamMainChange" />
       </StackPanel>
     </md:Card>

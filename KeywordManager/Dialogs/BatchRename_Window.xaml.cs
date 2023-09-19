@@ -1,6 +1,7 @@
 ﻿using Data.UI.BatchRename;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,12 +9,20 @@ using System.Windows.Controls;
 namespace KeywordManager.Dialogs;
 
 public partial class BatchRename_Window : Window {
+  bool isLoaded = false;
+
   public BatchRename_Window() => InitializeComponent();
 
+  void WhenIsLoaded(Action DoSomething) {
+    if (!isLoaded) return;
+    DoSomething();
+  }
+
   public static string Execute(Window owner, ObservableCollection<Item> items) {
+    var i = items.OrderBy(item => item.OriginalName);
     var dlg = new BatchRename_Window {
       Owner = owner,
-      DataContext = items
+      DataContext = i
     };
     dlg.ShowDialog();
 
@@ -21,27 +30,54 @@ public partial class BatchRename_Window : Window {
   }
 
   private void OnTxtParamMainChange(object sender, TextChangedEventArgs e) {
-    if (tbcMain.SelectedItem is not TabItem st || sender is not TextBox edt || !edt.IsFocused)
-      return;
+    if (sender is not TextBox edt || !edt.IsFocused) return; // Avoid calculation when the text box is being created
 
-    (string Rx, string Replacement) = st.Tag switch {
-      "delete" => ($"(.*){edt.Text}(.*)", "$1$2"),
-      "regex" => (edtRegex.Text, edtTextParam.Text),
+    UpdateListItems();
+  }
+
+  void UpdateListItems() => MakeReplacements(ReplaceListItems, ResetItems);
+  void ReplaceListItems(Func<string, string> DoReplace) => ForAllListItems(item => item.Name = DoReplace(item.OriginalName));
+
+  enum Operation { REPLACE, REGEX }
+
+
+  void MakeReplacements(Action<Func<string, string>> OnSuccess, Action OnFail) {
+    if (tbcMain.SelectedItem is not TabItem st) return; // Fancy way to ensure a conversion can be made
+
+    string sTo = edtTextParam.Text;
+
+    (string sFrom, Operation op) = st.Tag switch {
+      "replace" => (edtReplace.Text, Operation.REPLACE),
+      "regex" => (edtRegex.Text, Operation.REGEX),
       _ => throw new ArgumentOutOfRangeException(nameof(st.Tag), $"Unexpected tag: {st.Tag}"),
     };
 
-    try {
-      var rx = new Regex(Rx);
+    Func<string, string> CreateRegexFunc() {
+      var rx = new Regex(sFrom);
+      return (string input) => rx.Replace(input, sTo);
+    };
 
-      foreach (Item item in lstPreview.Items)
-        item.Name = rx.Replace(item.OriginalName, Replacement);
+    try {
+      Func<string, string> f = op switch {
+        Operation.REPLACE => (string input) => input.Replace(sFrom, sTo),
+        Operation.REGEX => CreateRegexFunc(),
+        _ => throw new ArgumentOutOfRangeException(nameof(op), $"Unexpected replacement operation: {op}"),
+      };
+
+      OnSuccess(f);
     }
     catch (Exception) {
-      // Do nothing if regex is malformed
-      foreach (Item item in lstPreview.Items)
-        item.Name = item.OriginalName;
+      OnFail();
     }
+  }
 
+  void ResetItems() => ForAllListItems(item => item.Name = item.OriginalName);
+
+  void ForAllListItems(Action<Item> DoSomething) {
+    foreach (Item item in lstPreview.Items) DoSomething(item);
     lstPreview.Items.Refresh();
   }
+
+  private void OnReplaceModeChanged(object sender, SelectionChangedEventArgs e) => WhenIsLoaded(UpdateListItems);
+  private void OnLoaded(object sender, RoutedEventArgs e) => isLoaded = true;
 }

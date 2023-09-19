@@ -86,7 +86,7 @@
           </ListBox.ItemTemplate>
           <ListBox.ContextMenu>
             <ContextMenu>
-              <MenuItem Click="XXXXX" Header="Batch Rename" />
+              <MenuItem Click="OnBatchRename" Header="Batch Rename" />
               <Separator />
               <MenuItem Command="c:OutfitCmds.Del" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
             </ContextMenu>

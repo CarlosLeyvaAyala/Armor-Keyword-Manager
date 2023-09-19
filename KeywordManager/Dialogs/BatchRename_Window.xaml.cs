@@ -1,5 +1,6 @@
 ﻿using Data.UI.BatchRename;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -18,16 +19,18 @@ public partial class BatchRename_Window : Window {
     DoSomething();
   }
 
-  public static string Execute(Window owner, ObservableCollection<Item> items) {
+  public static List<Item>? Execute(Window owner, ObservableCollection<Item> items) {
     var i = items.OrderBy(item => item.OriginalName);
     var dlg = new BatchRename_Window {
       Owner = owner,
       DataContext = i
     };
-    dlg.ShowDialog();
+    var result = dlg.ShowDialog();
 
-    return "";
+    return result == true ? dlg.lstPreview.Items.OfType<Item>().ToList() : null;
   }
+
+  private void OnOk(object sender, RoutedEventArgs e) => DialogResult = true;
 
   private void OnTxtParamMainChange(object sender, TextChangedEventArgs e) {
     if (sender is not TextBox edt || !edt.IsFocused) return; // Avoid calculation when the text box is being created
@@ -80,4 +83,5 @@ public partial class BatchRename_Window : Window {
 
   private void OnReplaceModeChanged(object sender, SelectionChangedEventArgs e) => WhenIsLoaded(UpdateListItems);
   private void OnLoaded(object sender, RoutedEventArgs e) => isLoaded = true;
+
 }

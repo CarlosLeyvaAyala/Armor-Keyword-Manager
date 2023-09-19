@@ -12,6 +12,7 @@
   Background="{DynamicResource MaterialDesignPaper}"
   FontFamily="{DynamicResource MaterialDesignFont}"
   Loaded="OnLoaded"
+  ResizeMode="NoResize"
   ShowInTaskbar="False"
   TextElement.FontSize="13"
   TextElement.FontWeight="Regular"
@@ -25,8 +26,10 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="auto" />
       <RowDefinition Height="*" />
+      <RowDefinition Height="auto" />
     </Grid.RowDefinitions>
 
+    <!--  MODE  -->
     <md:Card>
       <StackPanel Margin="{StaticResource MgGrpContent}">
         <TabControl
@@ -104,12 +107,14 @@
       </StackPanel>
     </md:Card>
 
+    <!--  PREVIEW  -->
     <GroupBox
       Grid.Row="1"
       Margin="{StaticResource MgTopNormal}"
       Header="Preview">
       <ListBox
         x:Name="lstPreview"
+        VerticalAlignment="Stretch"
         d:ItemsSource="{d:SampleData ItemCount=20}"
         ItemsSource="{Binding}"
         Style="{StaticResource MaterialDesignNavigationPrimaryListBox}">
@@ -132,5 +137,12 @@
         </ListBox.ItemTemplate>
       </ListBox>
     </GroupBox>
+
+    <!--  EXIT BUTTONS  -->
+    <uc:OkCancelButtons
+      xmlns:uc="clr-namespace:KeywordManager.UserControls"
+      Grid.Row="2"
+      Margin="{StaticResource MgTopNormal}"
+      OkClick="OnOk" />
   </Grid>
 </Window>

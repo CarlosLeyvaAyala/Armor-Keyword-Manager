@@ -27,3 +27,6 @@ let Delete uid =
     DB.delete uid
 
 let GetPieces uid = (DB.find uid).pieces |> toCList
+
+let Rename uId newName =
+    DB.update uId (fun d -> { d with name = newName })

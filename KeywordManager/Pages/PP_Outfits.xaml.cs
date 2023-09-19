@@ -119,10 +119,15 @@ public partial class PP_Outfits : UserControl, IFileDisplayable {
     e.Handled = true;
   }
 
-  private void XXXXX(object sender, RoutedEventArgs e) {
+  private void OnBatchRename(object sender, RoutedEventArgs e) {
     var sel = lstNav.SelectedItems.OfType<NavList>()
       .Select(i => new Data.UI.BatchRename.Item(i.UId, i.Name))
       .ToArray();
-    BatchRename_Window.Execute(Owner, new ObservableCollection<Data.UI.BatchRename.Item>(sel));
+    var r = BatchRename_Window.Execute(Owner, new ObservableCollection<Data.UI.BatchRename.Item>(sel));
+
+    if (r == null) return;
+
+    foreach (var item in r) Edit.Rename(item.UId, item.Name);
+    ReloadUI();
   }
 }

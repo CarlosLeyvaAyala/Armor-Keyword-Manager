@@ -58,7 +58,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable {
     ReloadSelectedItem();
   }
 
-  void SetEnabledControls() => cntMain.IsEnabled = lstNav.Items.Count > 0;
+  void SetEnabledControls() => cntMain.IsEnabled = lstNav.Items.Count > 0 || Owner.IsWorkingFileLoaded;
 
   public void ReloadSelectedItem() {
     SetEnabledControls();

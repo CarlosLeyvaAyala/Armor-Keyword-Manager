@@ -1,8 +1,6 @@
 ﻿using Data.UI.BatchRename;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,13 +26,21 @@ public partial class BatchRename_Window : Window {
 
     (string Rx, string Replacement) = st.Tag switch {
       "delete" => ($"(.*){edt.Text}(.*)", "$1$2"),
+      "regex" => (edtRegex.Text, edtTextParam.Text),
       _ => throw new ArgumentOutOfRangeException(nameof(st.Tag), $"Unexpected tag: {st.Tag}"),
     };
 
-    var rx = new Regex(Rx);
+    try {
+      var rx = new Regex(Rx);
 
-    foreach (Item item in lstPreview.Items)
-      item.Name = rx.Replace(item.OriginalName, Replacement);
+      foreach (Item item in lstPreview.Items)
+        item.Name = rx.Replace(item.OriginalName, Replacement);
+    }
+    catch (Exception) {
+      // Do nothing if regex is malformed
+      foreach (Item item in lstPreview.Items)
+        item.Name = item.OriginalName;
+    }
 
     lstPreview.Items.Refresh();
   }

@@ -248,8 +248,8 @@
                 d:DataContext="{d:DesignInstance Type=guiobjs:NavItem}"
                 md:ColorZoneAssist.Mode="PrimaryLight"
                 BorderThickness="0"
-                KeyDown="LstItemKeywords_KeyDown"
-                Header="Keywords">
+                Header="Keywords"
+                KeyDown="LstItemKeywords_KeyDown">
                 <ListBox
                   x:Name="lstItemKeywords"
                   MinHeight="30"
@@ -318,6 +318,7 @@
           Header="Navigate"
           Style="{StaticResource MaterialDesignCardGroupBox}">
           <DockPanel>
+            <!--  FILTER TEXTBOX  -->
             <DockPanel DockPanel.Dock="Top">
               <ToggleButton
                 x:Name="tbFilterByRegex"
@@ -331,7 +332,19 @@
                 x:Name="edtFilter"
                 Margin="{DynamicResource MgGrpContent}"
                 md:HintAssist.Hint="Search..."
-                TextChanged="OnFilterItems" />
+                TextChanged="OnFilterItems">
+                <TextBox.Text>
+                  <Binding
+                    Mode="OneWay"
+                    Path="Text"
+                    RelativeSource="{RelativeSource Self}"
+                    UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                      <v:RegexRule xmlns:v="clr-namespace:GUI.Validators;assembly=GUI" ValidatesOnTargetUpdated="True" />
+                    </Binding.ValidationRules>
+                  </Binding>
+                </TextBox.Text>
+              </TextBox>
             </DockPanel>
 
             <ListBox

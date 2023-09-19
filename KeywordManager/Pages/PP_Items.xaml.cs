@@ -86,7 +86,7 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable {
     hasLoaded = true;
   }
 
-  void SetEnabledControls() => cntMain.IsEnabled = lstNavItems.Items.Count > 0;
+  void SetEnabledControls() => cntMain.IsEnabled = lstNavItems.Items.Count > 0 || Owner.IsWorkingFileLoaded;
 
   private void ReloadSelectedItem() {
     SetEnabledControls();

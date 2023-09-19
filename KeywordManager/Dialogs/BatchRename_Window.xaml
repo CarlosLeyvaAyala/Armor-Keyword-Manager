@@ -34,7 +34,7 @@
           md:ColorZoneAssist.Mode="PrimaryLight"
           md:NavigationRailAssist.SelectionCornerRadius="0 0 20 20"
           md:NavigationRailAssist.ShowSelectionBackground="True"
-          SelectedIndex="1"
+          SelectedIndex="{Binding Source={StaticResource appSettings}, Path=Default.batchRename_lastTab}"
           SnapsToDevicePixels="True"
           Style="{StaticResource MaterialDesignNavigationRailTabControl}"
           TabStripPlacement="Top">
@@ -69,11 +69,28 @@
               </StackPanel>
             </TabItem.Header>
 
-            <TextBox Margin="{StaticResource MgTopNormal}" md:HintAssist.HelperText="Regular expression" />
+            <TextBox
+              x:Name="edtRegex"
+              Margin="{StaticResource MgTopNormal}"
+              md:HintAssist.HelperText="Regular expression"
+              TextChanged="OnTxtParamMainChange">
+              <TextBox.Text>
+                <Binding
+                  Mode="OneWay"
+                  Path="Text"
+                  RelativeSource="{RelativeSource Self}"
+                  UpdateSourceTrigger="PropertyChanged">
+                  <Binding.ValidationRules>
+                    <v:RegexRule xmlns:v="clr-namespace:GUI.Validators;assembly=GUI" ValidatesOnTargetUpdated="True" />
+                  </Binding.ValidationRules>
+                </Binding>
+              </TextBox.Text>
+            </TextBox>
           </TabItem>
         </TabControl>
 
         <TextBox
+          x:Name="edtTextParam"
           Margin="0,20,0,30"
           md:HintAssist.HelperText="Text"
           TextChanged="OnTxtParamMainChange" />

@@ -144,6 +144,9 @@
                 Header="_Restore backup"
                 ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
             </MenuItem>
+            <MenuItem Header="_Help">
+              <MenuItem Header="_Help topics" />
+            </MenuItem>
           </Menu>
         </md:ColorZone>
 

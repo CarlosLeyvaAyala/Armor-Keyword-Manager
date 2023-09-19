@@ -9,6 +9,7 @@
     <None Include="scripts\Command binding generator.fsx" />
     <Compile Include="Commands.fs" />
     <Compile Include="Dialogs.fs" />
+    <Compile Include="Validators.fs" />
   </ItemGroup>
 
   <ItemGroup>

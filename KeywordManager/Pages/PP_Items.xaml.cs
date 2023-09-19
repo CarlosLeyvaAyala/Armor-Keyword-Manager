@@ -164,16 +164,20 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable {
 
   private void LstKeywords_MouseDoubleClick(object sender, MouseButtonEventArgs e) => AddKeywords();
   private void LstKeywords_KeyDown(object sender, KeyEventArgs e) {
-    if (e.Key == Key.Return) { AddKeywords(); }
+    if (e.Key == Key.Return) AddKeywords();
   }
 
-  private void CmdDeleteExecuted(object sender, ExecutedRoutedEventArgs e) {
+  void DeleteKeywords() =>
     ForEachSelectedItem((uId) => {
       foreach (var keyword in lstItemKeywords.SelectedItems)
         Edit.DelKeyword(uId, keyword.ToString());
     });
+
+  private void LstItemKeywords_KeyDown(object sender, KeyEventArgs e) {
+    if (e.Key == Key.Delete) DeleteKeywords();
   }
 
+  private void CmdDeleteExecuted(object sender, ExecutedRoutedEventArgs e) => DeleteKeywords();
   private void CmdDeleteCanExecute(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = lstItemKeywords.SelectedItem != null;
 
   private void OnChangeKeywordPic(object sender, RoutedEventArgs e) {

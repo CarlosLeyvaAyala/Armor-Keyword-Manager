@@ -248,6 +248,7 @@
                 d:DataContext="{d:DesignInstance Type=guiobjs:NavItem}"
                 md:ColorZoneAssist.Mode="PrimaryLight"
                 BorderThickness="0"
+                KeyDown="LstItemKeywords_KeyDown"
                 Header="Keywords">
                 <ListBox
                   x:Name="lstItemKeywords"

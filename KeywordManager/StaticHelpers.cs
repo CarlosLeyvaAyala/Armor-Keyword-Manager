@@ -60,10 +60,6 @@ static class Misc {
 }
 
 static class FileHelper {
-  public static string GetDroppedFile(DragEventArgs e) {
-    if (e.Data.GetDataPresent(DataFormats.FileDrop))
-      return ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
-    else
-      return "";
-  }
+  public static string GetDroppedFile(DragEventArgs e) =>
+    e.Data.GetDataPresent(DataFormats.FileDrop) ? ((string[])e.Data.GetData(DataFormats.FileDrop))[0] : "";
 }

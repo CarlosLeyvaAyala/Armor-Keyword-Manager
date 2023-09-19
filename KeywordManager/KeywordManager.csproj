@@ -6,11 +6,11 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <AssemblyName>SkyrimItemManager</AssemblyName>
-    <ApplicationIcon>leather-armor.ico</ApplicationIcon>
+    <ApplicationIcon>helmet.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="leather-armor.ico" />
+    <Content Include="helmet.ico" />
   </ItemGroup>
 
   <ItemGroup>

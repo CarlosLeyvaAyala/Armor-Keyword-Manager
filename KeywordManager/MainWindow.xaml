@@ -25,9 +25,20 @@
   WindowState="Maximized"
   mc:Ignorable="d">
   <Window.CommandBindings>
-    <CommandBinding Command="ApplicationCommands.Open" Executed="OnOpenFile" />
-    <CommandBinding Command="ApplicationCommands.Save" Executed="OnSaveFile" />
-    <CommandBinding Command="ApplicationCommands.SaveAs" Executed="OnSaveFileAs" />
+    <CommandBinding
+      CanExecute="OnCanOpen"
+      Command="c:AppCmds.Open"
+      Executed="OnOpen" />
+
+    <CommandBinding
+      CanExecute="OnCanSave"
+      Command="c:AppCmds.Save"
+      Executed="OnSave" />
+
+    <CommandBinding
+      CanExecute="OnCanSaveAs"
+      Command="c:AppCmds.SaveAs"
+      Executed="OnSaveAs" />
 
     <CommandBinding
       CanExecute="OnCanExportAs"
@@ -81,9 +92,9 @@
           Mode="PrimaryMid">
           <Menu>
             <MenuItem Header="_File">
-              <MenuItem Command="ApplicationCommands.Open" Header="_Open" />
-              <MenuItem Command="ApplicationCommands.Save" Header="_Save" />
-              <MenuItem Command="ApplicationCommands.SaveAs" Header="_Save as..." />
+              <MenuItem Command="c:AppCmds.Open" Header="_Open" />
+              <MenuItem Command="c:AppCmds.Save" Header="_Save" />
+              <MenuItem Command="c:AppCmds.SaveAs" Header="_Save as..." />
               <Separator />
               <MenuItem Header="_Export">
                 <MenuItem

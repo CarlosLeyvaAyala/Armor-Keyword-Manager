@@ -38,6 +38,30 @@ type AppCmds private () =
     static let exportTxt = "Generates all files used by Skyrim"
     static let basic = basicCmd create
 
+    static member val Open =
+        { name = "Open"
+          text = "Opens an existing file"
+          keyDisplay = "Ctrl+O"
+          key = Key.O
+          modifiers = ModifierKeys.Control }
+        |> create
+
+    static member val Save =
+        { name = "Save"
+          text = "Save current file"
+          keyDisplay = "Ctrl+S"
+          key = Key.S
+          modifiers = ModifierKeys.Control }
+        |> create
+
+    static member val SaveAs =
+        { name = "SaveAs"
+          text = "Save current file with a new name"
+          keyDisplay = "Ctrl+Shift+S"
+          key = Key.S
+          modifiers = ModifierKeys.Control ||| ModifierKeys.Shift }
+        |> create
+
     static member val ExportAs =
         { name = "ExportAs"
           text = exportTxt

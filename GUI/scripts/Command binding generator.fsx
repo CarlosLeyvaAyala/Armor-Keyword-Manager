@@ -6,7 +6,13 @@
 // This script will detect al commands and will generate XAML bindings for them.
 
 #r "nuget: TextCopy"
-#r "nuget: carlos.leyva.ayala.dmlib"
+//#r "nuget: carlos.leyva.ayala.dmlib"
+
+// DMLib includes must be deleted once nuget works again
+#load "..\..\..\DMLib-FSharp\Combinators.fs"
+#load "..\..\..\DMLib-FSharp\MathL.fs"
+#load "..\..\..\DMLib-FSharp\Result.fs"
+#load "..\..\..\DMLib-FSharp\String.fs"
 
 open System.Text.RegularExpressions
 open DMLib.String
@@ -40,7 +46,6 @@ let genBindings staticClass =
               private void On%s(object sender, ExecutedRoutedEventArgs e) {
 
               }
-
             """
 
         sprintf (Printf.StringFormat<string -> string -> string>(d)) s s
@@ -64,7 +69,7 @@ let classFromClipboard defaultName =
       | _ -> defaultName
     + "."
 
-let bindings, declarations = "ItemCmds" |> classFromClipboard |> genBindings
+let bindings, declarations = "AppCmds" |> classFromClipboard |> genBindings
 
 bindings |> TextCopy.ClipboardService.SetText
 declarations |> TextCopy.ClipboardService.SetText

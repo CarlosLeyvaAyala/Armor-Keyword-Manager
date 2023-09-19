@@ -15,12 +15,10 @@
   mc:Ignorable="d">
 
   <UserControl.CommandBindings>
-
     <CommandBinding
       CanExecute="OnCanDel"
       Command="c:OutfitCmds.Del"
       Executed="OnDel" />
-
   </UserControl.CommandBindings>
 
   <Grid x:Name="cntMain">

@@ -40,7 +40,7 @@ public partial class MainWindow : Window {
 
   private void OnCanSave(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnSave(object sender, ExecutedRoutedEventArgs e) {
-    if (!File.Exists(WorkingFile)) {
+    if (File.Exists(WorkingFile)) {
       PropietaryFile.Save(WorkingFile);
       ShowToast("File saved successfully", playSound: SoundEffect.Success);
     }

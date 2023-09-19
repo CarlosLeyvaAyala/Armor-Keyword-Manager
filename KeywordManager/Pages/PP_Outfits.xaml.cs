@@ -114,8 +114,8 @@ public partial class PP_Outfits : UserControl, IFileDisplayable {
   }
 
   private void OnLstNavKeyDown(object sender, KeyEventArgs e) {
-    if (e.Key == Key.Delete)
-      GUI.Commands.OutfitCmds.Del.Execute(null, this);
+    if (e.Key != Key.Delete) return;
+    GUI.Commands.OutfitCmds.Del.Execute(null, this);
     e.Handled = true;
   }
 

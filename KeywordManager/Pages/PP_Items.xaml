@@ -129,7 +129,7 @@
     </md:DrawerHost.TopDrawerContent>
 
     <md:DialogHost Identifier="ItemDlgHost">
-      <Grid>
+      <Grid x:Name="cntMain">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="9*" />
           <ColumnDefinition Width="{DynamicResource GridSepHorizontalWide}" />

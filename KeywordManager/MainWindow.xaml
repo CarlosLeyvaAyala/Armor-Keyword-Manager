@@ -26,6 +26,11 @@
   mc:Ignorable="d">
   <Window.CommandBindings>
     <CommandBinding
+      CanExecute="OnCanNew"
+      Command="c:AppCmds.New"
+      Executed="OnNew" />
+
+    <CommandBinding
       CanExecute="OnCanOpen"
       Command="c:AppCmds.Open"
       Executed="OnOpen" />
@@ -92,6 +97,7 @@
           Mode="PrimaryMid">
           <Menu>
             <MenuItem Header="_File">
+              <MenuItem Command="c:AppCmds.New" Header="_New" />
               <MenuItem Command="c:AppCmds.Open" Header="_Open" />
               <MenuItem Command="c:AppCmds.Save" Header="_Save" />
               <MenuItem Command="c:AppCmds.SaveAs" Header="_Save as..." />

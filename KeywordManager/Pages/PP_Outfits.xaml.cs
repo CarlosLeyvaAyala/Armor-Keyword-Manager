@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace KeywordManager.Pages;
 
-public partial class PP_Outfits : UserControl {
+public partial class PP_Outfits : UserControl, IFileDisplayable {
 #pragma warning disable IDE0052 // Remove unread private members
   readonly FileSystemWatcher? watcher = null;
 #pragma warning restore IDE0052 // Remove unread private members
@@ -43,21 +43,33 @@ public partial class PP_Outfits : UserControl {
   string uId => SelectedNav.UId;
   static string UId(object item) => ((NavList)item).UId;
 
-  private void OnLoaded(object sender, RoutedEventArgs e) {
-    if (hasLoaded)
-      return;
+  #region File interface
+  public void OnFileOpen(string _) => ReloadUI();
+  public void OnNewFile() => ReloadUI();
+  #endregion
 
-    NavLoad();
-    MainWindow.LstSelectFirst(lstNav);
-    ReloadSelectedItem();
+  private void OnLoaded(object sender, RoutedEventArgs e) {
+    if (hasLoaded) return; // Avoid repeated loading
+    ReloadUI();
     hasLoaded = true;
   }
 
+  void ReloadUI() {
+    NavLoad();
+    MainWindow.LstSelectFirst(lstNav);
+    ReloadSelectedItem();
+  }
+
   public void ReloadSelectedItem() {
+    cntMain.IsEnabled = Owner.IsWorkingFileLoaded;
+
     if (lstNav.SelectedItem == null) {
       lstArmorPieces.ItemsSource = null;
+      lstTags.ItemsSource = null;
+      grpImg.DataContext = null;
       return;
     }
+
     var it = Nav.GetItem(uId);
     lstArmorPieces.ItemsSource = it.ArmorPieces;
     lstTags.ItemsSource = it.Tags;

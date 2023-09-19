@@ -9,10 +9,18 @@ using Settings = KeywordManager.Properties.Settings;
 namespace KeywordManager;
 
 public partial class MainWindow : Window {
+  #region File
   private void OpenFile(string path) {
     PropietaryFile.Open(path);
-    workingFile = path;
-    ppItems.FileOpened();
+    WorkingFile = path;
+    ForEachPage<IFileDisplayable>(pp => pp.OnFileOpen(path));
+  }
+
+  private void OnCanNew(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
+  private void OnNew(object sender, ExecutedRoutedEventArgs e) {
+    WorkingFile = "";
+    PropietaryFile.New();
+    ForEachPage<IFileDisplayable>(pp => pp.OnNewFile());
   }
 
   private void OnCanOpen(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
@@ -23,8 +31,6 @@ public partial class MainWindow : Window {
         return;
 
       OpenFile(fn);
-      Settings.Default.mostRecetFile = fn;
-      Settings.Default.Save();
       PlayWindowsSound(SoundEffect.Success);
     }
     catch (Exception ex) {
@@ -34,21 +40,28 @@ public partial class MainWindow : Window {
 
   private void OnCanSave(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnSave(object sender, ExecutedRoutedEventArgs e) {
-    PropietaryFile.Save(workingFile);
-    ShowToast("File saved successfully", playSound: SoundEffect.Success);
+    if (!File.Exists(WorkingFile)) {
+      PropietaryFile.Save(WorkingFile);
+      ShowToast("File saved successfully", playSound: SoundEffect.Success);
+    }
+    else
+      SaveAs();
   }
 
   private void OnCanSaveAs(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
-  private void OnSaveAs(object sender, ExecutedRoutedEventArgs e) {
+  private void OnSaveAs(object sender, ExecutedRoutedEventArgs e) => SaveAs();
+
+  void SaveAs() {
     try {
-      var fn = GUI.Dialogs.File.Save("Skyrim Items (*.skyitms)|*.skyitms", "1e2be86c-8d55-4894-82e9-65e8a3a027a5", "", "");
-      if (string.IsNullOrWhiteSpace(fn))
-        return;
+      var fn = GUI.Dialogs.File.Save(
+        "Skyrim Items (*.skyitms)|*.skyitms",
+        "1e2be86c-8d55-4894-82e9-65e8a3a027a5",
+        "",
+        "");
+      if (string.IsNullOrWhiteSpace(fn)) return;
 
       PropietaryFile.Save(fn);
-      workingFile = fn;
-      Settings.Default.mostRecetFile = fn;
-      Settings.Default.Save();
+      WorkingFile = fn;
       PlayWindowsSound(SoundEffect.Success);
     }
     catch (Exception ex) {
@@ -71,14 +84,14 @@ public partial class MainWindow : Window {
     var d = Settings.Default.mostRecentExportDir;
     if (!Directory.Exists(d))
       return;
-    var m = PropietaryFile.Generate(workingFile, d);
+    var m = PropietaryFile.Generate(WorkingFile, d);
     txtStatus.Text = m;
     var date = DateTime.Now.ToString("HH:mm:ss");
     txtStatusTime.Text = d;
     ShowToast($"Files exported successfully at {date}", playSound: SoundEffect.Success);
   }
 
-  private void OnCanFileJsonExport(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = File.Exists(workingFile);
+  private void OnCanFileJsonExport(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = File.Exists(WorkingFile);
   private void OnFileJsonExport(object sender, ExecutedRoutedEventArgs e) {
     var fn = GUI.Dialogs.File.Save("Json (*.json)|*.json", "5e8659d3-6722-4e8d-982d-fbaa75b1519b", "", "");
     if (string.IsNullOrWhiteSpace(fn))
@@ -92,9 +105,10 @@ public partial class MainWindow : Window {
     if (string.IsNullOrWhiteSpace(fn))
       return;
     PropietaryFile.OpenJson(fn);
-    workingFile = "";
+    WorkingFile = "";
     PlayWindowsSound(SoundEffect.Success);
   }
+  #endregion
 
   private void OnCanFilter(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = CurrentPage is IFilterable;
   private void OnFilter(object sender, ExecutedRoutedEventArgs e) {

@@ -126,6 +126,8 @@ type Database = Map<UniqueId, Data>
 module Database =
     let mutable db: Database = Map.empty
 
+    let clear () = db <- Map.empty
+
     let inline toArray () = db |> Map.toArray
 
     let toArrayOfRaw () =

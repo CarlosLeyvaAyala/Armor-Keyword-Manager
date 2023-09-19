@@ -1,5 +1,6 @@
 ﻿using Data.UI;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,20 +9,41 @@ using Settings = KeywordManager.Properties.Settings;
 namespace KeywordManager;
 
 public partial class MainWindow : Window {
-  private string workingFile = "";
+  private readonly List<object> pages;
+
+  private string _workingFile = "";
+  private string WorkingFile {
+    get => _workingFile;
+    set {
+      _workingFile = value;
+
+      if (File.Exists(value)) {
+        Settings.Default.mostRecetFile = value;
+        Settings.Default.Save();
+      }
+    }
+  }
+
+  public bool IsWorkingFileLoaded => File.Exists(_workingFile);
+
   private bool isLoaded = false;
   object CurrentPage => tbcMain.SelectedContent;
 
   public MainWindow() {
     InitializeComponent();
     AppSettings.Paths.SetApp(Directory.GetCurrentDirectory());
+    pages = new() { ppItems, ppOutfits };
+  }
+
+  void ForEachPage<T>(Action<T> DoSomething) {
+    foreach (var pp in pages)
+      if (pp is T t) DoSomething(t);
   }
 
   private void Window_Loaded(object sender, RoutedEventArgs e) {
     try {
       var fn = Settings.Default.mostRecetFile;
-      if (File.Exists(fn))
-        OpenFile(fn);
+      if (File.Exists(fn)) OpenFile(fn);
     }
     catch (Exception ex) {
       MessageBox.Show(this, ex.Message);

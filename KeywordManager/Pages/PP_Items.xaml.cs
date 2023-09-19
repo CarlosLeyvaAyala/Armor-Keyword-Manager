@@ -6,7 +6,6 @@ using Microsoft.Win32;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -16,7 +15,7 @@ using Settings = KeywordManager.Properties.Settings;
 
 namespace KeywordManager.Pages;
 
-public partial class PP_Items : UserControl, IFilterable {
+public partial class PP_Items : UserControl, IFilterable, IFileDisplayable {
   bool hasLoaded = false;
 
 #pragma warning disable IDE0052 // Remove unread private members
@@ -37,10 +36,15 @@ public partial class PP_Items : UserControl, IFilterable {
     NoRapidFire = Misc.AvoidRapidFire();
   }
 
-  public void FileOpened() {
+  #region File interface
+  public void OnFileOpen(string _) {
     LoadNavItems();
     GoToFirst();
   }
+
+  public void OnNewFile() => LoadNavItems();
+
+  #endregion
 
   #region UI
   private void LoadKeywords(IEnumerable? list) => lstKeywords.ItemsSource = list;
@@ -77,6 +81,8 @@ public partial class PP_Items : UserControl, IFilterable {
   }
 
   private void ReloadSelectedItem() {
+    cntMain.IsEnabled = Owner.IsWorkingFileLoaded;
+
     if (lstNavItems.SelectedItem == null) {
       grpItemData.DataContext = null;
       lstItemKeywords.ItemsSource = null;

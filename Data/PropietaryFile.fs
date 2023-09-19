@@ -48,6 +48,11 @@ let private setDomainData (d: PropietaryFile) =
     Data.UI.Common.Tags.precalculate ()
     ()
 
+let New () =
+    Data.Items.Database.clear ()
+    Data.Outfit.Database.clear ()
+    Data.UI.Common.Tags.precalculate ()
+
 let Open filename =
     filename
     |> decompressFile

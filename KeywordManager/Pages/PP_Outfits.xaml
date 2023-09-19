@@ -23,7 +23,7 @@
 
   </UserControl.CommandBindings>
 
-  <Grid>
+  <Grid x:Name="cntMain">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*" />
       <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
@@ -86,7 +86,7 @@
           </ListBox.ItemTemplate>
           <ListBox.ContextMenu>
             <ContextMenu>
-              <MenuItem Header="Batch Rename" Click="XXXXX" />
+              <MenuItem Click="XXXXX" Header="Batch Rename" />
               <Separator />
               <MenuItem Command="c:OutfitCmds.Del" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
             </ContextMenu>

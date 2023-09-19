@@ -1,4 +1,5 @@
-﻿using IO;
+﻿using Data.UI;
+using IO;
 using System;
 using System.IO;
 using System.Windows;
@@ -8,6 +9,12 @@ using Settings = KeywordManager.Properties.Settings;
 namespace KeywordManager;
 
 public partial class MainWindow : Window {
+  private void OpenFile(string path) {
+    PropietaryFile.Open(path);
+    workingFile = path;
+    ppItems.FileOpened();
+  }
+
   private void OnCanOpen(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnOpen(object sender, ExecutedRoutedEventArgs e) {
     try {
@@ -95,5 +102,35 @@ public partial class MainWindow : Window {
       return;
 
     pp.FilterDialogToggle();
+  }
+
+  private void OnCanTest(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
+  private void OnTest(object sender, ExecutedRoutedEventArgs e) {
+    //CreateImage_Window.Execute();
+  }
+
+  private void OnCanRestoreSettings(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
+  private void OnRestoreSettings(object sender, ExecutedRoutedEventArgs e) {
+    var fn = GUI.Dialogs.File.Open(
+      "Zip files (*.zip)|*.zip",
+      "e63aa357-ce5c-424d-a175-b2592aac7af3",
+      "",
+      "");
+
+    if (string.IsNullOrEmpty(fn))
+      return;
+
+    AppSettings.Backup.Restore(fn);
+  }
+
+  private void OnCanBackupSettings(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
+  private void OnBackupSettings(object sender, ExecutedRoutedEventArgs e) => CreateBackup(AppSettings.Backup.SuggestedName(), "e63aa357-ce5c-424d-a175-b2592aac7af3");
+  private void OnGitBackupClick(object sender, RoutedEventArgs e) => CreateBackup("SIM Backup", "E60CE530-7FA4-4B2C-8896-02B1F37F62B8");
+
+  static void CreateBackup(string suggestedName, string guid) {
+    var fn = GUI.Dialogs.File.Save("Zip files (*.zip)|*.zip", guid, "", suggestedName);
+    if (string.IsNullOrEmpty(fn)) return;
+
+    AppSettings.Backup.Create(fn);
   }
 }

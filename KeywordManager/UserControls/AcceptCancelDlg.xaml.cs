@@ -13,6 +13,7 @@ public partial class AcceptCancelDlg : UserControl {
 
     dlg.edtDlgHostText.Text = text;
     HintAssist.SetHint(dlg.edtDlgHostText, textHint);
+    dlg.edtDlgHostText.Focus();
 
     var result = await DialogHost.Show(dlg, dialogHostIdentifier);
 

@@ -14,28 +14,26 @@ using System.Windows.Input;
 namespace KeywordManager.Pages;
 
 public partial class PP_Outfits : UserControl, IFileDisplayable {
-#pragma warning disable IDE0052 // Remove unread private members
-  readonly FileSystemWatcher? watcher = null;
-#pragma warning restore IDE0052 // Remove unread private members
-  readonly Action<Action> NoRapidFire;
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
   bool hasLoaded = false;
+#pragma warning disable IDE0052 // Remove unread private members
+  readonly FileWatcher? watcher = null;
+#pragma warning restore IDE0052 // Remove unread private members
+
 
   public PP_Outfits() {
     InitializeComponent();
-    watcher = FileWatcher.Create(Settings.Default.xEditDir, "*.outfits", OnFileChanged);
-    NoRapidFire = Misc.AvoidRapidFire();
-  }
 
-  private void OnFileChanged(object source, FileSystemEventArgs e) {
-    NoRapidFire(() => {
-      // Avoid thread error due to this function running in a non UI thread.
-      Dispatcher.Invoke(new Action(() => {
-        Import.xEdit(e.FullPath);
+    watcher = FileWatcher.Create(
+      Settings.Default.xEditDir,
+      "*.outfits",
+      filepath => {
+        Import.xEdit(filepath);
         NavLoad();
+        SetEnabledControls();
         Owner.InfoBox("New outfits were successfuly imported.", "Success");
-      }));
-    });
+      },
+      Dispatcher);
   }
 
   public void NavLoad() => lstNav.ItemsSource = Nav.Load();
@@ -60,8 +58,10 @@ public partial class PP_Outfits : UserControl, IFileDisplayable {
     ReloadSelectedItem();
   }
 
+  void SetEnabledControls() => cntMain.IsEnabled = lstNav.Items.Count > 0;
+
   public void ReloadSelectedItem() {
-    cntMain.IsEnabled = Owner.IsWorkingFileLoaded;
+    SetEnabledControls();
 
     if (lstNav.SelectedItem == null) {
       lstArmorPieces.ItemsSource = null;

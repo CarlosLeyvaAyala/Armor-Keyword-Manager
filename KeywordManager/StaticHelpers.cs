@@ -1,31 +1,46 @@
 ﻿using System;
 using System.IO;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace KeywordManager;
 
-static class FileWatcher {
-  public static FileSystemWatcher? Create(string path,
-                                          string filter,
-                                          Action<object, FileSystemEventArgs> OnFileChanged) {
-    if (!Path.Exists(path))
-      return null;
+class FileWatcher {
+  readonly Action<Action> NoRapidFire = Misc.AvoidRapidFire();
+  readonly Action<string> DoOnFileChanged;
+  readonly FileSystemWatcher _watcher;
+  readonly Dispatcher _dispatcher;
+
+  private FileWatcher(string path, string filter, Action<string> OnFileChange, Dispatcher dispatcher) {
+    DoOnFileChanged = OnFileChange;
+    _dispatcher = dispatcher;
 
     // Create a new FileSystemWatcher and set its properties
-    var watcher = new FileSystemWatcher() {
+    _watcher = new FileSystemWatcher() {
       Path = path,
       NotifyFilter = NotifyFilters.LastWrite,
       Filter = filter
     };
 
     // Add event handlers
-    watcher.Changed += new FileSystemEventHandler(OnFileChanged);
-    watcher.Created += new FileSystemEventHandler(OnFileChanged);
+    _watcher.Changed += new FileSystemEventHandler(OnFileChanged);
+    _watcher.Created += new FileSystemEventHandler(OnFileChanged);
 
     // Begin watching
-    watcher.EnableRaisingEvents = true;
-    return watcher;
+    _watcher.EnableRaisingEvents = true;
   }
+
+  private void OnFileChanged(object source, FileSystemEventArgs e) {
+    NoRapidFire(() => {
+      // Avoid thread error due to this function running in a non UI thread.
+      _dispatcher.Invoke(new Action(() => {
+        DoOnFileChanged(e.FullPath);
+      }));
+    });
+  }
+
+  public static FileWatcher? Create(string path, string filter, Action<string> OnFileChange, Dispatcher dispatcher) =>
+    !Path.Exists(path) ? null : new FileWatcher(path, filter, OnFileChange, dispatcher);
 }
 
 static class Misc {

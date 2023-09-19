@@ -19,9 +19,8 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable {
   bool hasLoaded = false;
 
 #pragma warning disable IDE0052 // Remove unread private members
-  readonly FileSystemWatcher? watcher = null;
+  readonly FileWatcher? watcher = null;
 #pragma warning restore IDE0052 // Remove unread private members
-  readonly Action<Action> NoRapidFire;
 
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
   static string UId(object o) => ((NavList)o).UniqueId;
@@ -32,8 +31,15 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable {
     var cd = Directory.GetCurrentDirectory();
     Keywords.ImagePath = Path.Combine(cd, @"Data\Img\Keywords");
     Keywords.JsonPath = Path.Combine(cd, @"Data\Keywords.json");
-    watcher = FileWatcher.Create(Settings.Default.xEditDir, "*.items", OnFileChanged);
-    NoRapidFire = Misc.AvoidRapidFire();
+    watcher = FileWatcher.Create(
+      Settings.Default.xEditDir,
+      "*.items",
+      filename => {
+        ImportFromFile(filename);
+        SetEnabledControls();
+        Owner.ReloadSelectedOutfit();
+      },
+      Dispatcher);
   }
 
   #region File interface
@@ -80,8 +86,10 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable {
     hasLoaded = true;
   }
 
+  void SetEnabledControls() => cntMain.IsEnabled = lstNavItems.Items.Count > 0;
+
   private void ReloadSelectedItem() {
-    cntMain.IsEnabled = Owner.IsWorkingFileLoaded;
+    SetEnabledControls();
 
     if (lstNavItems.SelectedItem == null) {
       grpItemData.DataContext = null;
@@ -274,16 +282,6 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable {
 
   #region Data importing
   private void ImportFromFile(string filename) => ImportItems(() => IO.Items.Import.xEdit(filename));
-
-  private void OnFileChanged(object source, FileSystemEventArgs e) {
-    NoRapidFire(() => {
-      // Avoid thread error due to this function running in a non UI thread.
-      Dispatcher.Invoke(new Action(() => {
-        ImportFromFile(e.FullPath);
-        Owner.ReloadSelectedOutfit();
-      }));
-    });
-  }
 
   private void ImportItems(Action Import) {
     Import();

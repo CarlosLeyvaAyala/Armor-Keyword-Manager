@@ -3,6 +3,7 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:guiobjs="clr-namespace:GUI.UserControls;assembly=GUI"
   xmlns:local="clr-namespace:KeywordManager.UserControls"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -11,6 +12,10 @@
   d:DesignWidth="800"
   Loaded="OnLoaded"
   mc:Ignorable="d">
+  <UserControl.DataContext>
+    <guiobjs:FilterByTagCtx />
+  </UserControl.DataContext>
+
   <DockPanel Margin="{StaticResource MgGrpContent}" md:ElevationAssist.Elevation="Dp12">
     <DockPanel.Resources>
       <Style TargetType="StackPanel">
@@ -65,10 +70,13 @@
     </md:Card>
 
     <!--  BOTTOM PANEL  -->
-    <md:Card md:ElevationAssist.Elevation="Dp0" DockPanel.Dock="Bottom">
+    <md:Card
+      md:ElevationAssist.Elevation="Dp0"
+      DockPanel.Dock="Bottom"
+      Visibility="{Binding ShowBottomPanel, Converter={StaticResource BooleanToVisibilityConverter}}">
       <Grid>
         <!--  PIC SETTINGS  -->
-        <StackPanel Grid.Column="4">
+        <StackPanel Grid.Column="4" Visibility="{Binding CanFilterByPic, Converter={StaticResource BooleanToVisibilityConverter}}">
           <RadioButton
             x:Name="rbPicSetHas"
             Click="DoFilter"
@@ -104,20 +112,13 @@
     </md:Card>
 
     <!--  TAG CLOUD  -->
-    <!--<uc:TagViewer
-      x:Name="tagFilter"
-      Height="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type md:DrawerHost}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.5}"
-      FilterTagClick="OnFilterTagClick"
-      IsFilterable="True">
-
-      <uc:TagViewer.ContextMenu>
-        <ContextMenu Visibility="{Binding IsFilterable, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <MenuItem Click="OnClearFiltersClick" Header="_Clear filters" />
-        </ContextMenu>
-      </uc:TagViewer.ContextMenu>
-    </uc:TagViewer>-->
-
     <ScrollViewer Style="{StaticResource tagScrollViewer}">
+      <ScrollViewer.ContextMenu>
+        <ContextMenu>
+          <MenuItem Click="OnSelectNone" Header="Select _none" />
+          <MenuItem Click="OnSelectInverse" Header="Select _inverse" />
+        </ContextMenu>
+      </ScrollViewer.ContextMenu>
       <ItemsControl x:Name="lstTags" d:ItemsSource="{d:SampleData ItemCount=60}">
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
@@ -129,10 +130,12 @@
           <DataTemplate>
             <CheckBox
               x:Name="chkFilter"
+              d:DataContext="{d:DesignInstance Type=guiobjs:FilterTagItem}"
               Click="DoFilter"
-              Content="{Binding}"
-              IsChecked="False"
-              Style="{StaticResource MaterialDesignFilterChipSecondaryOutlineCheckBox}" />
+              Content="{Binding Name, FallbackValue=Missing tag value}"
+              IsChecked="{Binding IsChecked}"
+              Style="{StaticResource MaterialDesignFilterChipSecondaryOutlineCheckBox}"
+              Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>

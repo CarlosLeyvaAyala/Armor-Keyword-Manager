@@ -2,6 +2,7 @@
 using Data.UI;
 using Data.UI.Filtering.Tags;
 using Data.UI.Items;
+using GUI.UserControls;
 using KeywordManager.UserControls;
 using Microsoft.Win32;
 using System;
@@ -16,7 +17,9 @@ using Settings = KeywordManager.Properties.Settings;
 
 namespace KeywordManager.Pages;
 
-public partial class PP_Items : UserControl, IFilterable, IFileDisplayable {
+public partial class PP_Items : UserControl, IFilterable, IFileDisplayable, IFilterableByTag {
+  public bool CanFilterByPic => false;
+
   bool hasLoaded = false;
 
 #pragma warning disable IDE0052 // Remove unread private members

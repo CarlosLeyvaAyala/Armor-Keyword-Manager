@@ -10,7 +10,7 @@
     <Compile Include="Commands.fs" />
     <Compile Include="Dialogs.fs" />
     <Compile Include="Validators.fs" />
-    <Compile Include="UserControls.fs" />
+    <Compile Include="UserControls\FilterByTag.fs" />
   </ItemGroup>
 
   <ItemGroup>

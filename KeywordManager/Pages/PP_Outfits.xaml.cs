@@ -2,7 +2,6 @@
 using Data.UI.Outfit;
 using IO.Outfit;
 using KeywordManager.Dialogs;
-using KeywordManager.Properties;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -24,8 +23,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable {
   public PP_Outfits() {
     InitializeComponent();
 
-    watcher = FileWatcher.Create(
-      Settings.Default.xEditDir,
+    watcher = FileWatcher.WatchxEdit(
       "*.outfits",
       filepath => {
         Import.xEdit(filepath);

@@ -1,4 +1,5 @@
 ﻿using Data.UI;
+using GUI.UserControls;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +10,12 @@ using Settings = KeywordManager.Properties.Settings;
 namespace KeywordManager;
 
 public partial class MainWindow : Window {
+  public FilterTagEventArgs FilterByTagParameters => filterByTag.SelectedParameters;
   private readonly List<object> pages;
+
+  public void ReloadTags() {
+    filterByTag.LoadTags();
+  }
 
   private string _workingFile = "";
   private string WorkingFile {

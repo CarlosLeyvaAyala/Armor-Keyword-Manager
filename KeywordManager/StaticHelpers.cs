@@ -41,6 +41,8 @@ class FileWatcher {
 
   public static FileWatcher? Create(string path, string filter, Action<string> OnFileChange, Dispatcher dispatcher) =>
     !Path.Exists(path) ? null : new FileWatcher(path, filter, OnFileChange, dispatcher);
+  public static FileWatcher? WatchxEdit(string filter, Action<string> OnFileChange, Dispatcher dispatcher) =>
+    Create(Properties.Settings.Default.xEditDir, filter, OnFileChange, dispatcher);
 }
 
 static class Misc {

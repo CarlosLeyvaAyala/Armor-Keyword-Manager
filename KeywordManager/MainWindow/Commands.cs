@@ -1,4 +1,5 @@
 ﻿using Data.UI;
+using GUI.UserControls;
 using IO;
 using System;
 using System.IO;
@@ -110,19 +111,25 @@ public partial class MainWindow : Window {
   }
   #endregion
 
-  private void OnCanFilter(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = CurrentPage is IFilterable;
+  #region Filter by tags
+  private void OnCanFilter(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = CurrentPage is IFilterableByTag;
   private void OnFilter(object sender, ExecutedRoutedEventArgs e) {
-    if (CurrentPage is not IFilterable pp)
-      return;
-
-    pp.FilterDialogToggle();
+    if (CurrentPage is not IFilterableByTag pp) return;
+    dhMain.IsTopDrawerOpen = !dhMain.IsTopDrawerOpen;
+    filterByTag.CanFilterByPic = pp.CanFilterByPic;
   }
+  private void OnFilterByTag(object sender, RoutedEventArgs e) {
+    if (CurrentPage is not IFilterableByTag pp || e is not FilterTagEventArgs te) return;
+    pp.ApplyTagFilter(te);
+  }
+  #endregion
 
   private void OnCanTest(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnTest(object sender, ExecutedRoutedEventArgs e) {
     //CreateImage_Window.Execute();
   }
 
+  #region Backups
   private void OnCanRestoreSettings(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnRestoreSettings(object sender, ExecutedRoutedEventArgs e) {
     var fn = GUI.Dialogs.File.Open(
@@ -147,4 +154,7 @@ public partial class MainWindow : Window {
 
     AppSettings.Backup.Create(fn);
   }
+  #endregion
+
+
 }

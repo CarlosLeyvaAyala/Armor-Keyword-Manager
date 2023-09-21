@@ -42,559 +42,464 @@
       Executed="OnNamesToClipboard" />
   </UserControl.CommandBindings>
 
-  <md:DrawerHost
-    x:Name="dhMain"
-    IsTopDrawerOpen="False"
-    OpenMode="Default"
-    TopDrawerCornerRadius="0 0 20 20">
-    <!--  TAG FILTER  -->
-    <md:DrawerHost.TopDrawerContent>
-      <uc:FilterByTag MaxHeight="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type md:DrawerHost}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.7}" />
-      <!--<DockPanel Margin="{StaticResource MgGrpContent}" md:ElevationAssist.Elevation="Dp12">
-        <StackPanel
-          Margin="20,0,0,0"
-          VerticalAlignment="Top"
-          DockPanel.Dock="Right"
-          Orientation="Vertical">
+  <Grid x:Name="cntMain">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="9*" />
+      <ColumnDefinition Width="{DynamicResource GridSepHorizontalWide}" />
+      <ColumnDefinition Width="8*" />
+      <ColumnDefinition Width="{DynamicResource GridSepHorizontalWide}" />
+      <ColumnDefinition Width="8*" />
+    </Grid.ColumnDefinitions>
 
-      -->
-      <!--  AND OR  -->
-      <!--
-          <StackPanel>
+    <!--  ITEM DATA  -->
+    <GroupBox
+      x:Name="grpItemData"
+      Grid.Column="2"
+      md:ColorZoneAssist.Mode="SecondaryMid"
+      Header="Item data">
+      <GroupBox.Style>
+        <Style BasedOn="{StaticResource MaterialDesignCardGroupBox}" TargetType="{x:Type GroupBox}">
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding SelectedIndex, ElementName=lstNavItems}" Value="-1">
+              <Setter Property="IsEnabled" Value="False" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </GroupBox.Style>
+      <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="{StaticResource GridSepVerticalNarrow}" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="{StaticResource GridSepVerticalNarrow}" />
+            <RowDefinition Height="auto" />
+          </Grid.RowDefinitions>
+
+          <!--  ITEM TYPE  -->
+          <ComboBox
+            Margin="{StaticResource MarginStd}"
+            VerticalAlignment="Top"
+            SelectedIndex="0"
+            Visibility="Collapsed">
+            <ComboBoxItem Content="Armor" />
+            <ComboBoxItem Content="﻿Weapon" />
+            <ComboBoxItem Content="Ammo" />
+          </ComboBox>
+
+          <StackPanel
+            x:Name="pnlItemType"
+            Margin="4"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal">
+            <StackPanel.Resources>
+              <Style x:Key="activeImg" TargetType="Image">
+                <Setter Property="Width" Value="20" />
+                <Setter Property="Visibility" Value="{Binding IsChecked, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type RadioButton}}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+              </Style>
+              <Style x:Key="inactiveImg" TargetType="Image">
+                <Setter Property="Visibility" Value="{Binding IsChecked, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type RadioButton}}, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                <Setter Property="Width" Value="20" />
+              </Style>
+            </StackPanel.Resources>
             <RadioButton
-              x:Name="rbTagsAnd"
-              Margin="{StaticResource MgTopNaarrow}"
-              Click="OnFilterAndOr"
-              Content="AND"
+              Margin="4"
+              Click="OnChangeItemType"
               IsChecked="True"
-              Style="{StaticResource MaterialDesignTabRadioButtonBottom}" />
+              Style="{StaticResource MaterialDesignTabRadioButton}"
+              Tag="0">
+              <Grid>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="auto" />
+                  <RowDefinition Height="6" />
+                  <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Image Source="{StaticResource svgArmorActive}" Style="{StaticResource activeImg}" />
+                <Image Source="{StaticResource svgArmorInactive}" Style="{StaticResource inactiveImg}" />
+                <TextBlock Grid.Row="2" Text="Armor" />
+              </Grid>
+            </RadioButton>
             <RadioButton
-              x:Name="rbTagsOr"
-              Click="OnFilterAndOr"
-              Content="OR"
+              Margin="4"
+              Click="OnChangeItemType"
               IsChecked="False"
-              Style="{StaticResource MaterialDesignTabRadioButtonBottom}" />
+              Style="{StaticResource MaterialDesignTabRadioButton}"
+              Tag="1">
+              <Grid>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="auto" />
+                  <RowDefinition Height="6" />
+                  <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Image Source="{StaticResource svgWeaponActive}" Style="{StaticResource activeImg}" />
+                <Image Source="{StaticResource svgWeaponInactive}" Style="{StaticResource inactiveImg}" />
+                <TextBlock Grid.Row="2" Text="Weapon" />
+              </Grid>
+            </RadioButton>
+            <RadioButton
+              Margin="4"
+              Click="OnChangeItemType"
+              IsChecked="False"
+              Style="{StaticResource MaterialDesignTabRadioButton}"
+              Tag="2">
+              <Grid>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="auto" />
+                  <RowDefinition Height="6" />
+                  <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Image Source="{StaticResource svgAmmoActive}" Style="{StaticResource activeImg}" />
+                <Image Source="{StaticResource svgAmmoInactive}" Style="{StaticResource inactiveImg}" />
+                <TextBlock Grid.Row="2" Text="Ammo" />
+              </Grid>
+            </RadioButton>
           </StackPanel>
 
-      -->
-      <!--  PIC SETTINGS  -->
-      <!--
-          <StackPanel Margin="{StaticResource MgTopWide}">
-            <RadioButton
-              x:Name="rbPicSetHas"
-              Margin="{StaticResource MgTopNaarrow}"
-              Click="OnFilterAndOr"
-              IsChecked="False"
-              Style="{StaticResource MaterialDesignTabRadioButtonBottom}">
-              <StackPanel>
-                <md:PackIcon HorizontalAlignment="Center" Kind="Image" />
-                <TextBlock Margin="0,4,0,0" Text="HAS" />
-              </StackPanel>
-            </RadioButton>
+          <!--  ITEM KEYWORDS  -->
+          <GroupBox
+            Grid.Row="2"
+            d:DataContext="{d:DesignInstance Type=guiobjs:NavItem}"
+            md:ColorZoneAssist.Mode="PrimaryLight"
+            BorderThickness="0"
+            Header="Keywords"
+            KeyDown="LstItemKeywords_KeyDown">
+            <ListBox
+              x:Name="lstItemKeywords"
+              MinHeight="30"
+              d:ItemsSource="{d:SampleData ItemCount=5}"
+              DataContext="{Binding Keywords}"
+              SelectionMode="Extended">
+              <ListBox.ContextMenu>
+                <ContextMenu>
+                  <MenuItem Command="EditingCommands.Delete" />
+                </ContextMenu>
+              </ListBox.ContextMenu>
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock
+                    Cursor="Help"
+                    Foreground="{Binding Color, Converter={StaticResource IntToKeywordColor}}"
+                    Text="{Binding Name}"
+                    ToolTipService.InitialShowDelay="100">
+                    <TextBlock.ToolTip>
+                      <StackPanel Orientation="Horizontal">
+                        <Image
+                          Grid.Column="0"
+                          Width="50"
+                          Height="50"
+                          Margin="0,0,10,0"
+                          HorizontalAlignment="Left"
+                          Cursor="Help"
+                          Source="{Binding Image}"
+                          Stretch="UniformToFill" />
+                        <TextBlock VerticalAlignment="Center" Text="{Binding Description}" />
+                      </StackPanel>
+                    </TextBlock.ToolTip>
+                  </TextBlock>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </GroupBox>
 
-            <RadioButton
-              x:Name="rbPicSetHasNot"
-              Margin="{StaticResource MgTopNaarrow}"
-              Click="OnFilterAndOr"
-              IsChecked="False"
-              Style="{StaticResource MaterialDesignTabRadioButtonBottom}">
-              <StackPanel>
-                <md:PackIcon HorizontalAlignment="Center" Kind="ImageOff" />
-                <TextBlock Margin="0,4,0,0" Text="HAS NOT" />
-              </StackPanel>
-            </RadioButton>
+          <!--  TAGS  -->
+          <GroupBox
+            Grid.Row="4"
+            md:ColorZoneAssist.Mode="PrimaryLight"
+            BorderThickness="0"
+            Header="Tags">
+            <StackPanel>
+              <uc:TagViewer
+                x:Name="lstItemTags"
+                MaxHeight="150"
+                IsDeletable="True"
+                TagDeleteClick="OnDeleteTag" />
 
-            <RadioButton
-              x:Name="rbPicSetEither"
-              Margin="{StaticResource MgTopNaarrow}"
-              Click="OnFilterAndOr"
-              IsChecked="True"
-              Style="{StaticResource MaterialDesignTabRadioButtonBottom}">
-              <StackPanel>
-                <md:PackIcon HorizontalAlignment="Center" Kind="ImageMultiple" />
-                <TextBlock Margin="0,4,0,0" Text="EITHER" />
-              </StackPanel>
-            </RadioButton>
-          </StackPanel>
-        </StackPanel>
-
-        <uc:TagViewer
-          x:Name="tagFilter"
-          Height="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type md:DrawerHost}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.5}"
-          FilterTagClick="OnFilter"
-          IsFilterable="True">
-
-          <uc:TagViewer.ContextMenu>
-            <ContextMenu Visibility="{Binding IsFilterable, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}">
-              <MenuItem Click="OnClearFiltersClick" Header="_Clear filters" />
-            </ContextMenu>
-          </uc:TagViewer.ContextMenu>
-        </uc:TagViewer>
-      </DockPanel>-->
-    </md:DrawerHost.TopDrawerContent>
-
-    <md:DialogHost Identifier="ItemDlgHost">
-      <Grid x:Name="cntMain">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="9*" />
-          <ColumnDefinition Width="{DynamicResource GridSepHorizontalWide}" />
-          <ColumnDefinition Width="8*" />
-          <ColumnDefinition Width="{DynamicResource GridSepHorizontalWide}" />
-          <ColumnDefinition Width="8*" />
-        </Grid.ColumnDefinitions>
-
-        <!--  ITEM DATA  -->
-        <GroupBox
-          x:Name="grpItemData"
-          Grid.Column="2"
-          md:ColorZoneAssist.Mode="SecondaryMid"
-          Header="Item data">
-          <GroupBox.Style>
-            <Style BasedOn="{StaticResource MaterialDesignCardGroupBox}" TargetType="{x:Type GroupBox}">
-              <Style.Triggers>
-                <DataTrigger Binding="{Binding SelectedIndex, ElementName=lstNavItems}" Value="-1">
-                  <Setter Property="IsEnabled" Value="False" />
-                </DataTrigger>
-              </Style.Triggers>
-            </Style>
-          </GroupBox.Style>
-          <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-            <Grid>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="{StaticResource GridSepVerticalNarrow}" />
-                <RowDefinition Height="2*" />
-                <RowDefinition Height="{StaticResource GridSepVerticalNarrow}" />
-                <RowDefinition Height="auto" />
-              </Grid.RowDefinitions>
-
-              <!--  ITEM TYPE  -->
               <ComboBox
-                Margin="{StaticResource MarginStd}"
-                VerticalAlignment="Top"
-                SelectedIndex="0"
-                Visibility="Collapsed">
-                <ComboBoxItem Content="Armor" />
-                <ComboBoxItem Content="﻿Weapon" />
-                <ComboBoxItem Content="Ammo" />
-              </ComboBox>
+                x:Name="cbItemTags"
+                Margin="{StaticResource MgTopNaarrow}"
+                IsEditable="True"
+                KeyDown="OnCbTagsAdd" />
+            </StackPanel>
+          </GroupBox>
+        </Grid>
+      </ScrollViewer>
+    </GroupBox>
 
-              <StackPanel
-                x:Name="pnlItemType"
-                Margin="4"
-                HorizontalAlignment="Center"
-                Orientation="Horizontal">
-                <StackPanel.Resources>
-                  <Style x:Key="activeImg" TargetType="Image">
-                    <Setter Property="Width" Value="20" />
-                    <Setter Property="Visibility" Value="{Binding IsChecked, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type RadioButton}}, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                  </Style>
-                  <Style x:Key="inactiveImg" TargetType="Image">
-                    <Setter Property="Visibility" Value="{Binding IsChecked, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type RadioButton}}, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
-                    <Setter Property="Width" Value="20" />
-                  </Style>
-                </StackPanel.Resources>
-                <RadioButton
-                  Margin="4"
-                  Click="OnChangeItemType"
-                  IsChecked="True"
-                  Style="{StaticResource MaterialDesignTabRadioButton}"
-                  Tag="0">
-                  <Grid>
-                    <Grid.RowDefinitions>
-                      <RowDefinition Height="auto" />
-                      <RowDefinition Height="6" />
-                      <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <Image Source="{StaticResource svgArmorActive}" Style="{StaticResource activeImg}" />
-                    <Image Source="{StaticResource svgArmorInactive}" Style="{StaticResource inactiveImg}" />
-                    <TextBlock Grid.Row="2" Text="Armor" />
-                  </Grid>
-                </RadioButton>
-                <RadioButton
-                  Margin="4"
-                  Click="OnChangeItemType"
-                  IsChecked="False"
-                  Style="{StaticResource MaterialDesignTabRadioButton}"
-                  Tag="1">
-                  <Grid>
-                    <Grid.RowDefinitions>
-                      <RowDefinition Height="auto" />
-                      <RowDefinition Height="6" />
-                      <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <Image Source="{StaticResource svgWeaponActive}" Style="{StaticResource activeImg}" />
-                    <Image Source="{StaticResource svgWeaponInactive}" Style="{StaticResource inactiveImg}" />
-                    <TextBlock Grid.Row="2" Text="Weapon" />
-                  </Grid>
-                </RadioButton>
-                <RadioButton
-                  Margin="4"
-                  Click="OnChangeItemType"
-                  IsChecked="False"
-                  Style="{StaticResource MaterialDesignTabRadioButton}"
-                  Tag="2">
-                  <Grid>
-                    <Grid.RowDefinitions>
-                      <RowDefinition Height="auto" />
-                      <RowDefinition Height="6" />
-                      <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <Image Source="{StaticResource svgAmmoActive}" Style="{StaticResource activeImg}" />
-                    <Image Source="{StaticResource svgAmmoInactive}" Style="{StaticResource inactiveImg}" />
-                    <TextBlock Grid.Row="2" Text="Ammo" />
-                  </Grid>
-                </RadioButton>
-              </StackPanel>
+    <!--  NAVIGATOR  -->
+    <GroupBox
+      md:ColorZoneAssist.Mode="PrimaryMid"
+      Header="Navigate"
+      Style="{StaticResource MaterialDesignCardGroupBox}">
+      <DockPanel>
+        <!--  FILTER TEXTBOX  -->
+        <DockPanel DockPanel.Dock="Top">
+          <ToggleButton
+            x:Name="tbFilterByRegex"
+            Click="OnFilterNameByRegexClick"
+            Content="{md:PackIcon Kind=Regex}"
+            DockPanel.Dock="Right"
+            IsChecked="{Binding Source={StaticResource appSettings}, Path=Default.itemFilterNameByRegex}"
+            Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}"
+            ToolTip="Use regular expression" />
+          <TextBox
+            x:Name="edtFilter"
+            Margin="{DynamicResource MgGrpContent}"
+            md:HintAssist.Hint="Search..."
+            TextChanged="OnFilterItems">
+            <TextBox.Text>
+              <Binding
+                Mode="OneWay"
+                Path="Text"
+                RelativeSource="{RelativeSource Self}"
+                UpdateSourceTrigger="PropertyChanged">
+                <Binding.ValidationRules>
+                  <v:RegexRule xmlns:v="clr-namespace:GUI.Validators;assembly=GUI" ValidatesOnTargetUpdated="True" />
+                </Binding.ValidationRules>
+              </Binding>
+            </TextBox.Text>
+          </TextBox>
+        </DockPanel>
 
-              <!--  ITEM KEYWORDS  -->
-              <GroupBox
-                Grid.Row="2"
-                d:DataContext="{d:DesignInstance Type=guiobjs:NavItem}"
-                md:ColorZoneAssist.Mode="PrimaryLight"
-                BorderThickness="0"
-                Header="Keywords"
-                KeyDown="LstItemKeywords_KeyDown">
-                <ListBox
-                  x:Name="lstItemKeywords"
-                  MinHeight="30"
-                  d:ItemsSource="{d:SampleData ItemCount=5}"
-                  DataContext="{Binding Keywords}"
-                  SelectionMode="Extended">
-                  <ListBox.ContextMenu>
-                    <ContextMenu>
-                      <MenuItem Command="EditingCommands.Delete" />
-                    </ContextMenu>
-                  </ListBox.ContextMenu>
-                  <ListBox.ItemTemplate>
-                    <DataTemplate>
-                      <TextBlock
-                        Cursor="Help"
-                        Foreground="{Binding Color, Converter={StaticResource IntToKeywordColor}}"
-                        Text="{Binding Name}"
-                        ToolTipService.InitialShowDelay="100">
-                        <TextBlock.ToolTip>
-                          <StackPanel Orientation="Horizontal">
+        <ListBox
+          x:Name="lstNavItems"
+          Margin="{DynamicResource MarginStd}"
+          HorizontalContentAlignment="Stretch"
+          d:ItemsSource="{d:SampleData ItemCount=5}"
+          SelectionChanged="LstNavItems_SelectionChanged"
+          SelectionMode="Extended">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <Grid
+                Margin="0,5"
+                ToolTipService.BetweenShowDelay="1000"
+                ToolTipService.InitialShowDelay="1000">
+
+                <!--  IMAGE TOOLTIP  -->
+                <Grid.ToolTip>
+                  <Grid>
+                    <TextBlock Text="This item has no image and does not belong&#x0a;to any outfits with preview images" Visibility="{Binding TooltipVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                    <ItemsControl ItemsSource="{Binding Imgs, IsAsync=true}">
+                      <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <WrapPanel />
+                        </ItemsPanelTemplate>
+                      </ItemsControl.ItemsPanel>
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                          <Grid>
+                            <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="*" />
+                              <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                              <RowDefinition Height="auto" />
+                              <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.Resources>
+                              <Style BasedOn="{StaticResource MaterialDesignTextBlock}" TargetType="TextBlock">
+                                <Setter Property="Grid.Row" Value="0" />
+                                <Setter Property="Grid.Column" Value="1" />
+                                <Setter Property="MaxWidth" Value="{Binding ActualWidth, ElementName=imgTooltip, Mode=OneWay}" />
+                                <Setter Property="FontSize" Value="10" />
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                <Setter Property="Text" Value="{Binding Name}" />
+                              </Style>
+                            </Grid.Resources>
+
+                            <!--  IMAGE  -->
                             <Image
-                              Grid.Column="0"
-                              Width="50"
-                              Height="50"
-                              Margin="0,0,10,0"
-                              HorizontalAlignment="Left"
-                              Cursor="Help"
-                              Source="{Binding Image}"
-                              Stretch="UniformToFill" />
-                            <TextBlock VerticalAlignment="Center" Text="{Binding Description}" />
-                          </StackPanel>
-                        </TextBlock.ToolTip>
-                      </TextBlock>
-                    </DataTemplate>
-                  </ListBox.ItemTemplate>
-                </ListBox>
-              </GroupBox>
+                              x:Name="imgTooltip"
+                              Grid.RowSpan="2"
+                              Grid.ColumnSpan="2"
+                              MaxWidth="350"
+                              MaxHeight="350"
+                              Source="{Binding Src, Converter={StaticResource StringToImgConverter}}" />
 
-              <!--  TAGS  -->
-              <GroupBox
-                Grid.Row="4"
-                md:ColorZoneAssist.Mode="PrimaryLight"
-                BorderThickness="0"
-                Header="Tags">
-                <StackPanel>
-                  <uc:TagViewer
-                    x:Name="lstItemTags"
-                    MaxHeight="150"
-                    IsDeletable="True"
-                    TagDeleteClick="OnDeleteTag" />
-
-                  <ComboBox
-                    x:Name="cbItemTags"
-                    Margin="{StaticResource MgTopNaarrow}"
-                    IsEditable="True"
-                    KeyDown="OnCbTagsAdd" />
-                </StackPanel>
-              </GroupBox>
-            </Grid>
-          </ScrollViewer>
-        </GroupBox>
-
-        <!--  NAVIGATOR  -->
-        <GroupBox
-          md:ColorZoneAssist.Mode="PrimaryMid"
-          Header="Navigate"
-          Style="{StaticResource MaterialDesignCardGroupBox}">
-          <DockPanel>
-            <!--  FILTER TEXTBOX  -->
-            <DockPanel DockPanel.Dock="Top">
-              <ToggleButton
-                x:Name="tbFilterByRegex"
-                Click="OnFilterNameByRegex"
-                Content="{md:PackIcon Kind=Regex}"
-                DockPanel.Dock="Right"
-                IsChecked="{Binding Source={StaticResource appSettings}, Path=Default.itemFilterNameByRegex}"
-                Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}"
-                ToolTip="Use regular expression" />
-              <TextBox
-                x:Name="edtFilter"
-                Margin="{DynamicResource MgGrpContent}"
-                md:HintAssist.Hint="Search..."
-                TextChanged="OnFilterItems">
-                <TextBox.Text>
-                  <Binding
-                    Mode="OneWay"
-                    Path="Text"
-                    RelativeSource="{RelativeSource Self}"
-                    UpdateSourceTrigger="PropertyChanged">
-                    <Binding.ValidationRules>
-                      <v:RegexRule xmlns:v="clr-namespace:GUI.Validators;assembly=GUI" ValidatesOnTargetUpdated="True" />
-                    </Binding.ValidationRules>
-                  </Binding>
-                </TextBox.Text>
-              </TextBox>
-            </DockPanel>
-
-            <ListBox
-              x:Name="lstNavItems"
-              Margin="{DynamicResource MarginStd}"
-              HorizontalContentAlignment="Stretch"
-              d:ItemsSource="{d:SampleData ItemCount=5}"
-              SelectionChanged="LstNavItems_SelectionChanged"
-              SelectionMode="Extended">
-              <ListBox.ItemTemplate>
-                <DataTemplate>
-                  <Grid
-                    Margin="0,5"
-                    ToolTipService.BetweenShowDelay="1000"
-                    ToolTipService.InitialShowDelay="1000">
-
-                    <!--  IMAGE TOOLTIP  -->
-                    <Grid.ToolTip>
-                      <Grid>
-                        <TextBlock Text="This item has no image and does not belong&#x0a;to any outfits with preview images" Visibility="{Binding TooltipVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
-                        <ItemsControl ItemsSource="{Binding Imgs, IsAsync=true}">
-                          <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                              <WrapPanel />
-                            </ItemsPanelTemplate>
-                          </ItemsControl.ItemsPanel>
-                          <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                              <Grid>
-                                <Grid.ColumnDefinitions>
-                                  <ColumnDefinition Width="*" />
-                                  <ColumnDefinition Width="auto" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                  <RowDefinition Height="auto" />
-                                  <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-                                <Grid.Resources>
-                                  <Style BasedOn="{StaticResource MaterialDesignTextBlock}" TargetType="TextBlock">
-                                    <Setter Property="Grid.Row" Value="0" />
-                                    <Setter Property="Grid.Column" Value="1" />
-                                    <Setter Property="MaxWidth" Value="{Binding ActualWidth, ElementName=imgTooltip, Mode=OneWay}" />
-                                    <Setter Property="FontSize" Value="10" />
-                                    <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                                    <Setter Property="Text" Value="{Binding Name}" />
-                                  </Style>
-                                </Grid.Resources>
-
-                                <!--  IMAGE  -->
-                                <Image
-                                  x:Name="imgTooltip"
-                                  Grid.RowSpan="2"
-                                  Grid.ColumnSpan="2"
-                                  MaxWidth="350"
-                                  MaxHeight="350"
-                                  Source="{Binding Src, Converter={StaticResource StringToImgConverter}}" />
-
-                                <!--  OUTFIT/ITEM NAME  -->
-                                <Border
-                                  Grid.Row="0"
-                                  Grid.Column="1"
-                                  HorizontalAlignment="Stretch"
-                                  VerticalAlignment="Stretch"
-                                  Background="Black"
-                                  Opacity="0.6">
-                                  <Border.Effect>
-                                    <BlurEffect Radius="15" />
-                                  </Border.Effect>
-                                </Border>
-                                <TextBlock Margin="5,4,4,3" Foreground="Black" />
-                                <TextBlock Margin="5,3,5,3" />
-                              </Grid>
-                            </DataTemplate>
-                          </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                      </Grid>
-                    </Grid.ToolTip>
-                    <Grid.RowDefinitions>
-                      <RowDefinition Height="auto" />
-                      <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                      <ColumnDefinition Width="auto" />
-                      <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal">
-                      <StackPanel.Resources>
-                        <Style TargetType="md:PackIcon">
-                          <Setter Property="Margin" Value="0,0,5,0" />
-                        </Style>
-                      </StackPanel.Resources>
-
-                      <md:PackIcon
-                        Foreground="{StaticResource clbRbActive}"
-                        Kind="Image"
-                        Visibility="{Binding HasImage, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                      <md:PackIcon
-                        Foreground="{StaticResource clbRbActive}"
-                        Kind="TshirtCrew"
-                        Visibility="{Binding BelongsToOutfitWithImg, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                      <!--  NAME  -->
-                      <TextBlock
-                        Grid.Column="1"
-                        Margin="0,0,5,0"
-                        Text="{Binding Name}">
-                        <TextBlock.Style>
-                          <Style BasedOn="{StaticResource NavTxtMain}" TargetType="TextBlock">
-                            <Style.Triggers>
-                              <DataTrigger Binding="{Binding BelongsToOutfit}" Value="True">
-                                <Setter Property="Foreground" Value="{StaticResource PrimaryHueDarkBrush}" />
-                              </DataTrigger>
-                            </Style.Triggers>
-                          </Style>
-                        </TextBlock.Style>
-                      </TextBlock>
-
-                      <md:PackIcon
-                        Foreground="{StaticResource clbRbInactive}"
-                        Kind="TagOutline"
-                        Opacity="0.25"
-                        Visibility="{Binding HasTags, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                      <md:PackIcon
-                        Foreground="{StaticResource clbRbInactive}"
-                        Kind="KeyOutline"
-                        Opacity="0.25"
-                        Visibility="{Binding HasKeywords, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                    </StackPanel>
-
-                    <!--  ESP  -->
-                    <TextBlock
-                      Grid.Row="1"
-                      Grid.Column="0"
-                      VerticalAlignment="Bottom"
-                      Style="{StaticResource NavTxtD2}"
-                      Text="{Binding Esp}" />
-
-                    <!--  EDID  -->
-                    <TextBlock
-                      Grid.Row="1"
-                      Grid.Column="1"
-                      HorizontalAlignment="Right"
-                      VerticalAlignment="Bottom"
-                      Style="{StaticResource NavTxtD1}"
-                      Text="{Binding EDID}" />
+                            <!--  OUTFIT/ITEM NAME  -->
+                            <Border
+                              Grid.Row="0"
+                              Grid.Column="1"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              Background="Black"
+                              Opacity="0.6">
+                              <Border.Effect>
+                                <BlurEffect Radius="15" />
+                              </Border.Effect>
+                            </Border>
+                            <TextBlock Margin="5,4,4,3" Foreground="Black" />
+                            <TextBlock Margin="5,3,5,3" />
+                          </Grid>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                   </Grid>
-                </DataTemplate>
-              </ListBox.ItemTemplate>
-              <ListBox.ContextMenu>
-                <ContextMenu>
-                  <MenuItem Command="c:ItemCmds.SetImage" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-                  <Separator />
-                  <MenuItem Command="c:ItemCmds.CreateUnboundOutfit" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-                  <MenuItem Command="c:ItemCmds.NamesToClipboard" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-                </ContextMenu>
-              </ListBox.ContextMenu>
-            </ListBox>
-          </DockPanel>
-        </GroupBox>
+                </Grid.ToolTip>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="auto" />
+                  <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="auto" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-        <!--  KEYWORDS  -->
-        <GroupBox
-          Grid.Column="4"
-          md:ColorZoneAssist.Mode="PrimaryMid"
-          Header="Keywords"
-          Style="{StaticResource MaterialDesignCardGroupBox}">
-          <DockPanel>
-            <ListBox
-              x:Name="lstKeywords"
-              Margin="{DynamicResource MarginStd}"
-              d:ItemsSource="{d:SampleData ItemCount=5}"
-              KeyDown="LstKeywords_KeyDown"
-              MouseDoubleClick="LstKeywords_MouseDoubleClick"
-              SelectionMode="Extended">
-              <ListBox.ItemTemplate>
-                <DataTemplate>
-                  <Grid>
-                    <Grid.ColumnDefinitions>
-                      <ColumnDefinition Width="90" />
-                      <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <Image
-                      Grid.Column="0"
-                      Width="{DynamicResource ImgListPreviewSize}"
-                      Height="{DynamicResource ImgListPreviewSize}"
-                      HorizontalAlignment="Left"
-                      Cursor="Help"
-                      Source="{Binding Image, Converter={StaticResource StringToImgConverter}}"
-                      Stretch="UniformToFill"
-                      ToolTipService.InitialShowDelay="50">
-                      <Image.ToolTip>
-                        <StackPanel>
-                          <TextBlock
-                            Margin="0,0,0,5"
-                            FontSize="13"
-                            FontWeight="DemiBold"
-                            Text="{Binding Name}" />
-                          <TextBlock Text="{Binding Description}" />
-                        </StackPanel>
-                      </Image.ToolTip>
-                    </Image>
-
-                    <TextBlock
-                      Grid.Column="1"
-                      VerticalAlignment="Center"
-                      FontSize="11"
-                      FontWeight="SemiBold"
-                      Foreground="{Binding Color, Converter={StaticResource IntToKeywordColor}}"
-                      Text="{Binding Name}" />
-                  </Grid>
-                </DataTemplate>
-              </ListBox.ItemTemplate>
-              <ListBox.ContextMenu>
-                <ContextMenu>
-                  <ContextMenu.Resources>
-                    <Style x:Key="MenuItemColor" TargetType="{x:Type MenuItem}">
-                      <Setter Property="HorizontalAlignment" Value="Center" />
-                      <Setter Property="VerticalAlignment" Value="Center" />
-                      <Setter Property="FontSize" Value="25" />
-                      <!--<Setter Property="Header" Value="●" />-->
+                <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal">
+                  <StackPanel.Resources>
+                    <Style TargetType="md:PackIcon">
+                      <Setter Property="Margin" Value="0,0,5,0" />
                     </Style>
-                  </ContextMenu.Resources>
-                  <MenuItem Header="_New keyword" />
-                  <MenuItem Header="_Delete" />
-                  <Separator />
-                  <MenuItem Click="OnChangeKeywordPic" Header="Change _picture" />
-                  <Separator />
-                  <MenuItem Header="Keyword color">
-                    <MenuItem Background="{DynamicResource ColorKeywordDefault}" Style="{StaticResource MenuItemColor}" />
-                    <MenuItem Background="{DynamicResource ColorKeywordRed}" Style="{StaticResource MenuItemColor}" />
-                    <MenuItem Background="{DynamicResource ColorKeywordOrange}" Style="{StaticResource MenuItemColor}" />
-                    <MenuItem Background="{DynamicResource ColorKeywordPurple}" Style="{StaticResource MenuItemColor}" />
-                    <MenuItem Background="{DynamicResource ColorKeywordBlue}" Style="{StaticResource MenuItemColor}" />
-                    <MenuItem Background="{DynamicResource ColorKeywordGreen}" Style="{StaticResource MenuItemColor}" />
-                    <MenuItem Background="{DynamicResource ColorKeywordGray}" Style="{StaticResource MenuItemColor}" />
-                  </MenuItem>
-                </ContextMenu>
-              </ListBox.ContextMenu>
-            </ListBox>
-          </DockPanel>
-        </GroupBox>
-      </Grid>
-    </md:DialogHost>
-  </md:DrawerHost>
+                  </StackPanel.Resources>
 
+                  <md:PackIcon
+                    Foreground="{StaticResource clbRbActive}"
+                    Kind="Image"
+                    Visibility="{Binding HasImage, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                  <md:PackIcon
+                    Foreground="{StaticResource clbRbActive}"
+                    Kind="TshirtCrew"
+                    Visibility="{Binding BelongsToOutfitWithImg, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                  <!--  NAME  -->
+                  <TextBlock
+                    Grid.Column="1"
+                    Margin="0,0,5,0"
+                    Text="{Binding Name}">
+                    <TextBlock.Style>
+                      <Style BasedOn="{StaticResource NavTxtMain}" TargetType="TextBlock">
+                        <Style.Triggers>
+                          <DataTrigger Binding="{Binding BelongsToOutfit}" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource PrimaryHueDarkBrush}" />
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </TextBlock.Style>
+                  </TextBlock>
+
+                  <md:PackIcon
+                    Foreground="{StaticResource clbRbInactive}"
+                    Kind="TagOutline"
+                    Opacity="0.25"
+                    Visibility="{Binding HasTags, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                  <md:PackIcon
+                    Foreground="{StaticResource clbRbInactive}"
+                    Kind="KeyOutline"
+                    Opacity="0.25"
+                    Visibility="{Binding HasKeywords, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                </StackPanel>
+
+                <!--  ESP  -->
+                <TextBlock
+                  Grid.Row="1"
+                  Grid.Column="0"
+                  VerticalAlignment="Bottom"
+                  Style="{StaticResource NavTxtD2}"
+                  Text="{Binding Esp}" />
+
+                <!--  EDID  -->
+                <TextBlock
+                  Grid.Row="1"
+                  Grid.Column="1"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Bottom"
+                  Style="{StaticResource NavTxtD1}"
+                  Text="{Binding EDID}" />
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+          <ListBox.ContextMenu>
+            <ContextMenu>
+              <MenuItem Command="c:ItemCmds.SetImage" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+              <Separator />
+              <MenuItem Command="c:ItemCmds.CreateUnboundOutfit" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+              <MenuItem Command="c:ItemCmds.NamesToClipboard" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+            </ContextMenu>
+          </ListBox.ContextMenu>
+        </ListBox>
+      </DockPanel>
+    </GroupBox>
+
+    <!--  KEYWORDS  -->
+    <GroupBox
+      Grid.Column="4"
+      md:ColorZoneAssist.Mode="PrimaryMid"
+      Header="Keywords"
+      Style="{StaticResource MaterialDesignCardGroupBox}">
+      <DockPanel>
+        <ListBox
+          x:Name="lstKeywords"
+          Margin="{DynamicResource MarginStd}"
+          d:ItemsSource="{d:SampleData ItemCount=5}"
+          KeyDown="LstKeywords_KeyDown"
+          MouseDoubleClick="LstKeywords_MouseDoubleClick"
+          SelectionMode="Extended">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="90" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Image
+                  Grid.Column="0"
+                  Width="{DynamicResource ImgListPreviewSize}"
+                  Height="{DynamicResource ImgListPreviewSize}"
+                  HorizontalAlignment="Left"
+                  Cursor="Help"
+                  Source="{Binding Image, Converter={StaticResource StringToImgConverter}}"
+                  Stretch="UniformToFill"
+                  ToolTipService.InitialShowDelay="50">
+                  <Image.ToolTip>
+                    <StackPanel>
+                      <TextBlock
+                        Margin="0,0,0,5"
+                        FontSize="13"
+                        FontWeight="DemiBold"
+                        Text="{Binding Name}" />
+                      <TextBlock Text="{Binding Description}" />
+                    </StackPanel>
+                  </Image.ToolTip>
+                </Image>
+
+                <TextBlock
+                  Grid.Column="1"
+                  VerticalAlignment="Center"
+                  FontSize="11"
+                  FontWeight="SemiBold"
+                  Foreground="{Binding Color, Converter={StaticResource IntToKeywordColor}}"
+                  Text="{Binding Name}" />
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+          <ListBox.ContextMenu>
+            <ContextMenu>
+              <ContextMenu.Resources>
+                <Style x:Key="MenuItemColor" TargetType="{x:Type MenuItem}">
+                  <Setter Property="HorizontalAlignment" Value="Center" />
+                  <Setter Property="VerticalAlignment" Value="Center" />
+                  <Setter Property="FontSize" Value="25" />
+                  <!--<Setter Property="Header" Value="●" />-->
+                </Style>
+              </ContextMenu.Resources>
+              <MenuItem Header="_New keyword" />
+              <MenuItem Header="_Delete" />
+              <Separator />
+              <MenuItem Click="OnChangeKeywordPic" Header="Change _picture" />
+              <Separator />
+              <MenuItem Header="Keyword color">
+                <MenuItem Background="{DynamicResource ColorKeywordDefault}" Style="{StaticResource MenuItemColor}" />
+                <MenuItem Background="{DynamicResource ColorKeywordRed}" Style="{StaticResource MenuItemColor}" />
+                <MenuItem Background="{DynamicResource ColorKeywordOrange}" Style="{StaticResource MenuItemColor}" />
+                <MenuItem Background="{DynamicResource ColorKeywordPurple}" Style="{StaticResource MenuItemColor}" />
+                <MenuItem Background="{DynamicResource ColorKeywordBlue}" Style="{StaticResource MenuItemColor}" />
+                <MenuItem Background="{DynamicResource ColorKeywordGreen}" Style="{StaticResource MenuItemColor}" />
+                <MenuItem Background="{DynamicResource ColorKeywordGray}" Style="{StaticResource MenuItemColor}" />
+              </MenuItem>
+            </ContextMenu>
+          </ListBox.ContextMenu>
+        </ListBox>
+      </DockPanel>
+    </GroupBox>
+  </Grid>
 </UserControl>

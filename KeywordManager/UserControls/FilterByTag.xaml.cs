@@ -48,6 +48,7 @@ public partial class FilterByTag : UserControl {
   private void OnSelectInverse(object sender, RoutedEventArgs e) {
     foreach (var i in allTags) i.IsChecked = !i.IsChecked;
     e.Handled = true;
+    OnDoFilter();
   }
   #endregion
 
@@ -66,23 +67,26 @@ public partial class FilterByTag : UserControl {
         typeof(RoutedEventHandler),
         typeof(TagViewer));
 
-  protected virtual void OnDoFilter(List<string> tags) =>
-    RaiseEvent(new FilterTagEventArgs(
+  protected virtual void OnDoFilter() =>
+    RaiseEvent(SelectedParameters);
+
+  public FilterTagEventArgs SelectedParameters =>
+    new(
       FilterTagsEvent,
       this,
-      tags,
+      GetCheckedTags(),
       rbTagsAnd.IsChecked == true ? FilterTagMode.And : FilterTagMode.Or,
       rbPicSetHas.IsChecked == true ? FilterPicSettings.OnlyIfHasPic :
-        rbPicSetHasNot.IsChecked == true ? FilterPicSettings.OnlyIfHasNoPic : FilterPicSettings.Either));
+        rbPicSetHasNot.IsChecked == true ? FilterPicSettings.OnlyIfHasNoPic : FilterPicSettings.Either);
 
   private void DoFilter(object sender, RoutedEventArgs e) {
-    OnDoFilter(GetCheckedTags());
+    OnDoFilter();
     e.Handled = true;
   }
 
   public void ClearTags() {
     foreach (var i in allTags) i.IsChecked = false;
-    OnDoFilter(GetCheckedTags());
+    OnDoFilter();
   }
   #endregion
 }

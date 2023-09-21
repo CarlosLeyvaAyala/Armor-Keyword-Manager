@@ -117,6 +117,7 @@ type private FilterFunc<'a, 'b> = ('a * 'b) array -> ('a * 'b) array
 type FilterOptions =
     { filter: string
       tags: System.Collections.Generic.List<string>
+      tagMode: FilterTagMode
       picMode: FilterPicSettings
       useRegex: bool }
 
@@ -202,6 +203,7 @@ module Nav =
     let private filterOr l = filterTagsKeywords searchOr l
     let private filterAnd l = filterTagsKeywords searchAnd l
 
+    /// Gets the whole list of navigation items
     let Get () = getNav id
 
     let private commonFilter orAndFunc (options: FilterOptions) =
@@ -211,8 +213,11 @@ module Nav =
             >> (filterWord options.filter options.useRegex)
         )
 
-    let GetFilterOr (options: FilterOptions) = commonFilter filterOr options
-
-    let GetFilterAnd (options: FilterOptions) = commonFilter filterAnd options
+    /// Gets filtered navigation items
+    let GetFiltered (options: FilterOptions) =
+        match options.tagMode with
+        | FilterTagMode.And -> commonFilter filterAnd options
+        | FilterTagMode.Or -> commonFilter filterOr options
+        | x -> failwith $"Tag mode ({x}) is not implemented"
 
     let GetItem uId = NavItem(uId)

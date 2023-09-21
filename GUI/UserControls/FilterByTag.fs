@@ -8,9 +8,18 @@ open DMLib.Collections
 
 type CList<'a> = Generic.List<'a>
 
+/// Data sent when the tag dialog triggers a filtering event
+type FilterTagEventArgs(routedEvent, source, tags, mode, picMode) =
+    inherit RoutedEventArgs(routedEvent, source)
+
+    member _.Tags: CList<string> = tags
+    member _.Mode: FilterTagMode = mode
+    member _.PicMode: FilterPicSettings = picMode
+
 /// Interface for pages that can filter things by tag
 type IFilterableByTag =
     abstract member CanFilterByPic: bool
+    abstract ApplyTagFilter: FilterTagEventArgs -> unit
 
 /// DataContext for the filter by tag dialog
 type FilterByTagCtx() =
@@ -24,14 +33,6 @@ type FilterByTagCtx() =
             t.OnPropertyChanged("")
 
     member t.ShowBottomPanel = t.CanFilterByPic
-
-/// Data sent when the tag dialog triggers a filtering event
-type FilterTagEventArgs(routedEvent, source, tags, mode, picMode) =
-    inherit RoutedEventArgs(routedEvent, source)
-
-    member _.Tags: CList<string> = tags
-    member _.Mode: FilterTagMode = mode
-    member _.PicMode: FilterPicSettings = picMode
 
 /// Individual filtering by tag item
 type FilterTagItem(name: string) =

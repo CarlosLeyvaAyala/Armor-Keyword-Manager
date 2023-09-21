@@ -1,6 +1,5 @@
 ﻿using Data;
 using Data.UI;
-using Data.UI.Filtering.Tags;
 using Data.UI.Items;
 using GUI.UserControls;
 using KeywordManager.UserControls;
@@ -13,13 +12,10 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Settings = KeywordManager.Properties.Settings;
 
 namespace KeywordManager.Pages;
 
-public partial class PP_Items : UserControl, IFilterable, IFileDisplayable, IFilterableByTag {
-  public bool CanFilterByPic => false;
-
+public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag {
   bool hasLoaded = false;
 
 #pragma warning disable IDE0052 // Remove unread private members
@@ -35,8 +31,7 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable, IFil
     var cd = Directory.GetCurrentDirectory();
     Keywords.ImagePath = Path.Combine(cd, @"Data\Img\Keywords");
     Keywords.JsonPath = Path.Combine(cd, @"Data\Keywords.json");
-    watcher = FileWatcher.Create(
-      Settings.Default.xEditDir,
+    watcher = FileWatcher.WatchxEdit(
       "*.items",
       filename => {
         ImportFromFile(filename);
@@ -46,7 +41,40 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable, IFil
       Dispatcher);
   }
 
-  #region File interface
+  #region Interface: IFilterableByTag and filtering functions
+  public bool CanFilterByPic => true;
+  public void ApplyTagFilter(FilterTagEventArgs e) => ApplyFilter(edtFilter.Text, e);
+
+  private void LoadNavItems(string filter, FilterTagEventArgs e) {
+    var options = new FilterOptions(filter, e.Tags, e.Mode, e.PicMode, tbFilterByRegex.IsChecked == true);
+    lstNavItems.ItemsSource = Nav.GetFiltered(options);
+  }
+
+  private void FilterByName(Func<bool> CanNotFilter) {
+    if (CanNotFilter()) return;
+
+    var e = Owner.FilterByTagParameters;
+
+    var f = edtFilter.Text;
+    if (f.Length == 0 && e.Tags.Count == 0) {
+      LoadNavItems();
+      ReloadSelectedItem();
+      return;
+    }
+
+    ApplyFilter(f, e);
+  }
+
+  void ApplyFilter(string filter, FilterTagEventArgs e) {
+    LoadNavItems(filter, e);
+    ReloadSelectedItem();
+  }
+
+  private void OnFilterItems(object sender, TextChangedEventArgs e) => FilterByName(() => sender is not TextBox tb || !tb.IsFocused);
+  private void OnFilterNameByRegexClick(object sender, RoutedEventArgs e) => FilterByName(() => false);
+  #endregion
+
+  #region Interface: IFileDisplayable
   public void OnFileOpen(string _) {
     LoadNavItems();
     GoToFirst();
@@ -59,23 +87,8 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable, IFil
   #region UI
   private void LoadKeywords(IEnumerable? list) => lstKeywords.ItemsSource = list;
   public void LoadNavItems() => lstNavItems.ItemsSource = Nav.Get();
-  private void LoadNavItems(string filter, List<string> tags) {
-    var options = new FilterOptions(filter, tags, PicSettings, tbFilterByRegex.IsChecked == true);
-
-    //lstNavItems.ItemsSource = rbTagsOr.IsChecked == true ?
-    //  Nav.GetFilterOr(options) :
-    //  Nav.GetFilterAnd(options);
-  }
-
-  //private FilterPicSettings PicSettings =>
-  //  rbPicSetHas.IsChecked == true ? FilterPicSettings.OnlyIfHasPic :
-  //    rbPicSetHasNot.IsChecked == true ? FilterPicSettings.OnlyIfHasNoPic :
-  //      FilterPicSettings.Either;
-  private FilterPicSettings PicSettings => FilterPicSettings.Either;
 
   private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) => ReloadSelectedItem();
-  private void LoadFilters() { }
-  //private void LoadFilters() => tagFilter.ItemsSource = Data.UI.Tags.Get.AllTagsAndKeywords();
 
   private void GoToFirst() {
     MainWindow.LstSelectFirst(lstNavItems);
@@ -83,12 +96,10 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable, IFil
   }
 
   private void OnLoaded(object sender, RoutedEventArgs e) {
-    if (hasLoaded)
-      return;
+    if (hasLoaded) return;
 
     LoadKeywords(Keywords.LoadFromFile());
     GoToFirst();
-    LoadFilters();
     hasLoaded = true;
   }
 
@@ -113,34 +124,6 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable, IFil
     foreach (RadioButton r in pnlItemType.Children)
       r.IsChecked = int.Parse((string)r.Tag) == it.ItemType;
   }
-
-  private void OnFilterItems(object sender, TextChangedEventArgs e) => FilterByName(() => sender is not TextBox tb || !tb.IsFocused);
-  private void OnFilterNameByRegex(object sender, RoutedEventArgs e) => FilterByName(() => false);
-
-  private void FilterByName(Func<bool> CanNotFilter) {
-    if (CanNotFilter())
-      return;
-
-    var f = edtFilter.Text;
-    if (f.Length == 0) {
-      LoadNavItems();
-      ReloadSelectedItem();
-      return;
-    }
-    else if (f.Length < 3)
-      return;
-
-    //ApplyFilter(f, tagFilter.CheckedTags);
-  }
-
-  void ApplyFilter(string filter, List<string> tags) {
-    LoadNavItems(filter, tags);
-    ReloadSelectedItem();
-  }
-
-  // TODO: Delete
-  //private void OnFilter(object sender, RoutedEventArgs e) => ApplyFilter(edtFilter.Text, tagFilter.CheckedTags);
-  //private void OnFilterAndOr(object sender, RoutedEventArgs e) => ApplyFilter(edtFilter.Text, tagFilter.CheckedTags);
 
   public void OnOutfitImgWasSet(string outfitId) {
     var pieces = new HashSet<string>(Data.UI.Outfit.Edit.GetPieces(outfitId));
@@ -204,8 +187,7 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable, IFil
   void OnChangeTags(Action ChangeTags) {
     var currTags = Data.UI.Tags.Get.AllTagsAndKeywords();
     ChangeTags();
-    if (!currTags.SequenceEqual(Data.UI.Tags.Get.AllTagsAndKeywords()))
-      LoadFilters();
+    if (!currTags.SequenceEqual(Data.UI.Tags.Get.AllTagsAndKeywords())) Owner.ReloadTags();
   }
 
   private void OnCbTagsAdd(object sender, KeyEventArgs e) {
@@ -304,11 +286,4 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable, IFil
 
   private void OnImportFromClipboard(object sender, RoutedEventArgs e) => throw new NotImplementedException("Not implemented");
   #endregion
-
-  public void FilterDialogToggle() => dhMain.IsTopDrawerOpen = !dhMain.IsTopDrawerOpen;
-
-  private void OnClearFiltersClick(object sender, RoutedEventArgs e) {
-    //tagFilter.ClearTags();
-    //ApplyFilter(edtFilter.Text, tagFilter.CheckedTags);
-  }
 }

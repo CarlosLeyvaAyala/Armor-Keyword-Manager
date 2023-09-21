@@ -131,18 +131,24 @@
                 ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
             </MenuItem>
             <MenuItem Header="_Settings">
-              <MenuItem
-                Command="c:AppCmds.BackupSettings"
-                Header="Create _backup"
-                ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-              <MenuItem
-                Click="OnGitBackupClick"
-                Header="Create backup for _Github"
-                Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}" />
-              <MenuItem
-                Command="c:AppCmds.RestoreSettings"
-                Header="_Restore backup"
-                ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+              <MenuItem Header="Change _settings" />
+
+              <Separator />
+
+              <MenuItem Header="_Backup">
+                <MenuItem
+                  Command="c:AppCmds.BackupSettings"
+                  Header="Create _backup"
+                  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                <MenuItem
+                  Click="OnGitBackupClick"
+                  Header="Create backup for _Github"
+                  Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <MenuItem
+                  Command="c:AppCmds.RestoreSettings"
+                  Header="_Restore backup"
+                  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+              </MenuItem>
             </MenuItem>
             <MenuItem Header="_Help">
               <MenuItem Header="_Help topics" />

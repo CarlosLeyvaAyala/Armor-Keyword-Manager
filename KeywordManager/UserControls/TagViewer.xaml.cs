@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -15,14 +14,6 @@ public class ClickTagEventArgs : RoutedEventArgs {
     RoutedEvent routedEvent,
     object source,
     string tag) : base(routedEvent, source) => Tag = tag;
-}
-
-public class FilterTagEventArgs : RoutedEventArgs {
-  public List<string> Tags { get; set; }
-  public FilterTagEventArgs(
-    RoutedEvent routedEvent,
-    object source,
-    List<string> tags) : base(routedEvent, source) => Tags = tags;
 }
 
 public partial class TagViewer : UserControl {
@@ -132,7 +123,7 @@ public partial class TagViewer : UserControl {
         typeof(TagViewer));
   #endregion
 
-  protected virtual void OnFilterChipClick(List<string> tags) => RaiseEvent(new FilterTagEventArgs(FilterTagClickEvent, this, tags));
+  protected virtual void OnFilterChipClick(List<string> tags) { } //TODO: Delete
 
   private void FilterChipClick(object sender, RoutedEventArgs e) {
     OnFilterChipClick(GetCheckedTags());

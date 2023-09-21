@@ -1,0 +1,14 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Style
+    x:Key="tagScrollViewer"
+    BasedOn="{StaticResource MaterialDesignScrollViewer}"
+    TargetType="ScrollViewer">
+    <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+    <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+    <Style.Resources>
+      <Style TargetType="ItemsControl">
+        <Setter Property="Width" Value="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}}" />
+      </Style>
+    </Style.Resources>
+  </Style>
+</ResourceDictionary>

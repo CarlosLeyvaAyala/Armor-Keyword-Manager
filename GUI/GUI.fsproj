@@ -10,12 +10,17 @@
     <Compile Include="Commands.fs" />
     <Compile Include="Dialogs.fs" />
     <Compile Include="Validators.fs" />
+    <Compile Include="UserControls.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="carlos.leyva.ayala.dmlib" Version="1.2.29" />
     <PackageReference Include="FSharp.Core.Wpf.Core" Version="5.0.3" />
     <PackageReference Include="WindowsAPICodePack" Version="7.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Data\Data.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,6 @@
 ﻿using Data;
 using Data.UI;
+using Data.UI.Filtering.Tags;
 using Data.UI.Items;
 using KeywordManager.UserControls;
 using Microsoft.Win32;
@@ -132,7 +133,8 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable {
     ReloadSelectedItem();
   }
 
-  private void OnFilter(object sender, RoutedEventArgs e) => ApplyFilter(edtFilter.Text, ((FilterTagEventArgs)e).Tags);
+  // TODO: Delete
+  private void OnFilter(object sender, RoutedEventArgs e) => ApplyFilter(edtFilter.Text, tagFilter.CheckedTags);
   private void OnFilterAndOr(object sender, RoutedEventArgs e) => ApplyFilter(edtFilter.Text, tagFilter.CheckedTags);
 
   public void OnOutfitImgWasSet(string outfitId) {

@@ -1,25 +1,70 @@
-﻿using System;
+﻿using Data.UI.Filtering.Tags;
+using GUI.UserControls;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace KeywordManager.UserControls {
-  /// <summary>
-  /// Interaction logic for FilterByTag.xaml
-  /// </summary>
-  public partial class FilterByTag : UserControl {
-    public FilterByTag() {
-      InitializeComponent();
+namespace KeywordManager.UserControls;
+
+public partial class FilterByTag : UserControl {
+  public FilterByTag() => InitializeComponent();
+
+  #region Event : ClickTagEvent
+  [Category("Behavior")]
+
+  public event RoutedEventHandler FilterTags {
+    add => AddHandler(FilterTagClickEvent, value);
+    remove => RemoveHandler(FilterTagClickEvent, value);
+  }
+
+  public static readonly RoutedEvent FilterTagClickEvent
+      = EventManager.RegisterRoutedEvent(
+        nameof(FilterTags),
+        RoutingStrategy.Bubble,
+        typeof(RoutedEventHandler),
+        typeof(TagViewer));
+
+  protected virtual void OnDoFilter(List<string> tags) =>
+    RaiseEvent(new FilterTagEventArgs(
+      FilterTagClickEvent,
+      this,
+      tags,
+      rbTagsAnd.IsChecked == true ? FilterTagMode.And : FilterTagMode.Or,
+      rbPicSetHas.IsChecked == true ? FilterPicSettings.OnlyIfHasPic :
+      rbPicSetHasNot.IsChecked == true ? FilterPicSettings.OnlyIfHasNoPic :
+      FilterPicSettings.Either));
+
+  private void DoFilter(object sender, RoutedEventArgs e) {
+    OnDoFilter(GetCheckedTags());
+    e.Handled = true;
+  }
+  #endregion
+
+
+  #region Tag functions
+  public List<string> CheckedTags => GetCheckedTags();
+  public void ClearTags() => ForEachFilterTag((chk) => chk.IsChecked = false);
+
+  List<string> GetCheckedTags() {
+    var tags = new List<string>();
+
+    ForEachFilterTag((chk) => {
+      bool isChecked = chk.IsChecked == true;
+      if (!isChecked) return;
+      tags.Add(chk.Content.ToString() ?? "");
+    });
+
+    return tags;
+  }
+
+  void ForEachFilterTag(Action<CheckBox> DoSomething) {
+    foreach (var item in lstTags.Items) {
+      ContentPresenter c = (ContentPresenter)lstTags.ItemContainerGenerator.ContainerFromItem(item);
+      if (c.ContentTemplate.FindName("chkFilter", c) is not CheckBox chk) continue;
+      DoSomething(chk);
     }
   }
+  #endregion
 }

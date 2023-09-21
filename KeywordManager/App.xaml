@@ -21,6 +21,7 @@
         <ResourceDictionary Source="pack://application:,,,/Dictionaries/Converters.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Dictionaries/DialogHost.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Dictionaries/Nav.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dictionaries/Tags.xaml" />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Application.Resources>

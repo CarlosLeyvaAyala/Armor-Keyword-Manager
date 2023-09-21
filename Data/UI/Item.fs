@@ -11,7 +11,7 @@ open Data.UI.Common
 open Data.UI.AppSettings.Paths.Img
 open DMLib.Combinators
 open System.Text.RegularExpressions
-open System.Diagnostics
+open Data.UI.Filtering.Tags
 
 module Outfits = Data.Outfit.Database
 
@@ -113,11 +113,6 @@ type NavItem(uniqueId: string) =
     member val ItemType = d.itemType
 
 type private FilterFunc<'a, 'b> = ('a * 'b) array -> ('a * 'b) array
-
-type FilterPicSettings =
-    | Either = 0
-    | OnlyIfHasPic = 1
-    | OnlyIfHasNoPic = 2
 
 type FilterOptions =
     { filter: string

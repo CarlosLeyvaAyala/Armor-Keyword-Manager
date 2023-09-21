@@ -49,14 +49,17 @@
     TopDrawerCornerRadius="0 0 20 20">
     <!--  TAG FILTER  -->
     <md:DrawerHost.TopDrawerContent>
-      <DockPanel Margin="{StaticResource MgGrpContent}" md:ElevationAssist.Elevation="Dp12">
+      <uc:FilterByTag MaxHeight="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type md:DrawerHost}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.7}" />
+      <!--<DockPanel Margin="{StaticResource MgGrpContent}" md:ElevationAssist.Elevation="Dp12">
         <StackPanel
           Margin="20,0,0,0"
           VerticalAlignment="Top"
           DockPanel.Dock="Right"
           Orientation="Vertical">
 
-          <!--  AND OR  -->
+      -->
+      <!--  AND OR  -->
+      <!--
           <StackPanel>
             <RadioButton
               x:Name="rbTagsAnd"
@@ -73,7 +76,9 @@
               Style="{StaticResource MaterialDesignTabRadioButtonBottom}" />
           </StackPanel>
 
-          <!--  PIC SETTINGS  -->
+      -->
+      <!--  PIC SETTINGS  -->
+      <!--
           <StackPanel Margin="{StaticResource MgTopWide}">
             <RadioButton
               x:Name="rbPicSetHas"
@@ -125,7 +130,7 @@
             </ContextMenu>
           </uc:TagViewer.ContextMenu>
         </uc:TagViewer>
-      </DockPanel>
+      </DockPanel>-->
     </md:DrawerHost.TopDrawerContent>
 
     <md:DialogHost Identifier="ItemDlgHost">

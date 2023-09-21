@@ -59,18 +59,20 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable {
   private void LoadNavItems(string filter, List<string> tags) {
     var options = new FilterOptions(filter, tags, PicSettings, tbFilterByRegex.IsChecked == true);
 
-    lstNavItems.ItemsSource = rbTagsOr.IsChecked == true ?
-      Nav.GetFilterOr(options) :
-      Nav.GetFilterAnd(options);
+    //lstNavItems.ItemsSource = rbTagsOr.IsChecked == true ?
+    //  Nav.GetFilterOr(options) :
+    //  Nav.GetFilterAnd(options);
   }
 
-  private FilterPicSettings PicSettings =>
-    rbPicSetHas.IsChecked == true ? FilterPicSettings.OnlyIfHasPic :
-      rbPicSetHasNot.IsChecked == true ? FilterPicSettings.OnlyIfHasNoPic :
-        FilterPicSettings.Either;
+  //private FilterPicSettings PicSettings =>
+  //  rbPicSetHas.IsChecked == true ? FilterPicSettings.OnlyIfHasPic :
+  //    rbPicSetHasNot.IsChecked == true ? FilterPicSettings.OnlyIfHasNoPic :
+  //      FilterPicSettings.Either;
+  private FilterPicSettings PicSettings => FilterPicSettings.Either;
 
   private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) => ReloadSelectedItem();
-  private void LoadFilters() => tagFilter.ItemsSource = Data.UI.Tags.Get.AllTagsAndKeywords();
+  private void LoadFilters() { }
+  //private void LoadFilters() => tagFilter.ItemsSource = Data.UI.Tags.Get.AllTagsAndKeywords();
 
   private void GoToFirst() {
     MainWindow.LstSelectFirst(lstNavItems);
@@ -125,7 +127,7 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable {
     else if (f.Length < 3)
       return;
 
-    ApplyFilter(f, tagFilter.CheckedTags);
+    //ApplyFilter(f, tagFilter.CheckedTags);
   }
 
   void ApplyFilter(string filter, List<string> tags) {
@@ -134,8 +136,8 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable {
   }
 
   // TODO: Delete
-  private void OnFilter(object sender, RoutedEventArgs e) => ApplyFilter(edtFilter.Text, tagFilter.CheckedTags);
-  private void OnFilterAndOr(object sender, RoutedEventArgs e) => ApplyFilter(edtFilter.Text, tagFilter.CheckedTags);
+  //private void OnFilter(object sender, RoutedEventArgs e) => ApplyFilter(edtFilter.Text, tagFilter.CheckedTags);
+  //private void OnFilterAndOr(object sender, RoutedEventArgs e) => ApplyFilter(edtFilter.Text, tagFilter.CheckedTags);
 
   public void OnOutfitImgWasSet(string outfitId) {
     var pieces = new HashSet<string>(Data.UI.Outfit.Edit.GetPieces(outfitId));
@@ -303,7 +305,7 @@ public partial class PP_Items : UserControl, IFilterable, IFileDisplayable {
   public void FilterDialogToggle() => dhMain.IsTopDrawerOpen = !dhMain.IsTopDrawerOpen;
 
   private void OnClearFiltersClick(object sender, RoutedEventArgs e) {
-    tagFilter.ClearTags();
-    ApplyFilter(edtFilter.Text, tagFilter.CheckedTags);
+    //tagFilter.ClearTags();
+    //ApplyFilter(edtFilter.Text, tagFilter.CheckedTags);
   }
 }

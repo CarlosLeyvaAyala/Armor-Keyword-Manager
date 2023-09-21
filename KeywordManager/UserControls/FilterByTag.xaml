@@ -9,6 +9,7 @@
   xmlns:uc="clr-namespace:KeywordManager.UserControls"
   d:DesignHeight="250"
   d:DesignWidth="800"
+  Loaded="OnLoaded"
   mc:Ignorable="d">
   <DockPanel Margin="{StaticResource MgGrpContent}" md:ElevationAssist.Elevation="Dp12">
     <DockPanel.Resources>
@@ -21,12 +22,12 @@
       </Style>
 
       <Style TargetType="Grid">
-        <Setter Property="Margin" Value="10" />
+        <Setter Property="Margin" Value="10,20" />
       </Style>
     </DockPanel.Resources>
 
     <!--  TOP PANEL  -->
-    <md:Card md:ElevationAssist.Elevation="Dp4" DockPanel.Dock="Top">
+    <md:Card md:ElevationAssist.Elevation="Dp1" DockPanel.Dock="Top">
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="auto" />
@@ -55,12 +56,16 @@
         </StackPanel>
 
         <!--  FIND  -->
-        <TextBox Grid.Column="2" md:HintAssist.Hint="Find tags" />
+        <TextBox
+          x:Name="edtFind"
+          Grid.Column="2"
+          md:HintAssist.Hint="Find tags"
+          TextChanged="OnFindEdtChanged" />
       </Grid>
     </md:Card>
 
     <!--  BOTTOM PANEL  -->
-    <md:Card DockPanel.Dock="Bottom">
+    <md:Card md:ElevationAssist.Elevation="Dp0" DockPanel.Dock="Bottom">
       <Grid>
         <!--  PIC SETTINGS  -->
         <StackPanel Grid.Column="4">
@@ -113,13 +118,11 @@
     </uc:TagViewer>-->
 
     <ScrollViewer Style="{StaticResource tagScrollViewer}">
-      <ItemsControl
-        x:Name="lstTags"
-        d:ItemsSource="{d:SampleData ItemCount=60}"
-        Background="AntiqueWhite">
+      <ItemsControl x:Name="lstTags" d:ItemsSource="{d:SampleData ItemCount=60}">
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
-            <WrapPanel />
+            <!--  https://github.com/sbaeumlisberger/VirtualizingWrapPanel/blob/v2/GettingStarted.md  -->
+            <WrapPanel Margin="10" />
           </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>

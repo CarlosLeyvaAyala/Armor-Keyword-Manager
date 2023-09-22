@@ -1,4 +1,5 @@
-﻿using Data.UI;
+﻿using Data;
+using Data.UI;
 using GUI.UserControls;
 using System;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ public partial class MainWindow : Window {
   public MainWindow() {
     InitializeComponent();
     AppSettings.Paths.SetApp(Directory.GetCurrentDirectory());
-    pages = new() { ppItems, ppOutfits };
+    pages = new() { filterByTag, ppItems, ppOutfits };
   }
 
   void ForEachPage<T>(Action<T> DoSomething) {
@@ -48,6 +49,7 @@ public partial class MainWindow : Window {
 
   private void Window_Loaded(object sender, RoutedEventArgs e) {
     try {
+      Keywords.LoadFromFile();
       var fn = Settings.Default.mostRecetFile;
       if (File.Exists(fn)) OpenFile(fn);
     }

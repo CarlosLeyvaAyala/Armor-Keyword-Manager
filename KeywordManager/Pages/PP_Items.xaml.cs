@@ -44,10 +44,11 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   #region Interface: IFilterableByTag and filtering functions
   public bool CanFilterByPic => true;
   public bool CanFilterByOutfitDistr => false;
+  public bool CanShowKeywords => true;
   public void ApplyTagFilter(FilterTagEventArgs e) => ApplyFilter(edtFilter.Text, e);
 
   private void LoadNavItems(string filter, FilterTagEventArgs e) {
-    var options = new FilterOptions(filter, e.Tags, e.Mode, e.PicMode, tbFilterByRegex.IsChecked == true);
+    var options = new FilterOptions(filter, e.Tags, e.TagMode, e.PicMode, tbFilterByRegex.IsChecked == true);
     lstNavItems.ItemsSource = Nav.GetFiltered(options);
   }
 

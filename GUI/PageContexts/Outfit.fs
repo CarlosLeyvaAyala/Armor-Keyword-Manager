@@ -91,7 +91,7 @@ type OutfitPageCtx() =
     member private t.appyFilter(a: (string * Data.Outfit.Raw) array) =
         // TODO: Filter by distribution
         a
-        |> Filter.tags filter.Mode filter.Tags (fun (_, v) -> Get.outfitTags v)
+        |> Filter.tags filter.TagMode filter.Tags (fun (_, v) -> Get.outfitTags v)
         |> Filter.pics filter.PicMode (fun (_, v) -> v.img)
 
     member t.Nav =

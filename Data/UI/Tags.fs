@@ -2,13 +2,18 @@
 
 open DMLib.Collections
 
-//type FilterItem(allTags, keywords) =
-
 [<RequireQualifiedAccess>]
 module Get =
-    /// This is used for filtering
-    let AllTagsAndKeywords () =
-        Data.UI.Common.Tags.getAll ()
-        |> Array.sort
-        |> Array.append (Data.Keywords.getAllKeywords () |> Array.sort)
-        |> toCList
+    /// Gets all tags in the current file
+    let allTags () =
+        Data.UI.Common.Tags.getAll () |> Array.sort
+
+    /// Gets all keywords
+    let allKeywords () =
+        Data.Keywords.getAllKeywords () |> Array.sort
+
+    let allTagsAndKeywords () =
+        allTags () |> Array.append (allKeywords ())
+
+    /// This is used for filtering by tag
+    let AllTagsAndKeywords () = allTagsAndKeywords () |> toCList

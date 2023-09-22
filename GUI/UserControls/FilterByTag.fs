@@ -6,6 +6,9 @@ open System.Collections
 open DMLib
 open DMLib.Collections
 open System.Windows.Controls
+open Data.UI.Tags
+open System.Collections.ObjectModel
+open DMLib.String
 
 type CList<'a> = Generic.List<'a>
 type private RBPair<'a> = (RadioButton * 'a)
@@ -34,7 +37,7 @@ type FilterTagEventArgs(routedEvent, source, tags, mode, picMode, outfitDistrMod
     //////////////////////////////////////////////////////////////
     // Properties we care about
     member _.Tags: CList<string> = tags
-    member _.Mode: FilterTagMode = mode
+    member _.TagMode: FilterTagMode = mode
     member _.PicMode: FilterPicSettings = picMode
     member _.OutfitDistrMode: FilterOutfitDistrSettings = outfitDistrMode
 
@@ -71,27 +74,8 @@ type FilterTagEventArgs(routedEvent, source, tags, mode, picMode, outfitDistrMod
 type IFilterableByTag =
     abstract member CanFilterByPic: bool
     abstract member CanFilterByOutfitDistr: bool
+    abstract member CanShowKeywords: bool
     abstract ApplyTagFilter: FilterTagEventArgs -> unit
-
-/// DataContext for the filter by tag dialog
-type FilterByTagCtx() =
-    inherit WPFBindable()
-    let mutable canFilterByPic = true
-    let mutable canFilterByOutfitDistr = true
-
-    member t.CanFilterByPic
-        with get () = canFilterByPic
-        and set v =
-            canFilterByPic <- v
-            t.OnPropertyChanged("")
-
-    member t.CanFilterByOutfitDistr
-        with get () = canFilterByOutfitDistr
-        and set v =
-            canFilterByOutfitDistr <- v
-            t.OnPropertyChanged("")
-
-    member t.ShowBottomPanel = t.CanFilterByPic || t.CanFilterByOutfitDistr
 
 /// Individual filtering by tag item
 type FilterTagItem(name: string) =
@@ -115,7 +99,103 @@ type FilterTagItem(name: string) =
             isVisible <- v
             t.OnPropertyChanged("IsVisible")
 
+    member val IsKeyword = false with get, set
+
     static member ofStringList list =
         list
         |> Seq.map FilterTagItem
         |> toObservableCollection
+
+/// DataContext for the filter by tag dialog
+type FilterByTagCtx() =
+    inherit WPFBindable()
+    let mutable canFilterByPic = true
+    let mutable canFilterByOutfitDistr = true
+    let mutable canShowKeywords = false
+    let mutable tags = ObservableCollection()
+    let mutable filter = ""
+
+    let loadTags () =
+        tags <-
+            let keys =
+                Get.allKeywords ()
+                |> Array.Parallel.map FilterTagItem
+
+            keys
+            |> Array.Parallel.iter (fun v -> v.IsKeyword <- true)
+
+            keys
+            |> Array.append (Get.allTags () |> Array.Parallel.map FilterTagItem)
+            |> toObservableCollection
+
+    let resetVisibility () =
+        tags |> Seq.iter (fun v -> v.IsVisible <- true)
+
+    let keywordVisibility () =
+        tags
+        |> Seq.filter (fun v -> v.IsKeyword)
+        |> Seq.iter (fun v -> v.IsVisible <- canShowKeywords)
+
+    member t.CanFilterByPic
+        with get () = canFilterByPic
+        and set v =
+            canFilterByPic <- v
+            t.OnPropertyChanged("CanFilterByPic")
+            t.OnPropertyChanged("ShowBottomPanel")
+
+    member t.CanFilterByOutfitDistr
+        with get () = canFilterByOutfitDistr
+        and set v =
+            canFilterByOutfitDistr <- v
+            t.OnPropertyChanged("CanFilterByOutfitDistr")
+            t.OnPropertyChanged("ShowBottomPanel")
+
+    member t.ShowBottomPanel = t.CanFilterByPic || t.CanFilterByOutfitDistr
+
+    member t.CanShowKeywords
+        with get () = canShowKeywords
+        and set v =
+            canShowKeywords <- v
+            t.OnPropertyChanged("")
+
+    member t.Filter
+        with get () = filter
+        and set v =
+            filter <- v
+            t.OnPropertyChanged("Filter")
+            t.OnPropertyChanged("Tags")
+
+    member _.Tags =
+        resetVisibility ()
+        keywordVisibility ()
+
+        tags
+        |> Seq.filter (fun v -> v.IsVisible)
+        |> Seq.iter (fun v ->
+            v.IsVisible <-
+                match filter with
+                | ""
+                | IsContainedIn v.Name -> true
+                | _ -> false)
+
+        tags
+
+    member t.LoadTagsFromFile() =
+        loadTags ()
+        t.OnPropertyChanged("SelectedTags")
+
+    member t.SelectNone() =
+        tags |> Seq.iter (fun v -> v.IsChecked <- false)
+        t.OnPropertyChanged("SelectedTags")
+
+    member _.SelectInverse() =
+        tags
+        |> Seq.iter (fun v -> v.IsChecked <- not v.IsChecked)
+
+    member _.SelectedTags =
+        tags
+        |> Seq.choose (fun v ->
+            match v.IsChecked with
+            | false -> None
+            | true -> Some v.Name)
+        |> toCList

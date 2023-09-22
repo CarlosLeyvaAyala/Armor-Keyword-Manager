@@ -118,6 +118,7 @@ public partial class MainWindow : Window {
     dhMain.IsTopDrawerOpen = !dhMain.IsTopDrawerOpen;
     filterByTag.CanFilterByPic = pp.CanFilterByPic;
     filterByTag.CanFilterByOutfitDistr = pp.CanFilterByOutfitDistr;
+    filterByTag.CanShowKeywords = pp.CanShowKeywords;
   }
   private void OnFilterByTag(object sender, RoutedEventArgs e) {
     if (CurrentPage is not IFilterableByTag pp || e is not FilterTagEventArgs te) return;

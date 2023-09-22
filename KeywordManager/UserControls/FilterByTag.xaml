@@ -10,10 +10,9 @@
   xmlns:uc="clr-namespace:KeywordManager.UserControls"
   d:DesignHeight="250"
   d:DesignWidth="800"
-  Loaded="OnLoaded"
   mc:Ignorable="d">
   <UserControl.DataContext>
-    <guiobjs:FilterByTagCtx />
+    <guiobjs:FilterByTagCtx x:Name="ctx" />
   </UserControl.DataContext>
 
   <DockPanel Margin="{StaticResource MgGrpContent}" md:ElevationAssist.Elevation="Dp12">
@@ -62,10 +61,9 @@
 
         <!--  FIND  -->
         <TextBox
-          x:Name="edtFind"
           Grid.Column="2"
           md:HintAssist.Hint="Find tags"
-          TextChanged="OnFindEdtChanged" />
+          TextChanged="OnFilterChanged" />
       </Grid>
     </md:Card>
 
@@ -186,7 +184,11 @@
           <MenuItem Click="OnSelectInverse" Header="Select _inverse" />
         </ContextMenu>
       </ScrollViewer.ContextMenu>
-      <ItemsControl x:Name="lstTags" d:ItemsSource="{d:SampleData ItemCount=60}">
+
+      <ItemsControl
+        x:Name="lstTags"
+        d:ItemsSource="{d:SampleData ItemCount=60}"
+        ItemsSource="{Binding Tags}">
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
             <!--  https://github.com/sbaeumlisberger/VirtualizingWrapPanel/blob/v2/GettingStarted.md  -->
@@ -201,8 +203,17 @@
               Click="DoFilter"
               Content="{Binding Name, FallbackValue=Missing tag value}"
               IsChecked="{Binding IsChecked}"
-              Style="{StaticResource MaterialDesignFilterChipSecondaryOutlineCheckBox}"
-              Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+              Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+              <CheckBox.Style>
+                <Style BasedOn="{StaticResource MaterialDesignFilterChipSecondaryOutlineCheckBox}" TargetType="CheckBox">
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsKeyword}" Value="true">
+                      <Setter Property="Foreground" Value="LightSlateGray" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </CheckBox.Style>
+            </CheckBox>
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>

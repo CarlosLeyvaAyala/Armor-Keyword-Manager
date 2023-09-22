@@ -1,57 +1,50 @@
 ﻿using Data.UI.Filtering;
 using GUI.UserControls;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Tags = Data.UI.Tags;
 
 namespace KeywordManager.UserControls;
 
-public partial class FilterByTag : UserControl {
-  ObservableCollection<FilterTagItem> allTags = new();
-  FilterByTagCtx Ctx => (FilterByTagCtx)DataContext;
-
+public partial class FilterByTag : UserControl, IFileDisplayable {
+  #region Properties
   public bool CanFilterByPic {
-    get => Ctx.CanFilterByPic;
-    set => Ctx.CanFilterByPic = value;
+    get => ctx.CanFilterByPic;
+    set => ctx.CanFilterByPic = value;
   }
-
   public bool CanFilterByOutfitDistr {
-    get => Ctx.CanFilterByOutfitDistr;
-    set => Ctx.CanFilterByOutfitDistr = value;
+    get => ctx.CanFilterByOutfitDistr;
+    set => ctx.CanFilterByOutfitDistr = value;
   }
+  public bool CanShowKeywords {
+    get => ctx.CanShowKeywords;
+    set => ctx.CanShowKeywords = value;
+  }
+  #endregion
+
+  #region File interface
+  public void OnFileOpen(string _) => ctx.LoadTagsFromFile();
+  public void OnNewFile() => ctx.LoadTagsFromFile();
+  #endregion
 
   public FilterByTag() => InitializeComponent();
 
   #region Tag functions
-  public List<string> CheckedTags => GetCheckedTags();
-
-  public void LoadTags() {
-    allTags = FilterTagItem.ofStringList(Tags.Get.AllTagsAndKeywords());
-    lstTags.ItemsSource = allTags;
-  }
-
-  List<string> GetCheckedTags() => allTags.Where(i => i.IsChecked).Select(i => i.Name).ToList();
+  public void LoadTags() => ctx.LoadTagsFromFile();
   #endregion
 
   #region Private internal events
-  private void OnLoaded(object sender, RoutedEventArgs e) => LoadTags();
-
-  private void OnFindEdtChanged(object sender, TextChangedEventArgs e) {
-    foreach (var i in allTags) i.IsVisible = i.Name.Contains(edtFind.Text, StringComparison.InvariantCultureIgnoreCase);
-  }
+  // Had to do this because bindings didn't want to work
+  private void OnFilterChanged(object sender, TextChangedEventArgs e) => ctx.Filter = (sender as TextBox)?.Text;
 
   private void OnSelectNone(object sender, RoutedEventArgs e) {
-    ClearTags();
+    ctx.SelectNone();
     e.Handled = true;
+    OnDoFilter();
   }
 
   private void OnSelectInverse(object sender, RoutedEventArgs e) {
-    foreach (var i in allTags) i.IsChecked = !i.IsChecked;
+    ctx.SelectInverse();
     e.Handled = true;
     OnDoFilter();
   }
@@ -79,7 +72,7 @@ public partial class FilterByTag : UserControl {
     new(
       FilterTagsEvent,
       this,
-      GetCheckedTags(),
+      ctx.SelectedTags,
       rbTagsAnd.IsChecked == true ? FilterTagMode.And : FilterTagMode.Or,
       FilterTagEventArgs.PicModeOfControls(rbPicSetHas, rbPicSetHasNot, rbPicSetEither),
       FilterTagEventArgs.OutfitDistrModeOfControls(rbOutfitDistrHas, rbOutfitDistrHasNot, rbOutfitDistrEither));
@@ -87,11 +80,6 @@ public partial class FilterByTag : UserControl {
   private void DoFilter(object sender, RoutedEventArgs e) {
     OnDoFilter();
     e.Handled = true;
-  }
-
-  public void ClearTags() {
-    foreach (var i in allTags) i.IsChecked = false;
-    OnDoFilter();
   }
   #endregion
 }

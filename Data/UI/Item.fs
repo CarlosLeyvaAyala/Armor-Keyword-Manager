@@ -11,7 +11,7 @@ open Data.UI.Common
 open Data.UI.AppSettings.Paths.Img
 open DMLib.Combinators
 open System.Text.RegularExpressions
-open Data.UI.Filtering.Tags
+open Data.UI.Filtering
 
 module Outfits = Data.Outfit.Database
 
@@ -123,72 +123,19 @@ type FilterOptions =
 
 [<AutoOpen>]
 module private Ops =
-    let searchAnd searchFor searchIn =
-        searchIn
-        |> List.map (fun tags -> searchFor |> List.tryFind (fun t -> t = tags))
-        |> List.catOptions
-        |> fun l -> l.Length = searchFor.Length
-
-    let searchOr searchFor searchIn =
-        searchIn
-        |> List.allPairs searchFor
-        |> List.tryFind (fun (a, b) -> a = b)
-        |> Option.isSome
-
     let inline searchInKeywordsAndTags (v: Raw) = v.tags |> List.append v.keywords
-
-    let filterNothing a = id a
 
     let filterTagsKeywords searchFunc (list: System.Collections.Generic.List<string>) (a: (string * Raw) array) =
         let searchFor = [ for i in list -> i ]
 
         match searchFor with
-        | [] -> filterNothing a
+        | [] -> Filter.nothing a
         | _ ->
             a
             |> Array.Parallel.filter (fun (_, v) ->
                 v
                 |> searchInKeywordsAndTags
                 |> searchFunc searchFor)
-
-    let filterItems f a =
-        a
-        |> Array.Parallel.filter (fun (_, v) -> f v.name || f v.esp || f v.edid)
-
-    let filterPics settings (a: ('a * Raw) array) =
-        let filter f =
-            a
-            |> Array.Parallel.filter (fun (_, v) -> f v.image)
-
-        match settings with
-        | FilterPicSettings.Either -> filterNothing a
-        | FilterPicSettings.OnlyIfHasPic -> filter (Not String.isNullOrEmpty)
-        | FilterPicSettings.OnlyIfHasNoPic -> filter String.isNullOrEmpty
-        | x -> failwith $"({x}) is not a valid picture filtering mode"
-
-    let private filterSimple word a =
-        let f = containsIC word
-        filterItems f a
-
-    let private filterRegex regex a =
-        let f =
-            try
-                // Check if regex is valid. Otherwise, filter nothing.
-                let rx = Regex(regex, RegexOptions.IgnoreCase)
-                fun s -> rx.Match(s).Success
-            with
-            | _ -> fun _ -> false
-
-        filterItems f a
-
-    let filterWord word useRegex a =
-        match word with
-        | IsEmptyStr -> filterNothing a
-        | w ->
-            if useRegex then
-                filterRegex w a
-            else
-                filterSimple w a
 
     let getNav (filter: FilterFunc<string, Raw>) =
         DB.toArrayOfRaw ()
@@ -197,11 +144,10 @@ module private Ops =
         |> Array.sortBy (fun o -> o.Name.ToLower())
         |> Collections.toObservableCollection
 
-
 [<RequireQualifiedAccess>]
 module Nav =
-    let private filterOr l = filterTagsKeywords searchOr l
-    let private filterAnd l = filterTagsKeywords searchAnd l
+    let private filterOr l = filterTagsKeywords Filter.tagsOr l
+    let private filterAnd l = filterTagsKeywords Filter.tagsAnd l
 
     /// Gets the whole list of navigation items
     let Get () = getNav id
@@ -209,8 +155,8 @@ module Nav =
     let private commonFilter orAndFunc (options: FilterOptions) =
         getNav (
             (orAndFunc options.tags)
-            >> (filterPics options.picMode)
-            >> (filterWord options.filter options.useRegex)
+            >> (Filter.pics options.picMode (fun (_, v) -> v.image))
+            >> (Filter.word options.filter options.useRegex (fun f (_, v) -> f v.name || f v.esp || f v.edid))
         )
 
     /// Gets filtered navigation items
@@ -218,6 +164,5 @@ module Nav =
         match options.tagMode with
         | FilterTagMode.And -> commonFilter filterAnd options
         | FilterTagMode.Or -> commonFilter filterOr options
-        | x -> failwith $"Tag mode ({x}) is not implemented"
 
     let GetItem uId = NavItem(uId)

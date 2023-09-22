@@ -15,7 +15,7 @@
     <Compile Include="IO\Item.fs" />
     <Compile Include="IO\Outfit.fs" />
     <Compile Include="UI\Interfaces.fs" />
-    <Compile Include="UI\Filtering\Tags.fs" />
+    <Compile Include="UI\Filtering\Filters.fs" />
     <Compile Include="UI\Common.fs" />
     <Compile Include="UI\AppSettings.fs" />
     <Compile Include="UI\Edit\Item.fs" />

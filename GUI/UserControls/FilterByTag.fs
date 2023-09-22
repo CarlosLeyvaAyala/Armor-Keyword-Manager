@@ -1,6 +1,6 @@
 ﻿namespace GUI.UserControls
 
-open Data.UI.Filtering.Tags
+open Data.UI.Filtering
 open System.Windows
 open System.Collections
 open DMLib
@@ -14,6 +14,8 @@ type private RBPair<'a> = (RadioButton * 'a)
 type FilterTagEventArgs(routedEvent, source, tags, mode, picMode, outfitDistrMode) =
     inherit RoutedEventArgs(routedEvent, source)
 
+    //////////////////////////////////////////////////////////////
+    // Utility functions
     static let toBool (x: System.Nullable<bool>) =
         if not x.HasValue then
             false
@@ -29,11 +31,20 @@ type FilterTagEventArgs(routedEvent, source, tags, mode, picMode, outfitDistrMod
         | (_, true, _) -> snd c2
         | _ -> snd c3
 
+    //////////////////////////////////////////////////////////////
+    // Properties we care about
     member _.Tags: CList<string> = tags
     member _.Mode: FilterTagMode = mode
     member _.PicMode: FilterPicSettings = picMode
     member _.OutfitDistrMode: FilterOutfitDistrSettings = outfitDistrMode
 
+    /// Text search. Separated from the SearchByTag panel.
+    member val Text = "" with get, set
+    /// Search by regex. Separated from the SearchByTag panel.
+    member val UseRegex = false with get, set
+
+    //////////////////////////////////////////////////////////////
+    // Utility functions
     static member PicModeOfControls(ctrlHas, ctrlHasnt, ctrlEither) =
         threeBtnToMode
             (ctrlHas, FilterPicSettings.OnlyIfHasPic)
@@ -45,6 +56,16 @@ type FilterTagEventArgs(routedEvent, source, tags, mode, picMode, outfitDistrMod
             (ctrlHas, FilterOutfitDistrSettings.OnlyIfHasRules)
             (ctrlHasnt, FilterOutfitDistrSettings.OnlyIfHasNoRules)
             (ctrlEither, FilterOutfitDistrSettings.Either)
+
+    static member Empty =
+        FilterTagEventArgs(
+            null,
+            null,
+            CList(),
+            FilterTagMode.And,
+            FilterPicSettings.Either,
+            FilterOutfitDistrSettings.Either
+        )
 
 /// Interface for pages that can filter things by tag
 type IFilterableByTag =

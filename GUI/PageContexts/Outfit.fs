@@ -9,6 +9,8 @@ open Data.UI.Interfaces
 open System.Windows
 open System.IO
 open System.Windows.Controls
+open GUI.UserControls
+open Data.UI.Filtering
 
 [<AutoOpen>]
 module private Ops =
@@ -78,7 +80,25 @@ type PageNavigationContext() =
 type OutfitPageCtx() =
     inherit PageNavigationContext()
 
-    member _.Nav = Nav.createFull () |> toObservableCollection
+    let mutable filter = FilterTagEventArgs.Empty
+
+    member t.Filter
+        with get () = filter
+        and set v =
+            filter <- v
+            t.OnPropertyChanged("")
+
+    member private t.appyFilter(a: (string * Data.Outfit.Raw) array) =
+        // TODO: Filter by distribution
+        a
+        |> Filter.tags filter.Mode filter.Tags (fun (_, v) -> Get.outfitTags v)
+        |> Filter.pics filter.PicMode (fun (_, v) -> v.img)
+
+    member t.Nav =
+        Nav.createFull ()
+        |> t.appyFilter
+        |> Array.Parallel.map NavListItem
+        |> toObservableCollection
 
     member t.UId =
         match t.NavControl.SelectedItem with

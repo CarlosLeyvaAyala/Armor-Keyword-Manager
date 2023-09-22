@@ -1,4 +1,4 @@
-﻿using Data.UI.Filtering.Tags;
+﻿using Data.UI.Filtering;
 using GUI.UserControls;
 using System;
 using System.Collections.Generic;

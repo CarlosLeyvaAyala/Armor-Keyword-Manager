@@ -33,7 +33,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
   #region Interface: IFilterableByTag and filtering functions
   public bool CanFilterByPic => true;
   public bool CanFilterByOutfitDistr => true;
-  public void ApplyTagFilter(FilterTagEventArgs e) { }
+  public void ApplyTagFilter(FilterTagEventArgs e) => ctx.Filter = e;
   #endregion
 
   #region File interface

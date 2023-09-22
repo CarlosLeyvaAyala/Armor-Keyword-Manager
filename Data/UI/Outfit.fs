@@ -14,6 +14,20 @@ module DB = Data.Outfit.Database
 module Items = Data.Items.Database
 
 [<RequireQualifiedAccess>]
+module Get =
+    let internal pieces outfit =
+        outfit.pieces
+        |> List.map (fun uid -> uid, Items.tryFind uid)
+
+    let internal tags outfit (pieces: (string * Data.Items.Raw option) list) =
+        pieces
+        |> List.choose (fun (_, v) -> v |> Option.map (fun x -> x.tags))
+        |> List.collect id
+        |> List.append outfit.tags
+        |> List.distinct
+        |> List.sort
+
+    let outfitTags outfit = outfit |> pieces |> tags outfit
 
 type NavListItem(uId: string, d: Raw) =
     inherit WPFBindable()
@@ -66,18 +80,16 @@ type NavSelectedItem(uId: string) =
 
     let mutable name = outfit.name
 
-    let pieces =
-        outfit.pieces
-        |> List.map (fun uid -> uid, Items.tryFind uid)
+    let pieces = outfit |> Get.pieces
 
-    member _.Tags =
-        pieces
-        |> List.choose (fun (_, v) -> v |> Option.map (fun x -> x.tags))
-        |> List.collect id
-        |> List.append outfit.tags
-        |> List.distinct
-        |> List.sort
-        |> toCList
+    member _.Tags = Get.tags outfit pieces |> toCList
+    //pieces
+    //|> List.choose (fun (_, v) -> v |> Option.map (fun x -> x.tags))
+    //|> List.collect id
+    //|> List.append outfit.tags
+    //|> List.distinct
+    //|> List.sort
+    //|> toCList
 
     member t.Name
         with get () = name
@@ -106,4 +118,3 @@ module Nav =
     let createFull () =
         DB.toArrayOfRaw ()
         |> Array.sortBy (fun (_, v) -> v.name)
-        |> Array.Parallel.map NavListItem

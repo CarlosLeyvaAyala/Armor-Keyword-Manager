@@ -5,10 +5,10 @@ open Data.UI
 open DMLib.Collections
 open Data.UI.Outfit
 open DMLib_WPF.Controls
-open System.Diagnostics
 open Data.UI.Interfaces
 open System.Windows.Controls
 open System.Windows
+open System.IO
 
 [<AutoOpen>]
 module private Ops =
@@ -21,24 +21,42 @@ module private Ops =
 type BatchDlg = delegate of seq<BatchRename.Item> -> seq<BatchRename.Item>
 type VoidToBool = delegate of unit -> bool
 
-/// Context for working with the outfits page
-type OutfitPageCtx() =
+[<AbstractClass>]
+type PageNavigationContext() =
     inherit WPFBindable()
+
     let mutable isFinishedLoading = false
 
     member t.IsFinishedLoading
         with get () = isFinishedLoading
         and set v =
             isFinishedLoading <- v
-            t.OnPropertyChanged("CanOutfitBeSelected")
+            t.OnFinishedLoadingChange()
+
+    abstract member OnFinishedLoadingChange: unit -> unit
+
+    member t.OnceFinishedLoading whenLoaded whenNotLoaded =
+        if not t.IsFinishedLoading then
+            whenNotLoaded ()
+        else
+            whenLoaded ()
+
+    member val EnabledControlsConditions: VoidToBool = null with get, set
+
+/// Context for working with the outfits page
+[<Sealed>]
+type OutfitPageCtx() =
+    inherit PageNavigationContext()
+
+    override t.OnFinishedLoadingChange() =
+        t.OnPropertyChanged("CanOutfitBeSelected")
 
     member _.Nav = Nav.createFull () |> toObservableCollection
     member val NavListBox: ListBox = null with get, set
-    member val EnabledControlsConditions: VoidToBool = null with get, set
 
     member t.UId =
         match t.NavListBox.SelectedItem with
-        | :? NavList as item -> item.UId
+        | :? NavListItem as item -> item.UId
         | _ -> ""
 
     member t.LoadNav() = t.OnPropertyChanged("Nav")
@@ -62,7 +80,9 @@ type OutfitPageCtx() =
 
     member t.NavSelectedItems =
         [| for i in t.NavListBox.SelectedItems -> i |]
-        |> Seq.cast<NavList>
+        |> Seq.cast<NavListItem>
+
+    member t.NavSelectedItem = t.NavListBox.SelectedItem :?> NavListItem
 
     member t.SelectCurrentOutfit() =
         t.UpdateNavSelectionCount()
@@ -79,11 +99,15 @@ type OutfitPageCtx() =
             || t.EnabledControlsConditions.Invoke()
 
     /// Current selected outfit
-    member t.Selected = NavItem(t.UId)
+    member t.Selected = NavSelectedItem(t.UId)
 
-    member t.SetImage name =
-        Debug.WriteLine(t.NavListBox.SelectedIndex)
-        Edit.Image t.UId name
+    member t.SetImage filename =
+        if Path.Exists filename && t.UId <> "" then
+            t.NavSelectedItem.Img <- Edit.Image t.UId filename
+            t.SelectCurrentOutfit()
+            true
+        else
+            false
 
     /// Renames a single element
     member t.Rename newName =

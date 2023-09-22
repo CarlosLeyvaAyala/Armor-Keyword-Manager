@@ -15,7 +15,7 @@ module Items = Data.Items.Database
 
 [<RequireQualifiedAccess>]
 
-type NavList(uId: string, d: Raw) =
+type NavListItem(uId: string, d: Raw) =
     inherit WPFBindable()
     let mutable img = expandImg uId d.img
     let mutable name = d.name
@@ -55,7 +55,7 @@ type ArmorPiece(uId: string, d: Data.Items.Raw option) =
 
     member _.IsInDB = d.IsSome
 
-type NavItem(uId: string) =
+type NavSelectedItem(uId: string) =
     inherit WPFBindable()
 
     let outfit =
@@ -72,9 +72,7 @@ type NavItem(uId: string) =
 
     member _.Tags =
         pieces
-        |> List.map (fun (_, v) -> v)
-        |> List.catOptions
-        |> List.map (fun i -> i.tags)
+        |> List.choose (fun (_, v) -> v |> Option.map (fun x -> x.tags))
         |> List.collect id
         |> List.append outfit.tags
         |> List.distinct
@@ -108,6 +106,4 @@ module Nav =
     let createFull () =
         DB.toArrayOfRaw ()
         |> Array.sortBy (fun (_, v) -> v.name)
-        |> Array.Parallel.map NavList
-
-    let GetItem uid = NavItem(uid)
+        |> Array.Parallel.map NavListItem

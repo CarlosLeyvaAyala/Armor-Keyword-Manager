@@ -1,5 +1,6 @@
 ﻿using Data.UI;
 using Data.UI.Outfit;
+using GUI.UserControls;
 using IO.Outfit;
 using KeywordManager.Dialogs;
 using System;
@@ -12,13 +13,12 @@ using System.Windows.Input;
 
 namespace KeywordManager.Pages;
 
-public partial class PP_Outfits : UserControl, IFileDisplayable {
+public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTag {
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
   bool hasLoaded = false;
 #pragma warning disable IDE0052 // Remove unread private members
   readonly FileWatcher? watcher = null;
 #pragma warning restore IDE0052 // Remove unread private members
-
 
   public PP_Outfits() {
     InitializeComponent();
@@ -38,6 +38,12 @@ public partial class PP_Outfits : UserControl, IFileDisplayable {
   NavList SelectedNav => (NavList)lstNav.SelectedItem;
   string uId => SelectedNav.UId;
   static string UId(object item) => ((NavList)item).UId;
+
+  #region Interface: IFilterableByTag and filtering functions
+  public bool CanFilterByPic => true;
+  public bool CanFilterByOutfitDistr => true;
+  public void ApplyTagFilter(FilterTagEventArgs e) { }
+  #endregion
 
   #region File interface
   public void OnFileOpen(string _) => ReloadUI();

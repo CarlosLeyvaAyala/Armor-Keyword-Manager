@@ -22,6 +22,11 @@
   </UserControl.CommandBindings>
 
   <Grid x:Name="cntMain">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="4*" />
+      <RowDefinition Height="{StaticResource GridSepVertical}" />
+      <RowDefinition Height="6*" />
+    </Grid.RowDefinitions>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*" />
       <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
@@ -29,7 +34,10 @@
     </Grid.ColumnDefinitions>
 
     <!--  NAVIGATOR  -->
-    <GroupBox Header="Navigate" Style="{StaticResource MaterialDesignCardGroupBox}">
+    <GroupBox
+      Grid.RowSpan="3"
+      Header="Navigate"
+      Style="{StaticResource MaterialDesignCardGroupBox}">
       <DockPanel>
 
         <ListBox
@@ -93,8 +101,26 @@
       </DockPanel>
     </GroupBox>
 
-    <!--  CONTENTS  -->
+    <!--  DISTRIBUTION  -->
     <GroupBox
+      Grid.Column="2"
+      md:ColorZoneAssist.Mode="PrimaryMid"
+      Header="Distribution rules"
+      Style="{StaticResource MaterialDesignCardGroupBox}">
+      <Grid Margin="{StaticResource MgGrpContent}">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="2*" />
+          <ColumnDefinition Width="{StaticResource GridSepHorizontal}" />
+          <ColumnDefinition Width="5*" />
+        </Grid.ColumnDefinitions>
+        <!--  eui  -->
+
+      </Grid>
+    </GroupBox>
+
+    <!--  OUTFIT DATA  -->
+    <GroupBox
+      Grid.Row="2"
       Grid.Column="2"
       md:ColorZoneAssist.Mode="SecondaryMid"
       Header="Outfit data"
@@ -152,6 +178,7 @@
             </ListBox>
           </GroupBox>
 
+          <!--  IMAGE  -->
           <GroupBox
             x:Name="grpImg"
             Grid.Row="2"

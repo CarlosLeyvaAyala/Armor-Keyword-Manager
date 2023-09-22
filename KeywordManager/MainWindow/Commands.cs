@@ -139,10 +139,9 @@ public partial class MainWindow : Window {
       "",
       "");
 
-    if (string.IsNullOrEmpty(fn))
-      return;
-
+    if (string.IsNullOrEmpty(fn)) return;
     AppSettings.Backup.Restore(fn);
+    //TODO: Update images
   }
 
   private void OnCanBackupSettings(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
@@ -156,6 +155,4 @@ public partial class MainWindow : Window {
     AppSettings.Backup.Create(fn);
   }
   #endregion
-
-
 }

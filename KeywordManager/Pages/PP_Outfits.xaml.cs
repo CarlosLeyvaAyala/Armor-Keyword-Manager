@@ -1,13 +1,10 @@
 ﻿using Data.UI;
 using Data.UI.Outfit;
-using GUI.PageContexts;
 using GUI.UserControls;
 using IO.Outfit;
 using KeywordManager.Dialogs;
-using System;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,7 +17,6 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
 #pragma warning disable IDE0052 // Remove unread private members
   readonly FileWatcher? watcher = null;
 #pragma warning restore IDE0052 // Remove unread private members
-  OutfitPageCtx Ctx => (OutfitPageCtx)DataContext;
 
   public PP_Outfits() {
     InitializeComponent();
@@ -30,13 +26,13 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
       filepath => {
         Import.xEdit(filepath);
         NavLoad();
-        SetEnabledControls();
+        //SetEnabledControls();
         Owner.InfoBox("New outfits were successfuly imported.", "Success");
       },
       Dispatcher);
   }
 
-  public void NavLoad() => Ctx.LoadNav();
+  public void NavLoad() => ctx.LoadNav();
   NavList SelectedNav => (NavList)lstNav.SelectedItem;
 
   #region Interface: IFilterableByTag and filtering functions
@@ -54,6 +50,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
     if (hasLoaded) return; // Avoid repeated loading
     ReloadUI();
     hasLoaded = true;
+    ctx.IsFinishedLoading = true;
   }
 
   void ReloadUI() {
@@ -62,13 +59,11 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
     ReloadSelectedItem();
   }
 
-  void SetEnabledControls() => cntMain.IsEnabled = lstNav.Items.Count > 0 || Owner.IsWorkingFileLoaded;
+#pragma warning disable IDE0051 // Remove unused private members
+  bool CanEnableControls() => Owner.IsWorkingFileLoaded; // Used by context in XAML
+#pragma warning restore IDE0051 // Remove unused private members
 
-  public void ReloadSelectedItem() {
-    Ctx.SelectionCount = lstNav.SelectedItems.Count;
-    SetEnabledControls();
-    Ctx.SelectOutfit(lstNav.SelectedItem == null ? "" : SelectedNav.UId);
-  }
+  public void ReloadSelectedItem() => ctx.SelectCurrentOutfit();
 
   private void OnSetImgClick(object sender, RoutedEventArgs e) =>
     SetImage(GUI.Dialogs.File.Open(
@@ -80,30 +75,16 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
   private void OnSetImgDrop(object sender, DragEventArgs e) => SetImage(FileHelper.GetDroppedFile(e));
 
   void SetImage(string filename) {
-    if (!Path.Exists(filename) || Ctx.UId == "") return;
-    SelectedNav.Img = Edit.Image(Ctx.UId, filename);
+    if (!Path.Exists(filename) || ctx.UId == "") return;
+    SelectedNav.Img = Edit.Image(ctx.UId, filename);
     ReloadSelectedItem();
-    Owner.OnOutfitImgWasSet(Ctx.UId);
+    Owner.OnOutfitImgWasSet(ctx.UId);
   }
 
   private void OnNavSelectionChanged(object sender, SelectionChangedEventArgs e) => ReloadSelectedItem();
 
   private void OnCanDel(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = lstNav.SelectedIndex > -1;
-  private void OnDel(object sender, ExecutedRoutedEventArgs e) {
-    var r = GUI.Dialogs.WarningYesNoMessageBox(
-      Owner,
-      "Deleting oufits can not be undone.\n\nDo you wish to continue?",
-      "Undoable operation");
-    if (r == MessageBoxResult.No) return;
-
-    ForEachSelectedOutfit(Edit.Delete);
-    NavLoad();
-  }
-
-  void ForEachSelectedOutfit(Action<string> DoSomething) {
-    foreach (var item in lstNav.SelectedItems)
-      DoSomething(((NavList)item).UId);
-  }
+  private void OnDel(object sender, ExecutedRoutedEventArgs e) => ctx.DeleteSelected(Owner);
 
   private void OnLstNavKeyDown(object sender, KeyEventArgs e) {
     if (e.Key != Key.Delete) return;
@@ -111,23 +92,8 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
     e.Handled = true;
   }
 
-  private void OnBatchRename(object sender, RoutedEventArgs e) {
-    var sel = lstNav.SelectedItems.OfType<NavList>()
-      .Select(i => new Data.UI.BatchRename.Item(i.UId, i.Name))
-      .ToArray();
-    var r = BatchRename_Window.Execute(Owner, new ObservableCollection<Data.UI.BatchRename.Item>(sel));
-
-    if (r == null) return;
-
-    foreach (var item in r) Edit.Rename(item.UId, item.Name);
-    ReloadUI();
-  }
-
-  private void OnRename(object sender, RoutedEventArgs e) {
-    MainWindow.ExecuteAcceptCancelDlg("New name", Ctx.Selected.Name, n => {
-      var id = Ctx.UId;
-      Ctx.Rename(n);
-      MainWindow.LstSelectUniqueId(lstNav, id);
-    });
-  }
+  private void OnBatchRename(object sender, RoutedEventArgs e) => ctx.BatchRename(sel =>
+    BatchRename_Window.Execute(Owner, new ObservableCollection<Data.UI.BatchRename.Item>(sel)));
+  private void OnRename(object sender, RoutedEventArgs e) =>
+    MainWindow.ExecuteAcceptCancelDlg("New name", ctx.Selected.Name, ctx.Rename);
 }

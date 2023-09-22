@@ -229,17 +229,15 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
       .Select((s) => s.IsArmor)
       .All((b) => b);
 
-  private async void OnCreateUnboundOutfit(object sender, ExecutedRoutedEventArgs e) {
-    var name = await MainWindow.ShowAcceptCancelDlg("Outfit name");
-    if (string.IsNullOrEmpty(name))
-      return;
-
-    var uIds = lstNavItems.SelectedItems.OfType<NavList>()
-      .Select((s) => s.UniqueId)
-      .ToList();
-    Data.UI.Outfit.Edit.CreateUnbound(uIds, name);
-    Owner.ReloadOutfitsNav();
-    Owner.GoToTab(MainWindow.TabId.Outfits);
+  private void OnCreateUnboundOutfit(object sender, ExecutedRoutedEventArgs e) {
+    MainWindow.ExecuteAcceptCancelDlg("Outfit name", "", name => {
+      var uIds = lstNavItems.SelectedItems.OfType<NavList>()
+        .Select((s) => s.UniqueId)
+        .ToList();
+      Data.UI.Outfit.Edit.CreateUnbound(uIds, name);
+      Owner.ReloadOutfitsNav();
+      Owner.GoToTab(MainWindow.TabId.Outfits);
+    });
   }
 
   private void OnCanSetImage(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;

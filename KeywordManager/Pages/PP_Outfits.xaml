@@ -15,7 +15,10 @@
   Loaded="OnLoaded"
   mc:Ignorable="d">
   <UserControl.DataContext>
-    <ctx:OutfitPageCtx />
+    <ctx:OutfitPageCtx
+      x:Name="ctx"
+      EnabledControlsConditions="CanEnableControls"
+      NavListBox="{x:Reference lstNav}" />
   </UserControl.DataContext>
 
   <UserControl.CommandBindings>
@@ -25,7 +28,7 @@
       Executed="OnDel" />
   </UserControl.CommandBindings>
 
-  <Grid x:Name="cntMain">
+  <Grid x:Name="cntMain" IsEnabled="{Binding CanOutfitBeSelected}">
     <Grid.RowDefinitions>
       <RowDefinition Height="4*" />
       <RowDefinition Height="{StaticResource GridSepVertical}" />
@@ -99,11 +102,11 @@
               <MenuItem
                 Click="OnRename"
                 Header="_Rename"
-                IsEnabled="{Binding IsSingleSelected}" />
+                IsEnabled="{Binding IsNavSingleSelected}" />
               <MenuItem
                 Click="OnBatchRename"
                 Header="Batch _rename"
-                IsEnabled="{Binding IsMultipleSelected}" />
+                IsEnabled="{Binding IsNavMultipleSelected}" />
               <Separator />
               <MenuItem Command="c:OutfitCmds.Del" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
             </ContextMenu>

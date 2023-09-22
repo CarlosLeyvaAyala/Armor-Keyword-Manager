@@ -1,5 +1,4 @@
-﻿using Data.UI.Interfaces;
-using KeywordManager.UserControls;
+﻿using KeywordManager.UserControls;
 using System;
 using System.Media;
 using System.Threading.Tasks;
@@ -14,17 +13,6 @@ public partial class MainWindow : Window {
 
   public void InfoBox(string text, string title) => MessageBox.Show(this, text, title, MessageBoxButton.OK, MessageBoxImage.Information);
   public static void LstSelectFirst(ListBox lst) => lst.SelectedIndex = lst.Items.Count > 0 ? 0 : -1;
-  public static void LstSelectUniqueId(ListBox lst, string uId) {
-    var idx = -1;
-    for (int i = 0; i < lst.Items.Count; i++)
-      if ((lst.Items[i] as IHasUniqueId)?.UId == uId) {
-        idx = i;
-        break;
-      }
-
-    lst.SelectedIndex = idx;
-    lst.ScrollIntoView(lst.SelectedItem);
-  }
 
   void WhenIsLoaded(Action DoSomething) {
     if (!isLoaded) return;

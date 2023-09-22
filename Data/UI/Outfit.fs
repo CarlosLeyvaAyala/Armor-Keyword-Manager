@@ -8,6 +8,7 @@ open DMLib.Collections
 open Data.UI.AppSettings.Paths.Img.Outfit
 open FSharpx.Collections
 open Data.UI
+open Data.UI.Interfaces
 
 module DB = Data.Outfit.Database
 module Items = Data.Items.Database
@@ -21,8 +22,11 @@ type NavList(uId: string, d: Raw) =
 
     member _.IsUnbound = d.edid |> contains DB.UnboundEDID
 
-    member val UId = uId
-    member val EDID = d.edid
+    interface IHasUniqueId with
+        member _.UId = uId
+
+    member _.UId = uId
+    member _.EDID = d.edid
 
     member t.Esp =
         match t.IsUnbound with

@@ -43,7 +43,6 @@
       Header="Navigate"
       Style="{StaticResource MaterialDesignCardGroupBox}">
       <DockPanel>
-
         <ListBox
           x:Name="lstNav"
           HorizontalContentAlignment="Stretch"
@@ -97,7 +96,14 @@
           </ListBox.ItemTemplate>
           <ListBox.ContextMenu>
             <ContextMenu>
-              <MenuItem Click="OnBatchRename" Header="Batch Rename" />
+              <MenuItem
+                Click="OnRename"
+                Header="_Rename"
+                IsEnabled="{Binding IsSingleSelected}" />
+              <MenuItem
+                Click="OnBatchRename"
+                Header="Batch _rename"
+                IsEnabled="{Binding IsMultipleSelected}" />
               <Separator />
               <MenuItem Command="c:OutfitCmds.Del" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
             </ContextMenu>

@@ -38,8 +38,6 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
 
   public void NavLoad() => Ctx.LoadNav();
   NavList SelectedNav => (NavList)lstNav.SelectedItem;
-  string uId => lstNav.SelectedItem == null ? "" : SelectedNav.UId;
-  static string UId(object item) => ((NavList)item).UId;
 
   #region Interface: IFilterableByTag and filtering functions
   public bool CanFilterByPic => true;
@@ -67,8 +65,9 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
   void SetEnabledControls() => cntMain.IsEnabled = lstNav.Items.Count > 0 || Owner.IsWorkingFileLoaded;
 
   public void ReloadSelectedItem() {
+    Ctx.SelectionCount = lstNav.SelectedItems.Count;
     SetEnabledControls();
-    Ctx.SelectOutfit(uId);
+    Ctx.SelectOutfit(lstNav.SelectedItem == null ? "" : SelectedNav.UId);
   }
 
   private void OnSetImgClick(object sender, RoutedEventArgs e) =>
@@ -81,10 +80,10 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
   private void OnSetImgDrop(object sender, DragEventArgs e) => SetImage(FileHelper.GetDroppedFile(e));
 
   void SetImage(string filename) {
-    if (!Path.Exists(filename) || uId == "") return;
-    SelectedNav.Img = Edit.Image(uId, filename);
+    if (!Path.Exists(filename) || Ctx.UId == "") return;
+    SelectedNav.Img = Edit.Image(Ctx.UId, filename);
     ReloadSelectedItem();
-    Owner.OnOutfitImgWasSet(uId);
+    Owner.OnOutfitImgWasSet(Ctx.UId);
   }
 
   private void OnNavSelectionChanged(object sender, SelectionChangedEventArgs e) => ReloadSelectedItem();
@@ -103,7 +102,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
 
   void ForEachSelectedOutfit(Action<string> DoSomething) {
     foreach (var item in lstNav.SelectedItems)
-      DoSomething(UId(item));
+      DoSomething(((NavList)item).UId);
   }
 
   private void OnLstNavKeyDown(object sender, KeyEventArgs e) {
@@ -122,5 +121,13 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
 
     foreach (var item in r) Edit.Rename(item.UId, item.Name);
     ReloadUI();
+  }
+
+  private void OnRename(object sender, RoutedEventArgs e) {
+    MainWindow.ExecuteAcceptCancelDlg("New name", Ctx.Selected.Name, n => {
+      var id = Ctx.UId;
+      Ctx.Rename(n);
+      MainWindow.LstSelectUniqueId(lstNav, id);
+    });
   }
 }

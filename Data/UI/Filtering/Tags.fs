@@ -8,3 +8,8 @@ type FilterPicSettings =
 type FilterTagMode =
     | And = 0
     | Or = 1
+
+type FilterOutfitDistrSettings =
+    | Either = 0
+    | OnlyIfHasRules = 1
+    | OnlyIfHasNoRules = 2

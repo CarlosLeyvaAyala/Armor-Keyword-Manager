@@ -5,26 +5,58 @@ open System.Windows
 open System.Collections
 open DMLib
 open DMLib.Collections
+open System.Windows.Controls
 
 type CList<'a> = Generic.List<'a>
+type private RBPair<'a> = (RadioButton * 'a)
 
 /// Data sent when the tag dialog triggers a filtering event
-type FilterTagEventArgs(routedEvent, source, tags, mode, picMode) =
+type FilterTagEventArgs(routedEvent, source, tags, mode, picMode, outfitDistrMode) =
     inherit RoutedEventArgs(routedEvent, source)
+
+    static let toBool (x: System.Nullable<bool>) =
+        if not x.HasValue then
+            false
+        else
+            x.Value
+
+    static let threeBtnToMode (c1: RBPair<'a>) (c2: RBPair<'a>) (c3: RBPair<'a>) =
+        let tb (ctrl: RadioButton) = toBool ctrl.IsChecked
+        let t = fst >> tb
+
+        match (t c1, t c2, t c3) with
+        | (true, _, _) -> snd c1
+        | (_, true, _) -> snd c2
+        | _ -> snd c3
 
     member _.Tags: CList<string> = tags
     member _.Mode: FilterTagMode = mode
     member _.PicMode: FilterPicSettings = picMode
+    member _.OutfitDistrMode: FilterOutfitDistrSettings = outfitDistrMode
+
+    static member PicModeOfControls(ctrlHas, ctrlHasnt, ctrlEither) =
+        threeBtnToMode
+            (ctrlHas, FilterPicSettings.OnlyIfHasPic)
+            (ctrlHasnt, FilterPicSettings.OnlyIfHasNoPic)
+            (ctrlEither, FilterPicSettings.Either)
+
+    static member OutfitDistrModeOfControls(ctrlHas, ctrlHasnt, ctrlEither) =
+        threeBtnToMode
+            (ctrlHas, FilterOutfitDistrSettings.OnlyIfHasRules)
+            (ctrlHasnt, FilterOutfitDistrSettings.OnlyIfHasNoRules)
+            (ctrlEither, FilterOutfitDistrSettings.Either)
 
 /// Interface for pages that can filter things by tag
 type IFilterableByTag =
     abstract member CanFilterByPic: bool
+    abstract member CanFilterByOutfitDistr: bool
     abstract ApplyTagFilter: FilterTagEventArgs -> unit
 
 /// DataContext for the filter by tag dialog
 type FilterByTagCtx() =
     inherit WPFBindable()
     let mutable canFilterByPic = true
+    let mutable canFilterByOutfitDistr = true
 
     member t.CanFilterByPic
         with get () = canFilterByPic
@@ -32,7 +64,13 @@ type FilterByTagCtx() =
             canFilterByPic <- v
             t.OnPropertyChanged("")
 
-    member t.ShowBottomPanel = t.CanFilterByPic
+    member t.CanFilterByOutfitDistr
+        with get () = canFilterByOutfitDistr
+        and set v =
+            canFilterByOutfitDistr <- v
+            t.OnPropertyChanged("")
+
+    member t.ShowBottomPanel = t.CanFilterByPic || t.CanFilterByOutfitDistr
 
 /// Individual filtering by tag item
 type FilterTagItem(name: string) =

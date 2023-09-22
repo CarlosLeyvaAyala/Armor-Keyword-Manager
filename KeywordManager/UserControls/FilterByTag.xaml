@@ -75,14 +75,42 @@
       DockPanel.Dock="Bottom"
       Visibility="{Binding ShowBottomPanel, Converter={StaticResource BooleanToVisibilityConverter}}">
       <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="auto" />
+          <ColumnDefinition>
+            <ColumnDefinition.Style>
+              <Style BasedOn="{StaticResource {x:Type ColumnDefinition}}" TargetType="ColumnDefinition">
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding CanFilterByPic}" Value="false">
+                    <Setter Property="Width" Value="0" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ColumnDefinition.Style>
+          </ColumnDefinition>
+          <ColumnDefinition Width="auto" />
+          <ColumnDefinition>
+            <ColumnDefinition.Style>
+              <Style BasedOn="{StaticResource {x:Type ColumnDefinition}}" TargetType="ColumnDefinition">
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding CanFilterByOutfitDistr}" Value="false">
+                    <Setter Property="Width" Value="0" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ColumnDefinition.Style>
+          </ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
         <!--  PIC SETTINGS  -->
-        <StackPanel Grid.Column="4" Visibility="{Binding CanFilterByPic, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <StackPanel Visibility="{Binding CanFilterByPic, Converter={StaticResource BooleanToVisibilityConverter}}">
           <RadioButton
             x:Name="rbPicSetHas"
             Click="DoFilter"
             IsChecked="False"
-            Style="{StaticResource MaterialDesignTabRadioButtonBottom}">
-            <StackPanel>
+            Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
+            ToolTip="Must have a picture associated with it">
+            <StackPanel Orientation="Vertical">
               <md:PackIcon HorizontalAlignment="Center" Kind="Image" />
               <TextBlock Margin="0,4,0,0" Text="HAS" />
             </StackPanel>
@@ -91,8 +119,9 @@
             x:Name="rbPicSetHasNot"
             Click="DoFilter"
             IsChecked="False"
-            Style="{StaticResource MaterialDesignTabRadioButtonBottom}">
-            <StackPanel>
+            Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
+            ToolTip="Must NOT have a picture associated with it">
+            <StackPanel Orientation="Vertical">
               <md:PackIcon HorizontalAlignment="Center" Kind="ImageOff" />
               <TextBlock Margin="0,4,0,0" Text="HAS NOT" />
             </StackPanel>
@@ -101,9 +130,47 @@
             x:Name="rbPicSetEither"
             Click="DoFilter"
             IsChecked="True"
-            Style="{StaticResource MaterialDesignTabRadioButtonBottom}">
-            <StackPanel>
-              <md:PackIcon HorizontalAlignment="Center" Kind="ImageMultiple" />
+            Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
+            ToolTip="May or may not have a picture associated with it">
+            <StackPanel Orientation="Vertical">
+              <md:PackIcon HorizontalAlignment="Center" Kind="QuestionMark" />
+              <TextBlock Margin="0,4,0,0" Text="EITHER" />
+            </StackPanel>
+          </RadioButton>
+        </StackPanel>
+
+        <!--  OUTFIT DISTRIBUTION  -->
+        <StackPanel Grid.Column="2" Visibility="{Binding CanFilterByOutfitDistr, Converter={StaticResource BooleanToVisibilityConverter}}">
+          <RadioButton
+            x:Name="rbOutfitDistrHas"
+            Click="DoFilter"
+            IsChecked="False"
+            Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
+            ToolTip="Must have distribution rules">
+            <StackPanel Orientation="Vertical">
+              <md:PackIcon HorizontalAlignment="Center" Kind="Share" />
+              <TextBlock Margin="0,4,0,0" Text="HAS" />
+            </StackPanel>
+          </RadioButton>
+          <RadioButton
+            x:Name="rbOutfitDistrHasNot"
+            Click="DoFilter"
+            IsChecked="False"
+            Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
+            ToolTip="Must have NO distribution rules">
+            <StackPanel Orientation="Vertical">
+              <md:PackIcon HorizontalAlignment="Center" Kind="ShareOff" />
+              <TextBlock Margin="0,4,0,0" Text="HAS NOT" />
+            </StackPanel>
+          </RadioButton>
+          <RadioButton
+            x:Name="rbOutfitDistrEither"
+            Click="DoFilter"
+            IsChecked="True"
+            Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
+            ToolTip="May or may not have distribution rules">
+            <StackPanel Orientation="Vertical">
+              <md:PackIcon HorizontalAlignment="Center" Kind="Help" />
               <TextBlock Margin="0,4,0,0" Text="EITHER" />
             </StackPanel>
           </RadioButton>

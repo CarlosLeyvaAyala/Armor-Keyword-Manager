@@ -20,6 +20,11 @@ public partial class FilterByTag : UserControl {
     set => Ctx.CanFilterByPic = value;
   }
 
+  public bool CanFilterByOutfitDistr {
+    get => Ctx.CanFilterByOutfitDistr;
+    set => Ctx.CanFilterByOutfitDistr = value;
+  }
+
   public FilterByTag() => InitializeComponent();
 
   #region Tag functions
@@ -76,8 +81,8 @@ public partial class FilterByTag : UserControl {
       this,
       GetCheckedTags(),
       rbTagsAnd.IsChecked == true ? FilterTagMode.And : FilterTagMode.Or,
-      rbPicSetHas.IsChecked == true ? FilterPicSettings.OnlyIfHasPic :
-        rbPicSetHasNot.IsChecked == true ? FilterPicSettings.OnlyIfHasNoPic : FilterPicSettings.Either);
+      FilterTagEventArgs.PicModeOfControls(rbPicSetHas, rbPicSetHasNot, rbPicSetEither),
+      FilterTagEventArgs.OutfitDistrModeOfControls(rbOutfitDistrHas, rbOutfitDistrHasNot, rbOutfitDistrEither));
 
   private void DoFilter(object sender, RoutedEventArgs e) {
     OnDoFilter();

@@ -3,6 +3,7 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
+  xmlns:ctx="clr-namespace:GUI.PageContexts;assembly=GUI"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:guiobjs="clr-namespace:Data.UI.Outfit;assembly=Data"
   xmlns:local="clr-namespace:KeywordManager.Pages"
@@ -13,6 +14,9 @@
   d:DesignWidth="1200"
   Loaded="OnLoaded"
   mc:Ignorable="d">
+  <UserControl.DataContext>
+    <ctx:OutfitPageCtx />
+  </UserControl.DataContext>
 
   <UserControl.CommandBindings>
     <CommandBinding
@@ -44,6 +48,7 @@
           x:Name="lstNav"
           HorizontalContentAlignment="Stretch"
           d:ItemsSource="{d:SampleData ItemCount=10}"
+          ItemsSource="{Binding Nav}"
           KeyDown="OnLstNavKeyDown"
           SelectionChanged="OnNavSelectionChanged"
           SelectionMode="Extended">
@@ -144,20 +149,22 @@
             md:ColorZoneAssist.Mode="PrimaryLight"
             BorderThickness="0"
             Header="Tags">
-            <ListBox x:Name="lstTags" MaxHeight="200" />
+            <ListBox
+              MaxHeight="200"
+              d:ItemsSource="{d:SampleData ItemCount=4}"
+              ItemsSource="{Binding Selected.Tags}" />
           </GroupBox>
 
           <!--  ARMOR PIECES  -->
           <GroupBox
             Grid.Column="2"
-            d:DataContext="{d:DesignInstance Type=guiobjs:NavItem}"
             md:ColorZoneAssist.Mode="PrimaryLight"
             BorderThickness="0"
             Header="Armor pieces">
             <ListBox
-              x:Name="lstArmorPieces"
               MaxHeight="200"
-              d:ItemsSource="{d:SampleData ItemCount=10}">
+              d:ItemsSource="{d:SampleData ItemCount=10}"
+              ItemsSource="{Binding Selected.ArmorPieces}">
               <ListBox.ItemTemplate>
                 <DataTemplate>
                   <TextBlock Text="{Binding Name}">
@@ -180,11 +187,11 @@
 
           <!--  IMAGE  -->
           <GroupBox
-            x:Name="grpImg"
             Grid.Row="2"
             Grid.ColumnSpan="3"
             md:ColorZoneAssist.Mode="PrimaryLight"
             BorderThickness="0"
+            DataContext="{Binding Selected}"
             Header="Image">
             <uc:SelectImagePrompt
               Height="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource Self}}"

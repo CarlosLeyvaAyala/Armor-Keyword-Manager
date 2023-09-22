@@ -54,7 +54,12 @@ type ArmorPiece(uId: string, d: Data.Items.Raw option) =
 type NavItem(uId: string) =
     inherit WPFBindable()
 
-    let outfit = DB.find uId
+    let outfit =
+        try
+            DB.find uId
+        with
+        | _ -> Raw.empty // Used when Context object has none selected
+
     let mutable name = outfit.name
 
     let pieces =
@@ -95,10 +100,10 @@ type NavItem(uId: string) =
 
 [<RequireQualifiedAccess>]
 module Nav =
-    let Load () =
+    /// Creates a list of unfiltered navigation objects
+    let createFull () =
         DB.toArrayOfRaw ()
         |> Array.sortBy (fun (_, v) -> v.name)
         |> Array.Parallel.map NavList
-        |> toObservableCollection
 
     let GetItem uid = NavItem(uid)

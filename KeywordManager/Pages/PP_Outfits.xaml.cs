@@ -1,5 +1,6 @@
 ﻿using Data.UI;
 using Data.UI.Outfit;
+using GUI.PageContexts;
 using GUI.UserControls;
 using IO.Outfit;
 using KeywordManager.Dialogs;
@@ -19,6 +20,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
 #pragma warning disable IDE0052 // Remove unread private members
   readonly FileWatcher? watcher = null;
 #pragma warning restore IDE0052 // Remove unread private members
+  OutfitPageCtx Ctx => (OutfitPageCtx)DataContext;
 
   public PP_Outfits() {
     InitializeComponent();
@@ -34,9 +36,9 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
       Dispatcher);
   }
 
-  public void NavLoad() => lstNav.ItemsSource = Nav.Load();
+  public void NavLoad() => Ctx.LoadNav();
   NavList SelectedNav => (NavList)lstNav.SelectedItem;
-  string uId => SelectedNav.UId;
+  string uId => lstNav.SelectedItem == null ? "" : SelectedNav.UId;
   static string UId(object item) => ((NavList)item).UId;
 
   #region Interface: IFilterableByTag and filtering functions
@@ -66,18 +68,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
 
   public void ReloadSelectedItem() {
     SetEnabledControls();
-
-    if (lstNav.SelectedItem == null) {
-      lstArmorPieces.ItemsSource = null;
-      lstTags.ItemsSource = null;
-      grpImg.DataContext = null;
-      return;
-    }
-
-    var it = Nav.GetItem(uId);
-    lstArmorPieces.ItemsSource = it.ArmorPieces;
-    lstTags.ItemsSource = it.Tags;
-    grpImg.DataContext = it;
+    Ctx.SelectOutfit(uId);
   }
 
   private void OnSetImgClick(object sender, RoutedEventArgs e) =>
@@ -90,8 +81,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
   private void OnSetImgDrop(object sender, DragEventArgs e) => SetImage(FileHelper.GetDroppedFile(e));
 
   void SetImage(string filename) {
-    if (!Path.Exists(filename))
-      return;
+    if (!Path.Exists(filename) || uId == "") return;
     SelectedNav.Img = Edit.Image(uId, filename);
     ReloadSelectedItem();
     Owner.OnOutfitImgWasSet(uId);
@@ -105,8 +95,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
       Owner,
       "Deleting oufits can not be undone.\n\nDo you wish to continue?",
       "Undoable operation");
-    if (r == MessageBoxResult.No)
-      return;
+    if (r == MessageBoxResult.No) return;
 
     ForEachSelectedOutfit(Edit.Delete);
     NavLoad();

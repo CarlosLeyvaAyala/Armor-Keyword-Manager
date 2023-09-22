@@ -161,7 +161,7 @@
             <ListBox
               MaxHeight="200"
               d:ItemsSource="{d:SampleData ItemCount=4}"
-              ItemsSource="{Binding Selected.Tags}" />
+              ItemsSource="{Binding SelectedItem.Tags}" />
           </GroupBox>
 
           <!--  ARMOR PIECES  -->
@@ -173,7 +173,7 @@
             <ListBox
               MaxHeight="200"
               d:ItemsSource="{d:SampleData ItemCount=10}"
-              ItemsSource="{Binding Selected.ArmorPieces}">
+              ItemsSource="{Binding SelectedItem.ArmorPieces}">
               <ListBox.ItemTemplate>
                 <DataTemplate>
                   <TextBlock Text="{Binding Name}">
@@ -200,7 +200,7 @@
             Grid.ColumnSpan="3"
             md:ColorZoneAssist.Mode="PrimaryLight"
             BorderThickness="0"
-            DataContext="{Binding Selected}"
+            DataContext="{Binding SelectedItem}"
             Header="Image">
             <uc:SelectImagePrompt
               Height="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource Self}}"

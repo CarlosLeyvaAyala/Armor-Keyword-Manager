@@ -21,7 +21,8 @@ module private Ops =
 type BatchDlg = delegate of seq<BatchRename.Item> -> seq<BatchRename.Item>
 type VoidToBool = delegate of unit -> bool
 
-/// Expected to have, but can not be added due to type constraints: t.Nav
+/// Expected to have, but can not be added due to type constraints: t.Nav, t.SelectedItem, t.NavSelectedItem.
+/// Will always need to be overriden: t.SelectCurrentItem
 [<AbstractClass>]
 type PageNavigationContext() =
     inherit WPFBindable()
@@ -65,6 +66,13 @@ type PageNavigationContext() =
                 || t.EnabledControlsConditions.Invoke())
             (fun () -> false)
 
+    abstract member SelectCurrentItem: unit -> unit
+
+    /// Select item when the ListBox selection changes
+    default t.SelectCurrentItem() =
+        t.OnPropertyChanged("CanItemBeSelected")
+        t.OnPropertyChanged("SelectedItem")
+
 /// Context for working with the outfits page
 [<Sealed>]
 type OutfitPageCtx() =
@@ -83,32 +91,28 @@ type OutfitPageCtx() =
 
     override t.ReloadNavAndGoToCurrent() = t.ReloadNavAndGoTo t.UId
 
-    member t.UpdateNavSelectionCount() =
-        t.OnPropertyChanged("IsSingleSelected")
-        t.OnPropertyChanged("IsMultipleSelected")
-
-    member t.IsNavSingleSelected = t.NavControl.SelectedItems.Count = 1
-    member t.IsNavMultipleSelected = t.NavControl.SelectedItems.Count > 1
+    member t.NavSelectedItem = t.NavControl.SelectedItem :?> NavListItem
 
     member t.NavSelectedItems =
         [| for i in t.NavControl.SelectedItems -> i |]
         |> Seq.cast<NavListItem>
 
-    member t.NavSelectedItem = t.NavControl.SelectedItem :?> NavListItem
+    member t.IsNavSingleSelected = t.NavControl.SelectedItems.Count = 1
+    member t.IsNavMultipleSelected = t.NavControl.SelectedItems.Count > 1
 
-    member t.SelectCurrentOutfit() =
-        t.UpdateNavSelectionCount()
-        t.OnPropertyChanged("CanItemBeSelected")
-        t.OnPropertyChanged("Selected")
+    override t.SelectCurrentItem() =
+        base.SelectCurrentItem()
+        t.OnPropertyChanged("IsNavSingleSelected")
+        t.OnPropertyChanged("IsNavMultipleSelected")
         t.OnPropertyChanged("UId")
 
-    /// Current selected outfit
-    member t.Selected = NavSelectedItem(t.UId)
+    /// Current selected outfit context
+    member t.SelectedItem = NavSelectedItem(t.UId)
 
     member t.SetImage filename =
         if Path.Exists filename && t.UId <> "" then
             t.NavSelectedItem.Img <- Edit.Image t.UId filename
-            t.SelectCurrentOutfit()
+            t.SelectCurrentItem()
             true
         else
             false
@@ -117,7 +121,6 @@ type OutfitPageCtx() =
     member t.Rename newName =
         let uid = t.UId
         Edit.Rename uid newName
-        t.Selected.Name <- newName
         t.OnPropertyChanged("")
         selectUId t.NavControl uid
 
@@ -148,4 +151,4 @@ type OutfitPageCtx() =
             t.NavSelectedItems
             |> Seq.iter (fun v -> Edit.Delete v.UId)
 
-            t.LoadNav()
+            t.ReloadNavAndGoToFirst()

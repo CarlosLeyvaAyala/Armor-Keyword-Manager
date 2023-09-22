@@ -54,7 +54,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
   /// <summary>
   /// Used when a new unbound outfit was added
   /// </summary>
-  public void ReloadSelectedItem() => ctx.SelectCurrentOutfit();
+  public void ReloadSelectedItem() => ctx.SelectCurrentItem();
 
   private void OnSetImgClick(object sender, RoutedEventArgs e) =>
     SetImage(GUI.Dialogs.File.Open(
@@ -69,7 +69,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
     if (ctx.SetImage(filename)) Owner.OnOutfitImgWasSet(ctx.UId);
   }
 
-  private void OnNavSelectionChanged(object sender, SelectionChangedEventArgs e) => ctx.SelectCurrentOutfit();
+  private void OnNavSelectionChanged(object sender, SelectionChangedEventArgs e) => ctx.SelectCurrentItem();
 
   private void OnCanDel(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = lstNav.SelectedIndex > -1;
   private void OnDel(object sender, ExecutedRoutedEventArgs e) => ctx.DeleteSelected(Owner);
@@ -83,5 +83,5 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
   private void OnBatchRename(object sender, RoutedEventArgs e) => ctx.BatchRename(sel =>
     BatchRename_Window.Execute(Owner, new ObservableCollection<Data.UI.BatchRename.Item>(sel)));
   private void OnRename(object sender, RoutedEventArgs e) =>
-    MainWindow.ExecuteAcceptCancelDlg("New name", ctx.Selected.Name, ctx.Rename);
+    MainWindow.ExecuteAcceptCancelDlg("New name", ctx.SelectedItem.Name, ctx.Rename);
 }

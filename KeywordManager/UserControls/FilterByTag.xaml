@@ -47,14 +47,16 @@
             x:Name="rbTagsAnd"
             Click="DoFilter"
             Content="AND"
-            IsChecked="True"
+            GroupName="AndOr"
+            IsChecked="{Binding Path=TagMode[0], Mode=TwoWay}"
             Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
             ToolTip="All selected tags must exist" />
           <RadioButton
             x:Name="rbTagsOr"
             Click="DoFilter"
             Content="OR"
-            IsChecked="False"
+            GroupName="AndOr"
+            IsChecked="{Binding Path=TagMode[1], Mode=TwoWay}"
             Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
             ToolTip="Any selected tag may exist" />
         </StackPanel>
@@ -105,7 +107,8 @@
           <RadioButton
             x:Name="rbPicSetHas"
             Click="DoFilter"
-            IsChecked="False"
+            GroupName="Pic"
+            IsChecked="{Binding Path=PicMode[1], Mode=TwoWay}"
             Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
             ToolTip="Must have a picture associated with it">
             <StackPanel Orientation="Vertical">
@@ -116,7 +119,8 @@
           <RadioButton
             x:Name="rbPicSetHasNot"
             Click="DoFilter"
-            IsChecked="False"
+            GroupName="Pic"
+            IsChecked="{Binding Path=PicMode[2], Mode=TwoWay}"
             Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
             ToolTip="Must NOT have a picture associated with it">
             <StackPanel Orientation="Vertical">
@@ -127,7 +131,8 @@
           <RadioButton
             x:Name="rbPicSetEither"
             Click="DoFilter"
-            IsChecked="True"
+            GroupName="Pic"
+            IsChecked="{Binding Path=PicMode[0], Mode=TwoWay}"
             Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
             ToolTip="May or may not have a picture associated with it">
             <StackPanel Orientation="Vertical">
@@ -138,11 +143,12 @@
         </StackPanel>
 
         <!--  OUTFIT DISTRIBUTION  -->
-        <StackPanel Grid.Column="2" Visibility="{Binding CanFilterByOutfitDistr, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <StackPanel Grid.Column="2" Visibility="{Binding CanFilterByDistr, Converter={StaticResource BooleanToVisibilityConverter}}">
           <RadioButton
             x:Name="rbOutfitDistrHas"
             Click="DoFilter"
-            IsChecked="False"
+            GroupName="Dist"
+            IsChecked="{Binding Path=DistrMode[1], Mode=TwoWay}"
             Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
             ToolTip="Must have distribution rules">
             <StackPanel Orientation="Vertical">
@@ -153,7 +159,8 @@
           <RadioButton
             x:Name="rbOutfitDistrHasNot"
             Click="DoFilter"
-            IsChecked="False"
+            GroupName="Dist"
+            IsChecked="{Binding Path=DistrMode[2], Mode=TwoWay}"
             Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
             ToolTip="Must have NO distribution rules">
             <StackPanel Orientation="Vertical">
@@ -164,7 +171,8 @@
           <RadioButton
             x:Name="rbOutfitDistrEither"
             Click="DoFilter"
-            IsChecked="True"
+            GroupName="Dist"
+            IsChecked="{Binding Path=DistrMode[0], Mode=TwoWay}"
             Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
             ToolTip="May or may not have distribution rules">
             <StackPanel Orientation="Vertical">

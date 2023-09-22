@@ -5,16 +5,16 @@ open DMLib.Combinators
 open DMLib.String
 open System.Text.RegularExpressions
 
+type FilterTagMode =
+    | And
+    | Or
+
 type FilterPicSettings =
     | Either
     | OnlyIfHasPic
     | OnlyIfHasNoPic
 
-type FilterTagMode =
-    | And
-    | Or
-
-type FilterOutfitDistrSettings =
+type FilterDistrSettings =
     | Either
     | OnlyIfHasRules
     | OnlyIfHasNoRules

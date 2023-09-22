@@ -9,6 +9,7 @@ open System.Windows.Controls
 open Data.UI.Tags
 open System.Collections.ObjectModel
 open DMLib.String
+open System.Diagnostics
 
 type CList<'a> = Generic.List<'a>
 type private RBPair<'a> = (RadioButton * 'a)
@@ -18,28 +19,11 @@ type FilterTagEventArgs(routedEvent, source, tags, mode, picMode, outfitDistrMod
     inherit RoutedEventArgs(routedEvent, source)
 
     //////////////////////////////////////////////////////////////
-    // Utility functions
-    static let toBool (x: System.Nullable<bool>) =
-        if not x.HasValue then
-            false
-        else
-            x.Value
-
-    static let threeBtnToMode (c1: RBPair<'a>) (c2: RBPair<'a>) (c3: RBPair<'a>) =
-        let tb (ctrl: RadioButton) = toBool ctrl.IsChecked
-        let t = fst >> tb
-
-        match (t c1, t c2, t c3) with
-        | (true, _, _) -> snd c1
-        | (_, true, _) -> snd c2
-        | _ -> snd c3
-
-    //////////////////////////////////////////////////////////////
     // Properties we care about
     member _.Tags: CList<string> = tags
     member _.TagMode: FilterTagMode = mode
     member _.PicMode: FilterPicSettings = picMode
-    member _.OutfitDistrMode: FilterOutfitDistrSettings = outfitDistrMode
+    member _.OutfitDistrMode: FilterDistrSettings = outfitDistrMode
 
     /// Text search. Separated from the SearchByTag panel.
     member val Text = "" with get, set
@@ -48,27 +32,8 @@ type FilterTagEventArgs(routedEvent, source, tags, mode, picMode, outfitDistrMod
 
     //////////////////////////////////////////////////////////////
     // Utility functions
-    static member PicModeOfControls(ctrlHas, ctrlHasnt, ctrlEither) =
-        threeBtnToMode
-            (ctrlHas, FilterPicSettings.OnlyIfHasPic)
-            (ctrlHasnt, FilterPicSettings.OnlyIfHasNoPic)
-            (ctrlEither, FilterPicSettings.Either)
-
-    static member OutfitDistrModeOfControls(ctrlHas, ctrlHasnt, ctrlEither) =
-        threeBtnToMode
-            (ctrlHas, FilterOutfitDistrSettings.OnlyIfHasRules)
-            (ctrlHasnt, FilterOutfitDistrSettings.OnlyIfHasNoRules)
-            (ctrlEither, FilterOutfitDistrSettings.Either)
-
     static member Empty =
-        FilterTagEventArgs(
-            null,
-            null,
-            CList(),
-            FilterTagMode.And,
-            FilterPicSettings.Either,
-            FilterOutfitDistrSettings.Either
-        )
+        FilterTagEventArgs(null, null, CList(), FilterTagMode.And, FilterPicSettings.Either, FilterDistrSettings.Either)
 
 /// Interface for pages that can filter things by tag
 type IFilterableByTag =
@@ -110,7 +75,7 @@ type FilterTagItem(name: string) =
 type FilterByTagCtx() =
     inherit WPFBindable()
     let mutable canFilterByPic = true
-    let mutable canFilterByOutfitDistr = true
+    let mutable canFilterByDistr = true
     let mutable canShowKeywords = false
     let mutable tags = ObservableCollection()
     let mutable filter = ""
@@ -136,6 +101,29 @@ type FilterByTagCtx() =
         |> Seq.filter (fun v -> v.IsKeyword)
         |> Seq.iter (fun v -> v.IsVisible <- canShowKeywords)
 
+    member val TagMode = [| true; false |] with get, set
+    member val PicMode = [| true; false; false |] with get, set
+    member val DistrMode = [| true; false; false |] with get, set
+
+    member t.SelectedTagMode =
+        if t.TagMode[1] then
+            FilterTagMode.Or
+        else
+            And
+
+    member t.SelectedPicMode =
+        if t.PicMode[1] then OnlyIfHasPic
+        elif t.PicMode[2] then OnlyIfHasNoPic
+        else FilterPicSettings.Either
+
+    member t.SelectedDistrMode =
+        if t.DistrMode[1] then
+            OnlyIfHasRules
+        elif t.DistrMode[2] then
+            OnlyIfHasNoRules
+        else
+            FilterDistrSettings.Either
+
     member t.CanFilterByPic
         with get () = canFilterByPic
         and set v =
@@ -143,14 +131,14 @@ type FilterByTagCtx() =
             t.OnPropertyChanged("CanFilterByPic")
             t.OnPropertyChanged("ShowBottomPanel")
 
-    member t.CanFilterByOutfitDistr
-        with get () = canFilterByOutfitDistr
+    member t.CanFilterByDistr
+        with get () = canFilterByDistr
         and set v =
-            canFilterByOutfitDistr <- v
-            t.OnPropertyChanged("CanFilterByOutfitDistr")
+            canFilterByDistr <- v
+            t.OnPropertyChanged("CanFilterByDistr")
             t.OnPropertyChanged("ShowBottomPanel")
 
-    member t.ShowBottomPanel = t.CanFilterByPic || t.CanFilterByOutfitDistr
+    member t.ShowBottomPanel = t.CanFilterByPic || t.CanFilterByDistr
 
     member t.CanShowKeywords
         with get () = canShowKeywords
@@ -192,7 +180,9 @@ type FilterByTagCtx() =
         tags
         |> Seq.iter (fun v -> v.IsChecked <- not v.IsChecked)
 
-    member _.SelectedTags =
+    member t.SelectedTags =
+        t.PicMode |> Array.iter Debug.WriteLine
+
         tags
         |> Seq.choose (fun v ->
             match v.IsChecked with

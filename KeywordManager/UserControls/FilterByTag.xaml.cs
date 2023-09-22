@@ -1,5 +1,4 @@
-﻿using Data.UI.Filtering;
-using GUI.UserControls;
+﻿using GUI.UserControls;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,9 +11,9 @@ public partial class FilterByTag : UserControl, IFileDisplayable {
     get => ctx.CanFilterByPic;
     set => ctx.CanFilterByPic = value;
   }
-  public bool CanFilterByOutfitDistr {
-    get => ctx.CanFilterByOutfitDistr;
-    set => ctx.CanFilterByOutfitDistr = value;
+  public bool CanFilterByDistr {
+    get => ctx.CanFilterByDistr;
+    set => ctx.CanFilterByDistr = value;
   }
   public bool CanShowKeywords {
     get => ctx.CanShowKeywords;
@@ -73,9 +72,9 @@ public partial class FilterByTag : UserControl, IFileDisplayable {
       FilterTagsEvent,
       this,
       ctx.SelectedTags,
-      rbTagsAnd.IsChecked == true ? FilterTagMode.And : FilterTagMode.Or,
-      FilterTagEventArgs.PicModeOfControls(rbPicSetHas, rbPicSetHasNot, rbPicSetEither),
-      FilterTagEventArgs.OutfitDistrModeOfControls(rbOutfitDistrHas, rbOutfitDistrHasNot, rbOutfitDistrEither));
+      ctx.SelectedTagMode,
+      ctx.SelectedPicMode,
+      ctx.SelectedDistrMode);
 
   private void DoFilter(object sender, RoutedEventArgs e) {
     OnDoFilter();

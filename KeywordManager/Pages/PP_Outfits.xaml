@@ -18,7 +18,7 @@
     <ctx:OutfitPageCtx
       x:Name="ctx"
       EnabledControlsConditions="CanEnableControls"
-      NavListBox="{x:Reference lstNav}" />
+      NavControl="{x:Reference lstNav}" />
   </UserControl.DataContext>
 
   <UserControl.CommandBindings>
@@ -28,7 +28,7 @@
       Executed="OnDel" />
   </UserControl.CommandBindings>
 
-  <Grid x:Name="cntMain" IsEnabled="{Binding CanOutfitBeSelected}">
+  <Grid x:Name="cntMain" IsEnabled="{Binding CanItemBeSelected}">
     <Grid.RowDefinitions>
       <RowDefinition Height="4*" />
       <RowDefinition Height="{StaticResource GridSepVertical}" />
@@ -56,7 +56,7 @@
           SelectionMode="Extended">
           <ListBox.ItemTemplate>
             <DataTemplate>
-              <Grid d:DataContext="{d:DesignInstance Type=guiobjs:NavList}">
+              <Grid d:DataContext="{d:DesignInstance Type=guiobjs:NavListItem}">
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="auto" />
                   <ColumnDefinition Width="10" />
@@ -204,7 +204,7 @@
             Header="Image">
             <uc:SelectImagePrompt
               Height="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource Self}}"
-              d:DataContext="{d:DesignInstance Type=guiobjs:NavItem}"
+              d:DataContext="{d:DesignInstance Type=guiobjs:NavSelectedItem}"
               Button.Click="OnSetImgClick"
               Button.Drop="OnSetImgDrop"
               Image="{Binding Img, Converter={StaticResource StringToImgConverter}}">

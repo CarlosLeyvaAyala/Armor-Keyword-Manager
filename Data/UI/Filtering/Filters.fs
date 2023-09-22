@@ -9,15 +9,49 @@ type FilterTagMode =
     | And
     | Or
 
+    member t.asArrayOfBool =
+        match t with
+        | And -> [| true; false |]
+        | Or -> [| false; true |]
+
+    static member ofArrayOfBool a =
+        match a with
+        | [| _; true |] -> Or
+        | _ -> And
+
 type FilterPicSettings =
     | Either
     | OnlyIfHasPic
     | OnlyIfHasNoPic
 
+    member t.asArrayOfBool =
+        match t with
+        | Either -> [| true; false; false |]
+        | OnlyIfHasPic -> [| false; true; false |]
+        | OnlyIfHasNoPic -> [| false; false; true |]
+
+    static member ofArrayOfBool a =
+        match a with
+        | [| _; true; _ |] -> OnlyIfHasPic
+        | [| _; _; true |] -> OnlyIfHasNoPic
+        | _ -> Either
+
 type FilterDistrSettings =
     | Either
     | OnlyIfHasRules
     | OnlyIfHasNoRules
+
+    member t.asArrayOfBool =
+        match t with
+        | Either -> [| true; false; false |]
+        | OnlyIfHasRules -> [| false; true; false |]
+        | OnlyIfHasNoRules -> [| false; false; true |]
+
+    static member ofArrayOfBool a =
+        match a with
+        | [| _; true; _ |] -> OnlyIfHasRules
+        | [| _; _; true |] -> OnlyIfHasNoRules
+        | _ -> Either
 
 module Filter =
     /// Filters nothing.

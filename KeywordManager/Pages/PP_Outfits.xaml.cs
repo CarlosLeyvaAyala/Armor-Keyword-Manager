@@ -32,8 +32,10 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
 
   #region Interface: IFilterableByTag and filtering functions
   public bool CanFilterByPic => true;
-  public bool CanFilterByOutfitDistr => true;
+  public bool CanFilterByDistr => true;
   public bool CanShowKeywords => false;
+  public FilterTagEventArgs OldFilter => ctx.Filter;
+
   public void ApplyTagFilter(FilterTagEventArgs e) => ctx.Filter = e;
   #endregion
 

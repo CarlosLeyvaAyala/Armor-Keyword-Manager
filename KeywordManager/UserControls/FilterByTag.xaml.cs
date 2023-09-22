@@ -28,6 +28,8 @@ public partial class FilterByTag : UserControl, IFileDisplayable {
 
   public FilterByTag() => InitializeComponent();
 
+  public void RestoreFilter(FilterTagEventArgs e) => ctx.SetArguments(e);
+
   #region Tag functions
   public void LoadTags() => ctx.LoadTagsFromFile();
   #endregion

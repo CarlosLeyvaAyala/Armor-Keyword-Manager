@@ -15,7 +15,7 @@ type CList<'a> = Generic.List<'a>
 type private RBPair<'a> = (RadioButton * 'a)
 
 /// Data sent when the tag dialog triggers a filtering event
-type FilterTagEventArgs(routedEvent, source, tags, mode, picMode, outfitDistrMode) =
+type FilterTagEventArgs(routedEvent, source, tags, mode, picMode, distrMode) =
     inherit RoutedEventArgs(routedEvent, source)
 
     //////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@ type FilterTagEventArgs(routedEvent, source, tags, mode, picMode, outfitDistrMod
     member _.Tags: CList<string> = tags
     member _.TagMode: FilterTagMode = mode
     member _.PicMode: FilterPicSettings = picMode
-    member _.OutfitDistrMode: FilterDistrSettings = outfitDistrMode
+    member _.DistrMode: FilterDistrSettings = distrMode
 
     /// Text search. Separated from the SearchByTag panel.
     member val Text = "" with get, set
@@ -38,8 +38,9 @@ type FilterTagEventArgs(routedEvent, source, tags, mode, picMode, outfitDistrMod
 /// Interface for pages that can filter things by tag
 type IFilterableByTag =
     abstract member CanFilterByPic: bool
-    abstract member CanFilterByOutfitDistr: bool
+    abstract member CanFilterByDistr: bool
     abstract member CanShowKeywords: bool
+    abstract member OldFilter: FilterTagEventArgs
     abstract ApplyTagFilter: FilterTagEventArgs -> unit
 
 /// Individual filtering by tag item
@@ -101,28 +102,13 @@ type FilterByTagCtx() =
         |> Seq.filter (fun v -> v.IsKeyword)
         |> Seq.iter (fun v -> v.IsVisible <- canShowKeywords)
 
-    member val TagMode = [| true; false |] with get, set
-    member val PicMode = [| true; false; false |] with get, set
-    member val DistrMode = [| true; false; false |] with get, set
+    member val TagMode = FilterTagMode.And.asArrayOfBool with get, set
+    member val PicMode = FilterPicSettings.Either.asArrayOfBool with get, set
+    member val DistrMode = FilterDistrSettings.Either.asArrayOfBool with get, set
 
-    member t.SelectedTagMode =
-        if t.TagMode[1] then
-            FilterTagMode.Or
-        else
-            And
-
-    member t.SelectedPicMode =
-        if t.PicMode[1] then OnlyIfHasPic
-        elif t.PicMode[2] then OnlyIfHasNoPic
-        else FilterPicSettings.Either
-
-    member t.SelectedDistrMode =
-        if t.DistrMode[1] then
-            OnlyIfHasRules
-        elif t.DistrMode[2] then
-            OnlyIfHasNoRules
-        else
-            FilterDistrSettings.Either
+    member t.SelectedTagMode = FilterTagMode.ofArrayOfBool t.TagMode
+    member t.SelectedPicMode = FilterPicSettings.ofArrayOfBool t.PicMode
+    member t.SelectedDistrMode = FilterDistrSettings.ofArrayOfBool t.DistrMode
 
     member t.CanFilterByPic
         with get () = canFilterByPic
@@ -189,3 +175,25 @@ type FilterByTagCtx() =
             | false -> None
             | true -> Some v.Name)
         |> toCList
+
+    /// Set the arguments so this can be restored between tab changes
+    member t.SetArguments(args: FilterTagEventArgs) =
+        t.TagMode <- args.TagMode.asArrayOfBool
+        t.PicMode <- args.PicMode.asArrayOfBool
+        t.DistrMode <- args.DistrMode.asArrayOfBool
+
+        t.SelectNone()
+
+        let activate =
+            args.Tags
+            |> Seq.map (fun s -> s, true)
+            |> Map.ofSeq
+
+        tags
+        |> Seq.iter (fun t ->
+            t.IsChecked <-
+                match activate |> Map.tryFind t.Name with
+                | None -> false
+                | Some v -> v)
+
+        t.OnPropertyChanged("")

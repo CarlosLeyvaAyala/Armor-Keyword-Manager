@@ -44,7 +44,6 @@
         <!--  AND OR  -->
         <StackPanel Grid.Column="0">
           <RadioButton
-            x:Name="rbTagsAnd"
             Click="DoFilter"
             Content="AND"
             GroupName="AndOr"
@@ -52,7 +51,6 @@
             Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
             ToolTip="All selected tags must exist" />
           <RadioButton
-            x:Name="rbTagsOr"
             Click="DoFilter"
             Content="OR"
             GroupName="AndOr"
@@ -105,7 +103,6 @@
         <!--  PIC SETTINGS  -->
         <StackPanel Visibility="{Binding CanFilterByPic, Converter={StaticResource BooleanToVisibilityConverter}}">
           <RadioButton
-            x:Name="rbPicSetHas"
             Click="DoFilter"
             GroupName="Pic"
             IsChecked="{Binding Path=PicMode[1], Mode=TwoWay}"
@@ -117,7 +114,6 @@
             </StackPanel>
           </RadioButton>
           <RadioButton
-            x:Name="rbPicSetHasNot"
             Click="DoFilter"
             GroupName="Pic"
             IsChecked="{Binding Path=PicMode[2], Mode=TwoWay}"
@@ -129,7 +125,6 @@
             </StackPanel>
           </RadioButton>
           <RadioButton
-            x:Name="rbPicSetEither"
             Click="DoFilter"
             GroupName="Pic"
             IsChecked="{Binding Path=PicMode[0], Mode=TwoWay}"
@@ -145,7 +140,6 @@
         <!--  OUTFIT DISTRIBUTION  -->
         <StackPanel Grid.Column="2" Visibility="{Binding CanFilterByDistr, Converter={StaticResource BooleanToVisibilityConverter}}">
           <RadioButton
-            x:Name="rbOutfitDistrHas"
             Click="DoFilter"
             GroupName="Dist"
             IsChecked="{Binding Path=DistrMode[1], Mode=TwoWay}"
@@ -157,7 +151,6 @@
             </StackPanel>
           </RadioButton>
           <RadioButton
-            x:Name="rbOutfitDistrHasNot"
             Click="DoFilter"
             GroupName="Dist"
             IsChecked="{Binding Path=DistrMode[2], Mode=TwoWay}"
@@ -169,7 +162,6 @@
             </StackPanel>
           </RadioButton>
           <RadioButton
-            x:Name="rbOutfitDistrEither"
             Click="DoFilter"
             GroupName="Dist"
             IsChecked="{Binding Path=DistrMode[0], Mode=TwoWay}"

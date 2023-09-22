@@ -43,8 +43,9 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
 
   #region Interface: IFilterableByTag and filtering functions
   public bool CanFilterByPic => true;
-  public bool CanFilterByOutfitDistr => false;
+  public bool CanFilterByDistr => false;
   public bool CanShowKeywords => true;
+  public FilterTagEventArgs OldFilter => FilterTagEventArgs.Empty; //TODO: Use context filter
   public void ApplyTagFilter(FilterTagEventArgs e) => ApplyFilter(edtFilter.Text, e);
 
   private void LoadNavItems(string filter, FilterTagEventArgs e) {

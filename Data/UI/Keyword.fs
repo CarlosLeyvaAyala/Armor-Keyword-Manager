@@ -38,6 +38,15 @@ type NavListItem(key: Keyword, r: Raw) =
 
     override t.ToString() = t.Name
 
+    static member sortByColor(a: seq<NavListItem>) =
+        query {
+            for o in a do
+                sortBy o.Color
+                thenBy o.Name
+        }
+
+    new(key) = NavListItem(key, DB.findDefault key)
+
 module Get =
     let internal all () =
         DB.toArrayOfRaw ()

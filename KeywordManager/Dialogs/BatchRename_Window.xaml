@@ -60,17 +60,6 @@
               TextChanged="OnTxtParamMainChange" />
           </TabItem>
 
-          <!--<TabItem Tag="delete">
-            <TabItem.Header>
-              <StackPanel Width="auto" Height="auto">
-                <md:PackIcon Kind="MinusBox" Style="{StaticResource piNav}" />
-                <TextBlock Style="{StaticResource txtNav}" Text="REMOVE" />
-              </StackPanel>
-            </TabItem.Header>
-
-            <TextBox Margin="{StaticResource MgTopNormal}" md:HintAssist.HelperText="Text to remove" />
-          </TabItem>-->
-
           <TabItem Tag="regex">
             <TabItem.Header>
               <StackPanel Width="auto" Height="auto">
@@ -91,7 +80,7 @@
                   RelativeSource="{RelativeSource Self}"
                   UpdateSourceTrigger="PropertyChanged">
                   <Binding.ValidationRules>
-                    <v:RegexRule xmlns:v="clr-namespace:GUI.Validators;assembly=GUI" ValidatesOnTargetUpdated="True" />
+                    <v:RegexRule xmlns:v="clr-namespace:DMLib_WPF.Validators;assembly=DMLib-Fs-WPF" ValidatesOnTargetUpdated="True" />
                   </Binding.ValidationRules>
                 </Binding>
               </TextBox.Text>

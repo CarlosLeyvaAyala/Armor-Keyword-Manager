@@ -163,6 +163,10 @@
                     Command="c:AppCmds.RestoreSettings"
                     Header="_Restore backup"
                     ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                  <Separator />
+                  <MenuItem Header="Backup _Keywords" />
+                  <MenuItem Header="Replace Keywords" ToolTip="All keywords will be replaced" />
+                  <MenuItem Header="Merge Keywords" ToolTip="Will add those keywords to existing ones" />
                 </MenuItem>
               </MenuItem>
               <MenuItem Header="_Help">

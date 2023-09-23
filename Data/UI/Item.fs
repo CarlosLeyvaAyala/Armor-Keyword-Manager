@@ -4,13 +4,10 @@ open FSharpx.Collections
 module DB = Data.Items.Database
 
 open Data.Items
-open DMLib.String
 open DMLib
 open DMLib.Collections
 open Data.UI.Common
 open Data.UI.AppSettings.Paths.Img
-open DMLib.Combinators
-open System.Text.RegularExpressions
 open Data.UI.Filtering
 
 module Outfits = Data.Outfit.Database
@@ -95,9 +92,8 @@ type NavItem(uniqueId: string) =
 
     member t.Keywords =
         d.keywords
-        |> List.sort
-        //|> Data.Keywords.Items.getKeywordsData
-        //|> Data.Keywords.Items.generateGUI
+        |> List.map Data.UI.Keywords.NavListItem
+        |> Data.UI.Keywords.NavListItem.sortByColor
         |> toCList
 
     member t.Tags = d.tags |> List.sort |> toCList

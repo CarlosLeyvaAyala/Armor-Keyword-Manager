@@ -5,24 +5,14 @@ open Data.UI
 open DMLib.Collections
 open Data.UI.Outfit
 open DMLib_WPF.Controls
-open Data.UI.Interfaces
 open System.Windows
 open System.IO
-open System.Windows.Controls
 open GUI.UserControls
 open Data.UI.Filtering
 open System
-open GUI
 open DMLib_WPF.Contexts
 open DMLib_WPF.Dialogs
-
-[<AutoOpen>]
-module private Ops =
-    let selectUId (lst: ListBox) uid =
-        ListBox.selectBy lst (fun (i, v) ->
-            match v with
-            | :? IHasUniqueId as v' -> if v'.UId = uid then Some i else None
-            | _ -> None)
+open GUI
 
 /// Context for working with the outfits page
 [<Sealed>]
@@ -56,7 +46,7 @@ type OutfitPageCtx() =
 
     member t.ReloadNavAndGoTo uid =
         t.LoadNav()
-        selectUId t.NavControl uid
+        ListBox.selectByUId t.NavControl uid
 
     override t.ReloadNavAndGoToCurrent() = t.ReloadNavAndGoTo t.UId
 
@@ -91,7 +81,7 @@ type OutfitPageCtx() =
         let uid = t.UId
         Edit.Rename uid newName
         t.OnPropertyChanged("")
-        selectUId t.NavControl uid
+        ListBox.selectByUId t.NavControl uid
 
     /// Renames many elements
     member t.BatchRename(askNames: Func<seq<BatchRename.Item>, seq<BatchRename.Item>>) =

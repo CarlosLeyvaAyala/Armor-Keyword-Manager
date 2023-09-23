@@ -177,6 +177,8 @@
               <ListBox.ItemTemplate>
                 <DataTemplate>
                   <TextBlock
+                    xmlns:gk="clr-namespace:Data.UI.Keywords;assembly=Data"
+                    d:DataContext="{d:DesignInstance Type=gk:NavListItem}"
                     Cursor="Help"
                     Foreground="{Binding Color, Converter={StaticResource IntToKeywordColor}}"
                     Text="{Binding Name}"
@@ -190,7 +192,7 @@
                           Margin="0,0,10,0"
                           HorizontalAlignment="Left"
                           Cursor="Help"
-                          Source="{Binding Image}"
+                          Source="{Binding Img}"
                           Stretch="UniformToFill" />
                         <TextBlock VerticalAlignment="Center" Text="{Binding Description}" />
                       </StackPanel>
@@ -253,7 +255,7 @@
                 RelativeSource="{RelativeSource Self}"
                 UpdateSourceTrigger="PropertyChanged">
                 <Binding.ValidationRules>
-                  <v:RegexRule xmlns:v="clr-namespace:GUI.Validators;assembly=GUI" ValidatesOnTargetUpdated="True" />
+                  <v:RegexRule xmlns:v="clr-namespace:DMLib_WPF.Validators;assembly=DMLib-Fs-WPF" ValidatesOnTargetUpdated="True" />
                 </Binding.ValidationRules>
               </Binding>
             </TextBox.Text>
@@ -425,7 +427,7 @@
       md:ColorZoneAssist.Mode="PrimaryMid"
       Header="Keywords"
       Style="{StaticResource MaterialDesignCardGroupBox}">
-      <uc:KeywordManager Margin="{StaticResource MarginStd}" />
+      <uc:KeywordManagerUC Margin="{StaticResource MarginStd}" />
       <!--<DockPanel>
         <ListBox
           x:Name="lstKeywords"

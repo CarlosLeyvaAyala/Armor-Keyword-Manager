@@ -1,31 +1,87 @@
 ﻿<UserControl
-  x:Class="KeywordManager.UserControls.KeywordManager"
+  x:Class="KeywordManager.UserControls.KeywordManagerUC"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:ctx="clr-namespace:GUI.UserControls;assembly=GUI"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-  xmlns:guiobjs="clr-namespace:Data.UI.Items;assembly=Data"
+  xmlns:guiobjs="clr-namespace:Data.UI.Keywords;assembly=Data"
   xmlns:local="clr-namespace:KeywordManager.UserControls"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
   d:DesignHeight="450"
   d:DesignWidth="400"
+  Loaded="OnLoaded"
   mc:Ignorable="d">
+
+  <UserControl.DataContext>
+    <ctx:KeywordManagerCtx x:Name="ctx" NavControl="{x:Reference lstNav}" />
+  </UserControl.DataContext>
+
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="auto" />
       <RowDefinition Height="{StaticResource GridSepVertical}" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
+    <Label
+      Content="_Keyword"
+      FontSize="1"
+      Foreground="{StaticResource MaterialDesignLightBackground}" />
     <!--  FILTER BY NAME  -->
-    <TextBox md:HintAssist.Hint="Search..." />
+    <TextBox
+      x:Name="edtFilter"
+      md:HintAssist.Hint="Search..."
+      KeyDown="OnFilterKeyDown"
+      TextChanged="OnFilterChanged" />
 
     <!--  TAG LIST  -->
     <ListBox
+      x:Name="lstNav"
       Grid.Row="2"
       d:ItemsSource="{d:SampleData ItemCount=30}"
+      ItemsSource="{Binding Nav}"
       KeyDown="OnLstKeyDown"
       MouseDoubleClick="OnLstDoubleClick"
       SelectionMode="Extended">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <Grid d:DataContext="{d:DesignInstance Type=guiobjs:NavListItem}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="90" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Image
+              Grid.Column="0"
+              Width="{DynamicResource ImgListPreviewSize}"
+              Height="{DynamicResource ImgListPreviewSize}"
+              HorizontalAlignment="Left"
+              Cursor="Help"
+              Source="{Binding Img, Converter={StaticResource StringToImgConverter}}"
+              Stretch="UniformToFill"
+              ToolTipService.InitialShowDelay="50">
+              <Image.ToolTip>
+                <StackPanel>
+                  <TextBlock
+                    Margin="0,0,0,5"
+                    FontSize="13"
+                    FontWeight="DemiBold"
+                    Text="{Binding Name}" />
+                  <TextBlock Text="{Binding Description}" />
+                </StackPanel>
+              </Image.ToolTip>
+            </Image>
+
+            <TextBlock
+              Grid.Column="1"
+              VerticalAlignment="Center"
+              FontSize="11"
+              FontWeight="SemiBold"
+              Foreground="{Binding Color, Converter={StaticResource IntToKeywordColor}}"
+              Text="{Binding Name}" />
+          </Grid>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
       <ListBox.ContextMenu>
         <ContextMenu>
           <ContextMenu.Resources>
@@ -41,13 +97,13 @@
           <MenuItem Click="OnChangePicClick" Header="Change _picture" />
           <Separator />
           <MenuItem Header="Keyword color">
-            <MenuItem Background="{DynamicResource ColorKeywordDefault}" Style="{StaticResource MenuItemColor}" />
             <MenuItem Background="{DynamicResource ColorKeywordRed}" Style="{StaticResource MenuItemColor}" />
             <MenuItem Background="{DynamicResource ColorKeywordOrange}" Style="{StaticResource MenuItemColor}" />
             <MenuItem Background="{DynamicResource ColorKeywordPurple}" Style="{StaticResource MenuItemColor}" />
             <MenuItem Background="{DynamicResource ColorKeywordBlue}" Style="{StaticResource MenuItemColor}" />
             <MenuItem Background="{DynamicResource ColorKeywordGreen}" Style="{StaticResource MenuItemColor}" />
             <MenuItem Background="{DynamicResource ColorKeywordGray}" Style="{StaticResource MenuItemColor}" />
+            <MenuItem Background="{DynamicResource ColorKeywordDefault}" Style="{StaticResource MenuItemColor}" />
           </MenuItem>
         </ContextMenu>
       </ListBox.ContextMenu>

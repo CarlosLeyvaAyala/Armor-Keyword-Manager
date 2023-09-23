@@ -23,18 +23,20 @@
       <RowDefinition Height="{StaticResource GridSepVertical}" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    <Label
-      Content="_Keyword"
-      FontSize="1"
-      Foreground="{StaticResource MaterialDesignLightBackground}" />
+
     <!--  FILTER BY NAME  -->
+    <Label Content="_K" Style="{StaticResource lblInvis}" />
     <TextBox
       x:Name="edtFilter"
       md:HintAssist.Hint="Search..."
       KeyDown="OnFilterKeyDown"
       TextChanged="OnFilterChanged" />
 
-    <!--  TAG LIST  -->
+    <!--  KEYWORD LIST  -->
+    <Label
+      Content="_A"
+      Style="{StaticResource lblInvis}"
+      Target="{x:Reference lstNav}" />
     <ListBox
       x:Name="lstNav"
       Grid.Row="2"

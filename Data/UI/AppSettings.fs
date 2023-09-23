@@ -2,7 +2,6 @@
 
 open DMLib.IO.Path
 open DMLib.String
-open Common.Images
 open DMLib.Combinators
 open System.IO
 open System

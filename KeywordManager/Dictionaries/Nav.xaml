@@ -29,4 +29,10 @@
     <Setter Property="TextAlignment" Value="Center" />
     <Setter Property="Margin" Value="{StaticResource MgTopNaarrow}" />
   </Style>
+
+  <Style x:Key="lblInvis" TargetType="Label">
+    <Setter Property="Foreground" Value="{StaticResource MaterialDesignLightBackground}" />
+    <Setter Property="FontSize" Value="1" />
+    <Setter Property="Margin" Value="-1" />
+  </Style>
 </ResourceDictionary>

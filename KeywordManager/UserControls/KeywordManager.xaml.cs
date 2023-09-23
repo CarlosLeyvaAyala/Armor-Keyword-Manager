@@ -22,10 +22,7 @@ public partial class KeywordManagerUC : UserControl {
 
   private void OnLstKeyDown(object sender, KeyEventArgs e) {
     //if (e.Key == Key.Return) Send add keywords
-    if (e.Key == Key.Back) {
-      edtFilter.Focus();
-      edtFilter.SelectionStart = edtFilter.Text.Length;
-    }
+    if (e.Key == Key.Back) GUI.ListBox.FocusFilter(edtFilter);
   }
 
   private void OnLstDoubleClick(object sender, MouseButtonEventArgs e) {
@@ -41,11 +38,6 @@ public partial class KeywordManagerUC : UserControl {
   }
 
   private void OnFilterKeyDown(object sender, KeyEventArgs e) {
-    if (e.Key == Key.Enter) FocusNavFromFilter();
-  }
-
-  void FocusNavFromFilter() {
-    lstNav.Focus();
-    if (lstNav.SelectedItem == null) DMLib_WPF.Controls.ListBox.selectFirst(lstNav);
+    if (e.Key == Key.Enter) GUI.ListBox.FocusFromFilter(lstNav);
   }
 }

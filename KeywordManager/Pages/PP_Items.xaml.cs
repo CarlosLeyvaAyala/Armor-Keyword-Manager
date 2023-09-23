@@ -280,4 +280,12 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
 
   private void OnImportFromClipboard(object sender, RoutedEventArgs e) => throw new NotImplementedException("Not implemented");
   #endregion
+
+  private void OnFilterKeyDown(object sender, KeyEventArgs e) {
+    if (e.Key == Key.Enter) GUI.ListBox.FocusFromFilter(lstNavItems);
+  }
+
+  private void OnLstNavItemsKeyDown(object sender, KeyEventArgs e) {
+    if (e.Key == Key.Back) GUI.ListBox.FocusFilter(edtFilter);
+  }
 }

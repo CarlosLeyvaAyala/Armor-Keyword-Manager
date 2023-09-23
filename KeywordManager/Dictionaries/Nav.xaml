@@ -33,6 +33,6 @@
   <Style x:Key="lblInvis" TargetType="Label">
     <Setter Property="Foreground" Value="{StaticResource MaterialDesignLightBackground}" />
     <Setter Property="FontSize" Value="1" />
-    <Setter Property="Margin" Value="-1" />
+    <Setter Property="Margin" Value="0,-1,0,0" />
   </Style>
 </ResourceDictionary>

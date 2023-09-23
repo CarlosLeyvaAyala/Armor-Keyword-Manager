@@ -216,6 +216,10 @@
                 IsDeletable="True"
                 TagDeleteClick="OnDeleteTag" />
 
+              <Label
+                Content="_T"
+                Style="{StaticResource lblInvis}"
+                Target="{x:Reference cbItemTags}" />
               <ComboBox
                 x:Name="cbItemTags"
                 Margin="{StaticResource MgTopNaarrow}"
@@ -233,8 +237,9 @@
       Header="Navigate"
       Style="{StaticResource MaterialDesignCardGroupBox}">
       <DockPanel>
-        <!--  FILTER TEXTBOX  -->
+        <!--  FILTER  -->
         <DockPanel DockPanel.Dock="Top">
+          <!--  USE REGEX  -->
           <ToggleButton
             x:Name="tbFilterByRegex"
             Click="OnFilterNameByRegexClick"
@@ -243,10 +248,18 @@
             IsChecked="{Binding Source={StaticResource appSettings}, Path=Default.itemFilterNameByRegex}"
             Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}"
             ToolTip="Use regular expression" />
+
+          <!--  FILTER TEXTBOX  -->
+          <Label
+            Content="_N"
+            DockPanel.Dock="Top"
+            Style="{StaticResource lblInvis}"
+            Target="{x:Reference edtFilter}" />
           <TextBox
             x:Name="edtFilter"
             Margin="{DynamicResource MgGrpContent}"
             md:HintAssist.Hint="Search..."
+            KeyDown="OnFilterKeyDown"
             TextChanged="OnFilterItems">
             <TextBox.Text>
               <Binding
@@ -267,6 +280,7 @@
           Margin="{DynamicResource MarginStd}"
           HorizontalContentAlignment="Stretch"
           d:ItemsSource="{d:SampleData ItemCount=5}"
+          KeyDown="OnLstNavItemsKeyDown"
           SelectionChanged="LstNavItems_SelectionChanged"
           SelectionMode="Extended">
           <ListBox.ItemTemplate>

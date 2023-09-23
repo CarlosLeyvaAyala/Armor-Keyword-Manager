@@ -144,9 +144,14 @@
                   Command="c:AppCmds.Filter"
                   Header="_Filter"
                   ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                <Separator />
+                <MenuItem Header="Missing _keywords">
+                  <MenuItem Header="_Add to app" />
+                  <MenuItem Header="_Delete from file" />
+                </MenuItem>
               </MenuItem>
               <MenuItem Header="_Settings">
-                <MenuItem Header="Change _settings" />
+                <MenuItem Header="App _settings" />
 
                 <Separator />
 

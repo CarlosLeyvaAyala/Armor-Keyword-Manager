@@ -5,14 +5,11 @@ open System.Windows
 open System.Collections
 open DMLib
 open DMLib.Collections
-open System.Windows.Controls
 open Data.UI.Tags
 open System.Collections.ObjectModel
 open DMLib.String
-open System.Diagnostics
 
 type CList<'a> = Generic.List<'a>
-type private RBPair<'a> = (RadioButton * 'a)
 
 /// Data sent when the tag dialog triggers a filtering event
 type FilterTagEventArgs(routedEvent, source, tags, mode, picMode, distrMode) =
@@ -167,8 +164,6 @@ type FilterByTagCtx() =
         |> Seq.iter (fun v -> v.IsChecked <- not v.IsChecked)
 
     member t.SelectedTags =
-        t.PicMode |> Array.iter Debug.WriteLine
-
         tags
         |> Seq.choose (fun v ->
             match v.IsChecked with

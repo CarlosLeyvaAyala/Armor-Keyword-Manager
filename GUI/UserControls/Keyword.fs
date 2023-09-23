@@ -1,5 +1,6 @@
 ﻿namespace GUI.UserControls
 
+open System.Windows
 open DMLib
 open DMLib.String
 open DMLib_WPF.Contexts
@@ -8,9 +9,15 @@ open Data.UI.Keywords
 open Data.UI
 open GUI
 open DMLib.Collections
+open DMLib.Combinators
 open System
+open System.Diagnostics
 
 module DB = Data.Keywords.Database
+
+type KeywordSelectEventArgs(routedEvent, source, keywords) =
+    inherit RoutedEventArgs(routedEvent, source)
+    member _.Keywords: string array = keywords
 
 /// Context for working with the outfits page
 [<Sealed>]
@@ -58,10 +65,18 @@ type KeywordManagerCtx() =
     ///////////////////////////////////////////////
     // Custom implementation
 
+    /// Current selected keyword
     member t.NavSelectedItems =
         [| for i in t.NavControl.SelectedItems -> i |]
         |> Seq.cast<NavListItem>
 
+    /// Selected keyword names
+    member t.SelectedKeywords =
+        t.NavSelectedItems
+        |> Array.ofSeq
+        |> Array.map (fun v -> v.Name)
+
+    /// Sets the image for a keyword.
     member t.SetImage() =
         Dialogs.File.Open(
             AppSettings.Paths.Img.filter,

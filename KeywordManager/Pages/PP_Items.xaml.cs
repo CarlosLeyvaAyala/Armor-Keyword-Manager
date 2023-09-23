@@ -4,6 +4,7 @@ using GUI.UserControls;
 using KeywordManager.UserControls;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -276,4 +277,6 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   private void OnLstNavItemsKeyDown(object sender, KeyEventArgs e) {
     if (e.Key == Key.Back) GUI.ListBox.FocusFilter(edtFilter);
   }
+
+  private void OnKeywordSelected(object sender, RoutedEventArgs e) => Debug.WriteLine((e as KeywordSelectEventArgs)?.Keywords.Length);
 }

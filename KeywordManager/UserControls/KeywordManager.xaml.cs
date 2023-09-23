@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using GUI.UserControls;
+using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -16,18 +18,33 @@ public partial class KeywordManagerUC : UserControl {
 
   private void OnFilterChanged(object sender, TextChangedEventArgs e) => ctx.Filter = (sender as TextBox)?.Text;
   private void OnChangePicClick(object sender, RoutedEventArgs e) => ctx.SetImage();
-
-  private void OnLstDoubleClick(object sender, MouseButtonEventArgs e) {
-    // Send add keywords
-  }
+  private void OnLstDoubleClick(object sender, MouseButtonEventArgs e) => DoSendSelected();
 
   private void OnLstKeyDown(object sender, KeyEventArgs e) {
-    //if (e.Key == Key.Return) Send add keywords
+    if (e.Key == Key.Return) DoSendSelected();
     if (e.Key == Key.Back) GUI.ListBox.FocusFilter(edtFilter);
   }
 
   private void OnFilterKeyDown(object sender, KeyEventArgs e) {
     if (e.Key == Key.Enter) GUI.ListBox.FocusFromFilter(lstNav);
   }
+  #endregion
+
+  #region Event : KeywordSelectEvent
+  [Category("Behavior")]
+
+  public event RoutedEventHandler KeywordSelect {
+    add => AddHandler(KeywordSelectEvent, value);
+    remove => RemoveHandler(KeywordSelectEvent, value);
+  }
+
+  public static readonly RoutedEvent KeywordSelectEvent
+      = EventManager.RegisterRoutedEvent(
+        nameof(KeywordSelect),
+        RoutingStrategy.Bubble,
+        typeof(RoutedEventHandler),
+        typeof(KeywordManagerUC));
+
+  void DoSendSelected() => RaiseEvent(new KeywordSelectEventArgs(KeywordSelectEvent, this, ctx.SelectedKeywords));
   #endregion
 }

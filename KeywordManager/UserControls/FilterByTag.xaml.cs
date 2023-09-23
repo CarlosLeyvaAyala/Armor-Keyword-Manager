@@ -64,7 +64,7 @@ public partial class FilterByTag : UserControl, IFileDisplayable {
         nameof(FilterTags),
         RoutingStrategy.Bubble,
         typeof(RoutedEventHandler),
-        typeof(TagViewer));
+        typeof(FilterByTag));
 
   protected virtual void OnDoFilter() =>
     RaiseEvent(SelectedParameters);

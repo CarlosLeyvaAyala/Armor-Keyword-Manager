@@ -93,20 +93,48 @@
               <Setter Property="FontSize" Value="25" />
             </Style>
           </ContextMenu.Resources>
-          <MenuItem Header="Create _new keyword" />
-          <MenuItem Header="_Delete keyword" />
-          <Separator />
           <MenuItem Click="OnChangePicClick" Header="Change _picture" />
           <Separator />
           <MenuItem Header="Keyword color">
-            <MenuItem Background="{DynamicResource ColorKeywordRed}" Style="{StaticResource MenuItemColor}" />
-            <MenuItem Background="{DynamicResource ColorKeywordOrange}" Style="{StaticResource MenuItemColor}" />
-            <MenuItem Background="{DynamicResource ColorKeywordPurple}" Style="{StaticResource MenuItemColor}" />
-            <MenuItem Background="{DynamicResource ColorKeywordBlue}" Style="{StaticResource MenuItemColor}" />
-            <MenuItem Background="{DynamicResource ColorKeywordGreen}" Style="{StaticResource MenuItemColor}" />
-            <MenuItem Background="{DynamicResource ColorKeywordGray}" Style="{StaticResource MenuItemColor}" />
-            <MenuItem Background="{DynamicResource ColorKeywordDefault}" Style="{StaticResource MenuItemColor}" />
+            <MenuItem
+              Background="{DynamicResource ColorKeywordRed}"
+              Click="OnSetKeywordColor"
+              Style="{StaticResource MenuItemColor}"
+              Tag="1" />
+            <MenuItem
+              Background="{DynamicResource ColorKeywordPurple}"
+              Click="OnSetKeywordColor"
+              Style="{StaticResource MenuItemColor}"
+              Tag="2" />
+            <MenuItem
+              Background="{DynamicResource ColorKeywordBlue}"
+              Click="OnSetKeywordColor"
+              Style="{StaticResource MenuItemColor}"
+              Tag="3" />
+            <MenuItem
+              Background="{DynamicResource ColorKeywordGreen}"
+              Click="OnSetKeywordColor"
+              Style="{StaticResource MenuItemColor}"
+              Tag="4" />
+            <MenuItem
+              Background="{DynamicResource ColorKeywordOrange}"
+              Click="OnSetKeywordColor"
+              Style="{StaticResource MenuItemColor}"
+              Tag="5" />
+            <MenuItem
+              Background="{DynamicResource ColorKeywordGray}"
+              Click="OnSetKeywordColor"
+              Style="{StaticResource MenuItemColor}"
+              Tag="6" />
+            <MenuItem
+              Background="{DynamicResource ColorKeywordDefault}"
+              Click="OnSetKeywordColor"
+              Style="{StaticResource MenuItemColor}"
+              Tag="Color selected by F#" />
           </MenuItem>
+          <Separator />
+          <MenuItem Header="Create _new keyword" />
+          <MenuItem Header="_Delete keyword" />
         </ContextMenu>
       </ListBox.ContextMenu>
     </ListBox>

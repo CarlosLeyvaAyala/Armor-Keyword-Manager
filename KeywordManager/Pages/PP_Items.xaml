@@ -441,7 +441,10 @@
       md:ColorZoneAssist.Mode="PrimaryMid"
       Header="Keywords"
       Style="{StaticResource MaterialDesignCardGroupBox}">
-      <uc:KeywordManagerUC Margin="{StaticResource MarginStd}" KeywordSelect="OnKeywordSelected" />
+      <uc:KeywordManagerUC
+        Margin="{StaticResource MarginStd}"
+        KeywordChange="OnKeywordChanged"
+        KeywordSelect="OnKeywordSelected" />
       <!--<DockPanel>
         <ListBox
           x:Name="lstKeywords"

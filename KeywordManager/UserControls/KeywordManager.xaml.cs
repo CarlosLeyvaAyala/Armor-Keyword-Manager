@@ -17,8 +17,17 @@ public partial class KeywordManagerUC : UserControl {
   }
 
   private void OnFilterChanged(object sender, TextChangedEventArgs e) => ctx.Filter = (sender as TextBox)?.Text;
-  private void OnChangePicClick(object sender, RoutedEventArgs e) => ctx.SetImage();
   private void OnLstDoubleClick(object sender, MouseButtonEventArgs e) => DoSendSelected();
+
+  private void OnChangePicClick(object sender, RoutedEventArgs e) {
+    ctx.SetImage();
+    DoSendKeywordChanged();
+  }
+
+  private void OnSetKeywordColor(object sender, RoutedEventArgs e) {
+    ctx.SetColor(GUI.FrameWorkElement.KeywordColorFromTag(sender));
+    DoSendKeywordChanged();
+  }
 
   private void OnLstKeyDown(object sender, KeyEventArgs e) {
     if (e.Key == Key.Return) DoSendSelected();
@@ -46,5 +55,23 @@ public partial class KeywordManagerUC : UserControl {
         typeof(KeywordManagerUC));
 
   void DoSendSelected() => RaiseEvent(new KeywordSelectEventArgs(KeywordSelectEvent, this, ctx.SelectedKeywords));
+  #endregion
+
+  #region Event : KeywordChangeEvent
+  [Category("Behavior")]
+
+  public event RoutedEventHandler KeywordChange {
+    add => AddHandler(KeywordChangeEvent, value);
+    remove => RemoveHandler(KeywordChangeEvent, value);
+  }
+
+  public static readonly RoutedEvent KeywordChangeEvent
+      = EventManager.RegisterRoutedEvent(
+        nameof(KeywordChange),
+        RoutingStrategy.Bubble,
+        typeof(RoutedEventHandler),
+        typeof(KeywordManagerUC));
+
+  void DoSendKeywordChanged() => RaiseEvent(new RoutedEventArgs(KeywordChangeEvent, this));
   #endregion
 }

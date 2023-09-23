@@ -88,3 +88,13 @@ type KeywordManagerCtx() =
                 t.NavSelectedItem.Img <- ext)),
             "AD38DF40-B7E2-4390-A163-B51F0E47D837"
         )
+
+    /// Set keywords color
+    member t.SetColor color =
+        t.NavSelectedItems
+        |> Seq.iter (fun item ->
+            let k = item.Name
+            DB.edit k (fun v -> { v with color = color }))
+
+        File.Save()
+        t.ReloadNavAndGoToCurrent()

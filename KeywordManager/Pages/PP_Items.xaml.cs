@@ -279,4 +279,5 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   }
 
   private void OnKeywordSelected(object sender, RoutedEventArgs e) => Debug.WriteLine((e as KeywordSelectEventArgs)?.Keywords.Length);
+  private void OnKeywordChanged(object sender, RoutedEventArgs e) => Debug.WriteLine("Keyword changed. Needs reloading.");
 }

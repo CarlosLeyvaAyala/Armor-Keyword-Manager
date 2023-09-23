@@ -16,10 +16,10 @@ public class IntToKeywordColor : IValueConverter {
     int v = (int)value;
     return v switch {
       1 => getKey("ColorKeywordRed"),
-      2 => getKey("ColorKeywordOrange"),
-      3 => getKey("ColorKeywordPurple"),
-      4 => getKey("ColorKeywordBlue"),
-      5 => getKey("ColorKeywordGreen"),
+      2 => getKey("ColorKeywordPurple"),
+      3 => getKey("ColorKeywordBlue"),
+      4 => getKey("ColorKeywordGreen"),
+      5 => getKey("ColorKeywordOrange"),
       6 => getKey("ColorKeywordGray"),
       _ => getKey("ColorKeywordDefault")
     };

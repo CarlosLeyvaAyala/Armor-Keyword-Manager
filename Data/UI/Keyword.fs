@@ -9,16 +9,16 @@ module DB = Data.Keywords.Database
 
 type NavListItem(key: Keyword, r: Raw) =
     inherit WPFBindable()
-    let mutable img = expandImg key r.image
+    let mutable img = r.image
     let mutable color = r.color
     let mutable description = r.description
 
     member _.Name = key
 
     member t.Img
-        with get () = img
-        and set v =
-            img <- v
+        with get () = expandImg key img
+        and set ext =
+            img <- ext
             t.OnPropertyChanged("Img")
 
     member t.Color
@@ -56,11 +56,13 @@ module Get =
 module File =
     open Data.UI.AppSettings
 
+    /// Opens keyword database from json file
     let Open () =
         Paths.KeywordsFile()
         |> Json.getFromFile<KeywordMap>
         |> DB.ofRaw
 
+    /// Saves keyword database to json file
     let Save () =
         DB.toRaw ()
         |> Json.writeToFile true (Paths.KeywordsFile())

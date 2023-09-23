@@ -172,18 +172,6 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   private void CmdDeleteExecuted(object sender, ExecutedRoutedEventArgs e) => DeleteKeywords();
   private void CmdDeleteCanExecute(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = lstItemKeywords.SelectedItem != null;
 
-  private void OnChangeKeywordPic(object sender, RoutedEventArgs e) {
-    //var dlg = new OpenFileDialog {
-    //  Filter = "Image files (*.png, *.jpg, *.svg)|*.png;*.jpg;*.svg"
-    //};
-    //var r = dlg.ShowDialog();
-    //if (r != true)
-    //  return;
-    //var source = dlg.FileName;
-    //var keyword = lstKeywords.SelectedItem.ToString();
-    //LoadKeywords(Keywords.SetImage(keyword, source));
-  }
-
   void OnChangeTags(Action ChangeTags) {
     var currTags = Data.UI.Tags.Get.AllTagsAndKeywords();
     ChangeTags();

@@ -29,6 +29,11 @@ module Database =
               description = "*** THIS KEYWORD IS NOT RECOGNIZED ***" // TODO: Add a proper type so missing keywords can be added by app
               color = DefaultColor }
 
+    let upsert key v = keywords <- keywords.Add(key, v)
+
+    let edit key f =
+        keywords |> Map.find key |> f |> upsert key
+
 
 //let SetImage (keyword, sourceFileName) =
 //    let ext = copyImage ImagePath keyword sourceFileName

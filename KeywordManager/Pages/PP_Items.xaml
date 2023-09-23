@@ -425,7 +425,8 @@
       md:ColorZoneAssist.Mode="PrimaryMid"
       Header="Keywords"
       Style="{StaticResource MaterialDesignCardGroupBox}">
-      <DockPanel>
+      <uc:KeywordManager Margin="{StaticResource MarginStd}" />
+      <!--<DockPanel>
         <ListBox
           x:Name="lstKeywords"
           Margin="{DynamicResource MarginStd}"
@@ -479,7 +480,6 @@
                   <Setter Property="HorizontalAlignment" Value="Center" />
                   <Setter Property="VerticalAlignment" Value="Center" />
                   <Setter Property="FontSize" Value="25" />
-                  <!--<Setter Property="Header" Value="●" />-->
                 </Style>
               </ContextMenu.Resources>
               <MenuItem Header="_New keyword" />
@@ -499,7 +499,7 @@
             </ContextMenu>
           </ListBox.ContextMenu>
         </ListBox>
-      </DockPanel>
+      </DockPanel>-->
     </GroupBox>
   </Grid>
 </UserControl>

@@ -10,7 +10,7 @@ module Get =
 
     /// Gets all keywords
     let allKeywords () =
-        Data.Keywords.getAllKeywords () |> Array.sort
+        Data.UI.Keywords.Get.all () |> Array.sort
 
     let allTagsAndKeywords () =
         allTags () |> Array.append (allKeywords ())

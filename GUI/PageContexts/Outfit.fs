@@ -11,6 +11,10 @@ open System.IO
 open System.Windows.Controls
 open GUI.UserControls
 open Data.UI.Filtering
+open System
+open GUI
+open DMLib_WPF.Contexts
+open DMLib_WPF.Dialogs
 
 [<AutoOpen>]
 module private Ops =
@@ -19,61 +23,6 @@ module private Ops =
             match v with
             | :? IHasUniqueId as v' -> if v'.UId = uid then Some i else None
             | _ -> None)
-
-type BatchDlg = delegate of seq<BatchRename.Item> -> seq<BatchRename.Item>
-type VoidToBool = delegate of unit -> bool
-
-/// Expected to have, but can not be added due to type constraints: t.Nav, t.SelectedItem, t.NavSelectedItem.
-/// Will always need to be overriden: t.SelectCurrentItem
-[<AbstractClass>]
-type PageNavigationContext() =
-    inherit WPFBindable()
-
-    let mutable isFinishedLoading = false
-
-    member t.IsFinishedLoading
-        with get () = isFinishedLoading
-        and set v =
-            isFinishedLoading <- v
-            t.OnFinishedLoadingChange()
-
-    abstract member OnFinishedLoadingChange: unit -> unit
-
-    default t.OnFinishedLoadingChange() =
-        t.OnPropertyChanged("CanItemBeSelected")
-
-    member t.OnceFinishedLoading whenLoaded whenNotLoaded =
-        if not t.IsFinishedLoading then
-            whenNotLoaded ()
-        else
-            whenLoaded ()
-
-    member val EnabledControlsConditions: VoidToBool = null with get, set
-
-    member val NavControl: ListBox = null with get, set
-
-    member t.LoadNav() = t.OnPropertyChanged("Nav")
-
-    member t.ReloadNavAndGoToFirst() =
-        t.LoadNav()
-        ListBox.selectFirst t.NavControl
-
-    abstract member ReloadNavAndGoToCurrent: unit -> unit
-
-    /// Disables UI if an item can not be selected
-    member t.CanItemBeSelected =
-        t.OnceFinishedLoading
-            (fun () ->
-                t.NavControl.Items.Count > 0
-                || t.EnabledControlsConditions.Invoke())
-            (fun () -> false)
-
-    abstract member SelectCurrentItem: unit -> unit
-
-    /// Select item when the ListBox selection changes
-    default t.SelectCurrentItem() =
-        t.OnPropertyChanged("CanItemBeSelected")
-        t.OnPropertyChanged("SelectedItem")
 
 /// Context for working with the outfits page
 [<Sealed>]
@@ -145,7 +94,7 @@ type OutfitPageCtx() =
         selectUId t.NavControl uid
 
     /// Renames many elements
-    member t.BatchRename(askNames: BatchDlg) =
+    member t.BatchRename(askNames: Func<seq<BatchRename.Item>, seq<BatchRename.Item>>) =
         let r =
             t.NavSelectedItems
             |> Seq.map (fun v -> BatchRename.Item(v.UId, v.Name))
@@ -159,16 +108,13 @@ type OutfitPageCtx() =
 
     /// Deletes all selected outfits
     member t.DeleteSelected owner =
-        let r =
-            DMLib_WPF.Dialogs.WarningYesNoMessageBox
-                owner
-                "Deleting oufits can not be undone.\n\nDo you wish to continue?"
-                "Undoable operation"
+        MessageBox.Warning(
+            owner,
+            "Deleting oufits will also delete images associated with them and it can not be undone.\n\nDo you wish to continue?",
+            "Undoable operation",
+            (Action (fun () ->
+                t.NavSelectedItems
+                |> Seq.iter (fun v -> Edit.Delete v.UId)
 
-        match r with
-        | MessageBoxResult.No -> ()
-        | _ ->
-            t.NavSelectedItems
-            |> Seq.iter (fun v -> Edit.Delete v.UId)
-
-            t.ReloadNavAndGoToFirst()
+                t.ReloadNavAndGoToFirst()))
+        )

@@ -96,8 +96,8 @@ type NavItem(uniqueId: string) =
     member t.Keywords =
         d.keywords
         |> List.sort
-        |> Data.Keywords.Items.getKeywordsData
-        |> Data.Keywords.Items.generateGUI
+        //|> Data.Keywords.Items.getKeywordsData
+        //|> Data.Keywords.Items.generateGUI
         |> toCList
 
     member t.Tags = d.tags |> List.sort |> toCList

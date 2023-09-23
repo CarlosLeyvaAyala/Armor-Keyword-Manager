@@ -60,11 +60,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
   public void ReloadSelectedItem() => ctx.SelectCurrentItem();
 
   private void OnSetImgClick(object sender, RoutedEventArgs e) =>
-    SetImage(GUI.Dialogs.File.Open(
-      AppSettings.Paths.Img.filter,
-      "f07db2f1-a50e-4487-b3b2-8f384d3732aa",
-      "",
-      ""));
+    SetImage(DMLib_WPF.Dialogs.File.Open(AppSettings.Paths.Img.filter, "f07db2f1-a50e-4487-b3b2-8f384d3732aa"));
 
   private void OnSetImgDrop(object sender, DragEventArgs e) => SetImage(FileHelper.GetDroppedFile(e));
 

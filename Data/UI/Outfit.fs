@@ -83,13 +83,6 @@ type NavSelectedItem(uId: string) =
     let pieces = outfit |> Get.pieces
 
     member _.Tags = Get.tags outfit pieces |> toCList
-    //pieces
-    //|> List.choose (fun (_, v) -> v |> Option.map (fun x -> x.tags))
-    //|> List.collect id
-    //|> List.append outfit.tags
-    //|> List.distinct
-    //|> List.sort
-    //|> toCList
 
     member t.Name
         with get () = name

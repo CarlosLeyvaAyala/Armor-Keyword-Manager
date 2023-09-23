@@ -27,12 +27,13 @@ public partial class MainWindow : Window {
   private void OnCanOpen(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnOpen(object sender, ExecutedRoutedEventArgs e) {
     try {
-      var fn = GUI.Dialogs.File.Open("Skyrim Items (*.skyitms)|*.skyitms", "1e2be86c-8d55-4894-82e9-65e8a3a027a5", "", "");
-      if (string.IsNullOrWhiteSpace(fn))
-        return;
-
-      OpenFile(fn);
-      PlayWindowsSound(SoundEffect.Success);
+      DMLib_WPF.Dialogs.File.Open(
+        "Skyrim Items (*.skyitms)|*.skyitms",
+        fn => {
+          OpenFile(fn);
+          PlayWindowsSound(SoundEffect.Success);
+        },
+        guid: "1e2be86c-8d55-4894-82e9-65e8a3a027a5");
     }
     catch (Exception ex) {
       MessageBox.Show(this, ex.Message);
@@ -54,16 +55,14 @@ public partial class MainWindow : Window {
 
   void SaveAs() {
     try {
-      var fn = GUI.Dialogs.File.Save(
+      DMLib_WPF.Dialogs.File.Save(
         "Skyrim Items (*.skyitms)|*.skyitms",
-        "1e2be86c-8d55-4894-82e9-65e8a3a027a5",
-        "",
-        "");
-      if (string.IsNullOrWhiteSpace(fn)) return;
-
-      PropietaryFile.Save(fn);
-      WorkingFile = fn;
-      PlayWindowsSound(SoundEffect.Success);
+         fn => {
+           PropietaryFile.Save(fn);
+           WorkingFile = fn;
+           PlayWindowsSound(SoundEffect.Success);
+         },
+        guid: "1e2be86c-8d55-4894-82e9-65e8a3a027a5");
     }
     catch (Exception ex) {
       MessageBox.Show(this, ex.Message);
@@ -72,12 +71,12 @@ public partial class MainWindow : Window {
 
   private void OnCanExportAs(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnExportAs(object sender, ExecutedRoutedEventArgs e) {
-    var d = GUI.Dialogs.SelectDir(Settings.Default.mostRecentExportDir);
-    if (d == null)
-      return;
-    Settings.Default.mostRecentExportDir = d;
-    Settings.Default.Save();
-    OnExport(sender, e);
+    DMLib_WPF.Dialogs.Directory.Select(Settings.Default.mostRecentExportDir,
+      d => {
+        Settings.Default.mostRecentExportDir = d;
+        Settings.Default.Save();
+        OnExport(sender, e);
+      });
   }
 
   private void OnCanExport(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = Directory.Exists(Settings.Default.mostRecentExportDir);
@@ -94,20 +93,22 @@ public partial class MainWindow : Window {
 
   private void OnCanFileJsonExport(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = File.Exists(WorkingFile);
   private void OnFileJsonExport(object sender, ExecutedRoutedEventArgs e) {
-    var fn = GUI.Dialogs.File.Save("Json (*.json)|*.json", "5e8659d3-6722-4e8d-982d-fbaa75b1519b", "", "");
-    if (string.IsNullOrWhiteSpace(fn))
-      return;
-    PropietaryFile.SaveJson(fn);
+    DMLib_WPF.Dialogs.File.Save(
+      "Json (*.json)|*.json",
+      PropietaryFile.SaveJson,
+      guid: "5e8659d3-6722-4e8d-982d-fbaa75b1519b");
   }
 
   private void OnCanFileJsonImport(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnFileJsonImport(object sender, ExecutedRoutedEventArgs e) {
-    var fn = GUI.Dialogs.File.Open("Json (*.json)|*.json", "5e8659d3-6722-4e8d-982d-fbaa75b1519b", "", "");
-    if (string.IsNullOrWhiteSpace(fn))
-      return;
-    PropietaryFile.OpenJson(fn);
-    WorkingFile = "";
-    PlayWindowsSound(SoundEffect.Success);
+    DMLib_WPF.Dialogs.File.Open(
+      "Json (*.json)|*.json",
+      fn => {
+        PropietaryFile.OpenJson(fn);
+        WorkingFile = "";
+        PlayWindowsSound(SoundEffect.Success);
+      },
+      guid: "5e8659d3-6722-4e8d-982d-fbaa75b1519b");
   }
   #endregion
 
@@ -135,15 +136,10 @@ public partial class MainWindow : Window {
   #region Backups
   private void OnCanRestoreSettings(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnRestoreSettings(object sender, ExecutedRoutedEventArgs e) {
-    var fn = GUI.Dialogs.File.Open(
+    DMLib_WPF.Dialogs.File.Open(
       "Zip files (*.zip)|*.zip",
-      "e63aa357-ce5c-424d-a175-b2592aac7af3",
-      "",
-      "");
-
-    if (string.IsNullOrEmpty(fn)) return;
-    AppSettings.Backup.Restore(fn);
-    //TODO: Update images
+      AppSettings.Backup.Restore, //TODO: Update images
+      guid: "e63aa357-ce5c-424d-a175-b2592aac7af3");
   }
 
   private void OnCanBackupSettings(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
@@ -151,10 +147,11 @@ public partial class MainWindow : Window {
   private void OnGitBackupClick(object sender, RoutedEventArgs e) => CreateBackup("SIM Backup", "E60CE530-7FA4-4B2C-8896-02B1F37F62B8");
 
   static void CreateBackup(string suggestedName, string guid) {
-    var fn = GUI.Dialogs.File.Save("Zip files (*.zip)|*.zip", guid, "", suggestedName);
-    if (string.IsNullOrEmpty(fn)) return;
-
-    AppSettings.Backup.Create(fn);
+    DMLib_WPF.Dialogs.File.Save(
+      "Zip files (*.zip)|*.zip",
+      AppSettings.Backup.Create,
+      guid: guid,
+      fileName: suggestedName);
   }
   #endregion
 }

@@ -1,11 +1,8 @@
-﻿using Data;
-using Data.UI;
+﻿using Data.UI;
 using Data.UI.Items;
 using GUI.UserControls;
 using KeywordManager.UserControls;
-using Microsoft.Win32;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,8 +26,8 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   public PP_Items() {
     InitializeComponent();
     var cd = Directory.GetCurrentDirectory();
-    Keywords.ImagePath = Path.Combine(cd, @"Data\Img\Keywords");
-    Keywords.JsonPath = Path.Combine(cd, @"Data\Keywords.json");
+    //Keywords.ImagePath = Path.Combine(cd, @"Data\Img\Keywords");
+    //Keywords.JsonPath = Path.Combine(cd, @"Data\Keywords.json");
     watcher = FileWatcher.WatchxEdit(
       "*.items",
       filename => {
@@ -88,7 +85,7 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   #endregion
 
   #region UI
-  private void LoadKeywords(IEnumerable? list) => lstKeywords.ItemsSource = list;
+  //private void LoadKeywords(IEnumerable? list) => lstKeywords.ItemsSource = list;
   public void LoadNavItems() => lstNavItems.ItemsSource = Nav.Get();
 
   private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) => ReloadSelectedItem();
@@ -101,7 +98,7 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   private void OnLoaded(object sender, RoutedEventArgs e) {
     if (hasLoaded) return;
 
-    LoadKeywords(Keywords.LoadFromFile());
+    //LoadKeywords(Keywords.LoadFromFile());
     GoToFirst();
     hasLoaded = true;
   }
@@ -150,8 +147,8 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
 
   private void AddKeywords() {
     ForEachSelectedItem((uId) => {
-      foreach (var keyword in lstKeywords.SelectedItems)
-        Edit.AddKeyword(uId, keyword.ToString());
+      //foreach (var keyword in lstKeywords.SelectedItems)
+      //  Edit.AddKeyword(uId, keyword.ToString());
     });
   }
 
@@ -176,15 +173,15 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   private void CmdDeleteCanExecute(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = lstItemKeywords.SelectedItem != null;
 
   private void OnChangeKeywordPic(object sender, RoutedEventArgs e) {
-    var dlg = new OpenFileDialog {
-      Filter = "Image files (*.png, *.jpg, *.svg)|*.png;*.jpg;*.svg"
-    };
-    var r = dlg.ShowDialog();
-    if (r != true)
-      return;
-    var source = dlg.FileName;
-    var keyword = lstKeywords.SelectedItem.ToString();
-    LoadKeywords(Keywords.SetImage(keyword, source));
+    //var dlg = new OpenFileDialog {
+    //  Filter = "Image files (*.png, *.jpg, *.svg)|*.png;*.jpg;*.svg"
+    //};
+    //var r = dlg.ShowDialog();
+    //if (r != true)
+    //  return;
+    //var source = dlg.FileName;
+    //var keyword = lstKeywords.SelectedItem.ToString();
+    //LoadKeywords(Keywords.SetImage(keyword, source));
   }
 
   void OnChangeTags(Action ChangeTags) {
@@ -245,15 +242,12 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   private void OnCanSetImage(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnSetImage(object sender, ExecutedRoutedEventArgs e) {
     try {
-      var fn = GUI.Dialogs.File.Open(
+      DMLib_WPF.Dialogs.File.Open(
         AppSettings.Paths.Img.filter,
-        "32518c2e-8d81-41e3-b872-2e4e0e06568a",
-        "",
-        "");
-      if (string.IsNullOrWhiteSpace(fn))
-        return;
-
-      ForEachSelectedItem((uId) => Edit.Image(uId, fn));
+        fn => {
+          ForEachSelectedItem((uId) => Edit.Image(uId, fn));
+        },
+        guid: "32518c2e-8d81-41e3-b872-2e4e0e06568a");
     }
     catch (Exception ex) {
       MessageBox.Show(Owner, ex.Message);
@@ -264,7 +258,6 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
     var r = (RadioButton)sender;
     Edit.ItemType(uId, int.Parse((string)r.Tag));
   }
-
 
   private void OnCanNamesToClipboard(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = lstNavItems.SelectedItems.Count > 0;
   private void OnNamesToClipboard(object sender, ExecutedRoutedEventArgs e) {

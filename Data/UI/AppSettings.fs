@@ -13,6 +13,7 @@ module Paths =
 
     let SetApp dir = app <- dir
     let internal data () = combine2 app "Data"
+    let KeywordsFile () = data () |> combine2' "Keywords.json"
 
     module Img =
         let filter = "Image files (*.jpg;*.png;*.jpeg)|*.jpg;*.png;*.jpeg"
@@ -56,7 +57,9 @@ module Paths =
 
         module Keywords =
             let dir () = combine2 app @"Data\Img\Keywords"
-            let jsonDir () = combine2 app @"Data\Img\Keywords"
+            ///Converts a keyword name and extension to its corresponding full file path
+            let expandImg keyword ext = expand (dir ()) keyword ext
+            let copyImg name sourceFileName = copyImage (dir ()) name sourceFileName
 
 [<RequireQualifiedAccess>]
 module Backup =

@@ -110,14 +110,15 @@ type KeywordManagerCtx() =
 
     /// Deletes selected items.
     member t.DeleteSelected() =
-        Dialogs.MessageBox.Warning(
-            t.OwnerWindow,
-            "Deleted keywords can not be recovered.\nDo you wish to continue?",
-            "Undoable operation",
-            (Action (fun () ->
-                t.DeleteSelected (fun () ->
-                    t.NavSelectedItems
-                    |> Seq.iter (fun i -> DB.delete i.Name)
-                    saveJsonDB ()
-)))
-        )
+        let items = Data.Items.Database.toArrayOfRaw ()
+
+        let deleteKeyword (i: NavListItem) =
+            let k = i.Name
+            DB.delete k
+
+            items
+            |> Array.Parallel.iter (fun (uid, _) -> Data.UI.Items.Edit.DelKeyword uid k)
+
+        t.DeleteSelected (fun () ->
+            t.NavSelectedItems |> Seq.iter deleteKeyword
+            saveJsonDB ())

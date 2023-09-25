@@ -40,7 +40,7 @@ public partial class MainWindow : Window {
   public static void ShowToast(string message, double seconds = 2, SoundEffect playSound = SoundEffect.None) {
     PlayWindowsSound(playSound);
     Instance?.snackBar.MessageQueue?.Enqueue(
-      message,
+      content: message,
       null,
       null,
       null,

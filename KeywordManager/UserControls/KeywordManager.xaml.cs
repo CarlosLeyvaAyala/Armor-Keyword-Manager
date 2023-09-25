@@ -43,14 +43,24 @@ public partial class KeywordManagerUC : UserControl {
       }
     });
 
-  private void OnDeleteKeywordClick(object sender, RoutedEventArgs e) => ctx.DeleteSelected();
+  void DoDelete() => DMLib_WPF.Dialogs.MessageBox.Warning(
+    MainWindow.Instance,
+    "Deleted keywords can not be recovered.\nDo you wish to continue?",
+    "Undoable operation",
+    () => {
+      ctx.DeleteSelected();
+      MainWindow.ShowToast("Selected keywords were successfully deleted", playSound: SoundEffect.Success);
+    }
+  );
+
+  private void OnDeleteKeywordClick(object sender, RoutedEventArgs e) => DoDelete();
   private void OnCanDel(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
 
   private void OnLstKeyDown(object sender, KeyEventArgs e) {
     if (e.Key == Key.Return) DoSendSelected();
     if (e.Key == Key.Back) GUI.ListBox.FocusFilter(edtFilter);
     if (e.Key == Key.Delete) {
-      ctx.DeleteSelected();
+      DoDelete();
       e.Handled = true;
     }
   }

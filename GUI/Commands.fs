@@ -79,7 +79,6 @@ type AppCmds private () =
     static member val RestoreSettings = basic "RestoreSettings" "Restorses a previously saved backup"
     static member val BackupSettings = basic "BackupSettings" "Creates a backup for the images and keywords in this app"
 
-
 [<Sealed>]
 type ItemCmds private () =
     static let create = createCmd (fun () -> typeof<ItemCmds>)
@@ -105,7 +104,20 @@ type OutfitCmds private () =
     static member val Del =
         { name = "Del"
           text = "Delete"
-          keyDisplay = ""
+          keyDisplay = "Delete"
+          key = Key.None
+          modifiers = ModifierKeys.None }
+        |> create
+
+[<Sealed>]
+type KeywordCmds private () =
+    static let create = createCmd (fun () -> typeof<KeywordCmds>)
+
+    // This is a hack, because it is not easy to enable it only when the popup menu is opened
+    static member val Del =
+        { name = "Del"
+          text = "_Delete keyword"
+          keyDisplay = "Delete"
           key = Key.None
           modifiers = ModifierKeys.None }
         |> create

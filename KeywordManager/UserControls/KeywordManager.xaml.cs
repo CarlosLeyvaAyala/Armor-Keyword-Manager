@@ -44,16 +44,22 @@ public partial class KeywordManagerUC : UserControl {
     });
 
   private void OnDeleteKeywordClick(object sender, RoutedEventArgs e) => ctx.DeleteSelected();
+  private void OnCanDel(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
 
   private void OnLstKeyDown(object sender, KeyEventArgs e) {
     if (e.Key == Key.Return) DoSendSelected();
     if (e.Key == Key.Back) GUI.ListBox.FocusFilter(edtFilter);
+    if (e.Key == Key.Delete) {
+      ctx.DeleteSelected();
+      e.Handled = true;
+    }
   }
 
   private void OnFilterKeyDown(object sender, KeyEventArgs e) {
     if (e.Key == Key.Enter) GUI.ListBox.FocusFromFilter(lstNav);
   }
   #endregion
+
 
   #region Event : KeywordSelectEvent
   [Category("Behavior")]

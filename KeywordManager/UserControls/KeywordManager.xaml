@@ -2,6 +2,7 @@
   x:Class="KeywordManager.UserControls.KeywordManagerUC"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
   xmlns:ctx="clr-namespace:GUI.UserControls;assembly=GUI"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:guiobjs="clr-namespace:Data.UI.Keywords;assembly=Data"
@@ -12,6 +13,11 @@
   d:DesignWidth="400"
   Loaded="OnLoaded"
   mc:Ignorable="d">
+
+  <UserControl.CommandBindings>
+    <!--  this command is a hack because popup menus are retarded  -->
+    <CommandBinding CanExecute="OnCanDel" Command="c:KeywordCmds.Del" />
+  </UserControl.CommandBindings>
 
   <UserControl.DataContext>
     <ctx:KeywordManagerCtx x:Name="ctx" NavControl="{x:Reference lstNav}" />
@@ -85,7 +91,7 @@
         </DataTemplate>
       </ListBox.ItemTemplate>
       <ListBox.ContextMenu>
-        <ContextMenu>
+        <ContextMenu x:Name="popupMenu">
           <ContextMenu.Resources>
             <Style x:Key="MenuItemColor" TargetType="{x:Type MenuItem}">
               <Setter Property="HorizontalAlignment" Value="Center" />
@@ -133,7 +139,10 @@
               Tag="Color selected by F#" />
           </MenuItem>
           <Separator />
-          <MenuItem Click="OnDeleteKeywordClick" Header="_Delete keyword" />
+          <MenuItem
+            Click="OnDeleteKeywordClick"
+            Command="c:KeywordCmds.Del"
+            Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
           <MenuItem
             Click="OnNewKeywordClick"
             Header="Create _new keyword"

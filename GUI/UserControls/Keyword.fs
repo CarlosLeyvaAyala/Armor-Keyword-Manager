@@ -24,6 +24,7 @@ type KeywordSelectEventArgs(routedEvent, source, keywords) =
 [<Sealed>]
 type KeywordManagerCtx() =
     inherit PageNavigationContext()
+    let saveJsonDB () = File.Save()
 
     let mutable filter = ""
 
@@ -98,12 +99,13 @@ type KeywordManagerCtx() =
             let k = item.Name
             DB.edit k (fun v -> { v with color = color }))
 
-        File.Save()
+        saveJsonDB ()
         t.ReloadNavAndGoToCurrent()
 
     /// Adds a manually written keyword.
     member t.AddHandWrittenKeyword keyword =
         DB.upsert keyword DB.blankKeyword
+        saveJsonDB ()
         t.ReloadNavAndGoTo keyword
 
     /// Deletes selected items.
@@ -115,5 +117,7 @@ type KeywordManagerCtx() =
             (Action (fun () ->
                 t.DeleteSelected (fun () ->
                     t.NavSelectedItems
-                    |> Seq.iter (fun i -> DB.delete i.Name))))
+                    |> Seq.iter (fun i -> DB.delete i.Name)
+                    saveJsonDB ()
+)))
         )

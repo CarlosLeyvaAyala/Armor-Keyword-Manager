@@ -12,6 +12,7 @@ open DMLib.Collections
 open DMLib.Combinators
 open System
 open System.Diagnostics
+open DMLib_WPF.Controls.ListBox
 
 module DB = Data.Keywords.Database
 
@@ -62,6 +63,7 @@ type KeywordManagerCtx() =
         base.SelectCurrentItem()
         t.OnPropertyChanged("KeywordId")
 
+
     ///////////////////////////////////////////////
     // Custom implementation
 
@@ -98,3 +100,20 @@ type KeywordManagerCtx() =
 
         File.Save()
         t.ReloadNavAndGoToCurrent()
+
+    /// Adds a manually written keyword.
+    member t.AddHandWrittenKeyword keyword =
+        DB.upsert keyword DB.blankKeyword
+        t.ReloadNavAndGoTo keyword
+
+    /// Deletes selected items.
+    member t.DeleteSelected() =
+        Dialogs.MessageBox.Warning(
+            t.OwnerWindow,
+            "Deleted keywords can not be recovered.\nDo you wish to continue?",
+            "Undoable operation",
+            (Action (fun () ->
+                t.DeleteSelected (fun () ->
+                    t.NavSelectedItems
+                    |> Seq.iter (fun i -> DB.delete i.Name))))
+        )

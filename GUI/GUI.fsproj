@@ -8,13 +8,12 @@
   <ItemGroup>
     <None Include="scripts\Command binding generator.fsx" />
     <Compile Include="Commands.fs" />
-    <Compile Include="Dialogs.fs" />
-    <Compile Include="Validators.fs" />
     <Compile Include="Controls.fs" />
     <Compile Include="ListBox.fs" />
     <Compile Include="UserControls\FilterByTag.fs" />
     <Compile Include="UserControls\Keyword.fs" />
     <Compile Include="PageContexts\Outfit.fs" />
+    <Compile Include="Validators.fs" />
   </ItemGroup>
 
   <ItemGroup>

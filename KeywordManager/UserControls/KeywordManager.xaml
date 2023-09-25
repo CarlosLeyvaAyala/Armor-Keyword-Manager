@@ -133,7 +133,7 @@
               Tag="Color selected by F#" />
           </MenuItem>
           <Separator />
-          <MenuItem Header="_Delete keyword" />
+          <MenuItem Click="OnDeleteKeywordClick" Header="_Delete keyword" />
           <MenuItem
             Click="OnNewKeywordClick"
             Header="Create _new keyword"

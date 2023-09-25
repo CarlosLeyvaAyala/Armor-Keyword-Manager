@@ -3,6 +3,7 @@
 open System.Windows.Controls
 open System.Text.RegularExpressions
 open DMLib.String
+open DMLib
 
 /// Validates that a keyword name has only alphanumerical characters
 type KeywordNameRule() =
@@ -24,3 +25,16 @@ type NonEmptyRule(errorMessage) =
         | v -> ValidationResult.ValidResult
 
     new() = NonEmptyRule("Value must not be empty")
+
+/// Checks if a manually added keyword already exists
+type KeywordExistsRule() =
+    inherit ValidationRule()
+
+    override _.Validate(value: obj, _) =
+        let v = value :?> string
+
+        match Data.Keywords.Database.toArrayOfRaw ()
+              |> Array.Parallel.filter (fun (k, _) -> v |> equals k)
+            with
+        | [||] -> ValidationResult.ValidResult
+        | _ -> ValidationResult(false, "This Keyword already exists")

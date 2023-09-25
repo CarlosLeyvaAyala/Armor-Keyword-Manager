@@ -7,16 +7,10 @@ open Data.UI
 open System.Windows.Controls
 
 let internal selectByUId lst uid =
-    ListBox.selectBy lst (fun (i, v) ->
-        match v with
-        | :? IHasUniqueId as v' -> if v'.UId = uid then Some i else None
-        | _ -> None)
+    ListBox.selectBy<IHasUniqueId> lst (fun v -> v.UId = uid)
 
 let internal selectByKeyword lst key =
-    ListBox.selectBy lst (fun (i, v) ->
-        match v with
-        | :? Keywords.NavListItem as k -> if k.Name = key then Some i else None
-        | _ -> None)
+    ListBox.selectBy<Keywords.NavListItem> lst (fun k -> k.Name = key)
 
 /// Focus a ListBox from a filter TextBox.
 [<CompiledName("FocusFromFilter")>]

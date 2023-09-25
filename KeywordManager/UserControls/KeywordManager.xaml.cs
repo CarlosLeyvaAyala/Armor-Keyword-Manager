@@ -1,6 +1,5 @@
 ﻿using GUI.UserControls;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -13,6 +12,7 @@ public partial class KeywordManagerUC : UserControl {
   #region Internal events
   private void OnLoaded(object sender, RoutedEventArgs e) {
     if (ctx.IsFinishedLoading) return;
+    ctx.OwnerWindow = MainWindow.Instance;
     ctx.IsFinishedLoading = true;
     ctx.ReloadNavAndGoToFirst();
   }
@@ -34,11 +34,16 @@ public partial class KeywordManagerUC : UserControl {
       Hint = "Keyword name",
       OnOk =
         k => {
-          Debug.WriteLine(k);
+          ctx.AddHandWrittenKeyword(k);
           DoSendKeywordChanged();
         },
-      Validators = new ValidationRule[] { new GUI.Validators.KeywordNameRule(), }
+      Validators = new ValidationRule[] {
+        new GUI.Validators.KeywordNameRule(),
+        new GUI.Validators.KeywordExistsRule()
+      }
     });
+
+  private void OnDeleteKeywordClick(object sender, RoutedEventArgs e) => ctx.DeleteSelected();
 
   private void OnLstKeyDown(object sender, KeyEventArgs e) {
     if (e.Key == Key.Return) DoSendSelected();
@@ -85,4 +90,5 @@ public partial class KeywordManagerUC : UserControl {
 
   void DoSendKeywordChanged() => RaiseEvent(new RoutedEventArgs(KeywordChangeEvent, this));
   #endregion
+
 }

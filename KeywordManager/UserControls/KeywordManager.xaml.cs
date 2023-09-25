@@ -17,7 +17,6 @@ public partial class KeywordManagerUC : UserControl {
     ctx.ReloadNavAndGoToFirst();
   }
 
-  private void OnFilterChanged(object sender, TextChangedEventArgs e) => ctx.Filter = (sender as TextBox)?.Text;
   private void OnLstDoubleClick(object sender, MouseButtonEventArgs e) => DoSendSelected();
 
   private void OnChangePicClick(object sender, RoutedEventArgs e) {
@@ -31,17 +30,15 @@ public partial class KeywordManagerUC : UserControl {
   }
 
   private void OnNewKeywordClick(object sender, RoutedEventArgs e) =>
-    MainWindow.ExecuteAcceptCancelDlg(
-      "Keyword name",
-      "NEW_KEYWORD",
-      k => {
-        Debug.WriteLine(k);
-        DoSendKeywordChanged();
-      },
-      new ValidationRule[] {
-        new GUI.Validators.NonEmptyRule("Keyword name can not be empty"),
-        new GUI.Validators.KeywordNameRule(),
-      });
+    MainWindow.ExecuteAcceptCancelDlg(new() {
+      Hint = "Keyword name",
+      OnOk =
+        k => {
+          Debug.WriteLine(k);
+          DoSendKeywordChanged();
+        },
+      Validators = new ValidationRule[] { new GUI.Validators.KeywordNameRule(), }
+    });
 
   private void OnLstKeyDown(object sender, KeyEventArgs e) {
     if (e.Key == Key.Return) DoSendSelected();

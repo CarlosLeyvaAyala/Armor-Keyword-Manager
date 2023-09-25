@@ -36,8 +36,9 @@
       Orientation="Horizontal">
 
       <Button
+        Width="{Binding ActualWidth, ElementName=btnCancel, Mode=OneWay}"
         Command="{x:Static md:DialogHost.CloseDialogCommand}"
-        Content="_ACCEPT"
+        Content="_OK"
         IsDefault="True"
         IsEnabled="{Binding IsValid}"
         Style="{StaticResource MaterialDesignFlatAccentButton}">
@@ -47,6 +48,7 @@
       </Button>
 
       <Button
+        x:Name="btnCancel"
         Margin="4,0,0,0"
         Command="{x:Static md:DialogHost.CloseDialogCommand}"
         Content="_CANCEL"

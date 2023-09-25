@@ -30,7 +30,7 @@
       x:Name="edtFilter"
       md:HintAssist.Hint="Search..."
       KeyDown="OnFilterKeyDown"
-      TextChanged="OnFilterChanged" />
+      Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
     <!--  KEYWORD LIST  -->
     <Label
@@ -135,9 +135,9 @@
           <Separator />
           <MenuItem Header="_Delete keyword" />
           <MenuItem
+            Click="OnNewKeywordClick"
             Header="Create _new keyword"
             ToolTip="The preferred method for adding keywords is to use the included xEdit script"
-            Click="OnNewKeywordClick"
             ToolTipService.InitialShowDelay="0" />
         </ContextMenu>
       </ListBox.ContextMenu>

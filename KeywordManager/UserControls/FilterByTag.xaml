@@ -63,7 +63,7 @@
         <TextBox
           Grid.Column="2"
           md:HintAssist.Hint="Find tags"
-          TextChanged="OnFilterChanged" />
+          Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
       </Grid>
     </md:Card>
 

@@ -1,7 +1,6 @@
 ﻿using Data.UI;
 using Data.UI.Items;
 using GUI.UserControls;
-using GUI.Validators;
 using KeywordManager.UserControls;
 using System;
 using System.Collections.Generic;
@@ -219,15 +218,19 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
       .All((b) => b);
 
   private void OnCreateUnboundOutfit(object sender, ExecutedRoutedEventArgs e) {
-    MainWindow.ExecuteAcceptCancelDlg("Outfit name", "New outfit", name => {
-      var uIds = lstNavItems.SelectedItems.OfType<NavList>()
-        .Select((s) => s.UniqueId)
-        .ToList();
-      Data.UI.Outfit.Edit.CreateUnbound(uIds, name);
-      Owner.ReloadOutfitsNav();
-      Owner.GoToTab(MainWindow.TabId.Outfits);
-    },
-    new ValidationRule[] { new NonEmptyRule("Outfit name can not be empty") });
+    MainWindow.ExecuteAcceptCancelDlg(new() {
+      Hint = "Outfit name",
+      OnOk =
+        name => {
+          var uIds = lstNavItems.SelectedItems.OfType<NavList>()
+            .Select((s) => s.UniqueId)
+            .ToList();
+          Data.UI.Outfit.Edit.CreateUnbound(uIds, name);
+          Owner.ReloadOutfitsNav();
+          Owner.GoToTab(MainWindow.TabId.Outfits);
+        }
+    }
+    );
   }
 
   private void OnCanSetImage(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;

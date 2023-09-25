@@ -31,13 +31,9 @@ public partial class MainWindow : Window {
     UnDim();
   }
 
-  public static void ExecuteAcceptCancelDlg(
-    string textHint,
-    string currentValue,
-    Action<string> OnAccept,
-    ValidationRule[]? validators = null) {
+  public static void ExecuteAcceptCancelDlg(AcceptCancelDlgParams p) {
     Instance?.Dim();
-    AcceptCancelDlg.Execute("MainDlgHost", OnAccept, textHint, text: currentValue, validators: validators);
+    AcceptCancelDlg.Execute(p with { DialogHostIdentifier = "MainDlgHost" });
     Instance?.UnDim();
   }
 

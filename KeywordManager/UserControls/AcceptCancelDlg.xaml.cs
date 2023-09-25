@@ -7,38 +7,38 @@ using System.Windows;
 using System.Windows.Controls;
 
 namespace KeywordManager.UserControls;
+
+public record AcceptCancelDlgParams {
+  public object? DialogHostIdentifier { get; init; }
+  public required string Hint { get; init; }
+  public required Action<string> OnOk { get; init; }
+  public string? Text { get; init; }
+  public ValidationRule[]? Validators { get; init; }
+  public Action? OnCancel { get; init; }
+}
+
 public partial class AcceptCancelDlg : UserControl {
   public AcceptCancelDlg() => InitializeComponent();
 
-  static async Task<string?> ExecuteDlg(
-    object dialogHostIdentifier,
-    string textHint = "Value",
-    string text = "",
-    ValidationRule[]? validators = null) {
+  static async Task<string?> ExecuteDlg(AcceptCancelDlgParams p) {
     var dlg = new AcceptCancelDlg();
 
-    dlg.ctx.Validators = validators;
-    dlg.ctx.Value = text;
-    dlg.ctx.Hint = textHint;
+    dlg.ctx.Validators = p.Validators;
+    dlg.ctx.Value = p.Text ?? "";
+    dlg.ctx.Hint = p.Hint;
     dlg.Focus();
     dlg.edtDlgHostText.Focus();
 
-    var result = await DialogHost.Show(dlg, dialogHostIdentifier);
+    var result = await DialogHost.Show(dlg, p.DialogHostIdentifier ?? "MainDlgHost");
 
     return (bool?)result == true ? dlg.edtDlgHostText.Text : null;
   }
 
-  static public async void Execute(
-    object dialogHostIdentifier,
-    Action<string> OnAccept,
-    string textHint = "Value",
-    string text = "",
-    Action? OnCancel = null,
-    ValidationRule[]? validators = null) {
-    var s = await ExecuteDlg(dialogHostIdentifier, textHint, text, validators);
+  static public async void Execute(AcceptCancelDlgParams p) {
+    var s = await ExecuteDlg(p);
 
-    if (!string.IsNullOrEmpty(s)) OnAccept(s);
-    else OnCancel?.Invoke();
+    if (!string.IsNullOrEmpty(s)) p.OnOk(s);
+    else p.OnCancel?.Invoke();
   }
 }
 
@@ -52,7 +52,7 @@ class AcceptCancelDlgCtx : INotifyPropertyChanged {
   public ValidationRule[]? Validators { get; set; } = null;
   bool isValid = true;
 
-  public bool IsValid => isValid;
+  public bool IsValid => !string.IsNullOrEmpty(Value) && isValid;
   public bool HasError => !isValid;
   public Thickness ButtonMarginTop { get; set; } = defaultButtonMarginTop;
 

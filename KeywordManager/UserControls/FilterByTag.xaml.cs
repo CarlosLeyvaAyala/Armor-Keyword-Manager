@@ -35,9 +35,6 @@ public partial class FilterByTag : UserControl, IFileDisplayable {
   #endregion
 
   #region Private internal events
-  // Had to do this because bindings didn't want to work
-  private void OnFilterChanged(object sender, TextChangedEventArgs e) => ctx.Filter = (sender as TextBox)?.Text;
-
   private void OnSelectNone(object sender, RoutedEventArgs e) {
     ctx.SelectNone();
     e.Handled = true;

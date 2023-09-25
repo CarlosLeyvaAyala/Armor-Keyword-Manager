@@ -1,4 +1,4 @@
-﻿using KeywordManager.UserControls;
+﻿using DM_WpfControls;
 using System;
 using System.Media;
 using System.Windows;
@@ -31,9 +31,9 @@ public partial class MainWindow : Window {
     UnDim();
   }
 
-  public static void ExecuteAcceptCancelDlg(AcceptCancelDlgParams p) {
+  public static void ExecuteAcceptCancelDlg(QueryDlgParams p) {
     Instance?.Dim();
-    AcceptCancelDlg.Execute(p with { DialogHostIdentifier = "MainDlgHost" });
+    (Instance?.FindResource("queryDlg") as QueryDlg)?.Show(p);
     Instance?.UnDim();
   }
 

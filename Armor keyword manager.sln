@@ -12,6 +12,8 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "GUI", "GUI\GUI.fsproj", "{D
 		{D55EB563-FAFE-4A7C-A55E-0557CBA6BC83} = {D55EB563-FAFE-4A7C-A55E-0557CBA6BC83}
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DM_WpfControls", "..\DM_WpfControls\DM_WpfControls.csproj", "{4B35BC0C-ED7C-4D12-AAA6-637A37F80A17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{D32D28E8-B310-4822-A18B-8A4C07B79499}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D32D28E8-B310-4822-A18B-8A4C07B79499}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D32D28E8-B310-4822-A18B-8A4C07B79499}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B35BC0C-ED7C-4D12-AAA6-637A37F80A17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B35BC0C-ED7C-4D12-AAA6-637A37F80A17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B35BC0C-ED7C-4D12-AAA6-637A37F80A17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B35BC0C-ED7C-4D12-AAA6-637A37F80A17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

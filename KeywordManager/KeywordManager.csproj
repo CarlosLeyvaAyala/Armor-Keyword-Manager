@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\DM_WpfControls\DM_WpfControls.csproj" />
     <ProjectReference Include="..\Data\Data.fsproj" />
     <ProjectReference Include="..\GUI\GUI.fsproj" />
   </ItemGroup>

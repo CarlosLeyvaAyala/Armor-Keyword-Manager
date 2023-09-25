@@ -11,6 +11,7 @@
   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
   xmlns:pp="clr-namespace:KeywordManager.Pages"
   xmlns:uc="clr-namespace:KeywordManager.UserControls"
+  xmlns:uw="clr-namespace:DM_WpfControls;assembly=DM_WpfControls"
   Title="Skyrim Item Manager"
   Width="1100"
   Height="690"
@@ -86,6 +87,15 @@
       Command="c:AppCmds.BackupSettings"
       Executed="OnBackupSettings" />
   </Window.CommandBindings>
+
+  <Window.Resources>
+    <uw:QueryDlg
+      x:Key="queryDlg"
+      MinWidth="230"
+      ButtonCancelStyle="{StaticResource MaterialDesignFlatButton}"
+      ButtonOkStyle="{StaticResource MaterialDesignFlatAccentButton}"
+      TextBoxStyle="{StaticResource MaterialDesignFloatingHintTextBox}" />
+  </Window.Resources>
 
   <md:DrawerHost
     x:Name="dhMain"

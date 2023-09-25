@@ -6,23 +6,56 @@
   xmlns:local="clr-namespace:KeywordManager.UserControls"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-  d:DesignHeight="450"
-  d:DesignWidth="800"
+  xmlns:sys="clr-namespace:System;assembly=mscorlib"
+  d:DesignHeight="200"
+  d:DesignWidth="350"
   mc:Ignorable="d">
-  <Grid x:Name="dlgHostMain" Style="{DynamicResource DialogHostGrid}">
-    <Grid.RowDefinitions>
-      <RowDefinition />
-      <RowDefinition />
-    </Grid.RowDefinitions>
+  <UserControl.DataContext>
+    <local:AcceptCancelDlgCtx x:Name="ctx" />
+  </UserControl.DataContext>
 
+  <Grid x:Name="dlgHostMain" Margin="{StaticResource MgGrpContent}">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*" />
+      <RowDefinition Height="auto" />
+    </Grid.RowDefinitions>
     <TextBox
       x:Name="edtDlgHostText"
-      md:HintAssist.Hint="Value"
-      Style="{StaticResource DialogHostEdt}" Margin="0,3,0,2" />
+      Grid.Row="0"
+      Margin="0,5,0,0"
+      VerticalAlignment="Top"
+      md:HintAssist.Hint="{Binding Hint}"
+      FontSize="18"
+      Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+      Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
 
-    <StackPanel Style="{StaticResource DialogHostPnl}">
-      <Button Style="{StaticResource DialogHostOk}" />
-      <Button Style="{StaticResource DialogHostCancel}" />
+    <StackPanel
+      Grid.Row="1"
+      Margin="{Binding ButtonMarginTop}"
+      HorizontalAlignment="Right"
+      Orientation="Horizontal">
+
+      <Button
+        Command="{x:Static md:DialogHost.CloseDialogCommand}"
+        Content="_ACCEPT"
+        IsDefault="True"
+        IsEnabled="{Binding IsValid}"
+        Style="{StaticResource MaterialDesignFlatAccentButton}">
+        <Button.CommandParameter>
+          <sys:Boolean>true</sys:Boolean>
+        </Button.CommandParameter>
+      </Button>
+
+      <Button
+        Margin="4,0,0,0"
+        Command="{x:Static md:DialogHost.CloseDialogCommand}"
+        Content="_CANCEL"
+        IsCancel="True"
+        Style="{StaticResource MaterialDesignFlatButton}">
+        <Button.CommandParameter>
+          <sys:Boolean>false</sys:Boolean>
+        </Button.CommandParameter>
+      </Button>
     </StackPanel>
   </Grid>
 </UserControl>

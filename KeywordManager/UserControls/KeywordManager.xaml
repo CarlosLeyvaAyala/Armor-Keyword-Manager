@@ -95,7 +95,7 @@
           </ContextMenu.Resources>
           <MenuItem Click="OnChangePicClick" Header="Change _picture" />
           <Separator />
-          <MenuItem Header="Keyword color">
+          <MenuItem Header="Keyword _color">
             <MenuItem
               Background="{DynamicResource ColorKeywordRed}"
               Click="OnSetKeywordColor"
@@ -133,8 +133,12 @@
               Tag="Color selected by F#" />
           </MenuItem>
           <Separator />
-          <MenuItem Header="Create _new keyword" />
           <MenuItem Header="_Delete keyword" />
+          <MenuItem
+            Header="Create _new keyword"
+            ToolTip="The preferred method for adding keywords is to use the included xEdit script"
+            Click="OnNewKeywordClick"
+            ToolTipService.InitialShowDelay="0" />
         </ContextMenu>
       </ListBox.ContextMenu>
     </ListBox>

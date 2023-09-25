@@ -1,5 +1,6 @@
 ﻿using GUI.UserControls;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -28,6 +29,19 @@ public partial class KeywordManagerUC : UserControl {
     ctx.SetColor(GUI.FrameWorkElement.KeywordColorFromTag(sender));
     DoSendKeywordChanged();
   }
+
+  private void OnNewKeywordClick(object sender, RoutedEventArgs e) =>
+    MainWindow.ExecuteAcceptCancelDlg(
+      "Keyword name",
+      "NEW_KEYWORD",
+      k => {
+        Debug.WriteLine(k);
+        DoSendKeywordChanged();
+      },
+      new ValidationRule[] {
+        new GUI.Validators.NonEmptyRule("Keyword name can not be empty"),
+        new GUI.Validators.KeywordNameRule(),
+      });
 
   private void OnLstKeyDown(object sender, KeyEventArgs e) {
     if (e.Key == Key.Return) DoSendSelected();

@@ -1,7 +1,6 @@
 ﻿using KeywordManager.UserControls;
 using System;
 using System.Media;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Effects;
@@ -32,16 +31,13 @@ public partial class MainWindow : Window {
     UnDim();
   }
 
-  public static async Task<string?> ShowAcceptCancelDlg(string textHint = "Value",
-                                                        string text = "") =>
-    await AcceptCancelDlg.ExecuteAsync("MainDlgHost", textHint, text);
-
-  public static async void ExecuteAcceptCancelDlg(string textHint,
-                                                  string currentValue,
-                                                  Action<string> OnAccept) {
+  public static void ExecuteAcceptCancelDlg(
+    string textHint,
+    string currentValue,
+    Action<string> OnAccept,
+    ValidationRule[]? validators = null) {
     Instance?.Dim();
-    var s = await ShowAcceptCancelDlg(textHint, currentValue);
-    if (!string.IsNullOrEmpty(s)) OnAccept(s);
+    AcceptCancelDlg.Execute("MainDlgHost", OnAccept, textHint, text: currentValue, validators: validators);
     Instance?.UnDim();
   }
 

@@ -11,7 +11,6 @@
   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
   xmlns:pp="clr-namespace:KeywordManager.Pages"
   xmlns:uc="clr-namespace:KeywordManager.UserControls"
-  xmlns:uw="clr-namespace:DM_WpfControls;assembly=DM_WpfControls"
   Title="Skyrim Item Manager"
   Width="1100"
   Height="690"
@@ -90,6 +89,7 @@
 
   <Window.Resources>
     <uw:QueryDlg
+      xmlns:uw="http://cla.me/wpf/xaml/controls"
       x:Key="queryDlg"
       MinWidth="230"
       ButtonCancelStyle="{StaticResource MaterialDesignFlatButton}"

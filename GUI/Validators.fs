@@ -34,7 +34,7 @@ type KeywordExistsRule() =
         let v = value :?> string
 
         match Data.Keywords.Database.toArrayOfRaw ()
-              |> Array.Parallel.filter (fun (k, _) -> v |> equals k)
+              |> Array.Parallel.filter (fun (k, _) -> v |> equalsIC k)
             with
         | [||] -> ValidationResult.ValidResult
         | _ -> ValidationResult(false, "This Keyword already exists")

@@ -25,7 +25,7 @@ type OutfitPageCtx() =
         with get () = filter
         and set v =
             filter <- v
-            t.OnPropertyChanged("")
+            t.OnPropertyChanged()
 
     member private t.appyFilter(a: (string * Data.Outfit.Raw) array) =
         // TODO: Filter by distribution
@@ -61,9 +61,9 @@ type OutfitPageCtx() =
 
     override t.SelectCurrentItem() =
         base.SelectCurrentItem()
-        t.OnPropertyChanged("IsNavSingleSelected")
-        t.OnPropertyChanged("IsNavMultipleSelected")
-        t.OnPropertyChanged("UId")
+        t.OnPropertyChanged(nameof t.IsNavSingleSelected)
+        t.OnPropertyChanged(nameof t.IsNavMultipleSelected)
+        t.OnPropertyChanged(nameof t.UId)
 
     /// Current selected outfit context
     member t.SelectedItem = NavSelectedItem(t.UId)
@@ -80,7 +80,7 @@ type OutfitPageCtx() =
     member t.Rename newName =
         let uid = t.UId
         Edit.Rename uid newName
-        t.OnPropertyChanged("")
+        t.OnPropertyChanged()
         ListBox.selectByUId t.NavControl uid
 
     /// Renames many elements

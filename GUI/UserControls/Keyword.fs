@@ -31,7 +31,7 @@ type KeywordManagerCtx() =
         with get () = filter
         and set v =
             filter <- v
-            t.OnPropertyChanged("")
+            t.OnPropertyChanged()
 
     ///////////////////////////////////////////////
     // PageNavigationContext implementation
@@ -61,7 +61,7 @@ type KeywordManagerCtx() =
 
     override t.SelectCurrentItem() =
         base.SelectCurrentItem()
-        t.OnPropertyChanged("KeywordId")
+        t.OnPropertyChanged(nameof t.KeywordId)
 
 
     ///////////////////////////////////////////////

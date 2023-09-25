@@ -3,7 +3,6 @@ using DMLib_WPF.Contexts;
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Effects;
 
 namespace KeywordManager;
 
@@ -18,12 +17,12 @@ public partial class MainWindow : Window {
     DoSomething();
   }
   public void Dim() {
-    Opacity = 0.2;
-    Effect = new BlurEffect();
+    Opacity = 0.15;
+    //Effect = new BlurEffect();
   }
   public void UnDim() {
     Opacity = 1;
-    Effect = null;
+    //Effect = null;
   }
   public void OpenDimDialog(Action Open) {
     Dim();

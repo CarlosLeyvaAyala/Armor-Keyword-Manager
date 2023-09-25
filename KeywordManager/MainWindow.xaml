@@ -11,6 +11,7 @@
   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
   xmlns:pp="clr-namespace:KeywordManager.Pages"
   xmlns:uc="clr-namespace:KeywordManager.UserControls"
+  x:Name="mainWindow"
   Title="Skyrim Item Manager"
   Width="1100"
   Height="690"
@@ -27,7 +28,10 @@
   mc:Ignorable="d">
 
   <Window.DataContext>
-    <ctx:AppCtx xmlns:ctx="clr-namespace:GUI;assembly=GUI" x:Name="ctx" />
+    <ctx:AppCtx
+      xmlns:ctx="clr-namespace:GUI;assembly=GUI"
+      x:Name="ctx"
+      OwnerWindow="{x:Reference mainWindow}" />
   </Window.DataContext>
 
   <Window.CommandBindings>
@@ -116,7 +120,11 @@
         FilterTags="OnFilterByTag" />
     </md:DrawerHost.TopDrawerContent>
 
-    <md:DialogHost Identifier="MainDlgHost">
+    <md:DialogHost
+      CloseOnClickAway="True"
+      Identifier="MainDlgHost"
+      OverlayBackground="{DynamicResource PrimaryHueDarkBrush}"
+      Placement="MousePoint">
       <Grid>
         <DockPanel>
           <!--  MENU  -->
@@ -300,14 +308,14 @@
                 </StackPanel>
               </TabItem.Header>
               <!--<Grid>
-              <TextBlock
-                Margin="0,-20,0,0"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                FontSize="100"
-                FontWeight="Bold"
-                Text="Soon&#8482;" />
-            </Grid>-->
+                <TextBlock
+                  Margin="0,-20,0,0"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  FontSize="100"
+                  FontWeight="Bold"
+                  Text="Soon&#8482;" />
+              </Grid>-->
               <pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />
             </TabItem>
           </TabControl>

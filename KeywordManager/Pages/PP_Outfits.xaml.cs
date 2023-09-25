@@ -79,8 +79,11 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
     e.Handled = true;
   }
 
-  private void OnBatchRename(object sender, RoutedEventArgs e) => ctx.BatchRename(sel =>
-    BatchRename_Window.Execute(Owner, new ObservableCollection<Data.UI.BatchRename.Item>(sel)));
+  private void OnBatchRename(object sender, RoutedEventArgs e) =>
+    MainWindow.Instance?.OpenDimDialog(() => ctx.BatchRename(sel =>
+      BatchRename_Window.Execute(Owner, new ObservableCollection<Data.UI.BatchRename.Item>(sel)))
+    );
+
   private void OnRename(object sender, RoutedEventArgs e) =>
     MainWindow.ExecuteAcceptCancelDlg(new() { Hint = "New name", Text = ctx.SelectedItem.Name, OnOk = ctx.Rename });
 }

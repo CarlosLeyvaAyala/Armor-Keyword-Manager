@@ -14,13 +14,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="carlos.leyva.ayala.dmlib" Version="1.2.31" />
     <PackageReference Include="FSharp.Core.Wpf.Core" Version="5.0.3" />
     <PackageReference Include="MaterialDesignColors" Version="2.1.4" />
     <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\DMLib-FSharp\DMLib-FSharp.fsproj" />
     <ProjectReference Include="..\..\DM_WpfControls\DM_WpfControls.csproj" />
     <ProjectReference Include="..\Data\Data.fsproj" />
     <ProjectReference Include="..\GUI\GUI.fsproj" />

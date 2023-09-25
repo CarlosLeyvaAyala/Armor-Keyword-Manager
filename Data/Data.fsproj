@@ -30,9 +30,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="carlos.leyva.ayala.dmlib" Version="1.2.31" />
     <PackageReference Include="FSharpx.Collections" Version="3.1.0" />
     <PackageReference Include="TextCopy" Version="6.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\DMLib-FSharp\DMLib-FSharp.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

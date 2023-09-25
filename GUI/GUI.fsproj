@@ -10,6 +10,7 @@
     <Compile Include="Commands.fs" />
     <Compile Include="Controls.fs" />
     <Compile Include="ListBox.fs" />
+    <Compile Include="ApplicationContext.fs" />
     <Compile Include="UserControls\FilterByTag.fs" />
     <Compile Include="UserControls\Keyword.fs" />
     <Compile Include="PageContexts\Outfit.fs" />

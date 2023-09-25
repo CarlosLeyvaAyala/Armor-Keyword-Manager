@@ -1,4 +1,5 @@
-﻿using GUI.UserControls;
+﻿using DMLib_WPF.Contexts;
+using GUI.UserControls;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -49,7 +50,7 @@ public partial class KeywordManagerUC : UserControl {
     "Undoable operation",
     () => {
       ctx.DeleteSelected();
-      MainWindow.ShowToast("Selected keywords were successfully deleted", playSound: SoundEffect.Success);
+      MainWindow.ShowToast("Selected keywords were successfully deleted", 2, playSound: SoundEffect.Success);
     }
   );
 

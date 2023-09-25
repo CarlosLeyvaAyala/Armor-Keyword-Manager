@@ -1,4 +1,5 @@
 ﻿using Data.UI;
+using DMLib_WPF.Contexts;
 using GUI.UserControls;
 using IO;
 using System;
@@ -44,7 +45,7 @@ public partial class MainWindow : Window {
   private void OnSave(object sender, ExecutedRoutedEventArgs e) {
     if (File.Exists(WorkingFile)) {
       PropietaryFile.Save(WorkingFile);
-      ShowToast("File saved successfully", playSound: SoundEffect.Success);
+      ShowToast("File saved successfully", seconds: 2, playSound: SoundEffect.Success); // Move to context
     }
     else
       SaveAs();
@@ -88,7 +89,7 @@ public partial class MainWindow : Window {
     txtStatus.Text = m;
     var date = DateTime.Now.ToString("HH:mm:ss");
     txtStatusTime.Text = d;
-    ShowToast($"Files exported successfully at {date}", playSound: SoundEffect.Success);
+    ShowToast($"Files exported successfully at {date}", 3, playSound: SoundEffect.Success); // TODO: Move to context
   }
 
   private void OnCanFileJsonExport(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = File.Exists(WorkingFile);

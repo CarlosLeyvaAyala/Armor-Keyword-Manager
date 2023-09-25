@@ -25,6 +25,11 @@
   WindowStartupLocation="CenterScreen"
   WindowState="Maximized"
   mc:Ignorable="d">
+
+  <Window.DataContext>
+    <ctx:AppCtx xmlns:ctx="clr-namespace:GUI;assembly=GUI" x:Name="ctx" />
+  </Window.DataContext>
+
   <Window.CommandBindings>
     <CommandBinding
       CanExecute="OnCanNew"

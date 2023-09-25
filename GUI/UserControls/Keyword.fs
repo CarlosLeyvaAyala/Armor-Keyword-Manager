@@ -1,9 +1,9 @@
 ﻿namespace GUI.UserControls
 
+open DMLib_WPF.Contexts
 open System.Windows
 open DMLib
 open DMLib.String
-open DMLib_WPF.Contexts
 open DMLib_WPF
 open Data.UI.Keywords
 open Data.UI

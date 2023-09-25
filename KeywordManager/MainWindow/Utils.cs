@@ -1,6 +1,6 @@
 ﻿using DM_WpfControls;
+using DMLib_WPF.Contexts;
 using System;
-using System.Media;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Effects;
@@ -37,7 +37,8 @@ public partial class MainWindow : Window {
     Instance?.UnDim();
   }
 
-  public static void ShowToast(string message, double seconds = 2, SoundEffect playSound = SoundEffect.None) {
+  // TODO: Move to context
+  public static void ShowToast(string message, double seconds, SoundEffect playSound) {
     PlayWindowsSound(playSound);
     Instance?.snackBar.MessageQueue?.Enqueue(
       content: message,
@@ -49,22 +50,5 @@ public partial class MainWindow : Window {
       durationOverride: TimeSpan.FromSeconds(seconds));
   }
 
-  public static void PlayWindowsSound(SoundEffect sound) {
-    var doNothing = () => { };
-    var exec = sound switch {
-      SoundEffect.None => doNothing,
-      SoundEffect.Success => SystemSounds.Exclamation.Play,
-      SoundEffect.Error => SystemSounds.Hand.Play,
-      SoundEffect.Hint => SystemSounds.Asterisk.Play,
-      _ => throw new NotImplementedException("")
-    };
-    exec();
-  }
-}
-
-public enum SoundEffect {
-  None,
-  Success,
-  Hint,
-  Error
+  public static void PlayWindowsSound(SoundEffect sound) => Instance?.ctx.WindowsSound.Play(sound);
 }

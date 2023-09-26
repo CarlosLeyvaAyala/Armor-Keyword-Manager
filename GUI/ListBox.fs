@@ -23,3 +23,10 @@ let focusFromFilter (lst: ListBox) =
 let focusFilter (edt: TextBox) =
     if edt.Focus() then
         edt.SelectionStart <- edt.Text.Length
+
+open DMLib.Objects
+
+let internal getSelectedItem (lst: ListBox) =
+    match lst with
+    | IsNull -> null
+    | l -> l.SelectedItem

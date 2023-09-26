@@ -11,7 +11,6 @@ open GUI
 open DMLib.Collections
 open System
 open GUI.UserControls
-open System.Windows.Controls
 
 module DB = Data.Items.Database
 
@@ -39,12 +38,9 @@ type ItemsPageCtx() =
         |> toObservableCollection
 
     member t.UId =
-        if t.NavControl = null then
-            ""
-        else
-            match t.NavControl.SelectedItem with
-            | :? NavListItem as item -> item.UId
-            | _ -> ""
+        match ListBox.getSelectedItem t.NavControl with
+        | :? NavListItem as item -> item.UId
+        | _ -> ""
 
     member t.ReloadNavAndGoTo kId =
         t.LoadNav()

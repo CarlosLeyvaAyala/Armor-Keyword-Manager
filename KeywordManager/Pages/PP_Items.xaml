@@ -259,6 +259,9 @@
             x:Name="edtFilter"
             Margin="{DynamicResource MgGrpContent}"
             md:HintAssist.Hint="Search..."
+            md:TextFieldAssist.HasClearButton="True"
+            md:TextFieldAssist.HasLeadingIcon="True"
+            md:TextFieldAssist.LeadingIcon="Search"
             KeyDown="OnFilterKeyDown"
             TextChanged="OnFilterItems">
             <TextBox.Text>

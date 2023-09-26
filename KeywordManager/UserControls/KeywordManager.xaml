@@ -35,11 +35,15 @@
     <TextBox
       x:Name="edtFilter"
       md:HintAssist.Hint="Search..."
+      md:TextFieldAssist.HasClearButton="True"
+      md:TextFieldAssist.HasLeadingIcon="True"
+      md:TextFieldAssist.LeadingIcon="Search"
       KeyDown="OnFilterKeyDown"
       Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
     <!--  KEYWORD LIST  -->
     <Label
+      Grid.Row="2"
       Content="_A"
       Style="{StaticResource lblInvis}"
       Target="{x:Reference lstNav}" />

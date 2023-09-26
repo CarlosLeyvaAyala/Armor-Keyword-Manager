@@ -4,6 +4,7 @@ open DMLib
 open DMLib.Combinators
 open DMLib.String
 open System.Text.RegularExpressions
+open System
 
 type FilterTagMode =
     | And
@@ -82,6 +83,7 @@ module Filter =
             a
             |> Array.Parallel.filter (fun v -> v |> getTags |> andOr searchFor)
 
+    [<Obsolete("Delete")>]
     let pics settings getImage a =
         let filter f =
             a
@@ -92,12 +94,38 @@ module Filter =
         | OnlyIfHasPic -> filter (Not String.isNullOrEmpty)
         | OnlyIfHasNoPic -> filter String.isNullOrEmpty
 
-    let (|FilterNothing|_|) _ = Some()
-
-    let filterAdapter f v =
+    let private filterAdapter f v =
         match f v with
         | Some _ -> Some v
         | _ -> None
+
+    let (|FilterNothing|_|) _ = Some()
+
+    let tagFilter mode (expectedTags: seq<string>) =
+        let searchFor = [ for i in expectedTags -> i ]
+
+        let tagsAnd searchIn =
+            searchIn
+            |> List.choose (fun tags -> searchFor |> List.tryFind (fun t -> t = tags))
+            |> fun l ->
+                match l.Length with
+                | Equals searchFor.Length -> Some()
+                | _ -> None
+
+        let tagsOr searchIn =
+            searchIn
+            |> List.allPairs searchFor
+            |> List.tryFind (fun (a, b) -> a = b)
+            |> Option.map (fun _ -> ())
+
+        match searchFor with
+        | [] -> (|FilterNothing|_|)
+        | _ ->
+            match mode with
+            | FilterTagMode.And -> tagsAnd
+            | Or -> tagsOr
+
+    let tag filter getTag = filterAdapter (getTag >> filter)
 
     let picFilter =
         function
@@ -105,7 +133,7 @@ module Filter =
         | OnlyIfHasPic -> (|IsNotEmptyStr|_|)
         | OnlyIfHasNoPic -> (|IsEmptyStr|_|)
 
-    let pic filter getImage v = filterAdapter (getImage >> filter) v
+    let pic filter getImage = filterAdapter (getImage >> filter)
 
     /// Filter by word content
     let words word useRegex filterMatching a =

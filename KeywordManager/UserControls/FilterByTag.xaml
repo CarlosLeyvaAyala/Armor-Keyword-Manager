@@ -62,7 +62,10 @@
         <!--  FIND  -->
         <TextBox
           Grid.Column="2"
-          md:HintAssist.Hint="Find tags"
+          md:HintAssist.Hint="Find tags..."
+          md:TextFieldAssist.HasClearButton="True"
+          md:TextFieldAssist.HasLeadingIcon="True"
+          md:TextFieldAssist.LeadingIcon="Search"
           Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
       </Grid>
     </md:Card>

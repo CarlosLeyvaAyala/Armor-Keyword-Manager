@@ -13,6 +13,7 @@ open System
 open GUI.UserControls
 open FsToolkit.ErrorHandling
 open Data.UI.Filtering
+open Data.UI.Filtering.Filter
 
 module DB = Data.Items.Database
 
@@ -33,14 +34,19 @@ type ItemsPageCtx() =
     // PageNavigationContext implementation
 
     member _.Nav =
-        let picFilter v =
-            Filter.pic (Filter.picFilter filter.PicMode) (fun (v: Raw) -> v.image) v
+        // TODO: Maybe use outfit pics
+        let picFilter =
+            Filter.pic (Filter.picFilter filter.PicMode) (fun (v: Raw) -> v.image)
+
+        let tagFilter =
+            Filter.tag (Filter.tagFilter filter.TagMode filter.Tags) (fun (v: Raw) -> v.tags |> List.append v.keywords)
 
         DB.toArrayOfRaw ()
         |> Array.Parallel.choose (fun (uid, v) ->
             option {
                 let! o1 = picFilter v
-                return NavListItem(uid, o1)
+                let! o2 = tagFilter o1
+                return NavListItem(uid, o2)
             }) //Filter
         |> Array.sortBy (fun v -> v.Name.ToLower())
         |> toObservableCollection

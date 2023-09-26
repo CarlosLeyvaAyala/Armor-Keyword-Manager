@@ -9,6 +9,7 @@ open Data.UI.AppSettings.Paths.Img.Outfit
 open FSharpx.Collections
 open Data.UI
 open Data.UI.Interfaces
+open DMLib_WPF
 
 module DB = Data.Outfit.Database
 module Items = Data.Items.Database

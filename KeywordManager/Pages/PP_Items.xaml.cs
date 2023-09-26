@@ -237,8 +237,8 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
 
   private void ImportItems(Action Import) {
     Import();
-    LoadNavItems();
-    Owner.InfoBox("New items were successfuly imported.", "Success");
+    ctx.ReloadNavAndGoToFirst();
+    Owner.ImportedInfoBox("item");
   }
 
   private void OnImportFromClipboard(object sender, RoutedEventArgs e) => throw new NotImplementedException("Not implemented");

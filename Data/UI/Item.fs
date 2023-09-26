@@ -9,6 +9,7 @@ open DMLib.Collections
 open Data.UI.Common
 open Data.UI.AppSettings.Paths.Img
 open Data.UI.Filtering
+open DMLib_WPF
 
 module Outfits = Data.Outfit.Database
 
@@ -86,7 +87,7 @@ type NavListItem(uniqueId: string, d: Raw) =
     member t.Refresh() =
         u <- DB.find uniqueId
         outfitsImg <- getImgOutfits ()
-        t.OnPropertyChanged("")
+        t.OnPropertyChanged()
 
 type NavSelectedItem(uniqueId: string) =
     let d =
@@ -115,57 +116,57 @@ type NavSelectedItem(uniqueId: string) =
 
     member val ItemType = d.itemType
 
-type private FilterFunc<'a, 'b> = ('a * 'b) array -> ('a * 'b) array
+//type private FilterFunc<'a, 'b> = ('a * 'b) array -> ('a * 'b) array
 
-type FilterOptions =
-    { filter: string
-      tags: System.Collections.Generic.List<string>
-      tagMode: FilterTagMode
-      picMode: FilterPicSettings
-      useRegex: bool }
+//type FilterOptions =
+//    { filter: string
+//      tags: System.Collections.Generic.List<string>
+//      tagMode: FilterTagMode
+//      picMode: FilterPicSettings
+//      useRegex: bool }
 
-[<AutoOpen>]
-module private Ops =
-    let inline searchInKeywordsAndTags (v: Raw) = v.tags |> List.append v.keywords
+//[<AutoOpen>]
+//module private Ops =
+//    let inline searchInKeywordsAndTags (v: Raw) = v.tags |> List.append v.keywords
 
-    let filterTagsKeywords searchFunc (list: System.Collections.Generic.List<string>) (a: (string * Raw) array) =
-        let searchFor = [ for i in list -> i ]
+//    let filterTagsKeywords searchFunc (list: System.Collections.Generic.List<string>) (a: (string * Raw) array) =
+//        let searchFor = [ for i in list -> i ]
 
-        match searchFor with
-        | [] -> Filter.nothing a
-        | _ ->
-            a
-            |> Array.Parallel.filter (fun (_, v) ->
-                v
-                |> searchInKeywordsAndTags
-                |> searchFunc searchFor)
+//        match searchFor with
+//        | [] -> Filter.nothing a
+//        | _ ->
+//            a
+//            |> Array.Parallel.filter (fun (_, v) ->
+//                v
+//                |> searchInKeywordsAndTags
+//                |> searchFunc searchFor)
 
-    let getNav (filter: FilterFunc<string, Raw>) =
-        DB.toArrayOfRaw ()
-        |> filter
-        |> Array.Parallel.map NavListItem
-        |> Array.sortBy (fun o -> o.Name.ToLower())
-        |> Collections.toObservableCollection
+//    let getNav (filter: FilterFunc<string, Raw>) =
+//        DB.toArrayOfRaw ()
+//        |> filter
+//        |> Array.Parallel.map NavListItem
+//        |> Array.sortBy (fun o -> o.Name.ToLower())
+//        |> Collections.toObservableCollection
 
-[<RequireQualifiedAccess>]
-module Nav =
-    let private filterOr l = filterTagsKeywords Filter.tagsOr l
-    let private filterAnd l = filterTagsKeywords Filter.tagsAnd l
+//[<RequireQualifiedAccess>]
+//module Nav =
+//    let private filterOr l = filterTagsKeywords Filter.tagsOr l
+//    let private filterAnd l = filterTagsKeywords Filter.tagsAnd l
 
-    /// Gets the whole list of navigation items
-    let Get () = getNav id
+//    /// Gets the whole list of navigation items
+//    let Get () = getNav id
 
-    let private commonFilter orAndFunc (options: FilterOptions) =
-        getNav (
-            (orAndFunc options.tags)
-            >> (Filter.pics options.picMode (fun (_, v) -> v.image))
-            >> (Filter.word options.filter options.useRegex (fun f (_, v) -> f v.name || f v.esp || f v.edid))
-        )
+//    let private commonFilter orAndFunc (options: FilterOptions) =
+//        getNav (
+//            (orAndFunc options.tags)
+//            >> (Filter.pics options.picMode (fun (_, v) -> v.image))
+//            >> (Filter.word options.filter options.useRegex (fun f (_, v) -> f v.name || f v.esp || f v.edid))
+//        )
 
-    /// Gets filtered navigation items
-    let GetFiltered (options: FilterOptions) =
-        match options.tagMode with
-        | FilterTagMode.And -> commonFilter filterAnd options
-        | FilterTagMode.Or -> commonFilter filterOr options
+//    /// Gets filtered navigation items
+//    let GetFiltered (options: FilterOptions) =
+//        match options.tagMode with
+//        | FilterTagMode.And -> commonFilter filterAnd options
+//        | FilterTagMode.Or -> commonFilter filterOr options
 
-    let GetItem uId = NavSelectedItem(uId)
+//    let GetItem uId = NavSelectedItem(uId)

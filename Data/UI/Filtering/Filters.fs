@@ -57,20 +57,18 @@ module Filter =
     /// Filters nothing.
     let nothing a = id a
 
-    // TODO: Make private
-    let tagsAnd searchFor searchIn =
-        searchIn
-        |> List.choose (fun tags -> searchFor |> List.tryFind (fun t -> t = tags))
-        |> fun l -> l.Length = searchFor.Length
-
-    // TODO: Make private
-    let tagsOr searchFor searchIn =
-        searchIn
-        |> List.allPairs searchFor
-        |> List.tryFind (fun (a, b) -> a = b)
-        |> Option.isSome
-
     let tags mode (expectedTags: seq<string>) getTags a =
+        let tagsAnd searchFor searchIn =
+            searchIn
+            |> List.choose (fun tags -> searchFor |> List.tryFind (fun t -> t = tags))
+            |> fun l -> l.Length = searchFor.Length
+
+        let tagsOr searchFor searchIn =
+            searchIn
+            |> List.allPairs searchFor
+            |> List.tryFind (fun (a, b) -> a = b)
+            |> Option.isSome
+
         let searchFor = [ for i in expectedTags -> i ]
 
         match searchFor with
@@ -95,7 +93,7 @@ module Filter =
         | OnlyIfHasNoPic -> filter String.isNullOrEmpty
 
     /// Filter by word content
-    let word word useRegex filterMatching a =
+    let words word useRegex filterMatching a =
         let filterItems f a =
             a
             |> Array.Parallel.filter (fun v -> filterMatching f v)

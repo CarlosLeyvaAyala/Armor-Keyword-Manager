@@ -178,12 +178,13 @@ module internal Database =
         let n = nextUnboundId
 
         selected
-        |> List.map (fun k ->
+        |> Seq.map (fun k ->
             k
             |> replace Skyrim.UniqueId.Separator Raw.pieceEspSep)
-        |> List.fold (smartFold ",") ""
+        |> Seq.fold (smartFold ",") ""
         |> fun pieces -> $"{UnboundEDID}{n}|{UnboundEsp}|{n}|OTFT|{pieces}"
         |> Raw.fromxEdit
-        |> fun (uid, r) -> upsert uid { r with name = name }
-
-        setNextUnboundId ()
+        |> fun (uid, r) ->
+            upsert uid { r with name = name }
+            setNextUnboundId ()
+            uid

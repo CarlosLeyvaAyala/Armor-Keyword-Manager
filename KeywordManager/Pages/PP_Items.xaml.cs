@@ -4,7 +4,6 @@ using GUI.UserControls;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -45,8 +44,8 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   public void ApplyTagFilter(FilterTagEventArgs e) => ApplyFilter(edtFilter.Text, e);
 
   private void LoadNavItems(string filter, FilterTagEventArgs e) {
-    var options = new FilterOptions(filter, e.Tags, e.TagMode, e.PicMode, tbFilterByRegex.IsChecked == true);
-    lstNavItems.ItemsSource = Nav.GetFiltered(options);
+    //var options = new FilterOptions(filter, e.Tags, e.TagMode, e.PicMode, tbFilterByRegex.IsChecked == true);
+    //lstNavItems.ItemsSource = Nav.GetFiltered(options);
   }
 
   private void FilterByName(Func<bool> CanNotFilter) {
@@ -69,7 +68,9 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
     ReloadSelectedItem();
   }
 
-  private void OnFilterItems(object sender, TextChangedEventArgs e) => FilterByName(() => sender is not TextBox tb || !tb.IsFocused);
+  private void OnFilterItems(object sender, TextChangedEventArgs e) {
+    FilterByName(() => sender is not TextBox tb || !tb.IsFocused);
+  }
   private void OnFilterNameByRegexClick(object sender, RoutedEventArgs e) => FilterByName(() => false);
   #endregion
 
@@ -79,8 +80,9 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   #endregion
 
   #region UI
-  //private void LoadKeywords(IEnumerable? list) => lstKeywords.ItemsSource = list;
-  public void LoadNavItems() => lstNavItems.ItemsSource = Nav.Get();
+  public void LoadNavItems() {
+    //lstNavItems.ItemsSource = Nav.Get();
+  }
 
   private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) => ctx.SelectCurrentItem();
 
@@ -103,21 +105,6 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
 #pragma warning restore IDE0051 // Remove unused private members
 
   private void ReloadSelectedItem() {
-    //SetEnabledControls();
-
-    //if (lstNavItems.SelectedItem == null) {
-    //  grpItemData.DataContext = null;
-    //  lstItemKeywords.ItemsSource = null;
-    //  lstItemTags.ItemsSource = null;
-    //  cbItemTags.ItemsSource = null;
-    //  return;
-    //}
-    //var it = Nav.GetItem(uId);
-    //grpItemData.DataContext = it;
-    //lstItemKeywords.ItemsSource = it.Keywords;
-    //lstItemTags.ItemsSource = it.Tags;
-    //cbItemTags.ItemsSource = it.MissingTags;
-
     //foreach (RadioButton r in pnlItemType.Children)
     //  r.IsChecked = int.Parse((string)r.Tag) == it.ItemType;
   }
@@ -169,11 +156,11 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   private void CmdDeleteExecuted(object sender, ExecutedRoutedEventArgs e) => DeleteKeywords();
   private void CmdDeleteCanExecute(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = lstItemKeywords.SelectedItem != null;
 
-  void OnChangeTags(Action ChangeTags) {
-    var currTags = Data.UI.Tags.Get.AllTagsAndKeywords();
-    ChangeTags();
-    if (!currTags.SequenceEqual(Data.UI.Tags.Get.AllTagsAndKeywords())) Owner.ReloadTags();
-  }
+  //void OnChangeTags(Action ChangeTags) {
+  //  var currTags = Data.UI.Tags.Get.AllTagsAndKeywords();
+  //  ChangeTags();
+  //  if (!currTags.SequenceEqual(Data.UI.Tags.Get.AllTagsAndKeywords())) Owner.ReloadTags();
+  //}
 
   private void OnCbTagsAdd(object sender, KeyEventArgs e) {
     //OnChangeTags(
@@ -208,26 +195,18 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
 
   }
 
-  private void OnCanCreateUnboundOutfit(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = false;
-  //e.CanExecute = lstNavItems.SelectedItems.OfType<NavList>()
-  //  .Select((s) => s.IsArmor)
-  //  .All((b) => b);
+  private void OnCanCreateUnboundOutfit(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.AllSelectedAreArmors;
 
-  private void OnCreateUnboundOutfit(object sender, ExecutedRoutedEventArgs e) {
-    //MainWindow.ExecuteAcceptCancelDlg(new() {
-    //  Hint = "Outfit name",
-    //  OnOk =
-    //    name => {
-    //      var uIds = lstNavItems.SelectedItems.OfType<NavList>()
-    //        .Select((s) => s.UniqueId)
-    //        .ToList();
-    //      Data.UI.Outfit.Edit.CreateUnbound(uIds, name);
-    //      Owner.ReloadOutfitsNav();
-    //      Owner.GoToTab(MainWindow.TabId.Outfits);
-    //    }
-    //}
-    //);
-  }
+  private void OnCreateUnboundOutfit(object sender, ExecutedRoutedEventArgs e) =>
+    MainWindow.ExecuteAcceptCancelDlg(new() {
+      Hint = "Outfit name",
+      OnOk =
+        name => {
+          var newOutfit = ctx.AddUnboundOutfit(name);
+          Owner.ReloadOutfitsNavAndGoTo(newOutfit);
+          Owner.GoToTab(MainWindow.TabId.Outfits);
+        }
+    });
 
   private void OnCanSetImage(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnSetImage(object sender, ExecutedRoutedEventArgs e) {

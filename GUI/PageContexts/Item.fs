@@ -51,7 +51,10 @@ type ItemsPageCtx() =
 
     override t.SelectCurrentItem() =
         base.SelectCurrentItem()
-        t.OnPropertyChanged(nameof t.UId)
+        nameof t.UId |> t.OnPropertyChanged
+
+        nameof t.AllSelectedAreArmors
+        |> t.OnPropertyChanged
 
     member t.NavSelectedItems =
         [| for i in t.NavControl.SelectedItems -> i |]
@@ -77,3 +80,12 @@ type ItemsPageCtx() =
         t.NavSelectedItems
         |> Seq.map (fun i -> sprintf "%-*s     %s" namesLen i.Name i.UId)
         |> Seq.fold smartNl ""
+
+    member t.AllSelectedAreArmors =
+        t.NavSelectedItems
+        |> Seq.forall (fun i -> i.IsArmor)
+
+    member t.AddUnboundOutfit name =
+        t.NavSelectedItems
+        |> Seq.map (fun s -> s.UniqueId)
+        |> Data.UI.Outfit.Edit.createUnbound name

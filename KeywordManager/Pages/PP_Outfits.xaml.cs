@@ -28,7 +28,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
       Dispatcher);
   }
 
-  public void NavLoad() => ctx.LoadNav();
+  public void NavLoadAndGoTo(string uid) => ctx.ReloadNavAndGoTo(uid);
 
   #region Interface: IFilterableByTag and filtering functions
   public bool CanFilterByPic => true;

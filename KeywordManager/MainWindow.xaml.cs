@@ -71,7 +71,7 @@ public partial class MainWindow : Window {
   }
   public void GoToTab(TabId tab) => tbcMain.SelectedIndex = (int)tab;
   public void ReloadSelectedOutfit() => ppOutfits.ReloadSelectedItem();
-  public void ReloadOutfitsNav() => ppOutfits.NavLoad();
+  public void ReloadOutfitsNavAndGoTo(string uid) => ppOutfits.NavLoadAndGoTo(uid);
 
   public void OnOutfitImgWasSet(string outfitId) => ppItems.OnOutfitImgWasSet(outfitId);
 }

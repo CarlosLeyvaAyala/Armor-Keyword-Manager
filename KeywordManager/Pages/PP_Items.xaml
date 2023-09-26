@@ -298,6 +298,7 @@
           Margin="{DynamicResource MarginStd}"
           HorizontalContentAlignment="Stretch"
           d:ItemsSource="{d:SampleData ItemCount=5}"
+          ItemsSource="{Binding Nav}"
           KeyDown="OnLstNavItemsKeyDown"
           SelectionChanged="LstNavItems_SelectionChanged"
           SelectionMode="Extended">
@@ -446,8 +447,10 @@
               <MenuItem Command="c:ItemCmds.SetImage" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
               <Separator />
               <MenuItem Command="c:ItemCmds.CreateUnboundOutfit" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-              <MenuItem Command="c:ItemCmds.NamesToClipboard" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-              <MenuItem Command="c:ItemCmds.NamesAndUIdToClipboard" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+              <MenuItem Header="_Copy to clipboard">
+                <MenuItem Command="c:ItemCmds.NamesToClipboard" Header="_Names" />
+                <MenuItem Command="c:ItemCmds.NamesAndUIdToClipboard" Header="Names _and Unique IDs" />
+              </MenuItem>
             </ContextMenu>
           </ListBox.ContextMenu>
         </ListBox>

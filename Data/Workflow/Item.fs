@@ -36,6 +36,21 @@ type ItemType =
     | Weapon = 1
     | Ammo = 2
 
+module ItemType =
+    let toArrayOfBool =
+        function
+        | ItemType.Armor -> [| true; false; false |]
+        | ItemType.Weapon -> [| false; true; false |]
+        | ItemType.Ammo -> [| false; false; true |]
+        | x -> failwith $"({x} is not a valid item type)"
+
+    let ofArrayOfBool a =
+        match a with
+        | [| _; true; _ |] -> ItemType.Weapon
+        | [| _; _; true |] -> ItemType.Ammo
+        | _ -> ItemType.Armor
+
+
 type LineImportParsed =
     { edid: string
       esp: string

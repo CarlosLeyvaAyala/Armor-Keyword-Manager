@@ -3,7 +3,7 @@
 open Data.UI.Filtering
 open System.Windows
 open System.Collections
-open DMLib
+open DMLib_WPF
 open DMLib.Collections
 open Data.UI.Tags
 open System.Collections.ObjectModel

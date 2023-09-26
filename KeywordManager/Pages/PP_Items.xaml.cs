@@ -195,7 +195,7 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
 
   }
 
-  private void OnCanCreateUnboundOutfit(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.AllSelectedAreArmors;
+  private void OnCanCreateUnboundOutfit(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.AreAllSelectedArmors;
 
   private void OnCreateUnboundOutfit(object sender, ExecutedRoutedEventArgs e) =>
     MainWindow.ExecuteAcceptCancelDlg(new() {
@@ -223,10 +223,7 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
     }
   }
 
-  private void OnChangeItemType(object sender, RoutedEventArgs e) {
-    var r = (RadioButton)sender;
-    Edit.ItemType(uId, int.Parse((string)r.Tag));
-  }
+  private void OnChangeItemType(object sender, RoutedEventArgs e) => ctx.SetItemType(GUI.FrameWorkElement.ItemTypeFromTag(sender));
 
   private void OnCanNamesToClipboard(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.HasItemsSelected;
   private void OnNamesToClipboard(object sender, ExecutedRoutedEventArgs e) => TextCopy.ClipboardService.SetText(ctx.SelectedItemNames);

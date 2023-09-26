@@ -6,10 +6,12 @@ open DMLib
 open DMLib.String
 open DMLib_WPF
 open Data.UI.Items
+open Data.Items
 open GUI
 open DMLib.Collections
 open System
 open GUI.UserControls
+open System.Windows.Controls
 
 module DB = Data.Items.Database
 
@@ -33,6 +35,7 @@ type ItemsPageCtx() =
         DB.toArrayOfRaw ()
         |> Array.Parallel.map NavListItem
         //Filter
+        |> Array.sortBy (fun v -> v.Name.ToLower())
         |> toObservableCollection
 
     member t.UId =
@@ -52,8 +55,9 @@ type ItemsPageCtx() =
     override t.SelectCurrentItem() =
         base.SelectCurrentItem()
         nameof t.UId |> t.OnPropertyChanged
+        nameof t.ItemType |> t.OnPropertyChanged
 
-        nameof t.AllSelectedAreArmors
+        nameof t.AreAllSelectedArmors
         |> t.OnPropertyChanged
 
     member t.NavSelectedItems =
@@ -61,12 +65,27 @@ type ItemsPageCtx() =
         |> Seq.cast<NavListItem>
 
     member t.NavSelectedItem = t.NavControl.SelectedItem :?> NavListItem
-
     member t.SelectedItem = NavSelectedItem(t.UId)
 
-    ///////////////////////////////////////////////
+    // ===================================================
     // Custom implementation
 
+    member t.ItemType =
+        match t.UId with
+        | IsEmptyStr -> [| false; false; false |]
+        | uid ->
+            (DB.find uid).itemType
+            |> enum<ItemType>
+            |> ItemType.toArrayOfBool
+
+    member t.SetItemType v =
+        match t.UId with
+        | IsEmptyStr -> ()
+        | uid -> DB.update uid (fun r -> { r with itemType = v })
+
+        nameof t.ItemType |> t.OnPropertyChanged
+
+    // ===================================================
     member t.SelectedItemNames =
         t.NavSelectedItems
         |> Seq.map (fun i -> i.Name)
@@ -81,7 +100,7 @@ type ItemsPageCtx() =
         |> Seq.map (fun i -> sprintf "%-*s     %s" namesLen i.Name i.UId)
         |> Seq.fold smartNl ""
 
-    member t.AllSelectedAreArmors =
+    member t.AreAllSelectedArmors =
         t.NavSelectedItems
         |> Seq.forall (fun i -> i.IsArmor)
 

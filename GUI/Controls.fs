@@ -23,3 +23,9 @@ module FrameWorkElement =
         match tagAsInt ctrl with
         | Some x -> x
         | None -> Data.Keywords.Database.DefaultColor
+
+    [<CompiledName("ItemTypeFromTag")>]
+    let itemTypeFromTag ctrl =
+        match tagAsInt ctrl with
+        | Some x -> x
+        | None -> int Data.Items.ItemType.Armor

@@ -24,7 +24,11 @@
   </UserControl.Style>
 
   <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
-    <ItemsControl x:Name="lstTags" Width="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}}">
+    <ItemsControl
+      x:Name="lstTags"
+      Width="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}}"
+      d:ItemsSource="{d:SampleData ItemCount=30}"
+      ItemsSource="{Binding ItemsSource, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
       <ItemsControl.ItemsPanel>
         <ItemsPanelTemplate>
           <WrapPanel />
@@ -39,13 +43,13 @@
               DeleteClick="DeleteButtonOnClick"
               IsDeletable="{Binding IsDeletable, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
               Visibility="{Binding IsFilterable, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource InverseBoolToVisConverter}}" />
-            <CheckBox
+            <!--<CheckBox
               x:Name="chkFilter"
               Click="FilterChipClick"
               Content="{Binding}"
               IsChecked="False"
               Style="{StaticResource MaterialDesignFilterChipSecondaryOutlineCheckBox}"
-              Visibility="{Binding IsFilterable, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+              Visibility="{Binding IsFilterable, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}}" />-->
           </Grid>
         </DataTemplate>
       </ItemsControl.ItemTemplate>

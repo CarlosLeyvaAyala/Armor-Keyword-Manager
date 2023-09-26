@@ -22,11 +22,6 @@ public partial class TagViewer : UserControl {
     lstTags.DataContext = this;
   }
 
-  public IEnumerable? ItemsSource {
-    get { return lstTags.ItemsSource; }
-    set { lstTags.ItemsSource = value; }
-  }
-
   #region DependencyProperty : IsDeletableProperty
   /// <summary>
   /// Indicates if the chip delete button should be visible.
@@ -59,6 +54,25 @@ public partial class TagViewer : UserControl {
         new PropertyMetadata(default(bool)));
   #endregion
 
+  #region DependencyProperty : IsIsFilterableProperty
+  //public IEnumerable? ItemsSource {
+  //  get { return lstTags.ItemsSource; }
+  //  set { lstTags.ItemsSource = value; }
+  //}
+
+
+  public IEnumerable ItemsSource {
+    get => (IEnumerable)GetValue(ItemsSourceProperty);
+    set => SetValue(ItemsSourceProperty, value);
+  }
+  public static readonly DependencyProperty ItemsSourceProperty
+      = DependencyProperty.Register(
+        nameof(ItemsSource),
+        typeof(IEnumerable),
+        typeof(TagViewer),
+        new PropertyMetadata(default(IEnumerable)));
+  #endregion
+
   #region Event : DeleteTagEvent
   [Category("Behavior")]
 
@@ -80,6 +94,7 @@ public partial class TagViewer : UserControl {
   private void DeleteButtonOnClick(object sender, RoutedEventArgs e) {
     var tag = ((Chip)sender).Content.ToString();
     OnDeleteClick(tag ?? "");
+    lstTags.ItemsSource = null;
     e.Handled = true;
   }
 

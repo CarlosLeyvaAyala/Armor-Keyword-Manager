@@ -1,7 +1,6 @@
 ﻿using Data.UI;
 using Data.UI.Items;
 using GUI.UserControls;
-using KeywordManager.UserControls;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -187,30 +186,30 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   }
 
   private void OnCbTagsAdd(object sender, KeyEventArgs e) {
-    OnChangeTags(
-      () => {
-        if (e.Key != Key.Return)
-          return;
+    //OnChangeTags(
+    //  () => {
+    //    if (e.Key != Key.Return)
+    //      return;
 
-        var tag = cbItemTags.Text.ToLower().Trim();
-        if (tag == "")
-          return;
+    //    var tag = cbItemTags.Text.ToLower().Trim();
+    //    if (tag == "")
+    //      return;
 
-        cbItemTags.Text = "";
+    //    cbItemTags.Text = "";
 
-        ForEachSelectedItem(uId => {
-          Edit.AddTag(uId, tag);
-        });
-      });
+    //    ForEachSelectedItem(uId => {
+    //      Edit.AddTag(uId, tag);
+    //    });
+    //  });
   }
 
   private void OnDeleteTag(object sender, RoutedEventArgs e) {
-    OnChangeTags(() => {
-      var tag = ((ClickTagEventArgs)e).Tag;
-      ForEachSelectedItem(uId => {
-        Edit.DelTag(uId, tag);
-      });
-    });
+    //OnChangeTags(() => {
+    //  var tag = ((ClickTagEventArgs)e).Tag;
+    //  ForEachSelectedItem(uId => {
+    //    Edit.DelTag(uId, tag);
+    //  });
+    //});
   }
 
   private void OnCanDelKeyword(object sender, CanExecuteRoutedEventArgs e) =>

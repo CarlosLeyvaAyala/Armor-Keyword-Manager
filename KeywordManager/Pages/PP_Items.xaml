@@ -221,6 +221,7 @@
                 x:Name="lstItemTags"
                 MaxHeight="150"
                 IsDeletable="True"
+                ItemsSource="{Binding SelectedItem.Tags}"
                 TagDeleteClick="OnDeleteTag" />
 
               <Label
@@ -456,80 +457,6 @@
         Margin="{StaticResource MarginStd}"
         KeywordChange="OnKeywordChanged"
         KeywordSelect="OnKeywordSelected" />
-      <!--<DockPanel>
-        <ListBox
-          x:Name="lstKeywords"
-          Margin="{DynamicResource MarginStd}"
-          d:ItemsSource="{d:SampleData ItemCount=5}"
-          KeyDown="LstKeywords_KeyDown"
-          MouseDoubleClick="LstKeywords_MouseDoubleClick"
-          SelectionMode="Extended">
-          <ListBox.ItemTemplate>
-            <DataTemplate>
-              <Grid>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="90" />
-                  <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <Image
-                  Grid.Column="0"
-                  Width="{DynamicResource ImgListPreviewSize}"
-                  Height="{DynamicResource ImgListPreviewSize}"
-                  HorizontalAlignment="Left"
-                  Cursor="Help"
-                  Source="{Binding Image, Converter={StaticResource StringToImgConverter}}"
-                  Stretch="UniformToFill"
-                  ToolTipService.InitialShowDelay="50">
-                  <Image.ToolTip>
-                    <StackPanel>
-                      <TextBlock
-                        Margin="0,0,0,5"
-                        FontSize="13"
-                        FontWeight="DemiBold"
-                        Text="{Binding Name}" />
-                      <TextBlock Text="{Binding Description}" />
-                    </StackPanel>
-                  </Image.ToolTip>
-                </Image>
-
-                <TextBlock
-                  Grid.Column="1"
-                  VerticalAlignment="Center"
-                  FontSize="11"
-                  FontWeight="SemiBold"
-                  Foreground="{Binding Color, Converter={StaticResource IntToKeywordColor}}"
-                  Text="{Binding Name}" />
-              </Grid>
-            </DataTemplate>
-          </ListBox.ItemTemplate>
-          <ListBox.ContextMenu>
-            <ContextMenu>
-              <ContextMenu.Resources>
-                <Style x:Key="MenuItemColor" TargetType="{x:Type MenuItem}">
-                  <Setter Property="HorizontalAlignment" Value="Center" />
-                  <Setter Property="VerticalAlignment" Value="Center" />
-                  <Setter Property="FontSize" Value="25" />
-                </Style>
-              </ContextMenu.Resources>
-              <MenuItem Header="_New keyword" />
-              <MenuItem Header="_Delete" />
-              <Separator />
-              <MenuItem Click="OnChangeKeywordPic" Header="Change _picture" />
-              <Separator />
-              <MenuItem Header="Keyword color">
-                <MenuItem Background="{DynamicResource ColorKeywordDefault}" Style="{StaticResource MenuItemColor}" />
-                <MenuItem Background="{DynamicResource ColorKeywordRed}" Style="{StaticResource MenuItemColor}" />
-                <MenuItem Background="{DynamicResource ColorKeywordOrange}" Style="{StaticResource MenuItemColor}" />
-                <MenuItem Background="{DynamicResource ColorKeywordPurple}" Style="{StaticResource MenuItemColor}" />
-                <MenuItem Background="{DynamicResource ColorKeywordBlue}" Style="{StaticResource MenuItemColor}" />
-                <MenuItem Background="{DynamicResource ColorKeywordGreen}" Style="{StaticResource MenuItemColor}" />
-                <MenuItem Background="{DynamicResource ColorKeywordGray}" Style="{StaticResource MenuItemColor}" />
-              </MenuItem>
-            </ContextMenu>
-          </ListBox.ContextMenu>
-        </ListBox>
-      </DockPanel>-->
     </GroupBox>
   </Grid>
 </UserControl>

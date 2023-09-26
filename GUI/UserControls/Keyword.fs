@@ -13,6 +13,7 @@ open DMLib.Combinators
 open System
 open System.Diagnostics
 open DMLib_WPF.Controls.ListBox
+open Data.Keywords.Database
 
 module DB = Data.Keywords.Database
 
@@ -107,6 +108,13 @@ type KeywordManagerCtx() =
         DB.upsert keyword DB.blankKeyword
         saveJsonDB ()
         t.ReloadNavAndGoTo keyword
+
+    member t.AddKeywords filename =
+        IO.File.ReadAllLines filename
+        |> Array.iter (fun s -> upsert s DB.blankKeyword)
+
+        saveJsonDB ()
+        t.ReloadNavAndGoToFirst()
 
     /// Deletes selected items.
     member t.DeleteSelected() =

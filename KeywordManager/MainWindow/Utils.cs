@@ -10,6 +10,7 @@ public partial class MainWindow : Window {
   public static MainWindow? Instance => GetWindow(App.Current.MainWindow) as MainWindow;
 
   public void InfoBox(string text, string title) => MessageBox.Show(this, text, title, MessageBoxButton.OK, MessageBoxImage.Information);
+  public void ImportedInfoBox(string importType) => MessageBox.Show(this, $"New {importType}s were successfuly imported.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
   public static void LstSelectFirst(ListBox lst) => lst.SelectedIndex = lst.Items.Count > 0 ? 0 : -1;
 
   void WhenIsLoaded(Action DoSomething) {

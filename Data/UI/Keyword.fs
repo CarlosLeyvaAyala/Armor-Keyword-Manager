@@ -67,5 +67,5 @@ module File =
 
     /// Saves keyword database to json file
     let Save () =
-        DB.toRaw ()
+        File.toJson ()
         |> Json.writeToFile true (Paths.KeywordsFile())

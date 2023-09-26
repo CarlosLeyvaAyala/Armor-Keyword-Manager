@@ -7,7 +7,7 @@ open Data.UI.AppSettings.Paths.Img.Keywords
 
 module DB = Data.Keywords.Database
 
-type NavListItem(key: Keyword, r: Raw) =
+type NavListItem(key: string, r: Raw) =
     inherit WPFBindable()
     let mutable img = r.image
     let mutable color = r.color
@@ -55,11 +55,14 @@ module Get =
 [<RequireQualifiedAccess>]
 module File =
     open Data.UI.AppSettings
+    open IO.Keywords
 
     /// Opens keyword database from json file
     let Open () =
         Paths.KeywordsFile()
-        |> Json.getFromFile<KeywordMap>
+        |> Json.getFromFile<IO.Keywords.JsonMap>
+        |> Map.toArray
+        |> Array.Parallel.map (fun (k, v) -> k, JsonData.toRaw v)
         |> DB.ofRaw
 
     /// Saves keyword database to json file

@@ -11,6 +11,7 @@
     <Compile Include="Workflow\Item.fs" />
     <Compile Include="Workflow\Outfit.fs" />
     <Compile Include="IO\Common.fs" />
+    <Compile Include="IO\Keyword.fs" />
     <Compile Include="IO\Item.fs" />
     <Compile Include="IO\Outfit.fs" />
     <Compile Include="UI\Interfaces.fs" />

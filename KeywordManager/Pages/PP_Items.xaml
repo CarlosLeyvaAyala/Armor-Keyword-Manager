@@ -4,6 +4,7 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:System="clr-namespace:System;assembly=System.Runtime"
   xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
+  xmlns:ctx="clr-namespace:GUI.PageContexts;assembly=GUI"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:guiobjs="clr-namespace:Data.UI.Items;assembly=Data"
   xmlns:local="clr-namespace:KeywordManager.Pages"
@@ -14,6 +15,13 @@
   d:DesignWidth="1200"
   Loaded="OnLoaded"
   mc:Ignorable="d">
+
+  <UserControl.DataContext>
+    <ctx:ItemsPageCtx
+      x:Name="ctx"
+      EnabledControlsConditions="CanEnableControls"
+      NavControl="{x:Reference lstNavItems}" />
+  </UserControl.DataContext>
 
   <UserControl.CommandBindings>
     <CommandBinding
@@ -158,7 +166,6 @@
           <!--  ITEM KEYWORDS  -->
           <GroupBox
             Grid.Row="2"
-            d:DataContext="{d:DesignInstance Type=guiobjs:NavItem}"
             md:ColorZoneAssist.Mode="PrimaryLight"
             BorderThickness="0"
             Header="Keywords"
@@ -167,7 +174,7 @@
               x:Name="lstItemKeywords"
               MinHeight="30"
               d:ItemsSource="{d:SampleData ItemCount=5}"
-              DataContext="{Binding Keywords}"
+              ItemsSource="{Binding SelectedItem.Keywords}"
               SelectionMode="Extended">
               <ListBox.ContextMenu>
                 <ContextMenu>
@@ -224,6 +231,7 @@
                 x:Name="cbItemTags"
                 Margin="{StaticResource MgTopNaarrow}"
                 IsEditable="True"
+                ItemsSource="{Binding SelectedItem.MissingTags}"
                 KeyDown="OnCbTagsAdd" />
             </StackPanel>
           </GroupBox>

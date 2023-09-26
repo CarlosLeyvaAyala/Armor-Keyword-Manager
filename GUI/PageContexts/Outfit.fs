@@ -27,11 +27,14 @@ type OutfitPageCtx() =
             filter <- v
             t.OnPropertyChanged()
 
-    member private t.appyFilter(a: (string * Data.Outfit.Raw) array) =
+    member private _.appyFilter(a: (string * Data.Outfit.Raw) array) =
         // TODO: Filter by distribution
         a
         |> Filter.tags filter.TagMode filter.Tags (fun (_, v) -> Get.outfitTags v)
         |> Filter.pics filter.PicMode (fun (_, v) -> v.img)
+
+    ///////////////////////////////////////////////
+    // PageNavigationContext implementation
 
     member t.Nav =
         Nav.createFull ()
@@ -67,6 +70,9 @@ type OutfitPageCtx() =
 
     /// Current selected outfit context
     member t.SelectedItem = NavSelectedItem(t.UId)
+
+    ///////////////////////////////////////////////
+    // Custom implementation
 
     member t.SetImage filename =
         if Path.Exists filename && t.UId <> "" then

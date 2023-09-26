@@ -16,7 +16,7 @@ type TooltipImage(name, img) =
     member _.Name = name
     member _.Src = img
 
-type NavList(uniqueId: string, d: Raw) =
+type NavListItem(uniqueId: string, d: Raw) =
     inherit WPFBindable()
     static let maxImgNumber = 6
 
@@ -59,6 +59,7 @@ type NavList(uniqueId: string, d: Raw) =
     member _.Esp = u.esp
     member _.EDID = u.edid
     member _.UniqueId = uniqueId
+    member _.UId = uniqueId
     member _.IsArmor = u.itemType = int ItemType.Armor
     member _.IsWeapon = u.itemType = int ItemType.Weapon
     member _.IsAmmo = u.itemType = int ItemType.Ammo
@@ -87,10 +88,16 @@ type NavList(uniqueId: string, d: Raw) =
         outfitsImg <- getImgOutfits ()
         t.OnPropertyChanged("")
 
-type NavItem(uniqueId: string) =
-    let d = DB.find uniqueId
+type NavSelectedItem(uniqueId: string) =
+    let d =
+        if uniqueId = "" then
+            Raw.empty
+        else
+            match DB.tryFind uniqueId with
+            | Some v -> v
+            | None -> Raw.empty
 
-    member t.Keywords =
+    member _.Keywords =
         d.keywords
         |> List.map Data.UI.Keywords.NavListItem
         |> Data.UI.Keywords.NavListItem.sortByColor
@@ -136,7 +143,7 @@ module private Ops =
     let getNav (filter: FilterFunc<string, Raw>) =
         DB.toArrayOfRaw ()
         |> filter
-        |> Array.Parallel.map NavList
+        |> Array.Parallel.map NavListItem
         |> Array.sortBy (fun o -> o.Name.ToLower())
         |> Collections.toObservableCollection
 
@@ -161,4 +168,4 @@ module Nav =
         | FilterTagMode.And -> commonFilter filterAnd options
         | FilterTagMode.Or -> commonFilter filterOr options
 
-    let GetItem uId = NavItem(uId)
+    let GetItem uId = NavSelectedItem(uId)

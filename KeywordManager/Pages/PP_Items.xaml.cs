@@ -3,7 +3,6 @@ using Data.UI.Items;
 using GUI.UserControls;
 using KeywordManager.UserControls;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -21,7 +20,7 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
 #pragma warning restore IDE0052 // Remove unread private members
 
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
-  static string UId(object o) => ((NavList)o).UniqueId;
+  static string UId(object o) => "((NavList)o).UniqueId";
   string uId => UId(lstNavItems.SelectedItem);
 
   public PP_Items() {
@@ -89,7 +88,7 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   //private void LoadKeywords(IEnumerable? list) => lstKeywords.ItemsSource = list;
   public void LoadNavItems() => lstNavItems.ItemsSource = Nav.Get();
 
-  private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) => ReloadSelectedItem();
+  private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) => ctx.SelectCurrentItem();
 
   private void GoToFirst() {
     MainWindow.LstSelectFirst(lstNavItems);
@@ -97,51 +96,59 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   }
 
   private void OnLoaded(object sender, RoutedEventArgs e) {
-    if (hasLoaded) return;
+    if (ctx.IsFinishedLoading) return; // Avoid repeated loading
+    ctx.ReloadNavAndGoToFirst();
+    ctx.IsFinishedLoading = true;
+    //if (hasLoaded) return;
 
     //LoadKeywords(Keywords.LoadFromFile());
-    GoToFirst();
-    hasLoaded = true;
+    //GoToFirst();
+    //hasLoaded = true;
   }
 
+  // TODO: DELETE
   void SetEnabledControls() => cntMain.IsEnabled = lstNavItems.Items.Count > 0 || Owner.IsWorkingFileLoaded;
 
+#pragma warning disable IDE0051 // Remove unused private members
+  bool CanEnableControls() => Owner.IsWorkingFileLoaded; // Used by context in XAML
+#pragma warning restore IDE0051 // Remove unused private members
+
   private void ReloadSelectedItem() {
-    SetEnabledControls();
+    //SetEnabledControls();
 
-    if (lstNavItems.SelectedItem == null) {
-      grpItemData.DataContext = null;
-      lstItemKeywords.ItemsSource = null;
-      lstItemTags.ItemsSource = null;
-      cbItemTags.ItemsSource = null;
-      return;
-    }
-    var it = Nav.GetItem(uId);
-    grpItemData.DataContext = it;
-    lstItemKeywords.ItemsSource = it.Keywords;
-    lstItemTags.ItemsSource = it.Tags;
-    cbItemTags.ItemsSource = it.MissingTags;
+    //if (lstNavItems.SelectedItem == null) {
+    //  grpItemData.DataContext = null;
+    //  lstItemKeywords.ItemsSource = null;
+    //  lstItemTags.ItemsSource = null;
+    //  cbItemTags.ItemsSource = null;
+    //  return;
+    //}
+    //var it = Nav.GetItem(uId);
+    //grpItemData.DataContext = it;
+    //lstItemKeywords.ItemsSource = it.Keywords;
+    //lstItemTags.ItemsSource = it.Tags;
+    //cbItemTags.ItemsSource = it.MissingTags;
 
-    foreach (RadioButton r in pnlItemType.Children)
-      r.IsChecked = int.Parse((string)r.Tag) == it.ItemType;
+    //foreach (RadioButton r in pnlItemType.Children)
+    //  r.IsChecked = int.Parse((string)r.Tag) == it.ItemType;
   }
 
   public void OnOutfitImgWasSet(string outfitId) {
-    var pieces = new HashSet<string>(Data.UI.Outfit.Edit.GetPieces(outfitId));
-    var navItems = lstNavItems.Items.OfType<NavList>()
-        .Where(n => pieces.Contains(n.UniqueId));
+    //var pieces = new HashSet<string>(Data.UI.Outfit.Edit.GetPieces(outfitId));
+    //var navItems = lstNavItems.Items.OfType<NavList>()
+    //    .Where(n => pieces.Contains(n.UniqueId));
 
-    foreach (var navItem in navItems)
-      navItem.Refresh();
+    //foreach (var navItem in navItems)
+    //  navItem.Refresh();
   }
   #endregion
 
   #region Data manipulation
   void ForEachSelectedItem(Action<string> DoSomething) {
-    foreach (NavList item in lstNavItems.SelectedItems) {
-      DoSomething(UId(item));
-      item.Refresh();
-    }
+    //foreach (NavList item in lstNavItems.SelectedItems) {
+    //  DoSomething(UId(item));
+    //  item.Refresh();
+    //}
 
     ReloadSelectedItem();
   }
@@ -212,25 +219,25 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
 
   }
 
-  private void OnCanCreateUnboundOutfit(object sender, CanExecuteRoutedEventArgs e) =>
-    e.CanExecute = lstNavItems.SelectedItems.OfType<NavList>()
-      .Select((s) => s.IsArmor)
-      .All((b) => b);
+  private void OnCanCreateUnboundOutfit(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = false;
+  //e.CanExecute = lstNavItems.SelectedItems.OfType<NavList>()
+  //  .Select((s) => s.IsArmor)
+  //  .All((b) => b);
 
   private void OnCreateUnboundOutfit(object sender, ExecutedRoutedEventArgs e) {
-    MainWindow.ExecuteAcceptCancelDlg(new() {
-      Hint = "Outfit name",
-      OnOk =
-        name => {
-          var uIds = lstNavItems.SelectedItems.OfType<NavList>()
-            .Select((s) => s.UniqueId)
-            .ToList();
-          Data.UI.Outfit.Edit.CreateUnbound(uIds, name);
-          Owner.ReloadOutfitsNav();
-          Owner.GoToTab(MainWindow.TabId.Outfits);
-        }
-    }
-    );
+    //MainWindow.ExecuteAcceptCancelDlg(new() {
+    //  Hint = "Outfit name",
+    //  OnOk =
+    //    name => {
+    //      var uIds = lstNavItems.SelectedItems.OfType<NavList>()
+    //        .Select((s) => s.UniqueId)
+    //        .ToList();
+    //      Data.UI.Outfit.Edit.CreateUnbound(uIds, name);
+    //      Owner.ReloadOutfitsNav();
+    //      Owner.GoToTab(MainWindow.TabId.Outfits);
+    //    }
+    //}
+    //);
   }
 
   private void OnCanSetImage(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
@@ -255,11 +262,11 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
 
   private void OnCanNamesToClipboard(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = lstNavItems.SelectedItems.Count > 0;
   private void OnNamesToClipboard(object sender, ExecutedRoutedEventArgs e) {
-    var s = lstNavItems.SelectedItems.OfType<NavList>()
-        .Select((selected) => selected.Name + "\t\t" + selected.UniqueId)
-        .Aggregate((acc, s) => $"{acc}\n{s}")
-        .Trim();
-    TextCopy.ClipboardService.SetText(s);
+    //var s = lstNavItems.SelectedItems.OfType<NavList>()
+    //    .Select((selected) => selected.Name + "\t\t" + selected.UniqueId)
+    //    .Aggregate((acc, s) => $"{acc}\n{s}")
+    //    .Trim();
+    //TextCopy.ClipboardService.SetText(s);
   }
   #endregion
 

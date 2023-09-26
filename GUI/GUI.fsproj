@@ -13,6 +13,7 @@
     <Compile Include="ApplicationContext.fs" />
     <Compile Include="UserControls\FilterByTag.fs" />
     <Compile Include="UserControls\Keyword.fs" />
+    <Compile Include="PageContexts\Item.fs" />
     <Compile Include="PageContexts\Outfit.fs" />
     <Compile Include="Validators.fs" />
   </ItemGroup>

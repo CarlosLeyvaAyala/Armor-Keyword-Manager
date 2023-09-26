@@ -9,10 +9,7 @@ open Data.UI.Keywords
 open Data.UI
 open GUI
 open DMLib.Collections
-open DMLib.Combinators
 open System
-open System.Diagnostics
-open DMLib_WPF.Controls.ListBox
 open Data.Keywords.Database
 
 module DB = Data.Keywords.Database
@@ -21,7 +18,7 @@ type KeywordSelectEventArgs(routedEvent, source, keywords) =
     inherit RoutedEventArgs(routedEvent, source)
     member _.Keywords: string array = keywords
 
-/// Context for working with the outfits page
+/// Context for working with the keywords page
 [<Sealed>]
 type KeywordManagerCtx() =
     inherit PageNavigationContext()

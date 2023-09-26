@@ -92,6 +92,21 @@ module Filter =
         | OnlyIfHasPic -> filter (Not String.isNullOrEmpty)
         | OnlyIfHasNoPic -> filter String.isNullOrEmpty
 
+    let (|FilterNothing|_|) _ = Some()
+
+    let filterAdapter f v =
+        match f v with
+        | Some _ -> Some v
+        | _ -> None
+
+    let picFilter =
+        function
+        | FilterPicSettings.Either -> (|FilterNothing|_|)
+        | OnlyIfHasPic -> (|IsNotEmptyStr|_|)
+        | OnlyIfHasNoPic -> (|IsEmptyStr|_|)
+
+    let pic filter getImage v = filterAdapter (getImage >> filter) v
+
     /// Filter by word content
     let words word useRegex filterMatching a =
         let filterItems f a =

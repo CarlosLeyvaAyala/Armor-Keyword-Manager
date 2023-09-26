@@ -3,7 +3,6 @@ using Data.UI.Items;
 using GUI.UserControls;
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -23,9 +22,7 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
 
   public PP_Items() {
     InitializeComponent();
-    var cd = Directory.GetCurrentDirectory();
-    //Keywords.ImagePath = Path.Combine(cd, @"Data\Img\Keywords");
-    //Keywords.JsonPath = Path.Combine(cd, @"Data\Keywords.json");
+
     watcher = FileWatcher.WatchxEdit(
       "*.items",
       filename => {
@@ -40,8 +37,8 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   public bool CanFilterByPic => true;
   public bool CanFilterByDistr => false;
   public bool CanShowKeywords => true;
-  public FilterTagEventArgs OldFilter => FilterTagEventArgs.Empty; //TODO: Use context filter
-  public void ApplyTagFilter(FilterTagEventArgs e) => ApplyFilter(edtFilter.Text, e);
+  public FilterTagEventArgs OldFilter => ctx.Filter;
+  public void ApplyTagFilter(FilterTagEventArgs e) => ctx.Filter = e;
 
   private void LoadNavItems(string filter, FilterTagEventArgs e) {
     //var options = new FilterOptions(filter, e.Tags, e.TagMode, e.PicMode, tbFilterByRegex.IsChecked == true);
@@ -85,11 +82,6 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   }
 
   private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) => ctx.SelectCurrentItem();
-
-  private void GoToFirst() {
-    MainWindow.LstSelectFirst(lstNavItems);
-    ReloadSelectedItem();
-  }
 
   private void OnLoaded(object sender, RoutedEventArgs e) {
     if (ctx.IsFinishedLoading) return; // Avoid repeated loading

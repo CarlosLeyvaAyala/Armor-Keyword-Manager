@@ -1,5 +1,6 @@
 ﻿//#r "nuget: carlos.leyva.ayala.dmlib"
 //#r "nuget: TextCopy"
+#r "nuget: FsToolkit.ErrorHandling"
 //#r "nuget: FSharpx.Collections"
 ////
 //#load "../Common.fs"
@@ -47,6 +48,44 @@
 //| e -> printfn "%A" e.Message
 
 
+/////////////////////////////////////////////////////
+let isEven x = if (x % 2) = 0 then Some x else None
+let isHudreds x = if x >= 100 then Some x else None
+let (|IsEven|_|) = isEven
+let (|IsHundreds|_|) = isHudreds
+
+match 112 with
+| IsEven (IsHundreds x) -> $"Passes {x}"
+| _ -> "Lol"
+
+open FsToolkit.ErrorHandling
+open System
+
+let numbers =
+    [| for i in 1..10 do
+           Random().Next(0, 150) |]
+
+numbers
+|> Array.choose (fun x ->
+    option {
+        let! ie = isEven x
+        let! h = isHudreds ie
+        return! $"{h} passes"
+    })
+
+let tryParseInt (x: string) =
+    match Int32.TryParse(x) with
+    | (true, x) -> Some x
+    | _ -> None
+
+let add x y z = x + y + z
+
+option {
+    let! x = tryParseInt "35"
+    let! y = tryParseInt "5"
+    let! z = tryParseInt "2x"
+    return add x y z
+}
 /////////////////////////////////////////////////////
 //open Data.Outfit
 //open Common

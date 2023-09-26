@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="FSharp.Core.Wpf.Core" Version="5.0.3" />
+    <PackageReference Include="FsToolkit.ErrorHandling" Version="4.9.0" />
     <PackageReference Include="WindowsAPICodePack" Version="7.0.4" />
   </ItemGroup>
 

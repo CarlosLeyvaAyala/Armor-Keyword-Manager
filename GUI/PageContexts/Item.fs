@@ -11,6 +11,8 @@ open GUI
 open DMLib.Collections
 open System
 open GUI.UserControls
+open FsToolkit.ErrorHandling
+open Data.UI.Filtering
 
 module DB = Data.Items.Database
 
@@ -31,9 +33,15 @@ type ItemsPageCtx() =
     // PageNavigationContext implementation
 
     member _.Nav =
+        let picFilter v =
+            Filter.pic (Filter.picFilter filter.PicMode) (fun (v: Raw) -> v.image) v
+
         DB.toArrayOfRaw ()
-        |> Array.Parallel.map NavListItem
-        //Filter
+        |> Array.Parallel.choose (fun (uid, v) ->
+            option {
+                let! o1 = picFilter v
+                return NavListItem(uid, o1)
+            }) //Filter
         |> Array.sortBy (fun v -> v.Name.ToLower())
         |> toObservableCollection
 

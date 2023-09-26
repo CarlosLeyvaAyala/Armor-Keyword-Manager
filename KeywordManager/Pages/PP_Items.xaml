@@ -48,6 +48,12 @@
       CanExecute="OnCanNamesToClipboard"
       Command="c:ItemCmds.NamesToClipboard"
       Executed="OnNamesToClipboard" />
+
+
+    <CommandBinding
+      CanExecute="OnCanNamesAndUIdToClipboard"
+      Command="c:ItemCmds.NamesAndUIdToClipboard"
+      Executed="OnNamesAndUIdToClipboard" />
   </UserControl.CommandBindings>
 
   <Grid x:Name="cntMain">
@@ -441,6 +447,7 @@
               <Separator />
               <MenuItem Command="c:ItemCmds.CreateUnboundOutfit" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
               <MenuItem Command="c:ItemCmds.NamesToClipboard" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+              <MenuItem Command="c:ItemCmds.NamesAndUIdToClipboard" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
             </ContextMenu>
           </ListBox.ContextMenu>
         </ListBox>

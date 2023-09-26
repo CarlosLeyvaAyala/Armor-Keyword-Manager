@@ -60,5 +60,20 @@ type ItemsPageCtx() =
     member t.NavSelectedItem = t.NavControl.SelectedItem :?> NavListItem
 
     member t.SelectedItem = NavSelectedItem(t.UId)
-///////////////////////////////////////////////
-// Custom implementation
+
+    ///////////////////////////////////////////////
+    // Custom implementation
+
+    member t.SelectedItemNames =
+        t.NavSelectedItems
+        |> Seq.map (fun i -> i.Name)
+        |> Seq.fold smartNl ""
+
+    member t.SelectedItemNamesAndUIds =
+        let items = t.NavSelectedItems
+        let len f = items |> Seq.map f |> Seq.max
+        let namesLen = len (fun i -> i.Name.Length)
+
+        t.NavSelectedItems
+        |> Seq.map (fun i -> sprintf "%-*s     %s" namesLen i.Name i.UId)
+        |> Seq.fold smartNl ""

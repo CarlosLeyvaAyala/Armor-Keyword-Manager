@@ -74,13 +74,8 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   #endregion
 
   #region Interface: IFileDisplayable
-  public void OnFileOpen(string _) {
-    LoadNavItems();
-    GoToFirst();
-  }
-
-  public void OnNewFile() => LoadNavItems();
-
+  public void OnFileOpen(string _) => ctx.ReloadNavAndGoToFirst();
+  public void OnNewFile() => ctx.ReloadNavAndGoToFirst();
   #endregion
 
   #region UI
@@ -98,11 +93,6 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
     if (ctx.IsFinishedLoading) return; // Avoid repeated loading
     ctx.ReloadNavAndGoToFirst();
     ctx.IsFinishedLoading = true;
-    //if (hasLoaded) return;
-
-    //LoadKeywords(Keywords.LoadFromFile());
-    //GoToFirst();
-    //hasLoaded = true;
   }
 
   // TODO: DELETE
@@ -259,14 +249,11 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
     Edit.ItemType(uId, int.Parse((string)r.Tag));
   }
 
-  private void OnCanNamesToClipboard(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = lstNavItems.SelectedItems.Count > 0;
-  private void OnNamesToClipboard(object sender, ExecutedRoutedEventArgs e) {
-    //var s = lstNavItems.SelectedItems.OfType<NavList>()
-    //    .Select((selected) => selected.Name + "\t\t" + selected.UniqueId)
-    //    .Aggregate((acc, s) => $"{acc}\n{s}")
-    //    .Trim();
-    //TextCopy.ClipboardService.SetText(s);
-  }
+  private void OnCanNamesToClipboard(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.HasItemsSelected;
+  private void OnNamesToClipboard(object sender, ExecutedRoutedEventArgs e) => TextCopy.ClipboardService.SetText(ctx.SelectedItemNames);
+
+  private void OnCanNamesAndUIdToClipboard(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.HasItemsSelected;
+  private void OnNamesAndUIdToClipboard(object sender, ExecutedRoutedEventArgs e) => TextCopy.ClipboardService.SetText(ctx.SelectedItemNamesAndUIds);
   #endregion
 
   #region Data importing
@@ -291,4 +278,5 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
 
   private void OnKeywordSelected(object sender, RoutedEventArgs e) => Debug.WriteLine((e as KeywordSelectEventArgs)?.Keywords.Length);
   private void OnKeywordChanged(object sender, RoutedEventArgs e) => Debug.WriteLine("Keyword changed. Needs reloading.");
+
 }

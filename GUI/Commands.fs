@@ -96,6 +96,9 @@ type ItemCmds private () =
     static member val SetImage = basic "SetImage" "Set image"
     static member val NamesToClipboard = basic "NamesToClipboard" "Copy name(s) to clipboard"
 
+    static member val NamesAndUIdToClipboard =
+        basic "NamesAndUIdToClipboard" "Copy name(s) and Unique Id(s) to clipboard"
+
 [<Sealed>]
 type OutfitCmds private () =
     static let create = createCmd (fun () -> typeof<ItemCmds>)

@@ -41,8 +41,7 @@
               Click="ChipClick"
               Content="{Binding}"
               DeleteClick="DeleteButtonOnClick"
-              IsDeletable="{Binding IsDeletable, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
-              Visibility="{Binding IsFilterable, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource InverseBoolToVisConverter}}" />
+              IsDeletable="{Binding IsDeletable, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
             <!--<CheckBox
               x:Name="chkFilter"
               Click="FilterChipClick"

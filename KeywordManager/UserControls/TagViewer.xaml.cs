@@ -1,7 +1,5 @@
 ﻿using MaterialDesignThemes.Wpf;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,10 +15,7 @@ public class ClickTagEventArgs : RoutedEventArgs {
 }
 
 public partial class TagViewer : UserControl {
-  public TagViewer() {
-    InitializeComponent();
-    lstTags.DataContext = this;
-  }
+  public TagViewer() => InitializeComponent();
 
   #region DependencyProperty : IsDeletableProperty
   /// <summary>
@@ -38,29 +33,7 @@ public partial class TagViewer : UserControl {
         new PropertyMetadata(default(bool)));
   #endregion
 
-  #region DependencyProperty : IsIsFilterableProperty
-  /// <summary>
-  /// Indicates if the chip button can be clikced for filtering.
-  /// </summary>
-  public bool IsFilterable {
-    get => (bool)GetValue(IsFilterProperty);
-    set => SetValue(IsFilterProperty, value);
-  }
-  public static readonly DependencyProperty IsFilterProperty
-      = DependencyProperty.Register(
-        nameof(IsFilterable),
-        typeof(bool),
-        typeof(TagViewer),
-        new PropertyMetadata(default(bool)));
-  #endregion
-
-  #region DependencyProperty : IsIsFilterableProperty
-  //public IEnumerable? ItemsSource {
-  //  get { return lstTags.ItemsSource; }
-  //  set { lstTags.ItemsSource = value; }
-  //}
-
-
+  #region DependencyProperty : ItemsSourceProperty
   public IEnumerable ItemsSource {
     get => (IEnumerable)GetValue(ItemsSourceProperty);
     set => SetValue(ItemsSourceProperty, value);
@@ -73,15 +46,15 @@ public partial class TagViewer : UserControl {
         new PropertyMetadata(default(IEnumerable)));
   #endregion
 
-  #region Event : DeleteTagEvent
+  #region Event : TagDeleteEvent
   [Category("Behavior")]
 
   public event RoutedEventHandler TagDeleteClick {
-    add => AddHandler(DeleteTagEvent, value);
-    remove => RemoveHandler(DeleteTagEvent, value);
+    add => AddHandler(TagDeleteEvent, value);
+    remove => RemoveHandler(TagDeleteEvent, value);
   }
 
-  public static readonly RoutedEvent DeleteTagEvent
+  public static readonly RoutedEvent TagDeleteEvent
       = EventManager.RegisterRoutedEvent(
         nameof(TagDeleteClick),
         RoutingStrategy.Bubble,
@@ -89,16 +62,15 @@ public partial class TagViewer : UserControl {
         typeof(TagViewer));
   #endregion
 
-  protected virtual void OnDeleteClick(string tag) => RaiseEvent(new ClickTagEventArgs(DeleteTagEvent, this, tag));
+  protected virtual void OnDeleteClick(string tag) => RaiseEvent(new ClickTagEventArgs(TagDeleteEvent, this, tag));
 
   private void DeleteButtonOnClick(object sender, RoutedEventArgs e) {
     var tag = ((Chip)sender).Content.ToString();
     OnDeleteClick(tag ?? "");
-    lstTags.ItemsSource = null;
     e.Handled = true;
   }
 
-  #region Event : ClickTagEvent
+  #region Event : TagClickEvent
   [Category("Behavior")]
 
   public event RoutedEventHandler TagClick {
@@ -121,53 +93,4 @@ public partial class TagViewer : UserControl {
     OnChipClick(tag ?? "");
     e.Handled = true;
   }
-
-  #region Event : ClickTagEvent
-  [Category("Behavior")]
-
-  public event RoutedEventHandler FilterTagClick {
-    add => AddHandler(FilterTagClickEvent, value);
-    remove => RemoveHandler(FilterTagClickEvent, value);
-  }
-
-  public static readonly RoutedEvent FilterTagClickEvent
-      = EventManager.RegisterRoutedEvent(
-        nameof(FilterTagClick),
-        RoutingStrategy.Bubble,
-        typeof(RoutedEventHandler),
-        typeof(TagViewer));
-  #endregion
-
-  protected virtual void OnFilterChipClick(List<string> tags) { } //TODO: Delete
-
-  private void FilterChipClick(object sender, RoutedEventArgs e) {
-    OnFilterChipClick(GetCheckedTags());
-    e.Handled = true;
-  }
-
-  private List<string> GetCheckedTags() {
-    var tags = new List<string>();
-
-    ForEachFilterTag((chk) => {
-      bool isChecked = chk.IsChecked == true;
-      if (!isChecked)
-        return;
-      tags.Add(chk.Content.ToString() ?? "");
-    });
-
-    return tags;
-  }
-
-  public List<string> CheckedTags => GetCheckedTags();
-
-  void ForEachFilterTag(Action<CheckBox> DoSomething) {
-    foreach (var item in lstTags.Items) {
-      ContentPresenter c = (ContentPresenter)lstTags.ItemContainerGenerator.ContainerFromItem(item);
-      if (c.ContentTemplate.FindName("chkFilter", c) is not CheckBox chk)
-        continue;
-      DoSomething(chk);
-    }
-  }
-
-  public void ClearTags() => ForEachFilterTag((chk) => chk.IsChecked = false);
 }

@@ -53,14 +53,14 @@ type FilterTagItem(name: string) =
         with get () = isChecked
         and set v =
             isChecked <- v
-            t.OnPropertyChanged("IsChecked")
+            nameof t.IsChecked |> t.OnPropertyChanged
 
     /// Used for finding tags by name
     member t.IsVisible
         with get () = isVisible
         and set v =
             isVisible <- v
-            t.OnPropertyChanged("IsVisible")
+            nameof t.IsVisible |> t.OnPropertyChanged
 
     member val IsKeyword = false with get, set
 
@@ -111,15 +111,15 @@ type FilterByTagCtx() =
         with get () = canFilterByPic
         and set v =
             canFilterByPic <- v
-            t.OnPropertyChanged("CanFilterByPic")
-            t.OnPropertyChanged("ShowBottomPanel")
+            nameof t.CanFilterByPic |> t.OnPropertyChanged
+            nameof t.ShowBottomPanel |> t.OnPropertyChanged
 
     member t.CanFilterByDistr
         with get () = canFilterByDistr
         and set v =
             canFilterByDistr <- v
-            t.OnPropertyChanged("CanFilterByDistr")
-            t.OnPropertyChanged("ShowBottomPanel")
+            nameof t.CanFilterByDistr |> t.OnPropertyChanged
+            nameof t.ShowBottomPanel |> t.OnPropertyChanged
 
     member t.ShowBottomPanel = t.CanFilterByPic || t.CanFilterByDistr
 
@@ -133,8 +133,8 @@ type FilterByTagCtx() =
         with get () = filter
         and set v =
             filter <- v
-            t.OnPropertyChanged("Filter")
-            t.OnPropertyChanged("Tags")
+            nameof t.Filter |> t.OnPropertyChanged
+            nameof t.Tags |> t.OnPropertyChanged
 
     member _.Tags =
         resetVisibility ()
@@ -153,17 +153,17 @@ type FilterByTagCtx() =
 
     member t.LoadTagsFromFile() =
         loadTags ()
-        t.OnPropertyChanged("SelectedTags")
+        t.OnPropertyChanged()
 
     member t.SelectNone() =
         tags |> Seq.iter (fun v -> v.IsChecked <- false)
-        t.OnPropertyChanged("SelectedTags")
+        nameof t.SelectedTags |> t.OnPropertyChanged
 
     member _.SelectInverse() =
         tags
         |> Seq.iter (fun v -> v.IsChecked <- not v.IsChecked)
 
-    member t.SelectedTags =
+    member _.SelectedTags =
         tags
         |> Seq.choose (fun v ->
             match v.IsChecked with
@@ -191,4 +191,4 @@ type FilterByTagCtx() =
                 | None -> false
                 | Some v -> v)
 
-        t.OnPropertyChanged("")
+        t.OnPropertyChanged()

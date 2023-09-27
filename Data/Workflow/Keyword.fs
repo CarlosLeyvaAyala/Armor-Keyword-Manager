@@ -1,7 +1,7 @@
 ﻿module Data.Keywords
 
-open DMLib
 open Common
+open DMLib
 open DMLib.String
 
 type Keyword =

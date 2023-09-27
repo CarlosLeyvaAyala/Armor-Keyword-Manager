@@ -122,7 +122,7 @@ type KeywordManagerCtx() =
             DB.delete k
 
             items
-            |> Array.Parallel.iter (fun (uid, _) -> Data.UI.Items.Edit.DelKeyword uid k)
+            |> Array.Parallel.iter (fun (uid, _) -> Data.Items.Database.delKeyword uid k)
 
         t.DeleteSelected (fun () ->
             t.NavSelectedItems |> Seq.iter deleteKeyword

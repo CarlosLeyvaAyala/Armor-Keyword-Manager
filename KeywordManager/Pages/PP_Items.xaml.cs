@@ -16,8 +16,6 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
 #pragma warning restore IDE0052 // Remove unread private members
 
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
-  static string UId(object o) => "((NavList)o).UniqueId";
-  string uId => UId(lstNavItems.SelectedItem);
 
   public PP_Items() {
     InitializeComponent();
@@ -88,8 +86,10 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
     e.Handled = true;
   }
 
-  private void CmdDeleteExecuted(object sender, ExecutedRoutedEventArgs e) => DeleteKeywords();
-  private void CmdDeleteCanExecute(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = lstItemKeywords.SelectedItem != null;
+  private void OnCanDelKeyword(object sender, CanExecuteRoutedEventArgs e) =>
+    e.CanExecute = lstItemKeywords.IsFocused && lstItemKeywords.SelectedItems.Count > 0;
+  private void OnDelKeyword(object sender, ExecutedRoutedEventArgs e) => DeleteKeywords();
+
 
   //void OnChangeTags(Action ChangeTags) {
   //  var currTags = Data.UI.Tags.Get.AllTagsAndKeywords();
@@ -116,18 +116,14 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   }
 
   private void OnDeleteTag(object sender, RoutedEventArgs e) {
+    //Owner.ReloadTags();
+
     //OnChangeTags(() => {
     //  var tag = ((ClickTagEventArgs)e).Tag;
     //  ForEachSelectedItem(uId => {
     //    Edit.DelTag(uId, tag);
     //  });
     //});
-  }
-
-  private void OnCanDelKeyword(object sender, CanExecuteRoutedEventArgs e) =>
-    e.CanExecute = lstItemKeywords.IsFocused && lstItemKeywords.SelectedItems.Count > 0;
-  private void OnDelKeyword(object sender, ExecutedRoutedEventArgs e) {
-
   }
 
   private void OnCanCreateUnboundOutfit(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.AreAllSelectedArmors;

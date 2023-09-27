@@ -4,7 +4,6 @@ open DMLib
 open DMLib.String
 open System
 open Common
-open FSharpx.Collections
 open DMLib.Types.Skyrim
 
 /// FULL name value gotten from xEdit
@@ -189,3 +188,26 @@ module Database =
         db <- db.Add(uid, d)
 
     let importMany lines = lines |> Seq.iter import
+
+    let private addWord word wordList =
+        wordList
+        |> List.insertDistinctAt 0 word
+        |> List.sort
+
+    let private delWord word wordList =
+        wordList |> List.filter (fun a -> not (a = word))
+
+    let private changeKeywords transform keyword (v: Raw) =
+        { v with keywords = v.keywords |> transform keyword }
+
+    let private changeTags transform tag (v: Raw) =
+        { v with tags = v.tags |> transform tag }
+
+    let addKeyword id keyword =
+        update id (changeKeywords addWord keyword)
+
+    let delKeyword id keyword =
+        update id (changeKeywords delWord keyword)
+
+    let addTag id tag = update id (changeTags addWord tag)
+    let delTag id tag = update id (changeTags delWord tag)

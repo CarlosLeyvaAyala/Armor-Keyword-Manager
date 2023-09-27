@@ -25,11 +25,6 @@
 
   <UserControl.CommandBindings>
     <CommandBinding
-      CanExecute="CmdDeleteCanExecute"
-      Command="EditingCommands.Delete"
-      Executed="CmdDeleteExecuted" />
-
-    <CommandBinding
       CanExecute="OnCanDelKeyword"
       Command="c:ItemCmds.DelKeyword"
       Executed="OnDelKeyword" />

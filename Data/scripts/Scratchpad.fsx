@@ -1,44 +1,66 @@
 ﻿//#r "nuget: carlos.leyva.ayala.dmlib"
 //#r "nuget: TextCopy"
 #r "nuget: FsToolkit.ErrorHandling"
-//#r "nuget: FSharpx.Collections"
-////
-//#load "../Common.fs"
-//#load "../Common/Images.fs"
-//#load "../Workflow/Keyword.fs"
-//#load "../Workflow/Item.fs"
-//#load "../Workflow/Outfit.fs"
-//#load "../IO/Common.fs"
-//#load "../IO/Item.fs"
-//#load "../IO/Outfit.fs"
-//#load "../UI/Common.fs"
-//#load "../PropietaryFile.fs"
-//#time "on"
+#r "nuget: FSharpx.Collections"
 
-//open System
-//open DMLib.Collections
-//open TextCopy
-//open System.IO
-//open DMLib
-//open DMLib.Combinators
-//open DMLib.String
-//open DMLib.IO.Path
-//open System.Text.RegularExpressions
-//open DMLib.Types
-//open DMLib.Types.Skyrim
-//open FSharpx.Collections
-////
-//open Data.Outfit
+// DMLib includes must be deleted once nuget works again
+#load "..\..\..\DMLib-FSharp\Combinators.fs"
+#load "..\..\..\DMLib-FSharp\MathL.fs"
+#load "..\..\..\DMLib-FSharp\Result.fs"
+#load "..\..\..\DMLib-FSharp\String.fs"
+#load "..\..\..\DMLib-FSharp\Array.fs"
+#load "..\..\..\DMLib-FSharp\List.fs"
+#load "..\..\..\DMLib-FSharp\Map.fs"
+#load "..\..\..\DMLib-FSharp\Dictionary.fs"
+#load "..\..\..\DMLib-FSharp\Collections.fs"
+#load "..\..\..\DMLib-FSharp\Files.fs"
+#load "..\..\..\DMLib-FSharp\IO\IO.Path.fs"
+#load "..\..\..\DMLib-FSharp\IO\File.fs"
+#load "..\..\..\DMLib-FSharp\Json.fs"
+#load "..\..\..\DMLib-FSharp\Misc.fs"
+#load "..\..\..\DMLib-FSharp\Types\NonEmptyString.fs"
+#load "..\..\..\DMLib-FSharp\Types\RecordId.fs"
+#load "..\..\..\DMLib-FSharp\Types\MemoryAddress.fs"
+#load "..\..\..\DMLib-FSharp\Types\CanvasPoint.fs"
+#load "..\..\..\DMLib-FSharp\Types\Skyrim\EDID.fs"
+#load "..\..\..\DMLib-FSharp\Types\Skyrim\Weight.fs"
+#load "..\..\..\DMLib-FSharp\Types\Skyrim\EspFileName.fs"
+#load "..\..\..\DMLib-FSharp\Types\Skyrim\UniqueId.fs"
 
-//fsi.AddPrinter(fun (r: NonEmptyString) -> r.ToString())
-//fsi.AddPrinter(fun (r: UniqueId) -> r.ToString())
-//module Items = Data.Items.Database
-//module Outfits = Data.Outfit.Database
+// Project
+#load "../Common.fs"
+#load "../Workflow/Keyword.fs"
+#load "../Workflow/Item.fs"
+#load "../Workflow/Outfit.fs"
+#load "../IO/Common.fs"
+#load "../IO/Item.fs"
+#load "../IO/Outfit.fs"
+#load "../UI/Common.fs"
+#load "../PropietaryFile.fs"
+#time "on"
 
-//let inF = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors and outfits.skyitms"
-//IO.PropietaryFile.Open inF
-//let items = Items.toArrayOfRaw ()
-//let outfits = Outfits.toArrayOfRaw ()
+open System
+open DMLib.Collections
+open System.IO
+open DMLib
+open DMLib.Combinators
+open DMLib.String
+open DMLib.IO.Path
+open System.Text.RegularExpressions
+open DMLib.Types
+open DMLib.Types.Skyrim
+open FSharpx.Collections
+open Data.Outfit
+
+fsi.AddPrinter(fun (r: NonEmptyString) -> r.ToString())
+fsi.AddPrinter(fun (r: UniqueId) -> r.ToString())
+module Items = Data.Items.Database
+module Outfits = Data.Outfit.Database
+
+let inF = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors and outfits.skyitms"
+IO.PropietaryFile.Open inF
+let items = Items.toArrayOfRaw ()
+let outfits = Outfits.toArrayOfRaw ()
 
 /////////////////////////////////////////////////////
 //// Regex edit test
@@ -48,44 +70,6 @@
 //| e -> printfn "%A" e.Message
 
 
-/////////////////////////////////////////////////////
-let isEven x = if (x % 2) = 0 then Some x else None
-let isHudreds x = if x >= 100 then Some x else None
-let (|IsEven|_|) = isEven
-let (|IsHundreds|_|) = isHudreds
-
-match 112 with
-| IsEven (IsHundreds x) -> $"Passes {x}"
-| _ -> "Lol"
-
-open FsToolkit.ErrorHandling
-open System
-
-let numbers =
-    [| for i in 1..10 do
-           Random().Next(0, 150) |]
-
-numbers
-|> Array.choose (fun x ->
-    option {
-        let! ie = isEven x
-        let! h = isHudreds ie
-        return! $"{h} passes"
-    })
-
-let tryParseInt (x: string) =
-    match Int32.TryParse(x) with
-    | (true, x) -> Some x
-    | _ -> None
-
-let add x y z = x + y + z
-
-option {
-    let! x = tryParseInt "35"
-    let! y = tryParseInt "5"
-    let! z = tryParseInt "2x"
-    return add x y z
-}
 /////////////////////////////////////////////////////
 //open Data.Outfit
 //open Common

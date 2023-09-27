@@ -6,7 +6,6 @@ open DMLib.String
 open DMLib.Types.Skyrim
 open DMLib.Types
 open FSharpx.Collections
-open DMLib.IO.Path
 open System
 
 type ArmorPiece =

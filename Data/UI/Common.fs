@@ -1,4 +1,4 @@
-﻿module internal Data.UI.Common
+﻿namespace Data.UI.Common
 
 [<RequireQualifiedAccess>]
 module internal Tags =

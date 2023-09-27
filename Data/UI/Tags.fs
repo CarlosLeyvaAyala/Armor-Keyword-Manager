@@ -1,7 +1,5 @@
 ﻿namespace Data.UI.Tags
 
-open DMLib.Collections
-
 [<RequireQualifiedAccess>]
 module Get =
     /// Gets all tags in the current file
@@ -15,5 +13,6 @@ module Get =
     let allTagsAndKeywords () =
         allTags () |> Array.append (allKeywords ())
 
-    /// This is used for filtering by tag
-    let AllTagsAndKeywords () = allTagsAndKeywords () |> toCList
+[<RequireQualifiedAccess>]
+module Precalculate =
+    let tags = Data.UI.Common.Tags.precalculate

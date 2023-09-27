@@ -13,7 +13,7 @@ open System
 open GUI.UserControls
 open FsToolkit.ErrorHandling
 open Data.UI.Filtering
-open Data.UI.Filtering.Filter
+open DMLib.Combinators
 
 module DB = Data.Items.Database
 
@@ -23,6 +23,8 @@ type ItemsPageCtx() =
     inherit PageNavigationContext()
 
     let mutable filter = FilterTagEventArgs.Empty
+    let mutable nameFilter = ""
+    let mutable useRegexForNameFilter = false
 
     member t.Filter
         with get () = filter
@@ -30,10 +32,25 @@ type ItemsPageCtx() =
             filter <- v
             t.OnPropertyChanged()
 
-    ///////////////////////////////////////////////
-    // PageNavigationContext implementation
+    member t.NameFilter
+        with get () = nameFilter
+        and set v =
+            nameFilter <- v
+            t.OnPropertyChanged()
 
-    member _.Nav =
+    member t.UseRegexForNameFilter
+        with get () = useRegexForNameFilter
+        and set v =
+            useRegexForNameFilter <- v
+
+            if Not isNullOrEmpty nameFilter then
+                t.OnPropertyChanged()
+
+    member private _.doFilter(uid, v) =
+        let wordFilter =
+            Filter.word (Filter.wordFilter nameFilter useRegexForNameFilter) (fun f (v: Raw) ->
+                f v.name || f v.esp || f v.edid)
+
         // TODO: Maybe use outfit pics
         let picFilter =
             Filter.pic (Filter.picFilter filter.PicMode) (fun (v: Raw) -> v.image)
@@ -41,13 +58,19 @@ type ItemsPageCtx() =
         let tagFilter =
             Filter.tag (Filter.tagFilter filter.TagMode filter.Tags) (fun (v: Raw) -> v.tags |> List.append v.keywords)
 
+        option {
+            let! word = wordFilter v
+            let! pic = picFilter word
+            let! tag = tagFilter pic
+            return NavListItem(uid, tag)
+        }
+
+    ///////////////////////////////////////////////
+    // PageNavigationContext implementation
+
+    member t.Nav =
         DB.toArrayOfRaw ()
-        |> Array.Parallel.choose (fun (uid, v) ->
-            option {
-                let! o1 = picFilter v
-                let! o2 = tagFilter o1
-                return NavListItem(uid, o2)
-            }) //Filter
+        |> Array.Parallel.choose t.doFilter
         |> Array.sortBy (fun v -> v.Name.ToLower())
         |> toObservableCollection
 

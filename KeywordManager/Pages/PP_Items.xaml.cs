@@ -27,8 +27,7 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
       "*.items",
       filename => {
         ImportFromFile(filename);
-        SetEnabledControls();
-        Owner.ReloadSelectedOutfit();
+        Owner.ReloadSelectedOutfit(); // Reload selected outfit in the case that names changed
       },
       Dispatcher);
   }
@@ -39,36 +38,8 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   public bool CanShowKeywords => true;
   public FilterTagEventArgs OldFilter => ctx.Filter;
   public void ApplyTagFilter(FilterTagEventArgs e) => ctx.Filter = e;
-
-  private void LoadNavItems(string filter, FilterTagEventArgs e) {
-    //var options = new FilterOptions(filter, e.Tags, e.TagMode, e.PicMode, tbFilterByRegex.IsChecked == true);
-    //lstNavItems.ItemsSource = Nav.GetFiltered(options);
-  }
-
-  private void FilterByName(Func<bool> CanNotFilter) {
-    if (CanNotFilter()) return;
-
-    var e = Owner.FilterByTagParameters;
-
-    var f = edtFilter.Text;
-    if (f.Length == 0 && e.Tags.Count == 0) {
-      LoadNavItems();
-      ReloadSelectedItem();
-      return;
-    }
-
-    ApplyFilter(f, e);
-  }
-
-  void ApplyFilter(string filter, FilterTagEventArgs e) {
-    LoadNavItems(filter, e);
-    ReloadSelectedItem();
-  }
-
-  private void OnFilterItems(object sender, TextChangedEventArgs e) {
-    FilterByName(() => sender is not TextBox tb || !tb.IsFocused);
-  }
-  private void OnFilterNameByRegexClick(object sender, RoutedEventArgs e) => FilterByName(() => false);
+  private void OnFilterNameByRegexClick(object sender, RoutedEventArgs e) =>
+    ctx.UseRegexForNameFilter = tbFilterByRegex.IsChecked == true;
   #endregion
 
   #region Interface: IFileDisplayable
@@ -77,29 +48,18 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   #endregion
 
   #region UI
-  public void LoadNavItems() {
-    //lstNavItems.ItemsSource = Nav.Get();
-  }
-
   private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) => ctx.SelectCurrentItem();
 
   private void OnLoaded(object sender, RoutedEventArgs e) {
     if (ctx.IsFinishedLoading) return; // Avoid repeated loading
+    ctx.UseRegexForNameFilter = tbFilterByRegex.IsChecked == true;
     ctx.ReloadNavAndGoToFirst();
     ctx.IsFinishedLoading = true;
   }
 
-  // TODO: DELETE
-  void SetEnabledControls() => cntMain.IsEnabled = lstNavItems.Items.Count > 0 || Owner.IsWorkingFileLoaded;
-
 #pragma warning disable IDE0051 // Remove unused private members
   bool CanEnableControls() => Owner.IsWorkingFileLoaded; // Used by context in XAML
 #pragma warning restore IDE0051 // Remove unused private members
-
-  private void ReloadSelectedItem() {
-    //foreach (RadioButton r in pnlItemType.Children)
-    //  r.IsChecked = int.Parse((string)r.Tag) == it.ItemType;
-  }
 
   public void OnOutfitImgWasSet(string outfitId) {
     //var pieces = new HashSet<string>(Data.UI.Outfit.Edit.GetPieces(outfitId));
@@ -118,7 +78,7 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
     //  item.Refresh();
     //}
 
-    ReloadSelectedItem();
+    //ReloadSelectedItem();
   }
 
   private void AddKeywords() {

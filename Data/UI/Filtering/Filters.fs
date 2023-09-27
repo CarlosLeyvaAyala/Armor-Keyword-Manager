@@ -58,6 +58,7 @@ module Filter =
     /// Filters nothing.
     let nothing a = id a
 
+    [<Obsolete("Delete")>]
     let tags mode (expectedTags: seq<string>) getTags a =
         let tagsAnd searchFor searchIn =
             searchIn
@@ -134,6 +135,28 @@ module Filter =
         | OnlyIfHasNoPic -> (|IsEmptyStr|_|)
 
     let pic filter getImage = filterAdapter (getImage >> filter)
+
+    let wordFilter word useRegex =
+        let filterRegex regex s =
+            try
+                // Check if regex is valid. Otherwise, filter nothing.
+                let rx = Regex(regex, RegexOptions.IgnoreCase)
+
+                rx.Match(s).Success
+            with
+            | _ -> false
+
+        match word, useRegex with
+        | IsEmptyStr, _ -> fun _ -> true
+        | w, true -> filterRegex w
+        | w, false -> containsIC w
+
+    /// Filter by word content
+    let word (filter: string -> bool) filterMatching v =
+        if filterMatching filter v then
+            Some v
+        else
+            None
 
     /// Filter by word content
     let words word useRegex filterMatching a =

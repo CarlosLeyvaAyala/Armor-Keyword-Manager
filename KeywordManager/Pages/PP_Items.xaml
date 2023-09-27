@@ -49,7 +49,6 @@
       Command="c:ItemCmds.NamesToClipboard"
       Executed="OnNamesToClipboard" />
 
-
     <CommandBinding
       CanExecute="OnCanNamesAndUIdToClipboard"
       Command="c:ItemCmds.NamesAndUIdToClipboard"
@@ -283,13 +282,11 @@
             md:TextFieldAssist.HasClearButton="True"
             md:TextFieldAssist.HasLeadingIcon="True"
             md:TextFieldAssist.LeadingIcon="Search"
-            KeyDown="OnFilterKeyDown"
-            TextChanged="OnFilterItems">
+            KeyDown="OnFilterKeyDown">
             <TextBox.Text>
               <Binding
-                Mode="OneWay"
-                Path="Text"
-                RelativeSource="{RelativeSource Self}"
+                Mode="TwoWay"
+                Path="NameFilter"
                 UpdateSourceTrigger="PropertyChanged">
                 <Binding.ValidationRules>
                   <v:RegexRule xmlns:v="clr-namespace:DMLib_WPF.Validators;assembly=DMLib-Fs-WPF" ValidatesOnTargetUpdated="True" />

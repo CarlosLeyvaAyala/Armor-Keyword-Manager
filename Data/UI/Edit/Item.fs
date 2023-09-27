@@ -4,6 +4,7 @@ module Data.UI.Items.Edit
 open Data.UI.Common
 open Data.Items
 open DMLib
+open System
 
 module DB = Data.Items.Database
 
@@ -23,9 +24,7 @@ module private Manipulate =
     let changeTags transform tag (v: Raw) =
         { v with tags = v.tags |> transform tag }
 
-let AddKeyword id keyword =
-    DB.update id (changeKeywords addWord keyword)
-
+[<Obsolete("Find how to delete this")>]
 let DelKeyword id keyword =
     DB.update id (changeKeywords delWord keyword)
 

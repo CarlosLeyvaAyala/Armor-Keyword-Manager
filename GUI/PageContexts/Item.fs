@@ -17,6 +17,29 @@ open DMLib.Combinators
 
 module DB = Data.Items.Database
 
+[<AutoOpen>]
+module private Edit =
+    let addWord word wordList =
+        wordList
+        |> List.insertDistinctAt 0 word
+        |> List.sort
+
+    let delWord word wordList =
+        wordList |> List.filter (fun a -> not (a = word))
+
+    let changeKeywords transform keyword (v: Raw) =
+        { v with keywords = v.keywords |> transform keyword }
+
+    let changeTags transform tag (v: Raw) =
+        { v with tags = v.tags |> transform tag }
+
+    let addKeyword id keyword =
+        DB.update id (changeKeywords addWord keyword)
+
+    let delKeyword id keyword =
+        DB.update id (changeKeywords delWord keyword)
+
+
 /// Context for working with the outfits page
 [<Sealed>]
 type ItemsPageCtx() =
@@ -152,3 +175,17 @@ type ItemsPageCtx() =
             let v' = (v :?> NavListItem)
             Option.ofPair (pieces.Contains v'.UId, v'))
         |> Array.iter (fun v -> v.Refresh())
+
+    member t.iterSelected f =
+        t.NavSelectedItems |> Seq.iter (fun i -> f i)
+        t.ReloadSelectedItem()
+
+    member t.AddKeywords keywords =
+        t.iterSelected (fun i ->
+            keywords
+            |> Array.iter (fun k -> addKeyword i.UId k))
+
+    member t.DeleteKeywords keywords =
+        t.iterSelected (fun i ->
+            keywords
+            |> Array.iter (fun k -> delKeyword i.UId k))

@@ -1,7 +1,7 @@
 ﻿using Data.UI;
 using GUI.UserControls;
 using System;
-using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -71,22 +71,16 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   #endregion
 
   #region Data manipulation
-  //void ForEachSelectedItem(Action<string> DoSomething) {
-  //foreach (NavList item in lstNavItems.SelectedItems) {
-  //  DoSomething(UId(item));
-  //  item.Refresh();
-  //}
+  private void OnKeywordsSet(object sender, RoutedEventArgs e) => ctx.AddKeywords((e as KeywordSelectEventArgs)?.Keywords);
 
-  //ReloadSelectedItem();
-  //}
+  void DeleteKeywords() {
+    var k = lstItemKeywords.SelectedItems
+      .OfType<Data.UI.Keywords.NavListItem>()
+      .Select(i => i.Name)
+      .ToArray();
 
-  private void OnKeywordsSet(object sender, RoutedEventArgs e) => Debug.WriteLine((e as KeywordSelectEventArgs)?.Keywords.Length);
-
-  void DeleteKeywords() { }
-  //ForEachSelectedItem((uId) => {
-  //  foreach (var keyword in lstItemKeywords.SelectedItems)
-  //    Edit.DelKeyword(uId, keyword.ToString());
-  //});
+    ctx.DeleteKeywords(k);
+  }
 
   private void LstItemKeywords_KeyDown(object sender, KeyEventArgs e) {
     if (e.Key != Key.Delete) return;

@@ -4,6 +4,7 @@ open DMLib
 open DMLib.String
 open Data.Keywords
 open Data.UI.AppSettings.Paths.Img.Keywords
+open DMLib_WPF
 
 module DB = Data.Keywords.Database
 

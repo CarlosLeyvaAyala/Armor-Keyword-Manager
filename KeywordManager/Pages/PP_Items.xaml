@@ -304,8 +304,10 @@
             <DataTemplate>
               <Grid
                 Margin="0,5"
-                ToolTipService.BetweenShowDelay="1000"
-                ToolTipService.InitialShowDelay="1000">
+                ToolTipService.BetweenShowDelay="0"
+                ToolTipService.HorizontalOffset="30"
+                ToolTipService.InitialShowDelay="10"
+                ToolTipService.Placement="Right">
 
                 <!--  IMAGE TOOLTIP  -->
                 <Grid.ToolTip>

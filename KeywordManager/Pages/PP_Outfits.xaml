@@ -36,13 +36,13 @@
   <Grid x:Name="cntMain" IsEnabled="{Binding CanItemBeSelected}">
     <Grid.RowDefinitions>
       <RowDefinition Height="4*" />
-      <RowDefinition Height="{StaticResource GridSepVertical}" />
-      <RowDefinition Height="6*" />
     </Grid.RowDefinitions>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="6*" />
       <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
-      <ColumnDefinition Width="2*" />
+      <ColumnDefinition Width="7*" />
+      <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
+      <ColumnDefinition Width="4*" />
     </Grid.ColumnDefinitions>
 
     <!--  NAVIGATOR  -->
@@ -119,6 +119,8 @@
                 Header="Batch _rename"
                 IsEnabled="{Binding IsNavMultipleSelected}" />
               <Separator />
+              <MenuItem Click="OnSetImgClick" Header="Set _image" />
+              <Separator />
               <MenuItem Command="c:OutfitCmds.Del" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
             </ContextMenu>
           </ListBox.ContextMenu>
@@ -129,8 +131,8 @@
     <!--  DISTRIBUTION  -->
     <GroupBox
       Grid.Column="2"
-      md:ColorZoneAssist.Mode="PrimaryMid"
-      Header="Distribution rules"
+      md:ColorZoneAssist.Mode="SecondaryMid"
+      Header="SPID rules"
       Style="{StaticResource MaterialDesignCardGroupBox}">
       <Grid Margin="{StaticResource MgGrpContent}">
         <Grid.ColumnDefinitions>
@@ -145,100 +147,84 @@
 
     <!--  OUTFIT DATA  -->
     <GroupBox
-      Grid.Row="2"
-      Grid.Column="2"
-      md:ColorZoneAssist.Mode="SecondaryMid"
+      Grid.Column="4"
+      md:ColorZoneAssist.Mode="PrimaryMid"
       Header="Outfit data"
       Style="{StaticResource MaterialDesignCardGroupBox}">
 
-      <ScrollViewer>
-        <Grid Margin="{StaticResource MgGrpContent}">
-          <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="{StaticResource GridSepVertical}" />
-            <RowDefinition Height="auto" />
-          </Grid.RowDefinitions>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="{StaticResource GridSepHorizontal}" />
-            <ColumnDefinition Width="*" />
-          </Grid.ColumnDefinitions>
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="10*" />
+          <RowDefinition Height="{StaticResource GridSepVertical}" />
+          <RowDefinition Height="5*" />
+        </Grid.RowDefinitions>
 
-          <!--  TAGS  -->
-          <GroupBox
-            md:ColorZoneAssist.Mode="PrimaryLight"
-            BorderThickness="0"
-            Header="Tags">
-            <uc:TagViewer
-              x:Name="lstItemTags"
-              MaxHeight="{DynamicResource rowHeightPieces}"
-              ItemsSource="{Binding SelectedItem.Tags}" />
-            <!--<ListBox
-              MaxHeight="200"
-              d:ItemsSource="{d:SampleData ItemCount=4}"
-              ItemsSource="{Binding SelectedItem.Tags}" />-->
-          </GroupBox>
+        <!--  TAGS  -->
+        <GroupBox
+          Grid.Row="2"
+          md:ColorZoneAssist.Mode="PrimaryLight"
+          BorderThickness="0"
+          Header="Tags">
+          <uc:TagViewer x:Name="lstItemTags" ItemsSource="{Binding SelectedItem.Tags}" />
+        </GroupBox>
 
-          <!--  ARMOR PIECES  -->
-          <GroupBox
-            Grid.Column="2"
-            md:ColorZoneAssist.Mode="PrimaryLight"
-            BorderThickness="0"
-            Header="Armor pieces">
-            <ListBox
-              MaxHeight="{DynamicResource rowHeightPieces}"
-              d:ItemsSource="{d:SampleData ItemCount=10}"
-              ItemsSource="{Binding SelectedItem.ArmorPieces}">
-              <ListBox.ItemTemplate>
-                <DataTemplate>
-                  <TextBlock Text="{Binding Name}">
-                    <TextBlock.Style>
-                      <Style BasedOn="{StaticResource MaterialDesignTextBlock}" TargetType="TextBlock">
-                        <Style.Triggers>
-                          <DataTrigger Binding="{Binding IsInDB}" Value="False">
-                            <Setter Property="Opacity" Value="0.5" />
-                            <Setter Property="ToolTipService.InitialShowDelay" Value="100" />
-                            <Setter Property="ToolTip" Value="This item has not been added to this database" />
-                          </DataTrigger>
-                        </Style.Triggers>
-                      </Style>
-                    </TextBlock.Style>
-                  </TextBlock>
-                </DataTemplate>
-              </ListBox.ItemTemplate>
-            </ListBox>
-          </GroupBox>
+        <!--  ARMOR PIECES  -->
+        <GroupBox
+          md:ColorZoneAssist.Mode="PrimaryLight"
+          BorderThickness="0"
+          Header="Armor pieces">
+          <ListBox d:ItemsSource="{d:SampleData ItemCount=10}" ItemsSource="{Binding SelectedItem.ArmorPieces}">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Name}" ToolTip="{Binding Name}">
+                  <TextBlock.Style>
+                    <Style BasedOn="{StaticResource MaterialDesignTextBlock}" TargetType="TextBlock">
+                      <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsInDB}" Value="False">
+                          <Setter Property="Opacity" Value="0.5" />
+                          <Setter Property="ToolTipService.InitialShowDelay" Value="100" />
+                          <Setter Property="ToolTip" Value="This item has not been added to this database" />
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </TextBlock.Style>
+                </TextBlock>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </GroupBox>
 
-          <!--  IMAGE  -->
-          <GroupBox
-            Grid.Row="2"
-            Grid.ColumnSpan="3"
-            md:ColorZoneAssist.Mode="PrimaryLight"
-            BorderThickness="0"
-            DataContext="{Binding SelectedItem}"
-            Header="Image">
-            <uc:SelectImagePrompt
-              Height="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource Self}}"
-              d:DataContext="{d:DesignInstance Type=guiobjs:NavSelectedItem}"
-              Button.Click="OnSetImgClick"
-              Button.Drop="OnSetImgDrop"
-              Image="{Binding Img, Converter={StaticResource StringToImgConverter}}">
-              <uc:SelectImagePrompt.Style>
-                <Style TargetType="uc:SelectImagePrompt">
-                  <Style.Triggers>
-                    <DataTrigger Binding="{Binding HasImg}" Value="False">
-                      <Setter Property="IsPromptVisible" Value="True" />
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding HasImg}" Value="True">
-                      <Setter Property="IsPromptVisible" Value="False" />
-                    </DataTrigger>
-                  </Style.Triggers>
-                </Style>
-              </uc:SelectImagePrompt.Style>
-            </uc:SelectImagePrompt>
-          </GroupBox>
-        </Grid>
-      </ScrollViewer>
+        <!--  IMAGE  -->
+        <!--
+        <GroupBox
+          Grid.Row="2"
+          Grid.ColumnSpan="3"
+          md:ColorZoneAssist.Mode="PrimaryLight"
+          BorderThickness="0"
+          DataContext="{Binding SelectedItem}"
+          Header="Image"
+          Visibility="Collapsed">
+          <uc:SelectImagePrompt
+            Height="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+            d:DataContext="{d:DesignInstance Type=guiobjs:NavSelectedItem}"
+            Button.Click="OnSetImgClick"
+            Button.Drop="OnSetImgDrop"
+            Image="{Binding Img, Converter={StaticResource StringToImgConverter}}">
+            <uc:SelectImagePrompt.Style>
+              <Style TargetType="uc:SelectImagePrompt">
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding HasImg}" Value="False">
+                    <Setter Property="IsPromptVisible" Value="True" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding HasImg}" Value="True">
+                    <Setter Property="IsPromptVisible" Value="False" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </uc:SelectImagePrompt.Style>
+          </uc:SelectImagePrompt>
+        </GroupBox>-->
+      </Grid>
     </GroupBox>
   </Grid>
 </UserControl>

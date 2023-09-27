@@ -1,7 +1,7 @@
 ﻿namespace Data.Outfit
 
 open DMLib
-open Common
+open CommonTypes
 open DMLib.String
 open DMLib.Types.Skyrim
 open DMLib.Types

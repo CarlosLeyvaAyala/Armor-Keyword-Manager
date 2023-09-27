@@ -1,6 +1,6 @@
 ﻿namespace IO.Items
 
-open Common
+open CommonTypes
 open System
 open System.IO
 open DMLib.String

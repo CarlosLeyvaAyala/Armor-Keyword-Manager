@@ -1,5 +1,6 @@
 ﻿using Data.UI;
 using GUI.UserControls;
+using KeywordManager.UserControls;
 using System;
 using System.Linq;
 using System.Windows;
@@ -90,41 +91,16 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
     e.CanExecute = lstItemKeywords.IsFocused && lstItemKeywords.SelectedItems.Count > 0;
   private void OnDelKeyword(object sender, ExecutedRoutedEventArgs e) => DeleteKeywords();
 
-
-  //void OnChangeTags(Action ChangeTags) {
-  //  var currTags = Data.UI.Tags.Get.AllTagsAndKeywords();
-  //  ChangeTags();
-  //  if (!currTags.SequenceEqual(Data.UI.Tags.Get.AllTagsAndKeywords())) Owner.ReloadTags();
-  //}
-
   private void OnCbTagsAdd(object sender, KeyEventArgs e) {
-    //OnChangeTags(
-    //  () => {
-    //    if (e.Key != Key.Return)
-    //      return;
+    if (e.Key != Key.Return) return;
 
-    //    var tag = cbItemTags.Text.ToLower().Trim();
-    //    if (tag == "")
-    //      return;
-
-    //    cbItemTags.Text = "";
-
-    //    ForEachSelectedItem(uId => {
-    //      Edit.AddTag(uId, tag);
-    //    });
-    //  });
+    var tag = cbItemTags.Text.ToLower().Trim();
+    if (tag == "") return;
+    ctx.AddTag(tag, Owner.ReloadTags);
+    cbItemTags.Text = "";
   }
 
-  private void OnDeleteTag(object sender, RoutedEventArgs e) {
-    //Owner.ReloadTags();
-
-    //OnChangeTags(() => {
-    //  var tag = ((ClickTagEventArgs)e).Tag;
-    //  ForEachSelectedItem(uId => {
-    //    Edit.DelTag(uId, tag);
-    //  });
-    //});
-  }
+  private void OnDeleteTag(object sender, RoutedEventArgs e) => ctx.DeleteTag(((ClickTagEventArgs)e).Tag, Owner.ReloadTags);
 
   private void OnCanCreateUnboundOutfit(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.AreAllSelectedArmors;
 
@@ -145,6 +121,7 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
       DMLib_WPF.Dialogs.File.Open(
         AppSettings.Paths.Img.filter,
         fn => {
+          // TODO: Enable
           //ForEachSelectedItem((uId) => Edit.Image(uId, fn));
         },
         guid: "32518c2e-8d81-41e3-b872-2e4e0e06568a");

@@ -3,7 +3,7 @@
 open DMLib
 open DMLib.String
 open System
-open Common
+open CommonTypes
 open DMLib.Types.Skyrim
 
 /// FULL name value gotten from xEdit

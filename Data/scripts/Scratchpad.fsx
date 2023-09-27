@@ -1,5 +1,4 @@
-﻿//#r "nuget: carlos.leyva.ayala.dmlib"
-//#r "nuget: TextCopy"
+﻿#r "nuget: TextCopy"
 #r "nuget: FsToolkit.ErrorHandling"
 #r "nuget: FSharpx.Collections"
 
@@ -27,15 +26,22 @@
 #load "..\..\..\DMLib-FSharp\Types\Skyrim\EspFileName.fs"
 #load "..\..\..\DMLib-FSharp\Types\Skyrim\UniqueId.fs"
 
+// DMLib WPF
+#load "..\..\..\DMLib-Fs-WPF\WPFBindable.fs"
+
 // Project
 #load "../Common.fs"
 #load "../Workflow/Keyword.fs"
 #load "../Workflow/Item.fs"
 #load "../Workflow/Outfit.fs"
 #load "../IO/Common.fs"
+#load "../IO/Keyword.fs"
 #load "../IO/Item.fs"
 #load "../IO/Outfit.fs"
 #load "../UI/Common.fs"
+#load "../UI/AppSettings.fs"
+#load "../UI/Keyword.fs"
+#load "../UI/Tags.fs"
 #load "../PropietaryFile.fs"
 #time "on"
 
@@ -51,6 +57,7 @@ open DMLib.Types
 open DMLib.Types.Skyrim
 open FSharpx.Collections
 open Data.Outfit
+open TextCopy
 
 fsi.AddPrinter(fun (r: NonEmptyString) -> r.ToString())
 fsi.AddPrinter(fun (r: UniqueId) -> r.ToString())
@@ -62,6 +69,58 @@ IO.PropietaryFile.Open inF
 let items = Items.toArrayOfRaw ()
 let outfits = Outfits.toArrayOfRaw ()
 
+/////////////////////////////////////////////////////
+open Data.UI
+open DMLib.Map
+
+type TagOperation =
+    | Add
+    | Remove
+
+
+let reloadUI =
+    (Action(fun () -> printfn "====================\nUI RELOADED\n===================="))
+
+let mutable tags = Tags.Get.allTagStatistics ()
+
+let modifyTag tag op =
+    let oldV =
+        tags
+        |> Map.tryFind tag
+        |> Option.defaultValue { timesUsed = 0 }
+
+    let oldCount = oldV.timesUsed
+    let newV = { oldV with timesUsed = op oldCount }
+
+    tags <- tags.Add(tag, newV)
+    oldCount, newV
+
+let addTag count tag (onTagsChanged: Action) =
+    match modifyTag tag (fun o -> o + count) with
+    | (0, _) -> onTagsChanged.Invoke()
+    | _ -> ()
+
+let delTag count tag (onTagsChanged: Action) =
+    match modifyTag tag (fun o -> Math.Max(o - count, 0)) with
+    | (_, n) when n.timesUsed = 0 ->
+        tags <- tags.Remove tag
+        onTagsChanged.Invoke()
+    | _ -> ()
+
+let editTagsOnObject f op tag (onTagsChanged: Action) =
+    f ()
+
+    let update =
+        match op with
+        | Add -> addTag
+        | Remove -> delTag
+
+    update 1 tag onTagsChanged
+
+editTagsOnObject (fun () -> printfn "Added") Add "ass crack" reloadUI
+editTagsOnObject (fun () -> printfn "Deleted") Remove "ass crack" reloadUI
+tags
+tags <- Tags.Get.allTagStatistics ()
 /////////////////////////////////////////////////////
 //// Regex edit test
 //try

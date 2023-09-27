@@ -168,17 +168,11 @@ type ItemsPageCtx() =
             keywords
             |> Array.iter (fun k -> DB.delKeyword i.UId k))
 
-    member private t.changeTags change tag (reloadOnUI: Action) =
-        let allTags = Tags.Get.allTagsAndKeywords >> Set.ofArray
+    member private t.changeTags op change tag (reloadUI: Action) =
+        Tags.Edit.onObject (fun () -> t.iterSelected (fun i -> change i.UId tag)) op tag reloadUI
 
-        let oldTags = allTags ()
-        t.iterSelected (fun i -> change i.UId tag)
-        Tags.Precalculate.tags ()
-        let currTags = allTags ()
+    member t.AddTag tag reloadUI =
+        t.changeTags Tags.Add DB.addTag tag reloadUI
 
-        // Tags have changed.
-        if not (Set.difference oldTags currTags).IsEmpty then
-            reloadOnUI.Invoke()
-
-    member t.AddTag tag reloadOnUI = t.changeTags DB.addTag tag reloadOnUI
-    member t.DelTag tag reloadOnUI = t.changeTags DB.delTag tag reloadOnUI
+    member t.DeleteTag tag reloadUI =
+        t.changeTags Tags.Remove DB.delTag tag reloadUI

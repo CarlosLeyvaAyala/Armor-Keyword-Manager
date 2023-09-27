@@ -1,4 +1,4 @@
-﻿namespace Common
+﻿namespace CommonTypes
 
 open DMLib.String
 open DMLib.Types

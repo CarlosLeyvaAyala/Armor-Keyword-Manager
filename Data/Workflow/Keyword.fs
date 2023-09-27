@@ -1,6 +1,6 @@
 ﻿module Data.Keywords
 
-open Common
+open CommonTypes
 open DMLib
 open DMLib.String
 

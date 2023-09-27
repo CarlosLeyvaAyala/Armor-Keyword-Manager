@@ -469,7 +469,7 @@
       <uc:KeywordManagerUC
         Margin="{StaticResource MarginStd}"
         KeywordChange="OnKeywordChanged"
-        KeywordSelect="OnKeywordSelected" />
+        KeywordSelect="OnKeywordsSet" />
     </GroupBox>
   </Grid>
 </UserControl>

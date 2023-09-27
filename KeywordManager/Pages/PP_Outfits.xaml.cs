@@ -57,7 +57,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
   /// <summary>
   /// Used when a new unbound outfit was added
   /// </summary>
-  public void ReloadSelectedItem() => ctx.SelectCurrentItem();
+  public void ReloadSelectedItem() => ctx.ReloadSelectedItem();
 
   private void OnSetImgClick(object sender, RoutedEventArgs e) =>
     SetImage(DMLib_WPF.Dialogs.File.Open(AppSettings.Paths.Img.filter, "f07db2f1-a50e-4487-b3b2-8f384d3732aa"));

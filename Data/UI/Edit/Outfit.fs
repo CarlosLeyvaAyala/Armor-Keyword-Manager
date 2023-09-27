@@ -4,7 +4,6 @@ module Data.UI.Outfit.Edit
 open DMLib.String
 open Data.UI.AppSettings.Paths.Img.Outfit
 open System.IO
-open DMLib.Collections
 
 module DB = Data.Outfit.Database
 
@@ -26,7 +25,7 @@ let Delete uid =
 
     DB.delete uid
 
-let GetPieces uid = (DB.find uid).pieces |> toCList
+let getPieces uid = (DB.find uid).pieces
 
 let Rename uId newName =
     DB.update uId (fun d -> { d with name = newName })

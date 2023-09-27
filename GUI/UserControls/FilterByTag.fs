@@ -146,7 +146,7 @@ type FilterByTagCtx() =
             v.IsVisible <-
                 match filter with
                 | ""
-                | IsContainedIn v.Name -> true
+                | IsContainedInIC v.Name -> true
                 | _ -> false)
 
         tags

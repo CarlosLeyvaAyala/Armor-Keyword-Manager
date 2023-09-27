@@ -141,3 +141,14 @@ type ItemsPageCtx() =
         t.NavSelectedItems
         |> Seq.map (fun s -> s.UniqueId)
         |> Data.UI.Outfit.Edit.createUnbound name
+
+    member t.UpdateItemsOfOutfit outfitId =
+        let pieces =
+            Data.UI.Outfit.Edit.getPieces outfitId
+            |> Set.ofList
+
+        [| for i in t.NavControl.Items -> i |]
+        |> Array.Parallel.choose (fun v ->
+            let v' = (v :?> NavListItem)
+            Option.ofPair (pieces.Contains v'.UId, v'))
+        |> Array.iter (fun v -> v.Refresh())

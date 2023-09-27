@@ -1,5 +1,4 @@
 ﻿using Data.UI;
-using Data.UI.Items;
 using GUI.UserControls;
 using System;
 using System.Diagnostics;
@@ -61,43 +60,33 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   bool CanEnableControls() => Owner.IsWorkingFileLoaded; // Used by context in XAML
 #pragma warning restore IDE0051 // Remove unused private members
 
-  public void OnOutfitImgWasSet(string outfitId) {
-    //var pieces = new HashSet<string>(Data.UI.Outfit.Edit.GetPieces(outfitId));
-    //var navItems = lstNavItems.Items.OfType<NavList>()
-    //    .Where(n => pieces.Contains(n.UniqueId));
-
-    //foreach (var navItem in navItems)
-    //  navItem.Refresh();
+  public void OnOutfitImgWasSet(string outfitId) => ctx.UpdateItemsOfOutfit(outfitId);
+  private void OnFilterKeyDown(object sender, KeyEventArgs e) {
+    if (e.Key == Key.Enter) GUI.ListBox.FocusFromFilter(lstNavItems);
   }
+  private void OnLstNavItemsKeyDown(object sender, KeyEventArgs e) {
+    if (e.Key == Key.Back) GUI.ListBox.FocusFilter(edtFilter);
+  }
+  private void OnKeywordChanged(object sender, RoutedEventArgs e) => ctx.ReloadSelectedItem();
   #endregion
 
   #region Data manipulation
-  void ForEachSelectedItem(Action<string> DoSomething) {
-    //foreach (NavList item in lstNavItems.SelectedItems) {
-    //  DoSomething(UId(item));
-    //  item.Refresh();
-    //}
+  //void ForEachSelectedItem(Action<string> DoSomething) {
+  //foreach (NavList item in lstNavItems.SelectedItems) {
+  //  DoSomething(UId(item));
+  //  item.Refresh();
+  //}
 
-    //ReloadSelectedItem();
-  }
+  //ReloadSelectedItem();
+  //}
 
-  private void AddKeywords() {
-    ForEachSelectedItem((uId) => {
-      //foreach (var keyword in lstKeywords.SelectedItems)
-      //  Edit.AddKeyword(uId, keyword.ToString());
-    });
-  }
+  private void OnKeywordsSet(object sender, RoutedEventArgs e) => Debug.WriteLine((e as KeywordSelectEventArgs)?.Keywords.Length);
 
-  private void LstKeywords_MouseDoubleClick(object sender, MouseButtonEventArgs e) => AddKeywords();
-  private void LstKeywords_KeyDown(object sender, KeyEventArgs e) {
-    if (e.Key == Key.Return) AddKeywords();
-  }
-
-  void DeleteKeywords() =>
-    ForEachSelectedItem((uId) => {
-      foreach (var keyword in lstItemKeywords.SelectedItems)
-        Edit.DelKeyword(uId, keyword.ToString());
-    });
+  void DeleteKeywords() { }
+  //ForEachSelectedItem((uId) => {
+  //  foreach (var keyword in lstItemKeywords.SelectedItems)
+  //    Edit.DelKeyword(uId, keyword.ToString());
+  //});
 
   private void LstItemKeywords_KeyDown(object sender, KeyEventArgs e) {
     if (e.Key != Key.Delete) return;
@@ -166,7 +155,7 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
       DMLib_WPF.Dialogs.File.Open(
         AppSettings.Paths.Img.filter,
         fn => {
-          ForEachSelectedItem((uId) => Edit.Image(uId, fn));
+          //ForEachSelectedItem((uId) => Edit.Image(uId, fn));
         },
         guid: "32518c2e-8d81-41e3-b872-2e4e0e06568a");
     }
@@ -195,16 +184,4 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
 
   private void OnImportFromClipboard(object sender, RoutedEventArgs e) => throw new NotImplementedException("Not implemented");
   #endregion
-
-  private void OnFilterKeyDown(object sender, KeyEventArgs e) {
-    if (e.Key == Key.Enter) GUI.ListBox.FocusFromFilter(lstNavItems);
-  }
-
-  private void OnLstNavItemsKeyDown(object sender, KeyEventArgs e) {
-    if (e.Key == Key.Back) GUI.ListBox.FocusFilter(edtFilter);
-  }
-
-  private void OnKeywordSelected(object sender, RoutedEventArgs e) => Debug.WriteLine((e as KeywordSelectEventArgs)?.Keywords.Length);
-  private void OnKeywordChanged(object sender, RoutedEventArgs e) => Debug.WriteLine("Keyword changed. Needs reloading.");
-
 }

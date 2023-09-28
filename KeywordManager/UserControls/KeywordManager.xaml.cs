@@ -28,7 +28,6 @@ public partial class KeywordManagerUC : UserControl {
   #region Internal events
   private void OnLoaded(object sender, RoutedEventArgs e) {
     if (ctx.IsFinishedLoading) return;
-    ctx.OwnerWindow = MainWindow.Instance;
     ctx.IsFinishedLoading = true;
     ctx.ReloadNavAndGoToFirst();
   }

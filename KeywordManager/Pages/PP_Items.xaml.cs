@@ -144,6 +144,7 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   private void ImportItems(Action Import) {
     Import();
     ctx.ReloadNavAndGoToFirst();
+    Owner.ReloadOutfitsNavAndGoToCurrent();
     Owner.ImportedInfoBox("item");
   }
 

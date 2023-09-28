@@ -99,11 +99,40 @@ It can not be exported to SPID.</System:String>
                   </Image.ToolTip>
                 </Image>
 
+                <!--  TEXT  -->
                 <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                  <!--  NAME  -->
                   <TextBlock
                     Style="{StaticResource NavTxtMain}"
                     Text="{Binding Name, FallbackValue=Name}"
-                    ToolTip="Name will not be used outside this app" />
+                    ToolTip="Name will not be used outside this app"
+                    Visibility="{Binding HasMissingPieces, Converter={StaticResource InverseBoolToVisConverter}}" />
+
+                  <!--  NAME WITH MISSING PIECES  -->
+                  <StackPanel
+                    Orientation="Horizontal"
+                    ToolTipService.InitialShowDelay="50"
+                    Visibility="{Binding HasMissingPieces, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel.ToolTip>
+                      <StackPanel>
+                        <TextBlock Text="This outfit has pieces not found in this database:" />
+                        <ItemsControl Margin="15,4,0,8" ItemsSource="{Binding MissingPieces}" />
+                        <TextBlock FontWeight="Bold" Text="Get them from xEdit." />
+                      </StackPanel>
+                    </StackPanel.ToolTip>
+                    <!--  WARNING ICON  -->
+                    <md:PackIcon Foreground="{StaticResource ColorWarning}" Kind="Warning" />
+
+                    <!--  NAME  -->
+                    <TextBlock
+                      Margin="5,0"
+                      FontWeight="Black"
+                      Foreground="{StaticResource ColorWarning}"
+                      Style="{StaticResource NavTxtMain}"
+                      Text="{Binding Name, FallbackValue=Missing pieces name}" />
+                  </StackPanel>
+
+                  <!--  EDID  -->
                   <TextBlock
                     Margin="{StaticResource MgTopNaaarrow}"
                     Style="{StaticResource NavTxtD1}"
@@ -169,7 +198,13 @@ It can not be exported to SPID.</System:String>
           Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.7}"
           VerticalAlignment="Center"
           Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
-          <Image Source="{StaticResource svgWarning}" />
+
+          <md:PackIcon
+            Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}}"
+            Height="{Binding Width, RelativeSource={RelativeSource Self}}"
+            HorizontalAlignment="Stretch"
+            Foreground="{StaticResource ColorWarning}"
+            Kind="Warning" />
 
           <TextBlock
             Style="{StaticResource MaterialDesignSubtitle1TextBlock}"

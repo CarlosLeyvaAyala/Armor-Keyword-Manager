@@ -112,6 +112,17 @@ type NavListItem(uId: string, d: Raw) =
     member t.HasImg = d.img <> ""
     override t.ToString() = t.Name
 
+    /// Pieces not added to the database
+    member _.MissingPieces =
+        Get.pieces d
+        |> List.choose (fun (uid, piece) ->
+            match piece with
+            | Some _ -> None
+            | None -> Some uid)
+
+    /// Does this outfit has pieces not added to the database?
+    member t.HasMissingPieces = t.MissingPieces.Length > 0
+
 type ArmorPiece(uId: string, d: Data.Items.Raw option) =
     let fullname =
         d

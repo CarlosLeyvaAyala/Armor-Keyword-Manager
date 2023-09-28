@@ -18,6 +18,7 @@
   Background="{DynamicResource MaterialDesignPaper}"
   FontFamily="{DynamicResource MaterialDesignFont}"
   Loaded="Window_Loaded"
+  ResizeMode="CanResizeWithGrip"
   TextElement.FontSize="13"
   TextElement.FontWeight="Regular"
   TextElement.Foreground="{DynamicResource MaterialDesignBody}"

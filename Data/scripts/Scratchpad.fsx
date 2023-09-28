@@ -38,9 +38,11 @@
 #load "../IO/Keyword.fs"
 #load "../IO/Item.fs"
 #load "../IO/Outfit.fs"
+#load "../UI/Interfaces.fs"
 #load "../UI/Common.fs"
 #load "../UI/AppSettings.fs"
 #load "../UI/Keyword.fs"
+#load "../UI/Outfit.fs"
 #load "../UI/Tags.fs"
 #load "../PropietaryFile.fs"
 #time "on"
@@ -71,41 +73,12 @@ let outfits = Outfits.toArrayOfRaw ()
 
 /////////////////////////////////////////////////////
 let allArmors =
-    """
-[OddX] Daughters of Dimitrescu Black Bottom
-[OddX] Daughters of Dimitrescu Black Collar
-[OddX] Daughters of Dimitrescu Black Collar 2
-[OddX] Daughters of Dimitrescu Black Collar 3
-[OddX] Daughters of Dimitrescu Black Collar 4
-[OddX] Daughters of Dimitrescu Black Garter Belt
-[OddX] Daughters of Dimitrescu Black Gloves
-[OddX] Daughters of Dimitrescu Black Heels
-[OddX] Daughters of Dimitrescu Black Necklace
-[OddX] Daughters of Dimitrescu Black Nipple Cover
-[OddX] Daughters of Dimitrescu Black Skirt
-[OddX] Daughters of Dimitrescu Black Skirt (SMP Physics)
-[OddX] Daughters of Dimitrescu Black Stockings
-[OddX] Daughters of Dimitrescu Black Top
-[OddX] Daughters of Dimitrescu Black Top Alt
-[OddX] Daughters of Dimitrescu Black Top Alt Hoodless
-[OddX] Daughters of Dimitrescu Black Top Hoodless
-[OddX] Daughters of Dimitrescu Bottom
-[OddX] Daughters of Dimitrescu Collar
-[OddX] Daughters of Dimitrescu Collar 2
-[OddX] Daughters of Dimitrescu Collar 3
-00 V-Killer Arms [Red]
-Test Single
-Tomahawk man
-Other non repeated armor
-00 V-Killer Dress [Red]
-00 V-Killer Panty [Red]
-    """
-        .Trim()
-        .Split("\n")
-
-let s1 = "[OddX] Daughters of Dimitrescu Black Top"
-let s2 = "[OddX] Daughters of Dimitrescu Black Nipple Cover"
-let s3 = "00 V-Killer Panty [Red]"
+    "Stoneheart Studio [SE].esp~800,Stoneheart Studio [SE].esp~801,Stoneheart Studio [SE].esp~802,Stoneheart Studio [SE].esp~80c"
+        .Split(",")
+    |> Array.choose (fun s ->
+        match s with
+        | Contains "~" -> s |> replace "~" "|" |> Some
+        | _ -> None)
 
 open DMLib.String
 
@@ -116,12 +89,14 @@ let radixes =
     |> Array.Parallel.choose (fun (s1, s2) ->
         match s1 with
         | Equals s2 -> None
+        | IsAtIndex "|" i -> Some s1[..i]
         | _ -> s1 |> findCommonRadix s2)
     |> Array.countBy id
     |> Array.sortByDescending (fun (_, count) -> count)
     |> Array.choose (fun (s, _) ->
         match s with
         | EndsWith " "
+        | EndsWith "|"
         | EndsWith "_"
         | EndsWith "-"
         | EndsWith "]" -> Some s
@@ -149,6 +124,7 @@ nonProcessed
 |> Array.map (fun name -> name, name)
 |> Array.append shortNames // Add elements with no common radix
 |> Array.sortBy (fun (fullname, _) -> fullname)
+
 
 /////////////////////////////////////////////////////
 //// Regex edit test

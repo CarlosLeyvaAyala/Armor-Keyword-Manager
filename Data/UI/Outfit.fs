@@ -40,12 +40,14 @@ module private Ops =
             |> Array.Parallel.choose (fun (s1, s2) ->
                 match s1 with
                 | Equals s2 -> None
+                | IsAtIndex "|" i -> Some s1[..i]
                 | _ -> s1 |> findCommonRadix s2)
             |> Array.countBy id
             |> Array.sortByDescending (fun (_, count) -> count)
             |> Array.choose (fun (s, _) ->
                 match s with
                 | EndsWith " "
+                | EndsWith "|"
                 | EndsWith "_"
                 | EndsWith "-"
                 | EndsWith "]" -> Some s
@@ -107,6 +109,7 @@ type NavListItem(uId: string, d: Raw) =
             nameof t.Img |> t.OnPropertyChanged
 
     member t.HasImg = d.img <> ""
+    override t.ToString() = t.Name
 
 type ArmorPiece(uId: string, d: Data.Items.Raw option) =
     let fullname =

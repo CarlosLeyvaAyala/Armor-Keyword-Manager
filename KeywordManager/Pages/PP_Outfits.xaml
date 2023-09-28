@@ -187,7 +187,7 @@ It can not be exported to SPID.</System:String>
       <Grid>
         <Grid.RowDefinitions>
           <RowDefinition Height="*" />
-          <RowDefinition Height="{StaticResource GridSepVertical}" />
+          <RowDefinition Height="{StaticResource GridSepVerticalNarrow}" />
           <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <!--  RULE LIST  -->
@@ -217,14 +217,32 @@ It can not be exported to SPID.</System:String>
         <StackPanel Grid.Row="2" Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
           <StackPanel.Resources>
             <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox" />
+            <Style BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}" TargetType="ComboBox">
+              <Setter Property="IsEditable" Value="True" />
+              <Setter Property="Margin" Value="{StaticResource MgTopNaarrow}" />
+            </Style>
           </StackPanel.Resources>
+
           <ComboBox x:Name="cbRuleName" md:HintAssist.Hint="Person name" />
           <ComboBox x:Name="cbRuleRace" md:HintAssist.Hint="Race" />
           <ComboBox x:Name="cbRuleClass" md:HintAssist.Hint="Class" />
-          <Button
-            Margin="{StaticResource MgTopWide}"
-            Content="_Add rule"
-            Style="{StaticResource MaterialDesignRaisedSecondaryButton}" />
+
+          <Button Margin="{StaticResource MgTopWide}" Content="_Add rule">
+            <Button.Style>
+              <Style BasedOn="{StaticResource MaterialDesignRaisedSecondaryButton}" TargetType="Button">
+                <Style.Triggers>
+                  <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                      <Condition Binding="{Binding Path=Text, ElementName=cbRuleName}" Value="" />
+                      <Condition Binding="{Binding Path=Text, ElementName=cbRuleRace}" Value="" />
+                      <Condition Binding="{Binding Path=Text, ElementName=cbRuleClass}" Value="" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="IsEnabled" Value="False" />
+                  </MultiDataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Button.Style>
+          </Button>
         </StackPanel>
       </Grid>
     </GroupBox>

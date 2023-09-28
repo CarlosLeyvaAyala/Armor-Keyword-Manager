@@ -17,6 +17,8 @@
   mc:Ignorable="d">
   <UserControl.Resources>
     <System:Double x:Key="rowHeightPieces">120</System:Double>
+    <System:String x:Key="nonDistributableMessage" xml:space="preserve">This outfit does not belong to any plugin.
+It can not be exported to SPID.</System:String>
   </UserControl.Resources>
 
   <UserControl.DataContext>
@@ -116,7 +118,7 @@
                           <DataTrigger Binding="{Binding IsUnbound}" Value="True">
                             <Setter Property="Foreground" Value="Red" />
                             <Setter Property="FontWeight" Value="Bold" />
-                            <Setter Property="ToolTip" Value="This outfit does not belong to any plugin.&#x0a;It can not be used for SPID exporting." />
+                            <Setter Property="ToolTip" Value="{DynamicResource nonDistributableMessage}" />
                           </DataTrigger>
                         </Style.Triggers>
                       </Style>
@@ -151,15 +153,44 @@
       Grid.Column="2"
       md:ColorZoneAssist.Mode="SecondaryMid"
       Header="SPID rules"
+      IsEnabled="{Binding SelectedItem.IsDistributable}"
       Style="{StaticResource MaterialDesignCardGroupBox}">
-      <Grid Margin="{StaticResource MgGrpContent}">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="2*" />
-          <ColumnDefinition Width="{StaticResource GridSepHorizontal}" />
-          <ColumnDefinition Width="5*" />
-        </Grid.ColumnDefinitions>
-        <!--  eui  -->
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" />
+          <RowDefinition Height="{StaticResource GridSepVertical}" />
+          <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <!--  RULE LIST  -->
+        <ListBox Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
+        <!--  UNBOUND OUTFIT WARNING  -->
+        <StackPanel
+          Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.7}"
+          VerticalAlignment="Center"
+          Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+          <Image Source="{StaticResource svgWarning}" />
+
+          <TextBlock
+            Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+            Text="{DynamicResource nonDistributableMessage}"
+            TextAlignment="Center"
+            TextWrapping="WrapWithOverflow" />
+        </StackPanel>
+
+        <!--  RULE CONTROLS  -->
+        <StackPanel Grid.Row="2" Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
+          <StackPanel.Resources>
+            <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox" />
+          </StackPanel.Resources>
+          <ComboBox x:Name="cbRuleName" md:HintAssist.Hint="Person name" />
+          <ComboBox x:Name="cbRuleRace" md:HintAssist.Hint="Race" />
+          <ComboBox x:Name="cbRuleClass" md:HintAssist.Hint="Class" />
+          <Button
+            Margin="{StaticResource MgTopWide}"
+            Content="_Add rule"
+            Style="{StaticResource MaterialDesignRaisedSecondaryButton}" />
+        </StackPanel>
       </Grid>
     </GroupBox>
 
@@ -195,12 +226,13 @@
           <ListBox d:ItemsSource="{d:SampleData ItemCount=10}" ItemsSource="{Binding SelectedItem.ArmorPieces}">
             <ListBox.ItemTemplate>
               <DataTemplate>
-                <StackPanel d:DataContext="{d:DesignInstance guiobjs:ArmorPiece}">
+                <StackPanel
+                  d:DataContext="{d:DesignInstance guiobjs:ArmorPiece}"
+                  ToolTip="{Binding FullName}"
+                  ToolTipService.InitialShowDelay="10">
+
                   <!--  SHORT NAME  -->
-                  <TextBlock
-                    Text="{Binding ShortName}"
-                    ToolTip="{Binding FullName}"
-                    ToolTipService.InitialShowDelay="10">
+                  <TextBlock Text="{Binding ShortName, FallbackValue=Name}">
                     <TextBlock.Style>
                       <Style BasedOn="{StaticResource MaterialDesignTextBlock}" TargetType="TextBlock">
                         <Style.Triggers>

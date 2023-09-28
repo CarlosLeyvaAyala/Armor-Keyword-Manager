@@ -10,6 +10,7 @@ open FSharpx.Collections
 open Data.UI
 open Data.UI.Interfaces
 open DMLib_WPF
+open DMLib.Combinators
 
 module DB = Data.Outfit.Database
 module Items = Data.Items.Database
@@ -124,15 +125,17 @@ type ArmorPiece(uId: string, d: Data.Items.Raw option) =
 
 type NavSelectedItem(uId: string) =
     inherit WPFBindable()
+    let mutable isEmpty = false
 
     let outfit =
         try
             DB.find uId
         with
-        | _ -> Raw.empty // Used when Context object has none selected
+        | _ ->
+            isEmpty <- true
+            Raw.empty // Used when Context object has none selected
 
     let mutable name = outfit.name
-
     let pieces = outfit |> Get.pieces
 
     member _.Tags = Get.tags outfit pieces |> toCList
@@ -170,6 +173,10 @@ type NavSelectedItem(uId: string) =
         | _ -> expandImg uId outfit.img
 
     member t.HasImg = t.Img <> ""
+
+    member _.IsDistributable =
+        isEmpty // Don't show warning is no outfit is selected
+        || outfit.edid |> dont (contains DB.UnboundEDID)
 
 [<RequireQualifiedAccess>]
 module Nav =

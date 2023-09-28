@@ -30,6 +30,50 @@ module Get =
 
     let outfitTags outfit = outfit |> pieces |> tags outfit
 
+[<AutoOpen>]
+module private Ops =
+    let getShortNames allArmors =
+        /// All radixes strings share, ordered by count
+        let radixes =
+            allArmors
+            |> Array.allPairs allArmors
+            |> Array.Parallel.choose (fun (s1, s2) ->
+                match s1 with
+                | Equals s2 -> None
+                | _ -> s1 |> findCommonRadix s2)
+            |> Array.countBy id
+            |> Array.sortByDescending (fun (_, count) -> count)
+            |> Array.choose (fun (s, _) ->
+                match s with
+                | EndsWith " "
+                | EndsWith "_"
+                | EndsWith "-"
+                | EndsWith "]" -> Some s
+                | _ -> None)
+            |> Array.toList
+
+        /// Gets the shortened version of a group of strings
+        let rec getShortNames (accResult, armorsToProcess: string array, radixes: string list) =
+            match radixes with
+            | radix :: rest ->
+                armorsToProcess
+                |> Array.partition (fun s -> s.StartsWith radix)
+                |> (fun (result, next) ->
+                    result
+                    |> Array.map (fun s -> s, s.Replace(radix, "... "))
+                    |> Array.append accResult,
+                    next,
+                    rest)
+                |> getShortNames
+            | [] -> accResult, armorsToProcess
+
+        let (shortNames, nonProcessed) = getShortNames ([||], allArmors, radixes)
+
+        nonProcessed
+        |> Array.map (fun name -> name, name)
+        |> Array.append shortNames // Add elements with no common radix
+        |> Map.ofArray
+
 type NavListItem(uId: string, d: Raw) =
     inherit WPFBindable()
     let mutable img = expandImg uId d.img
@@ -54,21 +98,24 @@ type NavListItem(uId: string, d: Raw) =
         with get () = name
         and set v =
             name <- v
-            t.OnPropertyChanged("Name")
+            nameof t.Name |> t.OnPropertyChanged
 
     member t.Img
         with get () = img
         and set v =
             img <- v
-            t.OnPropertyChanged("Img")
+            nameof t.Img |> t.OnPropertyChanged
 
 type ArmorPiece(uId: string, d: Data.Items.Raw option) =
-    member _.Name =
-        match d with
-        | Some v -> v.name
-        | None -> uId
+    let fullname =
+        d
+        |> Option.map (fun v -> v.name)
+        |> Option.defaultValue uId
 
+    member _.FullName = fullname
+    member val ShortName = fullname with get, set
     member _.IsInDB = d.IsSome
+    member t.NameWasShortened = t.FullName <> t.ShortName
 
 type NavSelectedItem(uId: string) =
     inherit WPFBindable()
@@ -89,15 +136,28 @@ type NavSelectedItem(uId: string) =
         with get () = name
         and set v =
             name <- v
-            t.OnPropertyChanged("Name")
+            nameof t.Name |> t.OnPropertyChanged
 
     member _.ArmorPieces =
-        query {
-            for piece in pieces |> List.map ArmorPiece do
-                sortBy piece.IsInDB
-                thenBy piece.Name
-        }
-        |> toCList
+        let armors =
+            query {
+                for piece in pieces |> List.map ArmorPiece do
+                    sortBy piece.IsInDB
+                    thenBy piece.FullName
+            }
+            |> Seq.toArray
+
+        let shortNames =
+            armors
+            |> Array.map (fun v -> v.FullName)
+            |> getShortNames
+
+        armors
+        |> Array.iter (fun i ->
+            let x = shortNames[i.FullName]
+            i.ShortName <- x)
+
+        armors |> toCList
 
     member _.Img =
         match outfit.img with

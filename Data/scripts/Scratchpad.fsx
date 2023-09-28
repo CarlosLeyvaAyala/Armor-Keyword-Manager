@@ -109,24 +109,6 @@ let s3 = "00 V-Killer Panty [Red]"
 
 open DMLib.String
 
-// ---------
-// Delete: already in DMLib
-let findCommonRadix s1 s2 =
-    match s1
-          |> Seq.zip s2
-          |> Seq.takeWhile (fun (a, b) -> a = b)
-          |> Seq.map (fun (a, _) -> a)
-          |> Seq.fold (fun acc s -> $"{acc}{s}") ""
-        with
-    | IsEmptyStr -> None
-    | v -> Some v
-
-let (|EndsWith|_|) endStr input =
-    if endsWith endStr input then
-        Some()
-    else
-        None
-// ---------
 /// All radixes strings share, ordered by count
 let radixes =
     allArmors
@@ -140,16 +122,17 @@ let radixes =
     |> Array.choose (fun (s, _) ->
         match s with
         | EndsWith " "
+        | EndsWith "_"
         | EndsWith "-"
-        | EndsWith "_" -> Some s
+        | EndsWith "]" -> Some s
         | _ -> None)
     |> Array.toList
 
 /// Gets the shortened version of a group of strings
-let rec getShortNames (accResult, armors: string array, radixes: string list) =
+let rec getShortNames (accResult, armorsToProcess: string array, radixes: string list) =
     match radixes with
     | radix :: rest ->
-        armors
+        armorsToProcess
         |> Array.partition (fun s -> s.StartsWith radix)
         |> (fun (result, next) ->
             result
@@ -158,12 +141,11 @@ let rec getShortNames (accResult, armors: string array, radixes: string list) =
             next,
             rest)
         |> getShortNames
-    | [] -> accResult
+    | [] -> accResult, armorsToProcess
 
-let shortNames = getShortNames ([||], allArmors, radixes)
+let (shortNames, nonProcessed) = getShortNames ([||], allArmors, radixes)
 
-allArmors
-|> Array.except (shortNames |> Array.map (fun (name, _) -> name))
+nonProcessed
 |> Array.map (fun name -> name, name)
 |> Array.append shortNames // Add elements with no common radix
 |> Array.sortBy (fun (fullname, _) -> fullname)

@@ -176,13 +176,15 @@
           <ListBox d:ItemsSource="{d:SampleData ItemCount=10}" ItemsSource="{Binding SelectedItem.ArmorPieces}">
             <ListBox.ItemTemplate>
               <DataTemplate>
-                <TextBlock Text="{Binding Name}" ToolTip="{Binding Name}">
+                <TextBlock
+                  Text="{Binding Name}"
+                  ToolTip="{Binding Name}"
+                  ToolTipService.InitialShowDelay="10">
                   <TextBlock.Style>
                     <Style BasedOn="{StaticResource MaterialDesignTextBlock}" TargetType="TextBlock">
                       <Style.Triggers>
                         <DataTrigger Binding="{Binding IsInDB}" Value="False">
                           <Setter Property="Opacity" Value="0.5" />
-                          <Setter Property="ToolTipService.InitialShowDelay" Value="100" />
                           <Setter Property="ToolTip" Value="This item has not been added to this database" />
                         </DataTrigger>
                       </Style.Triggers>

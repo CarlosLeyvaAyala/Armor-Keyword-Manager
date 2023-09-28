@@ -106,6 +106,8 @@ type NavListItem(uId: string, d: Raw) =
             img <- v
             nameof t.Img |> t.OnPropertyChanged
 
+    member t.HasImg = d.img <> ""
+
 type ArmorPiece(uId: string, d: Data.Items.Raw option) =
     let fullname =
         d
@@ -162,7 +164,7 @@ type NavSelectedItem(uId: string) =
     member _.Img =
         match outfit.img with
         | IsWhiteSpaceStr -> ""
-        | _ -> AppSettings.Paths.Img.Outfit.expandImg uId outfit.img
+        | _ -> expandImg uId outfit.img
 
     member t.HasImg = t.Img <> ""
 

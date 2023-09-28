@@ -67,15 +67,33 @@
                   <ColumnDefinition Width="10" />
                   <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+                <Grid.Resources>
+                  <Style x:Key="preview" TargetType="Image">
+                    <Setter Property="Width" Value="{DynamicResource ImgListPreviewSize}" />
+                    <Setter Property="Height" Value="{DynamicResource ImgListPreviewSize}" />
+                    <Setter Property="ToolTipService.HorizontalOffset" Value="130" />
+                    <Setter Property="ToolTipService.InitialShowDelay" Value="50" />
+                    <Setter Property="ToolTipService.Placement" Value="Right" />
+                  </Style>
+                </Grid.Resources>
+
+                <!--  ACTUAL IMAGE  -->
                 <Image
-                  Width="{DynamicResource ImgListPreviewSize}"
-                  Height="{DynamicResource ImgListPreviewSize}"
                   Source="{Binding Img, Mode=OneWay, Converter={StaticResource StringToImgConverter}}"
-                  ToolTipService.HorizontalOffset="130"
-                  ToolTipService.InitialShowDelay="50"
-                  ToolTipService.Placement="Right">
+                  Style="{StaticResource preview}"
+                  Visibility="{Binding HasImg, Converter={StaticResource BooleanToVisibilityConverter}}">
                   <Image.ToolTip>
                     <Image Height="400" Source="{Binding Img, Mode=OneWay, Converter={StaticResource StringToImgConverter}}" />
+                  </Image.ToolTip>
+                </Image>
+
+                <!--  MISSING IMAGE  -->
+                <Image
+                  Source="{StaticResource svgNoImage}"
+                  Style="{StaticResource preview}"
+                  Visibility="{Binding HasImg, Converter={StaticResource InverseBoolToVisConverter}}">
+                  <Image.ToolTip>
+                    <Image Height="400" Source="{StaticResource svgNoImage}" />
                   </Image.ToolTip>
                 </Image>
 

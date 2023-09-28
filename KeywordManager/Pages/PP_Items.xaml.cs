@@ -10,8 +10,6 @@ using System.Windows.Input;
 namespace KeywordManager.Pages;
 
 public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag {
-  bool hasLoaded = false;
-
 #pragma warning disable IDE0052 // Remove unread private members
   readonly FileWatcher? watcher = null;
 #pragma warning restore IDE0052 // Remove unread private members

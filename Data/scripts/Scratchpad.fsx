@@ -21,6 +21,7 @@
 #load "..\..\..\DMLib-FSharp\Types\RecordId.fs"
 #load "..\..\..\DMLib-FSharp\Types\MemoryAddress.fs"
 #load "..\..\..\DMLib-FSharp\Types\CanvasPoint.fs"
+#load "..\..\..\DMLib-FSharp\Types\Chance.fs"
 #load "..\..\..\DMLib-FSharp\Types\Skyrim\EDID.fs"
 #load "..\..\..\DMLib-FSharp\Types\Skyrim\Weight.fs"
 #load "..\..\..\DMLib-FSharp\Types\Skyrim\EspFileName.fs"
@@ -906,91 +907,75 @@ let outfits = Outfits.toArrayOfRaw ()
 //////////////////////////////////
 open DMLib.Combinators
 open DMLib.MathL
-
-type Chance =
-    | Chance of float
-    static member Min = 0.0
-    static member Max = 100.0
-
-    static member Create x =
-        x |> forceRange Chance.Min Chance.Max |> Chance
-
-    static member toInt(Chance x) = int x
-    static member toFloat(Chance x) = x
-    member t.value = Chance.toFloat t
-    member t.asInt = Chance.toInt t
-    override t.ToString() = sprintf "Chance %f" t.value
-
-    static member Zero = Chance 0
-
-[<AutoOpen>]
-module ChanceTopLevelOperations =
-    let inline Chance a = Chance.Create(int a)
+open DMLib
+open DMLib.Types
+open DMLib.String
+open System.Text.RegularExpressions
 
 type DistributionChance =
     | DistributionChance of Chance
     static member value(DistributionChance c) = c.value
     static member ofInt x = x |> Chance |> DistributionChance
     static member toInt(DistributionChance x) = x.asInt
-    static member empty = DistributionChance.ofInt 100
+    member t.isExportEmpty = t = DistributionChance.ofInt 100
 
-type TraitSex =
-    | Male
-    | Female
-    | DontCare
+    member t.exported =
+        if t.isExportEmpty then
+            "NONE"
+        else
+            (DistributionChance.toInt t).ToString()
 
-    static member export =
-        function
-        | Male -> "M"
-        | Female -> "F"
-        | DontCare -> ""
+type StringFilterItem =
+    | KeywordEDID
+    | ActorBaseName
+    | ActorBaseEDID
 
-    static member toStr =
-        function
-        | Male -> "M"
-        | Female -> "F"
-        | DontCare -> "N"
+type StringFilter = StringFilter of StringFilterItem list
 
-    static member ofStr =
-        function
-        | "M" -> Male
-        | "F" -> Female
-        | _ -> DontCare
+type FormFilterItem =
+    | EDID of EDID
+    | FormID of UniqueId
 
-    member t.asStr = TraitSex.toStr t
-    member t.exported = TraitSex.export t
+type FormFilterType =
+    | Faction of FormFilterItem
+    | Class of FormFilterItem
+    | CombatStyle of FormFilterItem
+    | Race of FormFilterItem
+    | Outfit of FormFilterItem
+    | NPC of FormFilterItem
+    | Spell of FormFilterItem
+    | VoiceType of FormFilterItem
+    | FormList of FormFilterItem
+    | EditorLocation of FormFilterItem
 
-type TraitUnique =
-    | UniqueNpc
-    | NonUniqueNpc
-    | DontCare
+type FormFilters = FormFilters of string
 
-type TraitSummonable =
-    | Summonable
-    | NonSummonable
-    | DontCare
 
-type TraitChild =
-    | Child
-    | NonChild
-    | DontCare
+//Outfit = Outfit EDID|string filter|form filter|level|traits|item count|chance
+open System
+open DMLib.String
+open DMLib.IO.Path
+open System.IO
 
-type TraitLeveled =
-    | Leveled
-    | NonLeveled
-    | DontCare
+getScriptLoadDeclarationsRelative __SOURCE_DIRECTORY__ __SOURCE_FILE__ @"..\Workflow\SPID\"
+|> TextCopy.ClipboardService.SetText
 
-type TraitTeammate =
-    | Teammate
-    | NonTeammate
-    | DontCare
+#load "..\Workflow\SPID\Level.fs"
+#load "..\Workflow\SPID\Traits.fs"
+#load "..\Workflow\SPID\Chance.fs"
+#load "..\Workflow\SPID\Rules.fs"
 
-type Traits =
-    { sex: TraitSex
-      unique: TraitUnique
-      summonable: TraitSummonable
-      child: TraitChild
-      leveled: TraitLeveled
-      teammate: TraitTeammate }
+open Data.SPID
 
-TraitSex.DontCare.asStr
+let traits =
+    { Traits.Traits.empty with
+        sex = Traits.Female
+        teammate = Traits.NonTeammateNpcs }
+        .exported
+
+let chance = (DistributionChance.ofInt 60).exported
+let level = (Level.Level.ofRaw -1 25 (Some 50)).exported
+
+Rules.Ops.getExportStr [| level
+                          traits
+                          chance |]

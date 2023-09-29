@@ -7,6 +7,9 @@
 
   <ItemGroup>
     <Compile Include="Common.fs" />
+    <Compile Include="Workflow\SPID\Traits.fs" />
+    <Compile Include="Workflow\SPID\Chance.fs" />
+    <Compile Include="Workflow\SPID\Rules.fs" />
     <Compile Include="Workflow\Keyword.fs" />
     <Compile Include="Workflow\Item.fs" />
     <Compile Include="Workflow\Outfit.fs" />

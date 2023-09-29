@@ -118,10 +118,7 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
     try {
       DMLib_WPF.Dialogs.File.Open(
         AppSettings.Paths.Img.filter,
-        fn => {
-          // TODO: Enable
-          //ForEachSelectedItem((uId) => Edit.Image(uId, fn));
-        },
+        ctx.SetImage,
         guid: "32518c2e-8d81-41e3-b872-2e4e0e06568a");
     }
     catch (Exception ex) {

@@ -4,8 +4,6 @@ open DMLib_WPF.Contexts
 open System.Windows
 open DMLib
 open DMLib.String
-open DMLib_WPF
-open Data.UI.Items
 open Data.Items
 open GUI
 open DMLib.Collections
@@ -15,8 +13,10 @@ open FsToolkit.ErrorHandling
 open Data.UI.Filtering
 open DMLib.Combinators
 open Data.UI
+open Data.UI.Items
 
 module DB = Data.Items.Database
+module Img = AppSettings.Paths.Img.Item
 
 /// Context for working with the outfits page
 [<Sealed>]
@@ -80,9 +80,9 @@ type ItemsPageCtx() =
         | :? NavListItem as item -> item.UId
         | _ -> ""
 
-    member t.ReloadNavAndGoTo kId =
+    member t.ReloadNavAndGoTo uId =
         t.LoadNav()
-        ListBox.selectByKeyword t.NavControl kId
+        ListBox.selectByUId t.NavControl uId
 
     override t.ReloadNavAndGoToCurrent() = t.ReloadNavAndGoTo t.UId
 
@@ -176,3 +176,12 @@ type ItemsPageCtx() =
 
     member t.DeleteTag tag reloadUI =
         t.changeTags Tags.Remove DB.delTag tag reloadUI
+
+    member t.SetImage filename =
+        t.NavSelectedItems
+        |> Seq.iter (fun i ->
+            let ext = Img.copyImg i.UId filename
+            DB.update i.UId (fun d -> { d with image = ext })
+            Img.expandImg i.UId ext |> ignore)
+
+        t.ReloadNavAndGoToCurrent()

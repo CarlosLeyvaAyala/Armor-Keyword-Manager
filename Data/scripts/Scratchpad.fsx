@@ -52,6 +52,7 @@ open DMLib.Collections
 open System.IO
 open DMLib
 open DMLib.Combinators
+open DMLib.MathL
 open DMLib.String
 open DMLib.IO.Path
 open System.Text.RegularExpressions
@@ -72,66 +73,7 @@ let items = Items.toArrayOfRaw ()
 let outfits = Outfits.toArrayOfRaw ()
 
 /////////////////////////////////////////////////////
-let allArmors =
-    "Stoneheart Studio [SE].esp~800,Stoneheart Studio [SE].esp~801,Stoneheart Studio [SE].esp~802,Stoneheart Studio [SE].esp~80c"
-        .Split(",")
-    |> Array.choose (fun s ->
-        match s with
-        | Contains "~" -> s |> replace "~" "|" |> Some
-        | _ -> None)
 
-open DMLib.String
-
-/// All radixes strings share, ordered by count
-let radixes =
-    allArmors
-    |> Array.allPairs allArmors
-    |> Array.Parallel.choose (fun (s1, s2) ->
-        match s1 with
-        | Equals s2 -> None
-        | IsAtIndex "|" i -> Some s1[..i]
-        | _ -> s1 |> findCommonRadix s2)
-    |> Array.countBy id
-    |> Array.sortByDescending (fun (_, count) -> count)
-    |> Array.choose (fun (s, _) ->
-        match s with
-        | EndsWith " "
-        | EndsWith "|"
-        | EndsWith "_"
-        | EndsWith "-"
-        | EndsWith "]" -> Some s
-        | _ -> None)
-    |> Array.toList
-
-/// Gets the shortened version of a group of strings
-let rec getShortNames (accResult, armorsToProcess: string array, radixes: string list) =
-    match radixes with
-    | radix :: rest ->
-        armorsToProcess
-        |> Array.partition (fun s -> s.StartsWith radix)
-        |> (fun (result, next) ->
-            result
-            |> Array.map (fun s -> s, s.Replace(radix, "... "))
-            |> Array.append accResult,
-            next,
-            rest)
-        |> getShortNames
-    | [] -> accResult, armorsToProcess
-
-let (shortNames, nonProcessed) = getShortNames ([||], allArmors, radixes)
-
-nonProcessed
-|> Array.map (fun name -> name, name)
-|> Array.append shortNames // Add elements with no common radix
-|> Array.sortBy (fun (fullname, _) -> fullname)
-
-
-/////////////////////////////////////////////////////
-//// Regex edit test
-//try
-//    Regex(@"\\") |> ignore
-//with
-//| e -> printfn "%A" e.Message
 
 
 /////////////////////////////////////////////////////
@@ -960,3 +902,95 @@ nonProcessed
 
 //TextCopy.ClipboardService.GetText()
 //|> createRawDecls
+
+//////////////////////////////////
+open DMLib.Combinators
+open DMLib.MathL
+
+type Chance =
+    | Chance of float
+    static member Min = 0.0
+    static member Max = 100.0
+
+    static member Create x =
+        x |> forceRange Chance.Min Chance.Max |> Chance
+
+    static member toInt(Chance x) = int x
+    static member toFloat(Chance x) = x
+    member t.value = Chance.toFloat t
+    member t.asInt = Chance.toInt t
+    override t.ToString() = sprintf "Chance %f" t.value
+
+    static member Zero = Chance 0
+
+[<AutoOpen>]
+module ChanceTopLevelOperations =
+    let inline Chance a = Chance.Create(int a)
+
+type DistributionChance =
+    | DistributionChance of Chance
+    static member value(DistributionChance c) = c.value
+    static member ofInt x = x |> Chance |> DistributionChance
+    static member toInt(DistributionChance x) = x.asInt
+    static member empty = DistributionChance.ofInt 100
+
+type TraitSex =
+    | Male
+    | Female
+    | DontCare
+
+    static member export =
+        function
+        | Male -> "M"
+        | Female -> "F"
+        | DontCare -> ""
+
+    static member toStr =
+        function
+        | Male -> "M"
+        | Female -> "F"
+        | DontCare -> "N"
+
+    static member ofStr =
+        function
+        | "M" -> Male
+        | "F" -> Female
+        | _ -> DontCare
+
+    member t.asStr = TraitSex.toStr t
+    member t.exported = TraitSex.export t
+
+type TraitUnique =
+    | UniqueNpc
+    | NonUniqueNpc
+    | DontCare
+
+type TraitSummonable =
+    | Summonable
+    | NonSummonable
+    | DontCare
+
+type TraitChild =
+    | Child
+    | NonChild
+    | DontCare
+
+type TraitLeveled =
+    | Leveled
+    | NonLeveled
+    | DontCare
+
+type TraitTeammate =
+    | Teammate
+    | NonTeammate
+    | DontCare
+
+type Traits =
+    { sex: TraitSex
+      unique: TraitUnique
+      summonable: TraitSummonable
+      child: TraitChild
+      leveled: TraitLeveled
+      teammate: TraitTeammate }
+
+TraitSex.DontCare.asStr

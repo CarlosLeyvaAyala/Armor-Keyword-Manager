@@ -10,6 +10,7 @@ open Data.UI.Common
 open Data.UI.AppSettings.Paths.Img
 open Data.UI.Filtering
 open DMLib_WPF
+open Data.UI.Interfaces
 
 module Outfits = Data.Outfit.Database
 
@@ -61,6 +62,10 @@ type NavListItem(uniqueId: string, d: Raw) =
     member _.EDID = u.edid
     member _.UniqueId = uniqueId
     member _.UId = uniqueId
+
+    interface IHasUniqueId with
+        member _.UId = uniqueId
+
     member _.IsArmor = u.itemType = int ItemType.Armor
     member _.IsWeapon = u.itemType = int ItemType.Weapon
     member _.IsAmmo = u.itemType = int ItemType.Ammo

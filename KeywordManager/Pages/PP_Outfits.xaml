@@ -290,7 +290,8 @@ It can not be exported to SPID.</sys:String>
             <TextBox
               md:HintAssist.Hint="Forms filter"
               tb:Autocomplete.Indicator=",+-"
-              tb:Autocomplete.ItemsSource="{Binding SPIDStrings}">
+              tb:Autocomplete.ItemsSource="{Binding SPIDStrings}"
+              tb:Autocomplete.StringComparison="CurrentCultureIgnoreCase">
               <TextBox.ToolTip>
                 <StackPanel>
                   <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="Quick reference" />

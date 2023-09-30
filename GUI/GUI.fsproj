@@ -15,7 +15,8 @@
     <Compile Include="UserControls\Keyword.fs" />
     <Compile Include="PageContexts\Item.fs" />
     <Compile Include="PageContexts\Outfit.fs" />
-    <Compile Include="Validators.fs" />
+    <Compile Include="Validators\SPID.fs" />
+    <Compile Include="Validators\Keywords.fs" />
   </ItemGroup>
 
   <ItemGroup>

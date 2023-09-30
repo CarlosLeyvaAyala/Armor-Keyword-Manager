@@ -3,6 +3,7 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:behaviors="clr-namespace:WPFTextBoxAutoComplete;assembly=WPFTextBoxAutoComplete"
+  xmlns:bhv="http://cla.me/wpf/xaml/controls"
   xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
   xmlns:ctx="clr-namespace:GUI.PageContexts;assembly=GUI"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -11,6 +12,7 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
   xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+  xmlns:tb="clr-namespace:DMLib_WPF.Controls.TextBox.Behaviors;assembly=DMLib-Fs-WPF"
   xmlns:uc="clr-namespace:KeywordManager.UserControls"
   d:DesignHeight="800"
   d:DesignWidth="1200"
@@ -220,7 +222,7 @@ It can not be exported to SPID.</sys:String>
             <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox">
               <Setter Property="ToolTipService.HorizontalOffset" Value="-10" />
               <Setter Property="ToolTipService.Placement" Value="Right" />
-              <Setter Property="ToolTipService.InitialShowDelay" Value="50" />
+              <Setter Property="ToolTipService.InitialShowDelay" Value="50000" />
             </Style>
             <Style BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}" TargetType="ComboBox">
               <Setter Property="IsEditable" Value="True" />
@@ -286,10 +288,9 @@ It can not be exported to SPID.</sys:String>
               <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <TextBox
-              behaviors:AutoCompleteBehavior.AutoCompleteIndicator="@"
-              behaviors:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding SPIDStrings}"
-              behaviors:AutoCompleteBehavior.AutoCompleteStringComparison="InvariantCultureIgnoreCase"
-              md:HintAssist.Hint="Forms filter">
+              md:HintAssist.Hint="Forms filter"
+              tb:Autocomplete.Indicator=",+-"
+              tb:Autocomplete.ItemsSource="{Binding SPIDStrings}">
               <TextBox.ToolTip>
                 <StackPanel>
                   <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="Quick reference" />
@@ -312,6 +313,17 @@ It can not be exported to SPID.</sys:String>
                   </ItemsControl>
                 </StackPanel>
               </TextBox.ToolTip>
+              <TextBox.Text>
+                <Binding
+                  Mode="OneWay"
+                  Path="Text"
+                  RelativeSource="{RelativeSource Self}"
+                  UpdateSourceTrigger="PropertyChanged">
+                  <Binding.ValidationRules>
+                    <v:SpidAutocompleteRule xmlns:v="clr-namespace:GUI.Validators;assembly=GUI" ValidatesOnTargetUpdated="True" />
+                  </Binding.ValidationRules>
+                </Binding>
+              </TextBox.Text>
             </TextBox>
             <Button
               Grid.Column="1"

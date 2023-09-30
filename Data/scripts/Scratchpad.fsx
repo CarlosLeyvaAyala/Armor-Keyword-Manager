@@ -912,19 +912,6 @@ open DMLib.Types
 open DMLib.String
 open System.Text.RegularExpressions
 
-type DistributionChance =
-    | DistributionChance of Chance
-    static member value(DistributionChance c) = c.value
-    static member ofInt x = x |> Chance |> DistributionChance
-    static member toInt(DistributionChance x) = x.asInt
-    member t.isExportEmpty = t = DistributionChance.ofInt 100
-
-    member t.exported =
-        if t.isExportEmpty then
-            "NONE"
-        else
-            (DistributionChance.toInt t).ToString()
-
 type StringFilterItem =
     | KeywordEDID
     | ActorBaseName
@@ -967,15 +954,20 @@ getScriptLoadDeclarationsRelative __SOURCE_DIRECTORY__ __SOURCE_FILE__ @"..\Work
 
 open Data.SPID
 
+let stringFilter = Choice2Of2 "NONE"
+let formFilter = Choice1Of2 "RedguardRace,RedguardRaceVampire"
+
 let traits =
-    { Traits.Traits.empty with
-        sex = Traits.Female
-        teammate = Traits.NonTeammateNpcs }
+    { Traits.Traits.empty with sex = Traits.Female }
         .exported
 
-let chance = (DistributionChance.ofInt 60).exported
-let level = (Level.Level.ofRaw -1 25 (Some 50)).exported
+let itemCount = Choice2Of2 "1"
+let chance = (DistributionChance.ofInt 10).exported
+let level = (Level.Level.ofRaw -1 1 (None)).exported
 
-Rules.Ops.getExportStr [| level
+Rules.Ops.getExportStr [| stringFilter
+                          formFilter
+                          level
                           traits
+                          itemCount
                           chance |]

@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Compile Include="Common.fs" />
+    <Compile Include="Workflow\SPID\Level.fs" />
     <Compile Include="Workflow\SPID\Traits.fs" />
     <Compile Include="Workflow\SPID\Chance.fs" />
     <Compile Include="Workflow\SPID\Rules.fs" />

@@ -2,7 +2,7 @@
   x:Class="KeywordManager.Pages.PP_Outfits"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:System="clr-namespace:System;assembly=System.Runtime"
+  xmlns:behaviors="clr-namespace:WPFTextBoxAutoComplete;assembly=WPFTextBoxAutoComplete"
   xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
   xmlns:ctx="clr-namespace:GUI.PageContexts;assembly=GUI"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -10,15 +10,16 @@
   xmlns:local="clr-namespace:KeywordManager.Pages"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+  xmlns:sys="clr-namespace:System;assembly=System.Runtime"
   xmlns:uc="clr-namespace:KeywordManager.UserControls"
   d:DesignHeight="800"
   d:DesignWidth="1200"
   Loaded="OnLoaded"
   mc:Ignorable="d">
   <UserControl.Resources>
-    <System:Double x:Key="rowHeightPieces">120</System:Double>
-    <System:String x:Key="nonDistributableMessage" xml:space="preserve">This outfit does not belong to any plugin.
-It can not be exported to SPID.</System:String>
+    <sys:Double x:Key="rowHeightPieces">120</sys:Double>
+    <sys:String x:Key="nonDistributableMessage" xml:space="preserve">This outfit does not belong to any plugin.
+It can not be exported to SPID.</sys:String>
   </UserControl.Resources>
 
   <UserControl.DataContext>
@@ -216,18 +217,157 @@ It can not be exported to SPID.</System:String>
         <!--  RULE CONTROLS  -->
         <StackPanel Grid.Row="2" Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
           <StackPanel.Resources>
-            <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox" />
+            <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox">
+              <Setter Property="ToolTipService.HorizontalOffset" Value="-10" />
+              <Setter Property="ToolTipService.Placement" Value="Right" />
+              <Setter Property="ToolTipService.InitialShowDelay" Value="50" />
+            </Style>
             <Style BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}" TargetType="ComboBox">
               <Setter Property="IsEditable" Value="True" />
               <Setter Property="Margin" Value="{StaticResource MgTopNaarrow}" />
             </Style>
+            <Style TargetType="ItemsControl">
+              <Setter Property="Margin" Value="15,2,0,7" />
+            </Style>
           </StackPanel.Resources>
 
-          <ComboBox x:Name="cbRuleName" md:HintAssist.Hint="Person name" />
-          <ComboBox x:Name="cbRuleRace" md:HintAssist.Hint="Race" />
-          <ComboBox x:Name="cbRuleClass" md:HintAssist.Hint="Class" />
+          <ComboBox
+            x:Name="cbRuleName"
+            md:HintAssist.Hint="Person name"
+            Visibility="Collapsed" />
+          <ComboBox
+            x:Name="cbRuleRace"
+            md:HintAssist.Hint="Race"
+            Visibility="Collapsed" />
+          <ComboBox
+            x:Name="cbRuleClass"
+            md:HintAssist.Hint="Class"
+            Visibility="Collapsed" />
 
-          <Button Margin="{StaticResource MgTopWide}" Content="_Add rule">
+          <!--  STRING FILTERS  -->
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox
+              behaviors:AutoCompleteBehavior.AutoCompleteIndicator="@"
+              behaviors:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding SPIDStrings}"
+              behaviors:AutoCompleteBehavior.AutoCompleteStringComparison="InvariantCultureIgnoreCase"
+              md:HintAssist.Hint="Strings filter">
+              <TextBox.ToolTip>
+                <StackPanel>
+                  <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="Quick reference" />
+                  <TextBlock Margin="{StaticResource MgTopNaaarrow}" Text="Imported data to be autocompleted when writing @:" />
+                  <ItemsControl>
+                    <sys:String>&#8226; Keywords</sys:String>
+                    <sys:String>&#8226; NPCs</sys:String>
+                  </ItemsControl>
+                  <TextBlock Text="Advanced matching functions allowed (sorted by priority):" />
+                  <ItemsControl>
+                    <sys:String>(+) requirements</sys:String>
+                    <sys:String>(-) exclusion</sys:String>
+                    <sys:String>(*) wildcards</sys:String>
+                  </ItemsControl>
+                </StackPanel>
+              </TextBox.ToolTip>
+            </TextBox>
+            <Button
+              Grid.Column="1"
+              Margin="0,2,0,3"
+              Content="{md:PackIcon Kind=HumanCapacityDecrease}"
+              Style="{StaticResource MaterialDesignOutlinedButton}" />
+          </Grid>
+
+          <!--  FORM FILTERS  -->
+          <Grid Margin="{StaticResource MgTopXWide}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox
+              behaviors:AutoCompleteBehavior.AutoCompleteIndicator="@"
+              behaviors:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding SPIDStrings}"
+              behaviors:AutoCompleteBehavior.AutoCompleteStringComparison="InvariantCultureIgnoreCase"
+              md:HintAssist.Hint="Forms filter">
+              <TextBox.ToolTip>
+                <StackPanel>
+                  <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="Quick reference" />
+                  <TextBlock Margin="{StaticResource MgTopNaaarrow}" Text="Imported data to be autocompleted when writing @:" />
+                  <ItemsControl>
+                    <sys:String>&#8226; Race</sys:String>
+                    <sys:String>&#8226; Class</sys:String>
+                    <sys:String>&#8226; Faction</sys:String>
+                    <sys:String>&#8226; Combat Style</sys:String>
+                    <sys:String>&#8226; Cell NPC</sys:String>
+                    <sys:String>&#8226; Location</sys:String>
+                    <sys:String>&#8226; Voice Type</sys:String>
+                    <sys:String>&#8226; FormID List</sys:String>
+                    <sys:String>&#8226; Spell</sys:String>
+                  </ItemsControl>
+                  <TextBlock Text="Advanced matching functions allowed (sorted by priority):" />
+                  <ItemsControl>
+                    <sys:String>(+) requirements</sys:String>
+                    <sys:String>(-) exclusion</sys:String>
+                  </ItemsControl>
+                </StackPanel>
+              </TextBox.ToolTip>
+            </TextBox>
+            <Button
+              Grid.Column="1"
+              Margin="0,2,0,3"
+              Content="{md:PackIcon Kind=TextBoxOutline}"
+              Style="{StaticResource MaterialDesignOutlinedButton}" />
+          </Grid>
+
+
+          <Grid Margin="{StaticResource MgTopXXWide}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="auto" />
+              <ColumnDefinition Width="{StaticResource GridSepHorizontalWiide}" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+
+            <!--  LEVEL  -->
+            <TextBox
+              VerticalAlignment="Center"
+              md:HintAssist.Hint="Level"
+              md:HintAssist.IsFloating="True" />
+            <Button
+              Grid.Column="1"
+              VerticalAlignment="Center"
+              Content="{md:PackIcon Kind=HumanHandsup}"
+              DockPanel.Dock="Right"
+              Style="{StaticResource MaterialDesignOutlinedButton}" />
+
+            <!--  TRAITS  -->
+            <TextBox
+              Grid.Column="3"
+              VerticalAlignment="Center"
+              md:HintAssist.Hint="Traits"
+              md:HintAssist.IsFloating="True" />
+            <Button
+              Grid.Column="4"
+              VerticalAlignment="Center"
+              Content="{md:PackIcon Kind=AccountGroup}"
+              Style="{StaticResource MaterialDesignOutlinedButton}" />
+          </Grid>
+
+          <DockPanel Margin="{StaticResource MgTopXXWide}">
+            <TextBlock Margin="0,0,20,0" Text="Chance" />
+
+            <!--  CHANCE  -->
+            <Slider
+              Grid.Column="3"
+              Maximum="100"
+              Minimum="1"
+              Style="{StaticResource MaterialDesignDiscreteHorizontalSlider}"
+              Value="100" />
+          </DockPanel>
+
+          <Button Margin="{StaticResource MgTopXWide}" Content="_Add rule">
             <Button.Style>
               <Style BasedOn="{StaticResource MaterialDesignRaisedSecondaryButton}" TargetType="Button">
                 <Style.Triggers>

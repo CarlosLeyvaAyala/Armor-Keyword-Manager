@@ -54,3 +54,14 @@ type SpidFormIdRule() =
                 with
             | IsEmptyStr -> ValidationResult.ValidResult
             | error -> ValidationResult(false, error)
+
+type SpidFormWildcardRule() =
+    inherit ValidationRule()
+
+    override _.Validate(value: obj, _) =
+        match value :?> string with
+        | IsEmptyStr -> ValidationResult.ValidResult
+        | s ->
+            match s with
+            | Contains "*" -> ValidationResult(false, "This filter does not allow wildcards")
+            | _ -> ValidationResult.ValidResult

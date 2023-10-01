@@ -1,8 +1,11 @@
 ﻿using Data.UI;
+using DM_WpfControls;
 using GUI.UserControls;
 using IO.Outfit;
 using KeywordManager.Dialogs;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -87,4 +90,16 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
 
   private void OnRename(object sender, RoutedEventArgs e) =>
     MainWindow.ExecuteAcceptCancelDlg(new() { Hint = "New name", Text = ctx.SelectedItem.Name, OnOk = ctx.Rename });
+
+  private void OnAutocompleteTbKeyDown(object sender, KeyEventArgs e) {
+    if (e.Key != Key.Return || sender is not TextBox tb || tb.SelectedText == null) return;
+    tb.CaretIndex = tb.Text.Length;
+  }
+
+  private void BtnStringsFilterClick(object sender, RoutedEventArgs e) => MainWindow.ExecuteSelectStringDlg(new SelectStringDlgParams() {
+    Values = ctx.SPIDStrings.Select(v => new DisplayStrings(v, v)).ToList(),
+    OnOk = lst => {
+      Debug.WriteLine(lst[0]);
+    }
+  });
 }

@@ -37,6 +37,12 @@ public partial class MainWindow : Window {
     Instance?.UnDim();
   }
 
+  public static void ExecuteSelectStringDlg(SelectStringDlgParams p) {
+    var i = Instance;
+    if (i == null) return;
+    i.OpenDimDialog(() => SelectStringDlg.Execute(i, p));
+  }
+
   // TODO: Move to context
   public static void ShowToast(string message, double seconds, SoundEffect playSound) {
     PlayWindowsSound(playSound);

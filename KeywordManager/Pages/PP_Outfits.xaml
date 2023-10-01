@@ -222,7 +222,7 @@ It can not be exported to SPID.</sys:String>
             <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox">
               <Setter Property="ToolTipService.HorizontalOffset" Value="-10" />
               <Setter Property="ToolTipService.Placement" Value="Right" />
-              <Setter Property="ToolTipService.InitialShowDelay" Value="50000" />
+              <Setter Property="ToolTipService.InitialShowDelay" Value="50" />
             </Style>
             <Style BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}" TargetType="ComboBox">
               <Setter Property="IsEditable" Value="True" />
@@ -256,7 +256,9 @@ It can not be exported to SPID.</sys:String>
               behaviors:AutoCompleteBehavior.AutoCompleteIndicator="@"
               behaviors:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding SPIDStrings}"
               behaviors:AutoCompleteBehavior.AutoCompleteStringComparison="InvariantCultureIgnoreCase"
-              md:HintAssist.Hint="Strings filter">
+              md:HintAssist.Hint="Strings filter"
+              md:TextFieldAssist.HasLeadingIcon="True"
+              md:TextFieldAssist.LeadingIcon="HumanCapacityDecrease">
               <TextBox.ToolTip>
                 <StackPanel>
                   <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="Quick reference" />
@@ -277,6 +279,7 @@ It can not be exported to SPID.</sys:String>
             <Button
               Grid.Column="1"
               Margin="0,2,0,3"
+              Click="BtnStringsFilterClick"
               Content="{md:PackIcon Kind=HumanCapacityDecrease}"
               Style="{StaticResource MaterialDesignOutlinedButton}" />
           </Grid>
@@ -289,9 +292,12 @@ It can not be exported to SPID.</sys:String>
             </Grid.ColumnDefinitions>
             <TextBox
               md:HintAssist.Hint="Forms filter"
+              md:TextFieldAssist.HasLeadingIcon="True"
+              md:TextFieldAssist.LeadingIcon="TextBoxOutline"
               tb:Autocomplete.Indicator=",+-"
               tb:Autocomplete.ItemsSource="{Binding SPIDStrings}"
-              tb:Autocomplete.StringComparison="CurrentCultureIgnoreCase">
+              tb:Autocomplete.StringComparison="CurrentCultureIgnoreCase"
+              KeyDown="OnAutocompleteTbKeyDown">
               <TextBox.ToolTip>
                 <StackPanel>
                   <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="Quick reference" />
@@ -321,7 +327,7 @@ It can not be exported to SPID.</sys:String>
                   RelativeSource="{RelativeSource Self}"
                   UpdateSourceTrigger="PropertyChanged">
                   <Binding.ValidationRules>
-                    <v:SpidAutocompleteRule xmlns:v="clr-namespace:GUI.Validators;assembly=GUI" ValidatesOnTargetUpdated="True" />
+                    <v:SpidFormWildcardRule xmlns:v="clr-namespace:GUI.Validators;assembly=GUI" ValidatesOnTargetUpdated="True" />
                   </Binding.ValidationRules>
                 </Binding>
               </TextBox.Text>

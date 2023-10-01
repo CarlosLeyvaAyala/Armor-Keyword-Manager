@@ -220,7 +220,7 @@ It can not be exported to SPID.</sys:String>
         <StackPanel Grid.Row="2" Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
           <StackPanel.Resources>
             <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox">
-              <Setter Property="ToolTipService.HorizontalOffset" Value="-10" />
+              <Setter Property="ToolTipService.HorizontalOffset" Value="-150" />
               <Setter Property="ToolTipService.Placement" Value="Right" />
               <Setter Property="ToolTipService.InitialShowDelay" Value="50" />
             </Style>
@@ -230,6 +230,15 @@ It can not be exported to SPID.</sys:String>
             </Style>
             <Style TargetType="ItemsControl">
               <Setter Property="Margin" Value="15,2,0,7" />
+            </Style>
+            <Style x:Key="operatorList" TargetType="StackPanel">
+              <Setter Property="Margin" Value="15,2,0,7" />
+            </Style>
+            <Style x:Key="tooltipSymbols" TargetType="Run">
+              <Setter Property="FontFamily" Value="Consolas" />
+              <Setter Property="FontSize" Value="14" />
+              <Setter Property="FontWeight" Value="Normal" />
+              <Setter Property="Foreground" Value="{StaticResource SecondaryHueLightBrush}" />
             </Style>
           </StackPanel.Resources>
 
@@ -249,8 +258,22 @@ It can not be exported to SPID.</sys:String>
               Cursor="Help"
               Foreground="{StaticResource ColorWarning}"
               Kind="Warning"
-              ToolTip="FormIDs are not banned by this app,&#x0a;but they are still discouraged.&#x0a;&#x0a;Read the help file to find more about it."
-              ToolTipService.InitialShowDelay="50" />
+              ToolTipService.InitialShowDelay="50"
+              Visibility="{Binding Text, Converter={StaticResource SpidFormIdWarning}, ElementName=edtStringsFilter}">
+              <md:PackIcon.ToolTip>
+                <StackPanel MaxWidth="210">
+                  <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" Text="SPID001" />
+                  <TextBlock
+                    Margin="{StaticResource MgTopNaaarrow}"
+                    Text="FormIDs are not banned by this app, but they are still discouraged."
+                    TextWrapping="WrapWithOverflow" />
+                  <TextBlock
+                    Margin="{StaticResource MgTopNarrow}"
+                    Text="Read the help file to find more about it."
+                    TextWrapping="WrapWithOverflow" />
+                </StackPanel>
+              </md:PackIcon.ToolTip>
+            </md:PackIcon>
 
             <!--  EDIT  -->
             <TextBox
@@ -265,17 +288,32 @@ It can not be exported to SPID.</sys:String>
               <TextBox.ToolTip>
                 <StackPanel>
                   <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="Quick reference" />
-                  <TextBlock Margin="{StaticResource MgTopNaaarrow}" Text="Imported data to be autocompleted when writing @:" />
+                  <TextBlock Margin="{StaticResource MgTopNaaarrow}">
+                    <Run>Imported data to be autocompleted when writing</Run>
+                    <Run Style="{StaticResource tooltipSymbols}">
+                      ,+-
+                    </Run>
+                    <Run>:</Run>
+                  </TextBlock>
                   <ItemsControl>
                     <sys:String>&#8226; Keywords</sys:String>
                     <sys:String>&#8226; NPCs</sys:String>
                   </ItemsControl>
                   <TextBlock Text="Advanced matching functions allowed (sorted by priority):" />
-                  <ItemsControl>
-                    <sys:String>(+) requirements</sys:String>
-                    <sys:String>(-) exclusion</sys:String>
-                    <sys:String>(*) wildcards</sys:String>
-                  </ItemsControl>
+                  <StackPanel Style="{StaticResource operatorList}">
+                    <TextBlock>
+                      <Run Style="{StaticResource tooltipSymbols}">(+)</Run>
+                      <Run>requirement</Run>
+                    </TextBlock>
+                    <TextBlock>
+                      <Run Style="{StaticResource tooltipSymbols}">(-)</Run>
+                      <Run>exclusion</Run>
+                    </TextBlock>
+                    <TextBlock>
+                      <Run Style="{StaticResource tooltipSymbols}">(*)</Run>
+                      <Run>wildcard</Run>
+                    </TextBlock>
+                  </StackPanel>
                 </StackPanel>
               </TextBox.ToolTip>
             </TextBox>
@@ -305,7 +343,13 @@ It can not be exported to SPID.</sys:String>
               <TextBox.ToolTip>
                 <StackPanel>
                   <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="Quick reference" />
-                  <TextBlock Margin="{StaticResource MgTopNaaarrow}" Text="Imported data to be autocompleted when writing @:" />
+                  <TextBlock Margin="{StaticResource MgTopNaaarrow}">
+                    <Run>Imported data to be autocompleted when writing</Run>
+                    <Run Style="{StaticResource tooltipSymbols}">
+                      ,+-
+                    </Run>
+                    <Run>:</Run>
+                  </TextBlock>
                   <ItemsControl>
                     <sys:String>&#8226; Race</sys:String>
                     <sys:String>&#8226; Class</sys:String>
@@ -318,10 +362,16 @@ It can not be exported to SPID.</sys:String>
                     <sys:String>&#8226; Spell</sys:String>
                   </ItemsControl>
                   <TextBlock Text="Advanced matching functions allowed (sorted by priority):" />
-                  <ItemsControl>
-                    <sys:String>(+) requirements</sys:String>
-                    <sys:String>(-) exclusion</sys:String>
-                  </ItemsControl>
+                  <StackPanel Style="{StaticResource operatorList}">
+                    <TextBlock>
+                      <Run Style="{StaticResource tooltipSymbols}">(+)</Run>
+                      <Run>requirement</Run>
+                    </TextBlock>
+                    <TextBlock>
+                      <Run Style="{StaticResource tooltipSymbols}">(-)</Run>
+                      <Run>exclusion</Run>
+                    </TextBlock>
+                  </StackPanel>
                 </StackPanel>
               </TextBox.ToolTip>
               <TextBox.Text>

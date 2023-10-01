@@ -3,10 +3,12 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:fswpf="https://github.com/ChrisPulman/FSharp.Core.Wpf"
   xmlns:local="clr-namespace:KeywordManager"
-  xmlns:settings="clr-namespace:KeywordManager.Properties">
+  xmlns:settings="clr-namespace:KeywordManager.Properties"
+  xmlns:v="clr-namespace:GUI.Validators;assembly=GUI">
 
   <settings:Settings x:Key="appSettings" />
 
   <local:IntToKeywordColor x:Key="IntToKeywordColor" />
   <local:StringToImgConverter x:Key="StringToImgConverter" />
+  <v:SpidFormIdWarning x:Key="SpidFormIdWarning" />
 </ResourceDictionary>

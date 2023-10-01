@@ -4,6 +4,8 @@ open System.Windows.Controls
 open DMLib.String
 open DMLib.Types.Skyrim
 open DMLib.Combinators
+open System.Windows.Data
+open System.Windows
 
 [<AutoOpen>]
 module private SpidOps =
@@ -65,3 +67,15 @@ type SpidFormWildcardRule() =
             match s with
             | Contains "*" -> ValidationResult(false, "This filter does not allow wildcards")
             | _ -> ValidationResult.ValidResult
+
+
+[<ValueConversion(typeof<string>, typeof<Visibility>)>]
+type SpidFormIdWarning() =
+    interface IValueConverter with
+        member this.Convert(value, _, _, _) =
+            match value :?> string with
+            | IsEmptyStr -> Visibility.Collapsed
+            | Contains "~" -> Visibility.Visible
+            | _ -> Visibility.Collapsed
+
+        member this.ConvertBack(value, _, _, _) = 0

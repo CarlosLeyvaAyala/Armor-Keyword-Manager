@@ -233,26 +233,29 @@ It can not be exported to SPID.</sys:String>
             </Style>
           </StackPanel.Resources>
 
-          <ComboBox
-            x:Name="cbRuleName"
-            md:HintAssist.Hint="Person name"
-            Visibility="Collapsed" />
-          <ComboBox
-            x:Name="cbRuleRace"
-            md:HintAssist.Hint="Race"
-            Visibility="Collapsed" />
-          <ComboBox
-            x:Name="cbRuleClass"
-            md:HintAssist.Hint="Class"
-            Visibility="Collapsed" />
-
           <!--  STRING FILTERS  -->
           <Grid>
             <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="auto" />
               <ColumnDefinition Width="*" />
               <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
+            <!--  FORMID WARNING  -->
+            <md:PackIcon
+              Width="30"
+              Height="30"
+              Margin="0,0,10,0"
+              VerticalAlignment="Bottom"
+              Cursor="Help"
+              Foreground="{StaticResource ColorWarning}"
+              Kind="Warning"
+              ToolTip="FormIDs are not banned by this app,&#x0a;but they are still discouraged.&#x0a;&#x0a;Read the help file to find more about it."
+              ToolTipService.InitialShowDelay="50" />
+
+            <!--  EDIT  -->
             <TextBox
+              x:Name="edtStringsFilter"
+              Grid.Column="1"
               behaviors:AutoCompleteBehavior.AutoCompleteIndicator="@"
               behaviors:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding SPIDStrings}"
               behaviors:AutoCompleteBehavior.AutoCompleteStringComparison="InvariantCultureIgnoreCase"
@@ -277,7 +280,7 @@ It can not be exported to SPID.</sys:String>
               </TextBox.ToolTip>
             </TextBox>
             <Button
-              Grid.Column="1"
+              Grid.Column="2"
               Margin="0,2,0,3"
               Click="BtnStringsFilterClick"
               Content="{md:PackIcon Kind=HumanCapacityDecrease}"
@@ -291,6 +294,7 @@ It can not be exported to SPID.</sys:String>
               <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <TextBox
+              x:Name="edtFormsFilter"
               md:HintAssist.Hint="Forms filter"
               md:TextFieldAssist.HasLeadingIcon="True"
               md:TextFieldAssist.LeadingIcon="TextBoxOutline"
@@ -390,14 +394,19 @@ It can not be exported to SPID.</sys:String>
             <Button.Style>
               <Style BasedOn="{StaticResource MaterialDesignRaisedSecondaryButton}" TargetType="Button">
                 <Style.Triggers>
+                  <!--  DISABLE IF FIELDS ARE EMPTY  -->
                   <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
-                      <Condition Binding="{Binding Path=Text, ElementName=cbRuleName}" Value="" />
-                      <Condition Binding="{Binding Path=Text, ElementName=cbRuleRace}" Value="" />
-                      <Condition Binding="{Binding Path=Text, ElementName=cbRuleClass}" Value="" />
+                      <Condition Binding="{Binding Path=Text, ElementName=edtStringsFilter}" Value="" />
+                      <Condition Binding="{Binding Path=Text, ElementName=edtFormsFilter}" Value="" />
                     </MultiDataTrigger.Conditions>
                     <Setter Property="IsEnabled" Value="False" />
                   </MultiDataTrigger>
+
+                  <!--  DISABLE ON VALIDATION ERROR  -->
+                  <DataTrigger Binding="{Binding ElementName=edtFormsFilter, Path=(Validation.HasError)}" Value="true">
+                    <Setter Property="IsEnabled" Value="False" />
+                  </DataTrigger>
                 </Style.Triggers>
               </Style>
             </Button.Style>

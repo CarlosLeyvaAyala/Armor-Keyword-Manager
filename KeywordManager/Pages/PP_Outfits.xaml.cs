@@ -1,7 +1,6 @@
 ﻿using Data.UI;
 using DM_WpfControls;
 using GUI.UserControls;
-using IO.Outfit;
 using KeywordManager.Dialogs;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -14,22 +13,8 @@ namespace KeywordManager.Pages;
 
 public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTag {
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
-#pragma warning disable IDE0052 // Remove unread private members
-  readonly FileWatcher? watcher = null;
-#pragma warning restore IDE0052 // Remove unread private members
 
-  public PP_Outfits() {
-    InitializeComponent();
-
-    watcher = FileWatcher.WatchxEdit(
-      "*.outfits",
-      filepath => {
-        Import.xEdit(filepath);
-        ctx.LoadNav();
-        Owner.InfoBox("New outfits were successfuly imported.", "Success");
-      },
-      Dispatcher);
-  }
+  public PP_Outfits() => InitializeComponent();
 
   public void NavLoadAndGoTo(string uid) => ctx.ReloadNavAndGoTo(uid);
   public void NavLoadAndGoToCurrent() => ctx.ReloadNavAndGoToCurrent();

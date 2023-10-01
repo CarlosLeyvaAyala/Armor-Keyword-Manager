@@ -35,6 +35,16 @@ public partial class MainWindow : Window {
 
   public MainWindow() {
     InitializeComponent();
+
+    ctx.FileWatchers.Path = Settings.Default.xEditDir;
+    ctx.FileWatchers.Dispatcher = Dispatcher;
+
+    ctx.FileWatchers.SpidStrings.GUIAction = _ => ImportedInfoBox("SPID string");
+    ctx.FileWatchers.Outfit.GUIAction = _ => {
+      ppOutfits.NavLoadAndGoToCurrent();
+      ImportedInfoBox("outfit");
+    };
+
     AppSettings.Paths.SetApp(Directory.GetCurrentDirectory());
     pages = new() { filterByTag, ppItems, ppOutfits };
   }

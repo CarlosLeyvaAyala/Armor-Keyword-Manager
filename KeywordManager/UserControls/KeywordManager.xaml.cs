@@ -8,22 +8,7 @@ using System.Windows.Input;
 namespace KeywordManager.UserControls;
 
 public partial class KeywordManagerUC : UserControl {
-  MainWindow Owner => (MainWindow)Window.GetWindow(this);
-#pragma warning disable IDE0052 // Remove unread private members
-  readonly FileWatcher? watcher;
-#pragma warning restore IDE0052 // Remove unread private members
-
-  public KeywordManagerUC() {
-    InitializeComponent();
-
-    watcher = FileWatcher.WatchxEdit(
-      "*.keywords",
-      filepath => {
-        ctx.AddKeywords(filepath);
-        Owner.ImportedInfoBox("keyword");
-      },
-      Dispatcher);
-  }
+  public KeywordManagerUC() => InitializeComponent();
 
   #region Internal events
   private void OnLoaded(object sender, RoutedEventArgs e) {

@@ -36,17 +36,36 @@ public partial class MainWindow : Window {
   public MainWindow() {
     InitializeComponent();
 
+    InitializeFileWatchers();
+    AppSettings.Paths.SetApp(Directory.GetCurrentDirectory());
+    pages = new() { filterByTag, ppItems, ppOutfits };
+  }
+
+  void InitializeFileWatchers() {
     ctx.FileWatchers.Path = Settings.Default.xEditDir;
     ctx.FileWatchers.Dispatcher = Dispatcher;
 
     ctx.FileWatchers.SpidStrings.GUIAction = _ => ImportedInfoBox("SPID string");
-    ctx.FileWatchers.Outfit.GUIAction = _ => {
+
+    ctx.FileWatchers.Keywords.GUIAction = fn => {
+      // The F# object already deals with adding them to the SPID prediction list
+      ppItems.keywordMgr.ctx.AddKeywords(fn);
+      ImportedInfoBox("keyword");
+    };
+
+    ctx.FileWatchers.Items.GUIAction = fn => {
+      ppItems.ctx.ReloadNavAndGoToFirst();
+
+      // Needs to reload to clear warnings in the nav and maybe missing items in the selected outfit
+      ReloadOutfitsNavAndGoToCurrent();
+
+      ImportedInfoBox("item");
+    };
+
+    ctx.FileWatchers.Outfits.GUIAction = _ => {
       ppOutfits.NavLoadAndGoToCurrent();
       ImportedInfoBox("outfit");
     };
-
-    AppSettings.Paths.SetApp(Directory.GetCurrentDirectory());
-    pages = new() { filterByTag, ppItems, ppOutfits };
   }
 
   void ForEachPage<T>(Action<T> DoSomething) {

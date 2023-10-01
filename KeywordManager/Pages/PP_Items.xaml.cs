@@ -10,23 +10,9 @@ using System.Windows.Input;
 namespace KeywordManager.Pages;
 
 public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag {
-#pragma warning disable IDE0052 // Remove unread private members
-  readonly FileWatcher? watcher = null;
-#pragma warning restore IDE0052 // Remove unread private members
-
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
 
-  public PP_Items() {
-    InitializeComponent();
-
-    watcher = FileWatcher.WatchxEdit(
-      "*.items",
-      filename => {
-        ImportFromFile(filename);
-        Owner.ReloadSelectedOutfit(); // Reload selected outfit in the case that names changed
-      },
-      Dispatcher);
-  }
+  public PP_Items() => InitializeComponent();
 
   #region Interface: IFilterableByTag and filtering functions
   public bool CanFilterByPic => true;
@@ -133,18 +119,5 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
 
   private void OnCanNamesAndUIdToClipboard(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.HasItemsSelected;
   private void OnNamesAndUIdToClipboard(object sender, ExecutedRoutedEventArgs e) => TextCopy.ClipboardService.SetText(ctx.SelectedItemNamesAndUIds);
-  #endregion
-
-  #region Data importing
-  private void ImportFromFile(string filename) => ImportItems(() => IO.Items.Import.xEdit(filename));
-
-  private void ImportItems(Action Import) {
-    Import();
-    ctx.ReloadNavAndGoToFirst();
-    Owner.ReloadOutfitsNavAndGoToCurrent();
-    Owner.ImportedInfoBox("item");
-  }
-
-  private void OnImportFromClipboard(object sender, RoutedEventArgs e) => throw new NotImplementedException("Not implemented");
   #endregion
 }

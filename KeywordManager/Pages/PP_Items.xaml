@@ -464,6 +464,7 @@
       Header="Keywords"
       Style="{StaticResource MaterialDesignCardGroupBox}">
       <uc:KeywordManagerUC
+        x:Name="keywordMgr"
         Margin="{StaticResource MarginStd}"
         KeywordChange="OnKeywordChanged"
         KeywordSelect="OnKeywordsSet" />

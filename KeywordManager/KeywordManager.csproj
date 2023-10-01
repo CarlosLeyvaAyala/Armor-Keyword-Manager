@@ -17,7 +17,6 @@
     <PackageReference Include="FSharp.Core.Wpf.Core" Version="5.0.3" />
     <PackageReference Include="MaterialDesignColors" Version="2.1.4" />
     <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
-    <PackageReference Include="WPFTextBoxAutoComplete" Version="1.0.5" />
   </ItemGroup>
 
   <ItemGroup>

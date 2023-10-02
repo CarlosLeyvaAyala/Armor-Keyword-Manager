@@ -6,6 +6,7 @@
 #load "..\..\..\DMLib-FSharp\Combinators.fs"
 #load "..\..\..\DMLib-FSharp\MathL.fs"
 #load "..\..\..\DMLib-FSharp\Result.fs"
+#load "..\..\..\DMLib-FSharp\Tuples.fs"
 #load "..\..\..\DMLib-FSharp\String.fs"
 #load "..\..\..\DMLib-FSharp\Array.fs"
 #load "..\..\..\DMLib-FSharp\List.fs"
@@ -55,6 +56,7 @@ open DMLib
 open DMLib.Combinators
 open DMLib.MathL
 open DMLib.String
+open DMLib.Tuples
 open DMLib.IO.Path
 open System.Text.RegularExpressions
 open DMLib.Types
@@ -919,6 +921,7 @@ open System
 open DMLib.String
 open DMLib.IO.Path
 open System.IO
+open DMLib.Combinators
 
 getScriptLoadDeclarationsRelative __SOURCE_DIRECTORY__ __SOURCE_FILE__ @"..\Workflow\SPID\"
 |> TextCopy.ClipboardService.SetText
@@ -947,95 +950,20 @@ let rule =
                 unique = Traits.UniqueNpcs.asStr }
           chance = 50 }
 
-rule
-rule.exported
-rule.traits.tags
-rule.level.tags
-
-open FSharp.Reflection
-
-let getUnionCases<'T> () =
-    FSharpType.GetUnionCases(typeof<'T>)
-    |> Array.map (fun case -> FSharpValue.MakeUnion(case, [||]) :?> 'T)
-
-[| getUnionCases<Traits.Sex> ()
-   |> Array.map (fun c -> c.tag)
-   getUnionCases<Traits.Unique> ()
-   |> Array.map (fun c -> c.tag)
-   getUnionCases<Traits.Summonable> ()
-   |> Array.map (fun c -> c.tag)
-   getUnionCases<Traits.Child> ()
-   |> Array.map (fun c -> c.tag)
-   getUnionCases<Traits.Leveled> ()
-   |> Array.map (fun c -> c.tag)
-   getUnionCases<Traits.Teammate> ()
-   |> Array.map (fun c -> c.tag) |]
-|> Array.collect id
-|> Array.filter (Not isNullOrEmpty)
-|> Array.append (
-    getUnionCases<Level.AttributeType> ()
-    |> Array.map (fun c -> c.tag)
-)
-|> Array.sort
-
-open DMLib.Objects
-
-rule.traits
-|> recordToArray
-|> Array.filter (
-    snd
-    >> (fun p -> p.GetType() |> FSharpType.IsUnion)
-)
-|> Array.map (
-    snd
-    >> (fun p ->
-        let xxx = p.GetType()
-        allUnionCases<xxx>)
-)
-
-
-//type RandomTicker(approxInterval) =
-//    let timer = new Timer()
-//    let rnd = new System.Random(99)
-//    let tickEvent = new Event<int>()
-
-//    let chooseInterval () : int =
-//        approxInterval + approxInterval / 4
-//        - rnd.Next(approxInterval / 2)
-
-//    do timer.Interval <- chooseInterval ()
-
-//    do
-//        timer.Tick.Add (fun args ->
-//            let interval = chooseInterval ()
-//            tickEvent.Trigger interval
-//            timer.Interval <- interval)
-
-//    member x.RandomTick = tickEvent.Publish
-//    member x.Start() = timer.Start()
-//    member x.Stop() = timer.Stop()
-
-//    interface IDisposable with
-//        member x.Dispose() = timer.Dispose()
-
-
-//let rt = new RandomTicker(1000)
-//rt.RandomTick.Add(fun i -> printfn "%d" i)
-//rt.Start()
 
 type TagsChanged =
     | Added of string list
     | Deleted of string list
 
 type TagSource =
-    /// Got from keyword database.
-    | Keyword
     /// Tag added by user.
     | ManuallyAdded
     /// Item tag automatically added by the app. Can not be manually removed.
     | AutoItem
     /// Outfit tag automatically added by the app. Can not be manually removed.
     | AutoOutfit
+    /// Got from keyword database.
+    | Keyword
 
 type TagInfo = { timesUsed: int }
 type TagName = string
@@ -1043,7 +971,25 @@ type TagMap = Map<TagName, TagInfo>
 
 type TagManager() =
     let mutable commonTagsMap: TagMap = Map.empty
+    let mutable reservedTagsMap: Map<string, TagSource> = Map.empty
     let mutable getCommonTags: (unit -> TagMap) list = []
+    let tagsChangedEvent = new Event<(TagName * TagSource) array>()
+
+    let sendTagsChanged () =
+        let unsortedTags =
+            commonTagsMap
+            |> Map.toArray
+            |> Array.Parallel.map (fst >> (fun name -> name, TagSource.ManuallyAdded))
+            |> Array.append (reservedTagsMap |> Map.toArray)
+
+        query {
+            for (name, source) in unsortedTags do
+                sortBy source
+                thenBy name
+                select (name, source)
+        }
+        |> Seq.toArray
+        |> tagsChangedEvent.Trigger
 
     static member inline GetTagsAsMap a =
         let getTags (d: 'a when 'a: (member tags: string list)) = d.tags |> List.toArray
@@ -1056,7 +1002,22 @@ type TagManager() =
         |> Array.fold (fun (m: TagMap) (tagName, countArr) -> m.Add(tagName, { timesUsed = countArr.Length })) Map.empty
 
     /// Gets some common tags whenever this object need it.
-    member _.GetCommonTag v = getCommonTags <- v :: getCommonTags
+    member _.AddCommonTags v = getCommonTags <- v :: getCommonTags
+
+    member _.OnTagsChanged = tagsChangedEvent.Publish
+
+    /// Gets a batch of reserved tags, which the player can not manually add.
+    ///
+    /// Reserved tags are hardcoded and they don't change dynamically. So this function will throw an exception
+    /// when trying to add repeated ones.
+    member _.AddReservedTags tags source =
+        reservedTagsMap <-
+            tags
+            |> Array.Parallel.map (setSnd source)
+            |> Map.ofArray
+            |> Map.merge
+                (fun k (_, _) -> failwith $"Automatic tag ({k}) already exists. Tell the developer he is a dumb shit.")
+                reservedTagsMap
 
     /// Rebuilds the app tag cache.
     member _.RebuildCache() =
@@ -1069,25 +1030,27 @@ type TagManager() =
                     |> Map.merge (fun _ (o, n) -> { o with timesUsed = o.timesUsed + n.timesUsed }) acc)
                 Map.empty
 
+        sendTagsChanged ()
+
     member _.CommonTags = commonTagsMap
+    member _.Reserved = reservedTagsMap
 
 let tagManager = TagManager()
 
-tagManager.GetCommonTag (fun () ->
+tagManager.AddCommonTags (fun () ->
     Data.Items.Database.toArrayOfRaw ()
     |> TagManager.GetTagsAsMap)
 
-tagManager.GetCommonTag (fun () ->
-    printfn "------------ Calling outfit"
-
+tagManager.AddCommonTags (fun () ->
     Data.Outfit.Database.toArrayOfRaw ()
     |> TagManager.GetTagsAsMap)
 
+tagManager.AddReservedTags SpidRule.allAutoTags AutoOutfit
+
+tagManager.OnTagsChanged.Add(fun v -> printfn "Received: %d" v.Length)
+tagManager.OnTagsChanged.Add(fun v -> printfn "First element: %A" v[0])
 tagManager.RebuildCache()
 
-tagManager.CommonTags
-|> Map.toArray
-|> Array.Parallel.map (fst >> (fun name -> name, TagSource.ManuallyAdded))
 
 Outfits.update "__DMUnboundItemManagerOutfit__.esm|11" (fun v -> { v with tags = [ "ass crack" ] })
 Outfits.update "__DMUnboundItemManagerOutfit__.esm|12" (fun v -> { v with tags = [ "ass crack" ] })
@@ -1096,3 +1059,4 @@ Outfits.update "__DMUnboundItemManagerOutfit__.esm|13" (fun v -> { v with tags =
 Data.Outfit.Database.toArrayOfRaw ()
 |> Array.filter (snd >> (fun v -> v.tags.Length > 0))
 |> TagManager.GetTagsAsMap
+

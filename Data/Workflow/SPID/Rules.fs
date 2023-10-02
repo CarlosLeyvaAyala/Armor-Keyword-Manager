@@ -3,6 +3,7 @@
 open DMLib.String
 open Data.SPID
 open DMLib.Objects
+open DMLib.Combinators
 
 type SpidRule =
     { strings: SpidFilter

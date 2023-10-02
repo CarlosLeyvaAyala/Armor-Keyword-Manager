@@ -14,6 +14,11 @@ module Paths =
     let internal data () = combine2 app "Data"
     let KeywordsFile () = data () |> combine2' "Keywords.json"
 
+    let SpidStringsFile () =
+        data () |> combine2' "spid strings.json"
+
+    let SpidFormsFile () = data () |> combine2' "spid forms.json"
+
     module Img =
         let filter = "Image files (*.jpg;*.png;*.jpeg)|*.jpg;*.png;*.jpeg"
 

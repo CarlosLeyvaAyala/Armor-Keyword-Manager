@@ -4,6 +4,10 @@ open System.Text.RegularExpressions
 open DMLib.String
 open Data.TagCreate
 
+[<AutoOpen>]
+module private TraitsOps =
+    let outfit = Data.TagCreate.outfit "t"
+
 type Sex =
     | Male
     | Female

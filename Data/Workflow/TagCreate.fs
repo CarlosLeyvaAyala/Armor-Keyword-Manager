@@ -23,4 +23,5 @@ let getTags o =
 let private createLabeledTag label s = sprintf "%s: %s" label s |> toLower
 
 /// Creates an automatic tag name for an outfit.
-let outfit = createLabeledTag "outfit"
+let outfit a =
+    createLabeledTag (sprintf "outfit[%s]" a)

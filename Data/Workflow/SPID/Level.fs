@@ -110,7 +110,7 @@ type AttributeType =
         | Enchanting -> 17
 
     member t.tag =
-        let c s = sprintf "%s level" s |> outfit
+        let c = outfit "l"
 
         match t with
         | ActorLevel -> c "actor"

@@ -2,6 +2,7 @@
 
 open DMLib.String
 open Data.SPID
+open DMLib.Objects
 
 type SpidRule =
     { strings: SpidFilter
@@ -23,6 +24,27 @@ type SpidRule =
           level = r.level.asRaw
           traits = r.traits.asRaw
           chance = r.chance.asRaw }
+
+    static member allAutoTags =
+        [| getUnionCases<Traits.Sex> ()
+           |> Array.map (fun c -> c.tag)
+           getUnionCases<Traits.Unique> ()
+           |> Array.map (fun c -> c.tag)
+           getUnionCases<Traits.Summonable> ()
+           |> Array.map (fun c -> c.tag)
+           getUnionCases<Traits.Child> ()
+           |> Array.map (fun c -> c.tag)
+           getUnionCases<Traits.Leveled> ()
+           |> Array.map (fun c -> c.tag)
+           getUnionCases<Traits.Teammate> ()
+           |> Array.map (fun c -> c.tag) |]
+        |> Array.collect id
+        |> Array.filter (Not isNullOrEmpty)
+        |> Array.append (
+            getUnionCases<Level.AttributeType> ()
+            |> Array.map (fun c -> c.tag)
+        )
+        |> Array.sort
 
     member t.exported =
         [| t.strings.exported

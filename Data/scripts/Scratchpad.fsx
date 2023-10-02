@@ -923,6 +923,7 @@ open System.IO
 getScriptLoadDeclarationsRelative __SOURCE_DIRECTORY__ __SOURCE_FILE__ @"..\Workflow\SPID\"
 |> TextCopy.ClipboardService.SetText
 
+#load "..\Workflow\TagCreate.fs"
 #load "..\Workflow\SPID\SpidFilter.fs"
 #load "..\Workflow\SPID\Level.fs"
 #load "..\Workflow\SPID\Traits.fs"
@@ -936,8 +937,17 @@ let rule =
         { strings =
             "0xC33~[Rektas] Sanguine [SE].esp, RedguardRace,RedguardRaceVampire,    Priest,Danica Pure-Spring,Freir-Silana,*Draugr,Nura Snow-Shod,,,    "
           forms = ""
-          level = Level.SpidLevelRaw.blank
-          traits = Traits.SpidTraitsRaw.blank
+          level =
+            { Level.SpidLevelRaw.blank with
+                max = 49
+                sk = Level.Lockpicking.asRaw }
+          traits =
+            { Traits.SpidTraitsRaw.blank with
+                sex = Traits.Female.asStr
+                unique = Traits.UniqueNpcs.asStr }
           chance = 50 }
 
+rule
 rule.exported
+rule.traits.tags
+rule.level.tags

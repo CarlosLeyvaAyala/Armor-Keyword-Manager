@@ -1,6 +1,7 @@
 ﻿namespace Data.SPID.Level
 
 open System
+open Data.TagCreate
 
 type ValidLevel =
     | ValidLevel of int
@@ -108,6 +109,30 @@ type AttributeType =
         | Restoration -> 16
         | Enchanting -> 17
 
+    member t.tag =
+        let c s = sprintf "%s level" s |> outfit
+
+        match t with
+        | ActorLevel -> c "actor"
+        | OneHanded -> c "one handed"
+        | TwoHanded -> c "two handed"
+        | Marksman -> c "archery"
+        | Block -> c "block"
+        | Smithing -> c "smithing"
+        | HeavyArmor -> c "heavy armor"
+        | LightArmor -> c "light armor"
+        | Pickpocket -> c "pickpocket"
+        | Lockpicking -> c "lockpicking"
+        | Sneak -> c "sneak"
+        | Alchemy -> c "alchemy"
+        | Speechcraft -> c "speech"
+        | Alteration -> c "alteration"
+        | Conjuration -> c "conjuration"
+        | Destruction -> c "destruction"
+        | Illusion -> c "illusion"
+        | Restoration -> c "restoration"
+        | Enchanting -> c "enchanting"
+
     member t.asRaw = AttributeType.toRaw t
 
 type SpidLevel =
@@ -142,6 +167,11 @@ type SpidLevel =
             |> Option.defaultValue SpidLevel.invalidMax }
 
     member t.asRaw = SpidLevel.toRaw t
+
+    member t.tags =
+        match t.exported with
+        | Choice2Of2 _ -> [||]
+        | Choice1Of2 _ -> getTags t
 
 and SpidLevelRaw =
     { sk: int

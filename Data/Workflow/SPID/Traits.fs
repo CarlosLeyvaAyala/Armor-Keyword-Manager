@@ -2,6 +2,7 @@
 
 open System.Text.RegularExpressions
 open DMLib.String
+open Data.TagCreate
 
 type Sex =
     | Male
@@ -30,6 +31,12 @@ type Sex =
     member t.exported = Sex.export t
     member t.isExportEmpty = t = DontCare
 
+    member t.tag =
+        match t with
+        | Male -> outfit "male"
+        | Female -> outfit "female"
+        | DontCare -> ""
+
 type Unique =
     | UniqueNpcs
     | NonUniqueNpcs
@@ -56,6 +63,12 @@ type Unique =
     member t.asStr = Unique.toStr t
     member t.exported = Unique.export t
     member t.isExportEmpty = t = DontCare
+
+    member t.tag =
+        match t with
+        | UniqueNpcs -> outfit "unique npcs"
+        | NonUniqueNpcs -> outfit "non unique npcs"
+        | DontCare -> ""
 
 type Summonable =
     | SummonableNpcs
@@ -84,6 +97,12 @@ type Summonable =
     member t.exported = Summonable.export t
     member t.isExportEmpty = t = DontCare
 
+    member t.tag =
+        match t with
+        | SummonableNpcs -> outfit "summonable"
+        | NonSummonableNpcs -> outfit "non summonable"
+        | DontCare -> ""
+
 type Child =
     | ChildNpcs
     | NonChildNpcs
@@ -110,6 +129,12 @@ type Child =
     member t.asStr = Child.toStr t
     member t.exported = Child.export t
     member t.isExportEmpty = t = DontCare
+
+    member t.tag =
+        match t with
+        | ChildNpcs -> outfit "child"
+        | NonChildNpcs -> outfit "non child"
+        | DontCare -> ""
 
 type Leveled =
     | LeveledNPCs
@@ -138,6 +163,12 @@ type Leveled =
     member t.exported = Leveled.export t
     member t.isExportEmpty = t = DontCare
 
+    member t.tag =
+        match t with
+        | LeveledNPCs -> outfit "leveled npcs"
+        | NonLeveledNpcs -> outfit "non leveled npcs"
+        | DontCare -> ""
+
 type Teammate =
     | TeammateNpcs
     | NonTeammateNpcs
@@ -164,6 +195,12 @@ type Teammate =
     member t.asStr = Teammate.toStr t
     member t.exported = Teammate.export t
     member t.isExportEmpty = t = DontCare
+
+    member t.tag =
+        match t with
+        | TeammateNpcs -> outfit "teammate"
+        | NonTeammateNpcs -> outfit "non teammate"
+        | DontCare -> ""
 
 type SpidTraits =
     { sex: Sex
@@ -227,6 +264,8 @@ type SpidTraits =
                 | Regex @"^\/?(.*?)\/?$" [ v ] -> v
                 | v -> v
             |> Choice1Of2
+
+    member t.tags = getTags t
 
 and SpidTraitsRaw =
     { sex: string

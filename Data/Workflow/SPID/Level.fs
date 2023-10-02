@@ -86,9 +86,35 @@ type AttributeType =
         | 17 -> Enchanting
         | _ -> failwith $"({x}) is not a valid attribute type"
 
-type Level =
+    static member toRaw x =
+        match x with
+        | ActorLevel -> -1
+        | OneHanded -> 0
+        | TwoHanded -> 1
+        | Marksman -> 2
+        | Block -> 3
+        | Smithing -> 4
+        | HeavyArmor -> 5
+        | LightArmor -> 6
+        | Pickpocket -> 7
+        | Lockpicking -> 8
+        | Sneak -> 9
+        | Alchemy -> 10
+        | Speechcraft -> 11
+        | Alteration -> 12
+        | Conjuration -> 13
+        | Destruction -> 14
+        | Illusion -> 15
+        | Restoration -> 16
+        | Enchanting -> 17
+
+    member t.asRaw = AttributeType.toRaw t
+
+type SpidLevel =
     { skill: AttributeType
       level: AttributeLevel }
+
+    static member invalidMax = -1
 
     member t.exported =
         match t.skill.exported, t.level.exported with
@@ -97,8 +123,31 @@ type Level =
         | Choice1Of2 skill, Choice1Of2 level
         | Choice1Of2 skill, Choice2Of2 level -> Choice1Of2 $"{skill}({level})"
 
-    static member ofRaw skill min max =
-        { skill = skill |> AttributeType.ofRaw
+    static member ofRaw(r: SpidLevelRaw) =
+        { skill = r.sk |> AttributeType.ofRaw
           level =
-            { min = ValidLevel.ofInt min
-              max = max |> Option.map (fun x -> ValidLevel.ofInt x) } }
+            { min = ValidLevel.ofInt r.min
+              max =
+                if r.max <> SpidLevel.invalidMax then
+                    r.max |> ValidLevel.ofInt |> Some
+                else
+                    None } }
+
+    static member toRaw(t: SpidLevel) : SpidLevelRaw =
+        { sk = t.skill.asRaw
+          min = t.level.min.value
+          max =
+            t.level.max
+            |> Option.map ValidLevel.toInt
+            |> Option.defaultValue SpidLevel.invalidMax }
+
+    member t.asRaw = SpidLevel.toRaw t
+
+and SpidLevelRaw =
+    { sk: int
+      min: int
+      max: int }
+    static member blank =
+        { sk = AttributeType.ActorLevel.asRaw
+          min = 1
+          max = SpidLevel.invalidMax }

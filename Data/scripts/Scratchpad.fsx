@@ -912,30 +912,6 @@ open DMLib.Types
 open DMLib.String
 open System.Text.RegularExpressions
 
-type StringFilterItem =
-    | KeywordEDID
-    | ActorBaseName
-    | ActorBaseEDID
-
-type StringFilter = StringFilter of StringFilterItem list
-
-type FormFilterItem =
-    | EDID of EDID
-    | FormID of UniqueId
-
-type FormFilterType =
-    | Faction of FormFilterItem
-    | Class of FormFilterItem
-    | CombatStyle of FormFilterItem
-    | Race of FormFilterItem
-    | Outfit of FormFilterItem
-    | NPC of FormFilterItem
-    | Spell of FormFilterItem
-    | VoiceType of FormFilterItem
-    | FormList of FormFilterItem
-    | EditorLocation of FormFilterItem
-
-type FormFilters = FormFilters of string
 
 
 //Outfit = Outfit EDID|string filter|form filter|level|traits|item count|chance
@@ -947,6 +923,7 @@ open System.IO
 getScriptLoadDeclarationsRelative __SOURCE_DIRECTORY__ __SOURCE_FILE__ @"..\Workflow\SPID\"
 |> TextCopy.ClipboardService.SetText
 
+#load "..\Workflow\SPID\SpidFilter.fs"
 #load "..\Workflow\SPID\Level.fs"
 #load "..\Workflow\SPID\Traits.fs"
 #load "..\Workflow\SPID\Chance.fs"
@@ -954,22 +931,13 @@ getScriptLoadDeclarationsRelative __SOURCE_DIRECTORY__ __SOURCE_FILE__ @"..\Work
 
 open Data.SPID
 
-let stringFilter = Choice2Of2 "NONE"
-let formFilter = Choice1Of2 "RedguardRace,RedguardRaceVampire"
+let rule =
+    SpidRule.ofRaw
+        { strings =
+            "0xC33~[Rektas] Sanguine [SE].esp, RedguardRace,RedguardRaceVampire,    Priest,Danica Pure-Spring,Freir-Silana,*Draugr,Nura Snow-Shod,,,    "
+          forms = ""
+          level = Level.SpidLevelRaw.blank
+          traits = Traits.SpidTraitsRaw.blank
+          chance = 50 }
 
-let traits =
-    { Traits.Traits.empty with sex = Traits.Female }
-        .exported
-
-let itemCount = Choice2Of2 "1"
-let chance = (DistributionChance.ofInt 10).exported
-let level = (Level.Level.ofRaw -1 1 (None)).exported
-
-Rules.Ops.getExportStr [| stringFilter
-                          formFilter
-                          level
-                          traits
-                          itemCount
-                          chance |]
-
-
+rule.exported

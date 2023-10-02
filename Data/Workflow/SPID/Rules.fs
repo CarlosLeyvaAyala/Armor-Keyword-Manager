@@ -1,12 +1,36 @@
-﻿namespace Data.SPID.Rules
+﻿namespace Data.SPID
 
 open DMLib.String
+open Data.SPID
 
-[<AutoOpen>]
-module Ops =
-    /// Gets the exporting string for the selected rules
-    let getExportStr a =
-        a
+type SpidRule =
+    { strings: SpidFilter
+      forms: SpidFilter
+      level: Level.SpidLevel
+      traits: Traits.SpidTraits
+      chance: SpidChance }
+
+    static member ofRaw(r: SpidRuleRaw) =
+        { strings = r.strings |> SpidFilter.ofStr
+          forms = r.forms |> SpidFilter.ofStr
+          level = r.level |> Level.SpidLevel.ofRaw
+          traits = r.traits |> Traits.SpidTraits.ofRaw
+          chance = r.chance |> SpidChance.ofRaw }
+
+    static member toRaw(r: SpidRule) : SpidRuleRaw =
+        { strings = r.strings.value
+          forms = r.forms.value
+          level = r.level.asRaw
+          traits = r.traits.asRaw
+          chance = r.chance.asRaw }
+
+    member t.exported =
+        [| t.strings.exported
+           t.forms.exported
+           t.level.exported
+           t.traits.exported
+           Choice2Of2 "1" // Item count is always an optional 1 for outfits
+           t.chance.exported |]
         |> Array.rev
         |> Array.skipWhile (fun v ->
             match v with
@@ -18,3 +42,10 @@ module Ops =
             | Choice1Of2 s
             | Choice2Of2 s -> s)
         |> Array.fold (smartFold "|") ""
+
+and SpidRuleRaw =
+    { strings: string
+      forms: string
+      level: Level.SpidLevelRaw
+      traits: Traits.SpidTraitsRaw
+      chance: int }

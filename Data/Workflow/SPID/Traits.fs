@@ -165,7 +165,7 @@ type Teammate =
     member t.exported = Teammate.export t
     member t.isExportEmpty = t = DontCare
 
-type Traits =
+type SpidTraits =
     { sex: Sex
       unique: Unique
       summonable: Summonable
@@ -173,7 +173,23 @@ type Traits =
       leveled: Leveled
       teammate: Teammate }
 
-    static member empty =
+    static member ofRaw(r: SpidTraitsRaw) =
+        { sex = r.sex |> Sex.ofStr
+          unique = r.unique |> Unique.ofStr
+          summonable = r.summonable |> Summonable.ofStr
+          child = r.child |> Child.ofStr
+          leveled = r.leveled |> Leveled.ofStr
+          teammate = r.teammate |> Teammate.ofStr }
+
+    static member toRaw(r: SpidTraits) : SpidTraitsRaw =
+        { sex = r.sex.asStr
+          unique = r.unique.asStr
+          summonable = r.summonable.asStr
+          child = r.child.asStr
+          leveled = r.leveled.asStr
+          teammate = r.teammate.asStr }
+
+    static member blank =
         { sex = Sex.DontCare
           unique = Unique.DontCare
           summonable = Summonable.DontCare
@@ -181,7 +197,8 @@ type Traits =
           leveled = Leveled.DontCare
           teammate = Teammate.DontCare }
 
-    member t.isExportEmpty = t = Traits.empty
+    member t.isExportEmpty = t = SpidTraits.blank
+    member t.asRaw = SpidTraits.toRaw t
 
     member t.asStr =
         sprintf
@@ -210,3 +227,13 @@ type Traits =
                 | Regex @"^\/?(.*?)\/?$" [ v ] -> v
                 | v -> v
             |> Choice1Of2
+
+and SpidTraitsRaw =
+    { sex: string
+      unique: string
+      summonable: string
+      child: string
+      leveled: string
+      teammate: string }
+
+    static member blank = SpidTraits.blank.asRaw

@@ -21,7 +21,6 @@
     <Compile Include="IO\Keyword.fs" />
     <Compile Include="IO\Item.fs" />
     <Compile Include="IO\Outfit.fs" />
-    <Compile Include="UI\Filtering\Filters.fs" />
     <Compile Include="UI\AppSettings.fs" />
     <Compile Include="UI\Edit\Outfit.fs" />
     <Compile Include="UI\Keyword.fs" />
@@ -36,7 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\DMLib-Fs-WPF\DMLib-Fs-WPF.fsproj" />
     <ProjectReference Include="..\..\DMLib-FSharp\DMLib-FSharp.fsproj" />
   </ItemGroup>
 

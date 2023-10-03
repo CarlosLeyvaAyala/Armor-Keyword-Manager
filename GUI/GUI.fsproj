@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <None Include="scripts\Command binding generator.fsx" />
+    <Compile Include="Filters.fs" />
     <Compile Include="Interfaces.fs" />
     <Compile Include="Commands.fs" />
     <Compile Include="Controls.fs" />

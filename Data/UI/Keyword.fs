@@ -2,7 +2,6 @@
 
 open DMLib
 open Data.Keywords
-open DMLib_WPF
 
 module DB = Data.Keywords.Database
 

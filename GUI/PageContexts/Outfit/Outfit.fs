@@ -8,7 +8,7 @@ open DMLib_WPF.Controls
 open System.Windows
 open System.IO
 open GUI.UserControls
-open Data.UI.Filtering
+open GUI.Filtering
 open System
 open DMLib_WPF.Contexts
 open DMLib_WPF.Dialogs

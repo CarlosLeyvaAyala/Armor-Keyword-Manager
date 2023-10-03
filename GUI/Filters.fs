@@ -1,4 +1,4 @@
-﻿namespace Data.UI.Filtering
+﻿namespace GUI.Filtering
 
 open DMLib
 open DMLib.Combinators

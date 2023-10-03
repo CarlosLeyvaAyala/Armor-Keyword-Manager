@@ -10,7 +10,7 @@ open DMLib.Collections
 open System
 open GUI.UserControls
 open FsToolkit.ErrorHandling
-open Data.UI.Filtering
+open GUI.Filtering
 open DMLib.Combinators
 open Data.UI
 open GUI.PageContexts.Items

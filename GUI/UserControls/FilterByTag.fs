@@ -1,6 +1,6 @@
 ﻿namespace GUI.UserControls
 
-open Data.UI.Filtering
+open GUI.Filtering
 open System.Windows
 open System.Collections
 open DMLib_WPF

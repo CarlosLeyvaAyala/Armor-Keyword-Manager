@@ -42,7 +42,7 @@ type IFilterableByTag =
     abstract ApplyTagFilter: FilterTagEventArgs -> unit
 
 /// Individual filtering by tag item
-type FilterTagItem(name: string, tagType: Manager.TagSource) =
+type FilterTagItem(name: string, tagType: TagSource) =
     inherit WPFBindable()
 
     let mutable isVisible = true
@@ -65,7 +65,7 @@ type FilterTagItem(name: string, tagType: Manager.TagSource) =
 
     member val IsKeyword =
         match tagType with
-        | Manager.TagSource.Keyword -> true
+        | Keyword -> true
         | _ -> false with get, set
 
     static member ofStringList list =
@@ -73,7 +73,7 @@ type FilterTagItem(name: string, tagType: Manager.TagSource) =
         |> Seq.map FilterTagItem
         |> toObservableCollection
 
-    new(name) = FilterTagItem(name, Data.Tags.Manager.TagSource.ManuallyAdded)
+    new(name) = FilterTagItem(name, ManuallyAdded)
 
 /// DataContext for the filter by tag dialog
 type FilterByTagCtx() as t =

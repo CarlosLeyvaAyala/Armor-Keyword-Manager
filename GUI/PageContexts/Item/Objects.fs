@@ -96,7 +96,7 @@ type NavListItem(uniqueId: string, d: Raw) =
 module private SelItemTagsEvents =
     open Data.Tags
 
-    let mutable private tags: (Manager.TagName * Manager.TagSource) array = [||]
+    let mutable private tags: (TagName * TagSource) array = [||]
 
     Manager.onTagsChanged
     |> Event.add (fun t -> tags <- t)
@@ -105,7 +105,7 @@ module private SelItemTagsEvents =
         tags
         |> Array.Parallel.choose (fun (name, source) ->
             match source with
-            | Manager.TagSource.ManuallyAdded -> Some name
+            | ManuallyAdded -> Some name
             | _ -> None)
 
 type NavSelectedItem(uniqueId: string) =

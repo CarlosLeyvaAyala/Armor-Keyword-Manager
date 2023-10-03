@@ -12,4 +12,5 @@ type TagSource =
 
 type TagInfo = { timesUsed: int }
 type TagName = string
-type TagMap = Map<TagName, TagInfo>
+type TagInfoMap = Map<TagName, TagInfo>
+type TagSourceMap = Map<TagName, TagSource>

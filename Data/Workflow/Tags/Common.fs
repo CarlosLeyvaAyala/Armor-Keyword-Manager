@@ -20,11 +20,12 @@ module internal Create =
         |> Array.distinct
         |> Array.filter (Not isNullOrEmpty)
 
-    let private createLabeledTag label s = sprintf "%s: %s" label s |> toLower
+    // To avoid name collisions with manually added tags, automatic tags always start with "  ";
+    // something the user can not do.
+    let private createAutoTag label s = sprintf "  %s: %s" label s |> toLower
 
     /// Creates an automatic tag name for an outfit.
-    let outfit a =
-        createLabeledTag (sprintf "outfit[%s]" a)
+    let outfit a = createAutoTag (sprintf "outfit[%s]" a)
 
 /// Shared functions for editing tags.
 module internal Edit =

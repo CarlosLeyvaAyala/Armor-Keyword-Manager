@@ -12,10 +12,10 @@ open System.Diagnostics
 
 open Data.Tags
 
-let mutable private commonTagsMap: TagMap = Map.empty
-let mutable private keywordsMap: Map<string, TagSource> = Map.empty
-let mutable private reservedTagsMap: Map<string, TagSource> = Map.empty
-let mutable private getCommonTags: (unit -> TagMap) list = []
+let mutable private commonTagsMap: TagInfoMap = Map.empty
+let mutable private keywordsMap: TagSourceMap = Map.empty
+let mutable private reservedTagsMap: TagSourceMap = Map.empty
+let mutable private getCommonTags: (unit -> TagInfoMap) list = []
 let private tagsChangedEvent = new Event<(TagName * TagSource) array>()
 
 let private sendTagsChanged () =
@@ -72,7 +72,7 @@ let inline getTagsAsMap a =
     |> Array.Parallel.collect id
     |> Array.Parallel.sort
     |> Array.groupBy id
-    |> Array.fold (fun (m: TagMap) (tagName, countArr) -> m.Add(tagName, { timesUsed = countArr.Length })) Map.empty
+    |> Array.fold (fun (m: TagInfoMap) (tagName, countArr) -> m.Add(tagName, { timesUsed = countArr.Length })) Map.empty
 
 /// The tag manager will call this event when it needs them.
 let addCommonTags v = getCommonTags <- v :: getCommonTags

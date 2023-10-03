@@ -73,7 +73,8 @@ public partial class MainWindow : Window {
 
   private void Window_Loaded(object sender, RoutedEventArgs e) {
     try {
-      IO.Keywords.File.Open(AppSettings.Paths.KeywordsFile());
+      // May need to open keywords database from here if the app breaks too much for others.
+      //IO.Keywords.File.Open(AppSettings.Paths.KeywordsFile());
       var fn = Settings.Default.mostRecetFile;
       if (File.Exists(fn)) OpenFile(fn);
     }

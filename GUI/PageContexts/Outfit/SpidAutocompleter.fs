@@ -40,6 +40,7 @@ type SpidAutocompleter() as t =
     member _.OpenDatabase = openDB
     member _.Suggestions = suggestions
 
+    /// Imports suggestions from xEdit to save them to database.
     member _.ImportxEdit filename =
         dbMap <-
             IO.File.ReadAllLines filename
@@ -63,6 +64,10 @@ type SpidAutocompleter() as t =
         saveDB ()
         calcSuggestions ()
 
+    /// Adds suggestions from a SPID filter.
+    ///
+    /// This may be called when a file is opened or when the user adds a new string/form filter
+    /// for an outfit.
     member _.AddFromFilter filter =
         let lowerCaseMap =
             dbMap

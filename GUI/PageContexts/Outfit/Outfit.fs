@@ -134,5 +134,6 @@ type OutfitPageCtx() =
                 t.ReloadNavAndGoToFirst()))
         )
 
+    /// String filter autocompletion.
     member _.SPIDStrings =
         IO.File.ReadAllLines(@"F:\Skyrim SE\Tools\SSEEdit 4_x\Edit Scripts\___.spidstrs")

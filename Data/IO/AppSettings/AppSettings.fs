@@ -5,12 +5,20 @@ open DMLib.String
 open DMLib.Combinators
 open System.IO
 open System
+open IO.AppSettingsTypes
 
 [<RequireQualifiedAccess>]
 module Paths =
     let mutable private app = ""
+    let private appPathChangeEvt = Event<PathChangeEventArgs>()
 
-    let SetApp dir = app <- dir
+    /// This event should be called only once: when the app starts.
+    let onAppPathChanged = appPathChangeEvt.Publish
+
+    let SetApp dir =
+        app <- dir
+        dir |> ApplicationPath |> appPathChangeEvt.Trigger
+
     let internal data () = combine2 app "Data"
     let KeywordsFile () = data () |> combine2' "Keywords.json"
 

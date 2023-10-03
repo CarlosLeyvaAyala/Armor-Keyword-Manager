@@ -2,11 +2,11 @@
 
 open System.Text.RegularExpressions
 open DMLib.String
-open Data.TagCreate
+open Data.Tags.Create
 
 [<AutoOpen>]
 module private TraitsOps =
-    let outfit = Data.TagCreate.outfit "t"
+    let outfit = Data.Tags.Create.outfit "t"
 
 type Sex =
     | Male

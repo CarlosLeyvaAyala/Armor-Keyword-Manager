@@ -1,7 +1,7 @@
 ﻿namespace Data.SPID.Level
 
 open System
-open Data.TagCreate
+open Data.Tags.Create
 
 type ValidLevel =
     | ValidLevel of int

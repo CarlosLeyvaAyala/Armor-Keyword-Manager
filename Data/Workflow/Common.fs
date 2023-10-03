@@ -1,5 +1,6 @@
 ﻿namespace CommonTypes
 
+open DMLib
 open DMLib.String
 open DMLib.Types
 
@@ -47,3 +48,12 @@ type Tag =
     member t.Value = t.toString ()
 
 type Comment = string
+
+module List =
+    /// Adds a word to a string list if it doesn't exist already.
+    let addWord word list =
+        list |> List.insertDistinctAt 0 word |> List.sort
+
+    /// Deletes some word from a string list.
+    let delWord word list =
+        list |> List.filter (fun a -> not (a = word))

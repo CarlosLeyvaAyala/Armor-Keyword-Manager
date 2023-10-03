@@ -211,12 +211,7 @@ module Database =
 
     open Data.Tags
 
-    let addTag id tag =
-        update id (changeTags addWord tag)
-        Manager.add tag
-
-    let delTag id tag =
-        update id (changeTags delWord tag)
-        Manager.delete tag
+    let addTag id tag = update id (changeTags Edit.add tag)
+    let delTag id tag = update id (changeTags Edit.delete tag)
 
     Manager.addCommonTags (fun () -> toArrayOfRaw () |> Manager.getTagsAsMap)

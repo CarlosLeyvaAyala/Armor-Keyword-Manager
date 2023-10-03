@@ -32,11 +32,12 @@
 #load "..\..\..\DMLib-Fs-WPF\WPFBindable.fs"
 
 // Project
-#load "..\Common.fs"
+#load "..\Workflow\Common.fs"
 #load "..\Workflow\Keyword.fs"
+#load "..\Workflow\Tags\Types.fs"
 #load "..\Workflow\Tags\Manager.fs"
+#load "..\Workflow\Tags\Common.fs"
 #load "..\Workflow\Item.fs"
-#load "..\Workflow\TagCreate.fs"
 #load "..\Workflow\Outfit\SPID\SpidFilter.fs"
 #load "..\Workflow\Outfit\SPID\Level.fs"
 #load "..\Workflow\Outfit\SPID\Traits.fs"
@@ -47,18 +48,8 @@
 #load "..\IO\Keyword.fs"
 #load "..\IO\Item.fs"
 #load "..\IO\Outfit.fs"
-#load "..\UI\Interfaces.fs"
-#load "..\UI\Filtering\Filters.fs"
-#load "..\UI\Common.fs"
-#load "..\UI\AppSettings.fs"
-#load "..\UI\Edit\Item.fs"
-#load "..\UI\Edit\Outfit.fs"
-#load "..\UI\Keyword.fs"
-#load "..\UI\Item.fs"
-#load "..\UI\Outfit.fs"
-#load "..\UI\Tags.fs"
-#load "..\UI\BatchRename.fs"
-#load "..\PropietaryFile.fs"
+#load "..\IO\PropietaryFile.fs"
+#load "..\IO\AppSettings.fs"
 
 // Time
 #time "on"
@@ -94,7 +85,10 @@ fsi.AddPrinter(fun (r: UniqueId) -> r.ToString())
 module Items = Data.Items.Database
 module Outfits = Data.Outfit.Database
 
-Data.UI.Keywords.File.Open()
+let loadKeywords () =
+    IO.Keywords.File.Open @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\KeywordManager\Data\Keywords.json"
+
+loadKeywords ()
 let inF = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors and outfits.skyitms"
 IO.PropietaryFile.Open inF
 let items = Items.toArrayOfRaw ()
@@ -948,10 +942,6 @@ open DMLib.IO.Path
 open System.IO
 open DMLib.Combinators
 
-#load "..\Workflow\TagCreate.fs"
-
-Data.UI.Keywords.File.Open()
-
 
 open Data.SPID
 
@@ -976,3 +966,7 @@ open FSharp.Control
 Outfits.update "__DMUnboundItemManagerOutfit__.esm|11" (fun v -> { v with tags = [ "ass crack" ] })
 Outfits.update "__DMUnboundItemManagerOutfit__.esm|12" (fun v -> { v with tags = [ "ass crack" ] })
 Outfits.update "__DMUnboundItemManagerOutfit__.esm|13" (fun v -> { v with tags = [ "ass crack" ] })
+
+loadKeywords ()
+
+Manager.onTagsChanged |> Event.add (printfn "%A")

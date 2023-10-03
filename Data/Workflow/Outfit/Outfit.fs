@@ -190,4 +190,6 @@ module Database =
 
     let getPieces uid = (find uid).pieces
 
-    Data.Tags.Manager.addCommonTags (fun () -> toArrayOfRaw () |> Data.Tags.Manager.getTagsAsMap)
+    open Data.Tags
+
+    Manager.addCommonTags (fun () -> toArrayOfRaw () |> Manager.getTagsAsMap)

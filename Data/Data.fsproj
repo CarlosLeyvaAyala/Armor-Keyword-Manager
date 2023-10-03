@@ -6,12 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Common.fs" />
+    <Compile Include="Workflow\Common.fs" />
     <Compile Include="Workflow\Keyword.fs" />
     <Compile Include="Workflow\Tags\Types.fs" />
     <Compile Include="Workflow\Tags\Manager.fs" />
+    <Compile Include="Workflow\Tags\Common.fs" />
     <Compile Include="Workflow\Item.fs" />
-    <Compile Include="Workflow\TagCreate.fs" />
     <Compile Include="Workflow\Outfit\SPID\SpidFilter.fs" />
     <Compile Include="Workflow\Outfit\SPID\Level.fs" />
     <Compile Include="Workflow\Outfit\SPID\Traits.fs" />

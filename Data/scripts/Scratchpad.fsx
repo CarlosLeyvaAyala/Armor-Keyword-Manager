@@ -950,7 +950,6 @@ let rule =
                 unique = Traits.UniqueNpcs.asStr }
           chance = 50 }
 
-
 type TagsChanged =
     | Added of string list
     | Deleted of string list
@@ -1001,7 +1000,7 @@ type TagManager() =
         |> Array.groupBy id
         |> Array.fold (fun (m: TagMap) (tagName, countArr) -> m.Add(tagName, { timesUsed = countArr.Length })) Map.empty
 
-    /// Gets some common tags whenever this object need it.
+    /// The tag manager will call this event when it needs them.
     member _.AddCommonTags v = getCommonTags <- v :: getCommonTags
 
     member _.OnTagsChanged = tagsChangedEvent.Publish
@@ -1051,6 +1050,11 @@ tagManager.OnTagsChanged.Add(fun v -> printfn "Received: %d" v.Length)
 tagManager.OnTagsChanged.Add(fun v -> printfn "First element: %A" v[0])
 tagManager.RebuildCache()
 
+open FSharp.Control
+
+tagManager.OnTagsChanged
+|> Event.filter (fun args -> args.Length > 10)
+|> Event.add (fun _ -> printfn "filtered edited")
 
 Outfits.update "__DMUnboundItemManagerOutfit__.esm|11" (fun v -> { v with tags = [ "ass crack" ] })
 Outfits.update "__DMUnboundItemManagerOutfit__.esm|12" (fun v -> { v with tags = [ "ass crack" ] })
@@ -1060,3 +1064,13 @@ Data.Outfit.Database.toArrayOfRaw ()
 |> Array.filter (snd >> (fun v -> v.tags.Length > 0))
 |> TagManager.GetTagsAsMap
 
+Data.UI.Keywords.File.Open()
+Data.UI.Keywords.Get.all ()
+
+Data.Keywords.Database.onKeywordsChanged
+|> Event.choose (fun v ->
+    match v with
+    | Data.Keywords.Added a
+    | Data.Keywords.Deleted a -> Some a
+    | Data.Keywords.Edited _ -> None)
+|> Event.add (printfn "====================\n%A")

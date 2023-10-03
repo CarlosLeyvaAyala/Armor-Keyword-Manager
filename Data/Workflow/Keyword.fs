@@ -38,21 +38,32 @@ and Raw =
 
 type KeywordMap = Map<Keyword, Data>
 
+/// Event arguments when database changes
+type KeywordsChanged =
+    | Added of string array
+    | Deleted of string array
+    | Edited of string array
+
 module Database =
+    let private keywordsChangedEvent = new Event<KeywordsChanged>()
+
+    /// Event triggered when keywords have changed.
+    let onKeywordsChanged = keywordsChangedEvent.Publish
+
     [<Literal>]
     let DefaultColor = 100000
 
-    let blankKeyword =
+    let private blankKeyword =
         { image = ""
           description = ""
           color = DefaultColor }
 
     let mutable private keywords: KeywordMap = Map.empty
 
-    let ofRawPair (k, v) =
+    let private ofRawPair (k, v) =
         Keyword.ofString k, { Data.ofRaw v with originalName = k }
 
-    let toRawPair (_, v: Data) = v.originalName, v.raw
+    let private toRawPair (_, v: Data) = v.originalName, v.raw
 
     let toArrayOfRaw () =
         keywords
@@ -61,6 +72,11 @@ module Database =
 
     let ofRaw v =
         keywords <- v |> Array.Parallel.map ofRawPair |> Map.ofArray
+
+        v
+        |> Array.Parallel.map fst
+        |> Added
+        |> keywordsChangedEvent.Trigger
 
     let toRaw () = keywords
 
@@ -79,8 +95,12 @@ module Database =
         keywords <-
             keywords.Add(
                 match tryFind key with
-                | Some oldVal -> k, { v' with originalName = oldVal.originalName } // Avoid adding an existing keyword with changed casing
-                | None -> k, v'
+                | Some oldVal ->
+                    Edited [| key |] |> keywordsChangedEvent.Trigger
+                    k, { v' with originalName = oldVal.originalName } // Avoid adding an existing keyword with changed casing
+                | None ->
+                    Added [| key |] |> keywordsChangedEvent.Trigger
+                    k, v'
             )
 
     let edit key f =
@@ -90,5 +110,8 @@ module Database =
         |> f
         |> upsert key
 
+        Edited [| key |] |> keywordsChangedEvent.Trigger
+
     let delete key =
         keywords <- keywords |> Map.remove (Keyword.ofString key)
+        Deleted [| key |] |> keywordsChangedEvent.Trigger

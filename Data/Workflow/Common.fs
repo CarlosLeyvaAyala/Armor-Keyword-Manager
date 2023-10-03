@@ -40,9 +40,7 @@ type Image =
 type Tag =
     | Tag of NonEmptyString
 
-    static member ofString s =
-        s |> trim |> toLower |> NonEmptyString |> Tag
-
+    static member ofString s = s |> toLower |> NonEmptyString |> Tag
     static member toString(Tag t) = t.Value
     member t.toString() = Tag.toString t
     member t.Value = t.toString ()

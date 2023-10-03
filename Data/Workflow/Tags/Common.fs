@@ -44,3 +44,11 @@ module internal Edit =
     let add = changeTags Manager.add List.addWord
     /// Tries to delete a tag to some list. It triggers a change event in the tag manager if needed.
     let delete = changeTags Manager.delete List.delWord
+
+    /// Converts an array of raw to all its tags. It is used to display tags in the filter bar.
+    let allTags getTags a =
+        a
+        |> Array.Parallel.map (snd >> getTags >> List.toArray)
+        |> Array.Parallel.collect id
+        |> Array.distinct
+        |> Array.Parallel.sort

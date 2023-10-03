@@ -8,6 +8,8 @@ open DMLib.Types
 open FSharpx.Collections
 open System
 
+module Items = Data.Items.Database
+
 type ArmorPiece =
     | ArmorPiece of UniqueId
 
@@ -154,6 +156,9 @@ module Database =
 
     let importMany lines = lines |> Seq.iter import
 
+    /// Gets which outfits contain some piece and have images.
+    ///
+    /// Used by the items Nav to show picture hint.
     let outfitsWithPiecesImg armorPiece =
         let ap = armorPiece |> UniqueId |> ArmorPiece
 
@@ -169,6 +174,7 @@ module Database =
         |> Map.toArray
         |> Array.map (fun (uId, (name, img)) -> uId.Value, name.Value, img.Value)
 
+    /// Gets which outfits have some particular armor piece.
     let outfitsWithPieces armorPiece =
         let ap = armorPiece |> UniqueId |> ArmorPiece
 
@@ -176,7 +182,7 @@ module Database =
         |> Map.toArray
         |> Array.Parallel.choose (fun (_, v) -> v.pieces |> List.tryFind (fun p -> ap = p))
 
-    /// An "unbound" outfit belongs to no esp and is used for player documentation
+    /// An "unbound" outfit belongs to no esp and is used for player documentation.
     let addUnbound name selected =
         let n = nextUnboundId
 
@@ -197,3 +203,20 @@ module Database =
     open Data.Tags
 
     Manager.addCommonTags (fun () -> toArrayOfRaw () |> Manager.getTagsAsMap)
+
+    /// Outfit tags that can not be altered by the player. This is called by the selected outfit.
+    let readOnlyTags outfitRawData =
+        outfitRawData.pieces
+        |> List.map (fun uid -> uid, Items.tryFind uid)
+        |> List.choose (snd >> Option.map Items.allItemTags)
+        |> List.collect id
+        |> List.append outfitRawData.autoTags
+        |> List.distinct
+
+    /// All tags an outfit unit can have. This includes all piece tags.
+    ///
+    /// Called by the filter bar.
+    let allOutfitTags outfitRawData =
+        outfitRawData
+        |> readOnlyTags
+        |> List.append outfitRawData.tags

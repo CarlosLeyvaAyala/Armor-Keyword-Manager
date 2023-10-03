@@ -212,7 +212,7 @@ module Database =
         { v with keywords = v.keywords |> transform keyword }
 
     let private changeTags transform tag (v: Raw) =
-        { v with tags = v.tags |> transform tag }
+        { v with tags = v.tags |> transform (trim tag) }
 
     let addKeyword id keyword =
         update id (changeKeywords addWord keyword)
@@ -226,3 +226,6 @@ module Database =
     let delTag id tag = update id (changeTags Edit.delete tag)
 
     Manager.addCommonTags (fun () -> toArrayOfRaw () |> Manager.getTagsAsMap)
+
+    /// All the tags an item unit can hold. This is called by the outfit page and the filter bar.
+    let allItemTags v = v.keywords @ v.tags @ v.autoTags

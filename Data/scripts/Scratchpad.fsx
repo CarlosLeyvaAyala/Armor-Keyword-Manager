@@ -62,7 +62,6 @@ open DMLib
 open DMLib.Combinators
 open DMLib.MathL
 open DMLib.String
-open DMLib.Tuples
 open DMLib.IO.Path
 open System.Text.RegularExpressions
 open DMLib.Types
@@ -966,7 +965,6 @@ let rule =
 //////////////////////
 open FSharp.Control
 
-Outfits.update "__DMUnboundItemManagerOutfit__.esm|11" (fun v -> { v with tags = [ "ass crack" ] })
 Outfits.update "__DMUnboundItemManagerOutfit__.esm|12" (fun v -> { v with tags = [ "ass crack" ] })
 Outfits.update "__DMUnboundItemManagerOutfit__.esm|13" (fun v -> { v with tags = [ "ass crack" ] })
 
@@ -977,31 +975,48 @@ Manager.onTagsChanged |> Event.add (printfn "%A")
 Manager.reserved ()
 Manager.addReservedTags Data.SPID.SpidRule.allAutoTags AutoOutfit
 
-type FilterFlags =
-    | TagManuallyAdded = 1
-    | TagKeywords = 2
-    | TagAutoItem = 4
-    | TagAutoOutfit = 8
-    | TagReserved1 = 16
-    | TagReserved2 = 32
-    | TagReserved3 = 64
-    | TagReserved4 = 128
-    | TagReserved5 = 256
-    | Image = 512
-    | ItemType = 1024
+let dupFst a = setSnd a a
+let mapFst mapper (first, second) = mapper first, second
+let mapSnd mapper (first, second) = first, mapper second
 
-module FilterFlags =
-    let private hasFlag (flag: FilterFlags) v = (flag &&& v) = flag
-    let hasTagManuallyAdded = hasFlag FilterFlags.TagManuallyAdded
-    let hasTagKeywords = hasFlag FilterFlags.TagKeywords
-    let hasTagAutoItem = hasFlag FilterFlags.TagAutoItem
-    let hasTagAutoOutfit = hasFlag FilterFlags.TagAutoOutfit
-    let hasImage = hasFlag FilterFlags.Image
-    let hasItemType = hasFlag FilterFlags.ItemType
+let allItemTags (v: Data.Items.Raw) = v.keywords @ v.tags @ v.autoTags
 
-let t =
-    FilterFlags.ItemType
-    ||| FilterFlags.TagManuallyAdded
+let allTags getTags a =
+    a
+    |> Array.Parallel.map (snd >> getTags >> List.toArray)
+    |> Array.Parallel.collect id
+    |> Array.distinct
+    |> Array.Parallel.sort
 
-t
-t &&& FilterFlags.ItemType |> int |> printfn "%B"
+/// Outfit tags that can not be altered by the player. This is called by the selected outfit.
+let readOnlyTags outfitRawData =
+    outfitRawData.pieces
+    |> List.map (fun uid -> uid, Items.tryFind uid)
+    |> List.choose (snd >> Option.map allItemTags)
+    |> List.collect id
+    |> List.append outfitRawData.autoTags
+    |> List.distinct
+
+/// All tags an outfit unit can have. This includes all piece tags.
+///
+/// Called by the filter bar.
+let allOutfitTags outfitRawData =
+    outfitRawData
+    |> readOnlyTags
+    |> List.append outfitRawData.tags
+
+Outfits.toArrayOfRaw ()
+let testoft = Outfits.find "__DMUnboundItemManagerOutfit__.esm|12"
+
+testoft
+|> readOnlyTags
+|> List.append testoft.tags
+
+
+
+Items.update "[COCO] Mysterious Mage [SE].esp|910" (fun v -> { v with autoTags = [ "  skimpy: change" ] })
+Outfits.update "__DMUnboundItemManagerOutfit__.esm|12" (fun v -> { v with tags = [ "ass crack" ] })
+Outfits.update "__DMUnboundItemManagerOutfit__.esm|12" (fun v -> { v with autoTags = [ "  outfit: ass crack" ] })
+
+Items.toArrayOfRaw () |> allTags allItemTags
+Outfits.toArrayOfRaw () |> allTags allOutfitTags

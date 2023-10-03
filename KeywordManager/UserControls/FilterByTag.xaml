@@ -214,7 +214,7 @@
                       <Setter Property="Foreground" Value="LightSlateGray" />
                     </DataTrigger>
                     <DataTrigger Binding="{Binding IsAutoOutfit}" Value="true">
-                      <Setter Property="Foreground" Value="Coral" />
+                      <Setter Property="Foreground" Value="LightCoral" />
                     </DataTrigger>
                   </Style.Triggers>
                 </Style>

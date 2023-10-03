@@ -20,16 +20,6 @@ module Get =
         outfit.pieces
         |> List.map (fun uid -> uid, Items.tryFind uid)
 
-    let internal tags outfit (pieces: (string * Data.Items.Raw option) list) =
-        pieces
-        |> List.choose (snd >> Option.map (fun x -> x.tags))
-        |> List.collect id
-        |> List.append outfit.tags
-        |> List.distinct
-        |> List.sort
-
-    let outfitTags outfit = outfit |> pieces |> tags outfit
-
 [<AutoOpen>]
 module private Ops =
     let getShortNames allArmors =
@@ -149,7 +139,10 @@ type NavSelectedItem(uId: string) =
     let mutable name = outfit.name
     let pieces = outfit |> Get.pieces
 
-    member _.Tags = Get.tags outfit pieces |> toCList
+    member _.Tags =
+        DB.readOnlyTags outfit
+        |> List.sortWith compareICase
+        |> toCList
 
     member t.Name
         with get () = name

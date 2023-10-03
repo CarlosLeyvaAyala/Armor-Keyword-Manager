@@ -22,6 +22,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
   #region Interface: IFilterableByTag and filtering functions
   public FilterFlags FilteringFlags =>
     FilterFlags.TagManuallyAdded
+    | FilterFlags.TagAutoItem // It's good to know which outfit has skimpify tags and so on
     | FilterFlags.TagAutoOutfit
     | FilterFlags.Image;
 

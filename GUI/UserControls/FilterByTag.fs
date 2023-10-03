@@ -72,6 +72,9 @@ type FilterTagItem(name: string, tagType: TagSource) =
 
     member _.Name = name
 
+    /// Used for knowing what will never be displayed
+    member val Flags = FilterFlags.None
+
     member t.IsChecked
         with get () = isChecked
         and set v =
@@ -84,6 +87,11 @@ type FilterTagItem(name: string, tagType: TagSource) =
         and set v =
             isVisible <- v
             nameof t.IsVisible |> t.OnPropertyChanged
+
+    member val IsManuallyAdded =
+        match tagType with
+        | ManuallyAdded -> true
+        | _ -> false with get, set
 
     member val IsKeyword =
         match tagType with
@@ -148,7 +156,6 @@ type FilterByTagCtx() as t =
     member t.CanFilterByPic = FilterFlags.hasImage flags
     member t.CanFilterByDistr = false
     member t.ShowBottomPanel = t.CanFilterByPic || t.CanFilterByDistr
-    //member t.CanShowKeywords = FilterFlags.hasTagKeywords flags
 
     /// Filter tags by name.
     member t.Filter
@@ -160,7 +167,6 @@ type FilterByTagCtx() as t =
 
     member t.Tags =
         resetVisibility ()
-        //keywordVisibility ()
 
         tags
         |> Seq.filter (fun v -> v.IsVisible)
@@ -171,9 +177,6 @@ type FilterByTagCtx() as t =
                 | null
                 | IsContainedInIC v.Name -> true
                 | _ -> false)
-
-        if tags |> Seq.forall (fun v -> not v.IsChecked) then
-            t.SelectNone()
 
         tags
 

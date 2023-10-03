@@ -33,7 +33,7 @@ type OutfitPageCtx() =
     member private _.appyFilter(a: (string * Data.Outfit.Raw) array) =
         // TODO: Filter by distribution
         a
-        |> Filter.tags filter.TagMode filter.Tags (fun (_, v) -> Get.outfitTags v)
+        |> Filter.tags filter.TagMode filter.Tags (snd >> DB.allOutfitTags)
         |> Filter.pics filter.PicMode (fun (_, v) -> v.img)
 
     ///////////////////////////////////////////////

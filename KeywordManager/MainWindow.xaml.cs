@@ -2,6 +2,7 @@
 using IO;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -87,10 +88,16 @@ public partial class MainWindow : Window {
     isLoaded = true;
   }
 
+  int oldTab = -1;
   private void OnChangeTab(object sender, SelectionChangedEventArgs e) =>
     WhenIsLoaded(() => {
+      if (tbcMain.SelectedIndex == oldTab) return;
+      Debug.WriteLine("============================================");
+      Debug.WriteLine("Tab was changed");
+      Debug.WriteLine("============================================");
       Settings.Default.lastTab = tbcMain.SelectedIndex;
       Settings.Default.Save();
+      oldTab = tbcMain.SelectedIndex;
     });
 
   public enum TabId {

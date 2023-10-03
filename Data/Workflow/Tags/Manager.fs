@@ -6,7 +6,6 @@
 module Data.Tags.Manager
 
 open DMLib
-open DMLib.Tuples
 open System
 open System.Diagnostics
 

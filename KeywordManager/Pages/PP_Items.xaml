@@ -189,7 +189,7 @@
               <ListBox.ItemTemplate>
                 <DataTemplate>
                   <TextBlock
-                    xmlns:gk="clr-namespace:Data.UI.Keywords;assembly=Data"
+                    xmlns:gk="clr-namespace:GUI.PageContexts.Keywords;assembly=GUI"
                     d:DataContext="{d:DesignInstance Type=gk:NavListItem}"
                     Cursor="Help"
                     Foreground="{Binding Color, Converter={StaticResource IntToKeywordColor}}"

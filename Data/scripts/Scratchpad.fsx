@@ -971,3 +971,35 @@ Outfits.update "__DMUnboundItemManagerOutfit__.esm|13" (fun v -> { v with tags =
 loadKeywords ()
 
 Manager.onTagsChanged |> Event.add (printfn "%A")
+
+
+
+module DB = Data.Items.Database
+open Data.Items
+
+let maxArmorsPerLine = 20
+
+DB.toArrayOfRaw ()
+|> Array.Parallel.map (
+    snd
+    >> (fun v ->
+        ([| v.edid, v.itemType |], v.keywords |> List.toArray)
+        ||> Array.allPairs)
+) // Asociate each armor with each keyword
+|> Array.Parallel.collect id
+|> Array.Parallel.map (fun ((edid, itemType), keyword) -> itemType |> enum |> ItemType.toKID, keyword, edid)
+|> Array.groupBy (fun (itemType, _, _) -> itemType) // Prepare to process each item by type
+|> Array.map (fun (itemType, dataArray) ->
+    dataArray
+    |> Array.Parallel.map (fun (_, keyword, edid) -> keyword, edid) // Remove excess item type from groupBy
+    |> Array.groupBy (fun (keyword, _) -> keyword)
+    |> Array.Parallel.map (fun (keyword, arr) ->
+        arr
+        |> Array.Parallel.map snd // Remove excess keyword from groupBy
+        |> Array.chunkBySize maxArmorsPerLine
+        |> Array.Parallel.map (fun a ->
+            let armors = a |> Array.fold (smartFold ",") ""
+            sprintf "Keyword = %s|%s|%s" keyword itemType armors)) // Transform chunks into final text
+    |> Array.Parallel.collect id
+    |> Array.sort) // Convert each item batch by type
+|> Array.Parallel.collect id

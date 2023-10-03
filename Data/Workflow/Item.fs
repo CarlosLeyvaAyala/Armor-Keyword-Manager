@@ -49,6 +49,12 @@ module ItemType =
         | [| _; _; true |] -> ItemType.Ammo
         | _ -> ItemType.Armor
 
+    let toKID =
+        function
+        | ItemType.Armor -> "Armor"
+        | ItemType.Weapon -> "Weapon"
+        | ItemType.Ammo -> "Ammo"
+        | x -> failwith $"({x} is not a valid item type)"
 
 type LineImportParsed =
     { edid: string

@@ -17,6 +17,7 @@ open GUI.PageContexts.Items
 
 module DB = Data.Items.Database
 module Img = AppSettings.Paths.Img.Item
+module Outfits = Data.Outfit.Database
 
 /// Context for working with the outfits page
 [<Sealed>]
@@ -141,12 +142,14 @@ type ItemsPageCtx() =
     member t.AddUnboundOutfit name =
         t.NavSelectedItems
         |> Seq.map (fun s -> s.UniqueId)
-        |> Data.UI.Outfit.Edit.createUnbound name
+        |> Outfits.addUnbound name
 
+    /// Updates items in the Nav that belong to some outfit.
+    ///
+    /// This is used to avoid reloading the full nav (which could be expensive)
+    /// when an outfit has changed. Like when an outfit image is set.
     member t.UpdateItemsOfOutfit outfitId =
-        let pieces =
-            Data.UI.Outfit.Edit.getPieces outfitId
-            |> Set.ofList
+        let pieces = Outfits.getPieces outfitId |> Set.ofList
 
         [| for i in t.NavControl.Items -> i |]
         |> Array.Parallel.choose (fun v ->

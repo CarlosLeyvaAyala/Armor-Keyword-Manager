@@ -13,10 +13,6 @@ let Image uId filename =
     DB.update uId (fun d -> { d with img = ext })
     expandImg uId ext
 
-/// Creates an outfit that doesn't belong to an esp using a unique id list of armor pieces.
-[<CompiledName("CreateUnbound")>]
-let createUnbound name l = l |> DB.addUnbound name
-
 /// Deletes an outfit
 let Delete uid =
     match (DB.find uid).img with
@@ -24,5 +20,3 @@ let Delete uid =
     | img -> expandImg uid img |> File.Delete
 
     DB.delete uid
-
-let getPieces uid = (DB.find uid).pieces

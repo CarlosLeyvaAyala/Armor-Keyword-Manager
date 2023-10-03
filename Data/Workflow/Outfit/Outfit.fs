@@ -188,4 +188,6 @@ module Database =
             setNextUnboundId ()
             uid
 
+    let getPieces uid = (find uid).pieces
+
     Data.Tags.Manager.addCommonTags (fun () -> toArrayOfRaw () |> Data.Tags.Manager.getTagsAsMap)

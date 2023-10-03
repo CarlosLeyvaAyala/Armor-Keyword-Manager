@@ -53,7 +53,7 @@ module Database =
     [<Literal>]
     let DefaultColor = 100000
 
-    let private blankKeyword =
+    let blankKeyword =
         { image = ""
           description = ""
           color = DefaultColor }

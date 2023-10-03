@@ -32,26 +32,39 @@
 #load "..\..\..\DMLib-Fs-WPF\WPFBindable.fs"
 
 // Project
-#load "../Common.fs"
-#load "../Workflow/Keyword.fs"
-#load "../Workflow/Item.fs"
-#load "../Workflow/Outfit.fs"
-#load "../IO/Common.fs"
-#load "../IO/Keyword.fs"
-#load "../IO/Item.fs"
-#load "../IO/Outfit.fs"
-#load "../UI/Interfaces.fs"
-#load "../UI/Common.fs"
-#load "../UI/AppSettings.fs"
-#load "../UI/Keyword.fs"
-#load "../UI/Outfit.fs"
-#load "../UI/Tags.fs"
-#load "../PropietaryFile.fs"
+#load "..\Common.fs"
+#load "..\Workflow\Keyword.fs"
+#load "..\Workflow\Item.fs"
+#load "..\Workflow\TagCreate.fs"
+#load "..\Workflow\Outfit\SPID\SpidFilter.fs"
+#load "..\Workflow\Outfit\SPID\Level.fs"
+#load "..\Workflow\Outfit\SPID\Traits.fs"
+#load "..\Workflow\Outfit\SPID\Chance.fs"
+#load "..\Workflow\Outfit\SPID\Rules.fs"
+#load "..\Workflow\Outfit\Outfit.fs"
+#load "..\IO\Common.fs"
+#load "..\IO\Keyword.fs"
+#load "..\IO\Item.fs"
+#load "..\IO\Outfit.fs"
+#load "..\UI\Interfaces.fs"
+#load "..\UI\Filtering\Filters.fs"
+#load "..\UI\Common.fs"
+#load "..\UI\AppSettings.fs"
+#load "..\UI\Edit\Item.fs"
+#load "..\UI\Edit\Outfit.fs"
+#load "..\UI\Keyword.fs"
+#load "..\UI\Item.fs"
+#load "..\UI\Outfit.fs"
+#load "..\UI\Tags.fs"
+#load "..\UI\BatchRename.fs"
+#load "..\PropietaryFile.fs"
+
+// Time
 #time "on"
 
 open System
-open DMLib.Collections
 open System.IO
+open DMLib.Collections
 open DMLib
 open DMLib.Combinators
 open DMLib.MathL
@@ -62,8 +75,16 @@ open System.Text.RegularExpressions
 open DMLib.Types
 open DMLib.Types.Skyrim
 open FSharpx.Collections
-open Data.Outfit
 open TextCopy
+open Data.Outfit
+
+let loadDecls =
+    getScriptLoadDeclarations
+        @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\Data\scripts\Scratchpad.fsx"
+        @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\Data\Data.fsproj"
+
+loadDecls @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\Data\"
+|> TextCopy.ClipboardService.SetText
 
 fsi.AddPrinter(fun (r: NonEmptyString) -> r.ToString())
 fsi.AddPrinter(fun (r: UniqueId) -> r.ToString())
@@ -923,15 +944,8 @@ open DMLib.IO.Path
 open System.IO
 open DMLib.Combinators
 
-getScriptLoadDeclarationsRelative __SOURCE_DIRECTORY__ __SOURCE_FILE__ @"..\Workflow\SPID\"
-|> TextCopy.ClipboardService.SetText
-
 #load "..\Workflow\TagCreate.fs"
-#load "..\Workflow\SPID\SpidFilter.fs"
-#load "..\Workflow\SPID\Level.fs"
-#load "..\Workflow\SPID\Traits.fs"
-#load "..\Workflow\SPID\Chance.fs"
-#load "..\Workflow\SPID\Rules.fs"
+
 
 open Data.SPID
 

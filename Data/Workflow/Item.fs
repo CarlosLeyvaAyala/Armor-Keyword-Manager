@@ -211,3 +211,5 @@ module Database =
 
     let addTag id tag = update id (changeTags addWord tag)
     let delTag id tag = update id (changeTags delWord tag)
+
+    Data.Tags.Manager.addCommonTags (fun () -> toArrayOfRaw () |> Data.Tags.Manager.getTagsAsMap)

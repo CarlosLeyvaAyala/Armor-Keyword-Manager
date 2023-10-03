@@ -187,3 +187,5 @@ module Database =
             upsert uid { r with name = name }
             setNextUnboundId ()
             uid
+
+    Data.Tags.Manager.addCommonTags (fun () -> toArrayOfRaw () |> Data.Tags.Manager.getTagsAsMap)

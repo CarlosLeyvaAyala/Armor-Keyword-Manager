@@ -3,7 +3,6 @@
 open DMLib.Objects
 open DMLib.Combinators
 open DMLib.String
-open DMLib.String
 
 /// Gets all the tags for a record, where each element in it has a readonly property named tag.
 let getTags o =

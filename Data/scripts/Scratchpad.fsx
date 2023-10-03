@@ -34,6 +34,7 @@
 // Project
 #load "..\Common.fs"
 #load "..\Workflow\Keyword.fs"
+#load "..\Workflow\Tags\Manager.fs"
 #load "..\Workflow\Item.fs"
 #load "..\Workflow\TagCreate.fs"
 #load "..\Workflow\Outfit\SPID\SpidFilter.fs"
@@ -77,6 +78,8 @@ open DMLib.Types.Skyrim
 open FSharpx.Collections
 open TextCopy
 open Data.Outfit
+open Data.SPID
+open Data.Tags
 
 let loadDecls =
     getScriptLoadDeclarations
@@ -91,6 +94,7 @@ fsi.AddPrinter(fun (r: UniqueId) -> r.ToString())
 module Items = Data.Items.Database
 module Outfits = Data.Outfit.Database
 
+Data.UI.Keywords.File.Open()
 let inF = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors and outfits.skyitms"
 IO.PropietaryFile.Open inF
 let items = Items.toArrayOfRaw ()
@@ -946,6 +950,8 @@ open DMLib.Combinators
 
 #load "..\Workflow\TagCreate.fs"
 
+Data.UI.Keywords.File.Open()
+
 
 open Data.SPID
 
@@ -964,127 +970,9 @@ let rule =
                 unique = Traits.UniqueNpcs.asStr }
           chance = 50 }
 
-type TagsChanged =
-    | Added of string list
-    | Deleted of string list
-
-type TagSource =
-    /// Tag added by user.
-    | ManuallyAdded
-    /// Item tag automatically added by the app. Can not be manually removed.
-    | AutoItem
-    /// Outfit tag automatically added by the app. Can not be manually removed.
-    | AutoOutfit
-    /// Got from keyword database.
-    | Keyword
-
-type TagInfo = { timesUsed: int }
-type TagName = string
-type TagMap = Map<TagName, TagInfo>
-
-type TagManager() =
-    let mutable commonTagsMap: TagMap = Map.empty
-    let mutable reservedTagsMap: Map<string, TagSource> = Map.empty
-    let mutable getCommonTags: (unit -> TagMap) list = []
-    let tagsChangedEvent = new Event<(TagName * TagSource) array>()
-
-    let sendTagsChanged () =
-        let unsortedTags =
-            commonTagsMap
-            |> Map.toArray
-            |> Array.Parallel.map (fst >> (fun name -> name, TagSource.ManuallyAdded))
-            |> Array.append (reservedTagsMap |> Map.toArray)
-
-        query {
-            for (name, source) in unsortedTags do
-                sortBy source
-                thenBy name
-                select (name, source)
-        }
-        |> Seq.toArray
-        |> tagsChangedEvent.Trigger
-
-    static member inline GetTagsAsMap a =
-        let getTags (d: 'a when 'a: (member tags: string list)) = d.tags |> List.toArray
-
-        a
-        |> Array.Parallel.map (snd >> getTags)
-        |> Array.Parallel.collect id
-        |> Array.Parallel.sort
-        |> Array.groupBy id
-        |> Array.fold (fun (m: TagMap) (tagName, countArr) -> m.Add(tagName, { timesUsed = countArr.Length })) Map.empty
-
-    /// The tag manager will call this event when it needs them.
-    member _.AddCommonTags v = getCommonTags <- v :: getCommonTags
-
-    member _.OnTagsChanged = tagsChangedEvent.Publish
-
-    /// Gets a batch of reserved tags, which the player can not manually add.
-    ///
-    /// Reserved tags are hardcoded and they don't change dynamically. So this function will throw an exception
-    /// when trying to add repeated ones.
-    member _.AddReservedTags tags source =
-        reservedTagsMap <-
-            tags
-            |> Array.Parallel.map (setSnd source)
-            |> Map.ofArray
-            |> Map.merge
-                (fun k (_, _) -> failwith $"Automatic tag ({k}) already exists. Tell the developer he is a dumb shit.")
-                reservedTagsMap
-
-    /// Rebuilds the app tag cache.
-    member _.RebuildCache() =
-        commonTagsMap <-
-            getCommonTags
-            |> List.map (fun f -> f ())
-            |> List.fold
-                (fun acc a ->
-                    a
-                    |> Map.merge (fun _ (o, n) -> { o with timesUsed = o.timesUsed + n.timesUsed }) acc)
-                Map.empty
-
-        sendTagsChanged ()
-
-    member _.CommonTags = commonTagsMap
-    member _.Reserved = reservedTagsMap
-
-let tagManager = TagManager()
-
-tagManager.AddCommonTags (fun () ->
-    Data.Items.Database.toArrayOfRaw ()
-    |> TagManager.GetTagsAsMap)
-
-tagManager.AddCommonTags (fun () ->
-    Data.Outfit.Database.toArrayOfRaw ()
-    |> TagManager.GetTagsAsMap)
-
-tagManager.AddReservedTags SpidRule.allAutoTags AutoOutfit
-
-tagManager.OnTagsChanged.Add(fun v -> printfn "Received: %d" v.Length)
-tagManager.OnTagsChanged.Add(fun v -> printfn "First element: %A" v[0])
-tagManager.RebuildCache()
-
+//////////////////////
 open FSharp.Control
-
-tagManager.OnTagsChanged
-|> Event.filter (fun args -> args.Length > 10)
-|> Event.add (fun _ -> printfn "filtered edited")
 
 Outfits.update "__DMUnboundItemManagerOutfit__.esm|11" (fun v -> { v with tags = [ "ass crack" ] })
 Outfits.update "__DMUnboundItemManagerOutfit__.esm|12" (fun v -> { v with tags = [ "ass crack" ] })
 Outfits.update "__DMUnboundItemManagerOutfit__.esm|13" (fun v -> { v with tags = [ "ass crack" ] })
-
-Data.Outfit.Database.toArrayOfRaw ()
-|> Array.filter (snd >> (fun v -> v.tags.Length > 0))
-|> TagManager.GetTagsAsMap
-
-Data.UI.Keywords.File.Open()
-Data.UI.Keywords.Get.all ()
-
-Data.Keywords.Database.onKeywordsChanged
-|> Event.choose (fun v ->
-    match v with
-    | Data.Keywords.Added a
-    | Data.Keywords.Deleted a -> Some a
-    | Data.Keywords.Edited _ -> None)
-|> Event.add (printfn "====================\n%A")

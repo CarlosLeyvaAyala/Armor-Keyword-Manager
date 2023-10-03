@@ -44,12 +44,13 @@
 #load "..\Workflow\Outfit\SPID\Chance.fs"
 #load "..\Workflow\Outfit\SPID\Rules.fs"
 #load "..\Workflow\Outfit\Outfit.fs"
+#load "..\IO\AppSettings\AppSettingsTypes.fs"
+#load "..\IO\AppSettings\AppSettings.fs"
 #load "..\IO\Common.fs"
 #load "..\IO\Keyword.fs"
 #load "..\IO\Item.fs"
 #load "..\IO\Outfit.fs"
 #load "..\IO\PropietaryFile.fs"
-#load "..\IO\AppSettings.fs"
 
 // Time
 #time "on"

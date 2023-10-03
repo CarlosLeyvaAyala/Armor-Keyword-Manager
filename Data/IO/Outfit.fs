@@ -10,6 +10,7 @@ type JsonData =
       edid: string
       img: string
       tags: string list
+      autoTags: string list
       comment: string
       pieces: string list
       active: bool }
@@ -19,6 +20,7 @@ type JsonData =
           edid = d.edid
           img = d.img
           tags = d.tags
+          autoTags = d.autoTags
           comment = d.comment
           pieces = d.pieces
           active = d.active }
@@ -28,6 +30,7 @@ type JsonData =
           edid = d.edid
           img = d.img
           tags = d.tags
+          autoTags = d.autoTags
           comment = d.comment
           pieces = d.pieces
           active = d.active }

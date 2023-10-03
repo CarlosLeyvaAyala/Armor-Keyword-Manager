@@ -61,6 +61,7 @@ type Data =
     { keywords: Keyword list
       comments: Comment
       tags: Tag list
+      autoTags: Tag list
       image: Image
       name: FULL
       edid: EDID
@@ -73,6 +74,7 @@ type Data =
         { keywords = r.keywords
           comments = r.comments
           tags = r.tags |> List.map Tag.ofString
+          autoTags = r.autoTags |> List.map Tag.ofString
           image = r.image |> Image.ofString
           name = r.name |> FULL.ofString
           edid = r.edid |> EDID
@@ -85,6 +87,7 @@ type Data =
         { keywords = d.keywords
           comments = d.comments
           tags = d.tags |> List.map Tag.toString
+          autoTags = d.autoTags |> List.map Tag.toString
           image = d.image.Value
           name = d.name.Value
           edid = d.edid.Value
@@ -99,6 +102,7 @@ and Raw =
     { keywords: string list
       comments: string
       tags: string list
+      autoTags: string list
       image: string
       name: string
       edid: string
@@ -112,6 +116,7 @@ and Raw =
           comments = ""
           edid = ""
           tags = []
+          autoTags = []
           enchantments = []
           esp = ""
           image = ""

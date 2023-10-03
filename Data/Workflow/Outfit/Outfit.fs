@@ -21,6 +21,7 @@ type Data =
       edid: EDID
       img: Image
       tags: Tag list
+      autoTags: Tag list
       comment: Comment
       pieces: ArmorPiece list
       active: ActiveStatus }
@@ -31,6 +32,7 @@ type Data =
           img = r.img |> Image.ofString
           comment = r.comment
           tags = r.tags |> List.map Tag.ofString
+          autoTags = r.autoTags |> List.map Tag.ofString
           pieces = r.pieces |> List.map ArmorPiece.ofString
           active = r.active |> ActiveStatus.ofBool }
 
@@ -40,6 +42,7 @@ type Data =
           img = t.img.toString ()
           comment = t.comment
           tags = t.tags |> List.map Tag.toString
+          autoTags = t.autoTags |> List.map Tag.toString
           pieces = t.pieces |> List.map ArmorPiece.toString
           active = t.active.toBool () }
 
@@ -50,6 +53,7 @@ and Raw =
       edid: string
       img: string
       tags: string list
+      autoTags: string list
       comment: string
       pieces: string list
       active: bool }
@@ -62,6 +66,7 @@ and Raw =
           img = ""
           comment = ""
           tags = []
+          autoTags = []
           pieces = []
           active = true }
 
@@ -95,7 +100,6 @@ module Database =
 
     let testDb () = db
     let clear () = db <- Map.empty
-
     let toArray () = db |> Map.toArray
 
     let toArrayOfRaw () =

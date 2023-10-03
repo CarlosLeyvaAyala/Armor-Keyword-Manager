@@ -12,7 +12,7 @@
     <Compile Include="Commands.fs" />
     <Compile Include="Controls.fs" />
     <Compile Include="ListBox.fs" />
-    <Compile Include="UserControls\KeywordManager\Objects.fs" />
+    <Compile Include="UserControls\KeywordManager\KeywordObjects.fs" />
     <Compile Include="UserControls\KeywordManager\Keyword.fs" />
     <Compile Include="UserControls\BatchRename.fs" />
     <Compile Include="UserControls\FilterByTag.fs" />

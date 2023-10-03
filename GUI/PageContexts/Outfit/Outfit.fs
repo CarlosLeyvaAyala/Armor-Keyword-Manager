@@ -1,9 +1,8 @@
 ﻿namespace GUI.PageContexts
 
 open DMLib
-open Data.UI
+open DMLib.String
 open DMLib.Collections
-open Data.UI.Outfit
 open DMLib_WPF.Controls
 open System.Windows
 open System.IO
@@ -16,6 +15,7 @@ open GUI
 open GUI.PageContexts.Outfit
 
 module DB = Data.Outfit.Database
+module Paths = Data.UI.AppSettings.Paths.Img.Outfit
 
 /// Context for working with the outfits page
 [<Sealed>]
@@ -79,9 +79,14 @@ type OutfitPageCtx() =
     // Custom implementation
 
     member t.SetImage filename =
+        let setImage uId filename =
+            let ext = Paths.copyImg uId filename
+            DB.update uId (fun d -> { d with img = ext })
+            Paths.expandImg uId ext
+
         if Path.Exists filename && t.UId <> "" then
-            t.NavSelectedItem.Img <- Edit.Image t.UId filename
-            t.SelectCurrentItem()
+            t.NavSelectedItem.Img <- setImage t.UId filename
+            t.ReloadNavAndGoToCurrent()
             true
         else
             false
@@ -111,13 +116,20 @@ type OutfitPageCtx() =
 
     /// Deletes all selected outfits
     member t.DeleteSelected owner =
+        let delete uid =
+            match (DB.find uid).img with
+            | IsWhiteSpaceStr -> ()
+            | img -> Paths.expandImg uid img |> File.Delete
+
+            DB.delete uid
+
         MessageBox.Warning(
             owner,
-            "Deleting oufits will also delete images associated with them and it can not be undone.\n\nDo you wish to continue?",
+            "Deleting oufits will also delete images associated with them and that can not be undone; your image will be lost.\n\nDo you wish to continue?",
             "Undoable operation",
             (Action (fun () ->
                 t.NavSelectedItems
-                |> Seq.iter (fun v -> Edit.Delete v.UId)
+                |> Seq.iter (fun v -> delete v.UId)
 
                 t.ReloadNavAndGoToFirst()))
         )

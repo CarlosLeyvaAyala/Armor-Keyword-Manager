@@ -110,6 +110,7 @@ type NavListItem(uId: string, d: Raw) =
             nameof t.Img |> t.OnPropertyChanged
 
     member t.HasImg = d.img <> ""
+    member t.Refresh() = t.OnPropertyChanged()
     override t.ToString() = t.Name
 
     /// Pieces not added to the database

@@ -20,10 +20,27 @@ type JsonData =
 type JsonMap = Map<string, JsonData>
 
 [<RequireQualifiedAccess>]
-module internal File =
+module File =
+    open DMLib
+    open Data.Keywords
+    open Data.UI.AppSettings
+
     let toJson () =
         DB.toArrayOfRaw ()
         |> IO.Common.toJson JsonData.ofRaw
 
     let ofJson (d: JsonMap) =
         IO.Common.ofJson JsonData.toRaw DB.upsert d
+
+    /// Opens keyword database from json file
+    let Open () =
+        Paths.KeywordsFile()
+        |> Json.getFromFile<JsonMap>
+        |> Map.toArray
+        |> Array.Parallel.map (fun (k, v) -> k, JsonData.toRaw v)
+        |> DB.ofRaw
+
+    /// Saves keyword database to json file
+    let Save () =
+        toJson ()
+        |> Json.writeToFile true (Paths.KeywordsFile())

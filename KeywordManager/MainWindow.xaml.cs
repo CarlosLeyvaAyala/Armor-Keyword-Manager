@@ -73,7 +73,7 @@ public partial class MainWindow : Window {
 
   private void Window_Loaded(object sender, RoutedEventArgs e) {
     try {
-      Data.UI.Keywords.File.Open();
+      IO.Keywords.File.Open();
       var fn = Settings.Default.mostRecetFile;
       if (File.Exists(fn)) OpenFile(fn);
     }

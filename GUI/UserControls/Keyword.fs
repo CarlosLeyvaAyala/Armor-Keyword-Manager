@@ -23,7 +23,7 @@ type KeywordSelectEventArgs(routedEvent, source, keywords) =
 [<Sealed>]
 type KeywordManagerCtx() =
     inherit PageNavigationContext()
-    let saveJsonDB () = File.Save()
+    let saveJsonDB () = IO.Keywords.File.Save()
 
     let mutable filter = ""
 
@@ -86,7 +86,7 @@ type KeywordManagerCtx() =
                 let k = t.KeywordId
                 let ext = AppSettings.Paths.Img.Keywords.copyImg k fn
                 DB.edit k (fun v -> { v with image = ext })
-                File.Save()
+                IO.Keywords.File.Save()
                 t.NavSelectedItem.Img <- ext)),
             "AD38DF40-B7E2-4390-A163-B51F0E47D837"
         )

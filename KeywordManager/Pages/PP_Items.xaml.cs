@@ -58,7 +58,7 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
 
   void DeleteKeywords() {
     var k = lstItemKeywords.SelectedItems
-      .OfType<Data.UI.Keywords.NavListItem>()
+      .OfType<GUI.PageContexts.Keywords.NavListItem>()
       .Select(i => i.Name)
       .ToArray();
 

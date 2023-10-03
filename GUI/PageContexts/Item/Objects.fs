@@ -119,8 +119,8 @@ type NavSelectedItem(uniqueId: string) =
 
     member _.Keywords =
         d.keywords
-        |> List.map Data.UI.Keywords.NavListItem
-        |> Data.UI.Keywords.NavListItem.sortByColor
+        |> List.map GUI.PageContexts.Keywords.NavListItem
+        |> GUI.PageContexts.Keywords.NavListItem.sortByColor
         |> toCList
 
     member t.Tags = d.tags |> List.sort |> toCList

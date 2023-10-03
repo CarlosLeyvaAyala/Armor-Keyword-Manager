@@ -11,6 +11,7 @@ open GUI
 open DMLib.Collections
 open System
 open Data.Keywords.Database
+open GUI.PageContexts.Keywords
 
 module DB = Data.Keywords.Database
 

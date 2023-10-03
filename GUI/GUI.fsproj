@@ -10,6 +10,7 @@
     <Compile Include="Interfaces.fs" />
     <Compile Include="Commands.fs" />
     <Compile Include="Controls.fs" />
+    <Compile Include="Keyword.fs" />
     <Compile Include="ListBox.fs" />
     <Compile Include="UserControls\BatchRename.fs" />
     <Compile Include="UserControls\FilterByTag.fs" />

@@ -12,11 +12,10 @@ open GUI.UserControls
 open FsToolkit.ErrorHandling
 open GUI.Filtering
 open DMLib.Combinators
-open Data.UI
 open GUI.PageContexts.Items
 
 module DB = Data.Items.Database
-module Img = AppSettings.Paths.Img.Item
+module Img = IO.AppSettings.Paths.Img.Item
 module Outfits = Data.Outfit.Database
 
 /// Context for working with the outfits page

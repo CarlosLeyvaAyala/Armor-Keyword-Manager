@@ -18,12 +18,12 @@
     <Compile Include="Workflow\Outfit\SPID\Chance.fs" />
     <Compile Include="Workflow\Outfit\SPID\Rules.fs" />
     <Compile Include="Workflow\Outfit\Outfit.fs" />
-    <Compile Include="IO\AppSettings.fs" />
     <Compile Include="IO\Common.fs" />
     <Compile Include="IO\Keyword.fs" />
     <Compile Include="IO\Item.fs" />
     <Compile Include="IO\Outfit.fs" />
-    <Compile Include="PropietaryFile.fs" />
+    <Compile Include="IO\PropietaryFile.fs" />
+    <Compile Include="IO\AppSettings.fs" />
     <None Include="scripts\Scratchpad.fsx" />
     <None Include="scripts\Ini to Json.fsx" />
   </ItemGroup>

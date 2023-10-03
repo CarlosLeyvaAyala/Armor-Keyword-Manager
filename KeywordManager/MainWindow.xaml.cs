@@ -1,5 +1,5 @@
-﻿using Data.UI;
-using GUI.UserControls;
+﻿using GUI.UserControls;
+using IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -73,7 +73,7 @@ public partial class MainWindow : Window {
 
   private void Window_Loaded(object sender, RoutedEventArgs e) {
     try {
-      IO.Keywords.File.Open();
+      IO.Keywords.File.Open(AppSettings.Paths.KeywordsFile());
       var fn = Settings.Default.mostRecetFile;
       if (File.Exists(fn)) OpenFile(fn);
     }

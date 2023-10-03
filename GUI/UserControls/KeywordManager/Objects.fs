@@ -3,7 +3,7 @@
 open DMLib
 open DMLib.String
 open Data.Keywords
-open Data.UI.AppSettings.Paths.Img.Keywords
+open IO.AppSettings.Paths.Img.Keywords
 open DMLib_WPF
 open GUI.Interfaces
 

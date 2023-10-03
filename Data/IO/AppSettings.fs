@@ -1,4 +1,4 @@
-﻿module Data.UI.AppSettings // It's a module so it can be used in C# as a fully qualified name
+﻿module IO.AppSettings // It's a module so it can be used in C# as a fully qualified name
 
 open DMLib.IO.Path
 open DMLib.String

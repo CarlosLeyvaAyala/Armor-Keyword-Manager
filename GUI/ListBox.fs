@@ -3,7 +3,6 @@ module GUI.ListBox
 
 open DMLib_WPF.Controls
 open GUI.Interfaces
-open Data.UI
 open System.Windows.Controls
 
 let internal selectByUId lst uid =

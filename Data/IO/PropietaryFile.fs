@@ -43,6 +43,7 @@ let SaveJson filename =
     getDomainData () |> Json.writeToFile true filename
 
 let private fileOpenEvent = new Event<unit>()
+let private fileNewEvent = new Event<unit>()
 
 let private setDomainData (d: PropietaryFile) =
     IO.Items.File.ofJson d.itemKeywords
@@ -50,8 +51,12 @@ let private setDomainData (d: PropietaryFile) =
     fileOpenEvent.Trigger()
 
 let New () =
+    // Databases are cleared here because we need to make sure the database
+    // is clear before the events react to it.
     Data.Items.Database.clear ()
     Data.Outfit.Database.clear ()
+
+    fileNewEvent.Trigger()
     fileOpenEvent.Trigger()
 
 let Open filename =
@@ -93,3 +98,4 @@ let Generate workingFile dir =
 // Events
 ////////////////////////////////////////////////////////////////
 let onFileOpen = fileOpenEvent.Publish
+let onNewFile = fileNewEvent.Publish

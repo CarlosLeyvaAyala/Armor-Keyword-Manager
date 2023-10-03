@@ -15,7 +15,7 @@ open GUI
 open GUI.PageContexts.Outfit
 
 module DB = Data.Outfit.Database
-module Paths = Data.UI.AppSettings.Paths.Img.Outfit
+module Paths = IO.AppSettings.Paths.Img.Outfit
 
 /// Context for working with the outfits page
 [<Sealed>]

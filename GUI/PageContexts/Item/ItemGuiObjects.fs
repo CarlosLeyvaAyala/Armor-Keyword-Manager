@@ -6,7 +6,7 @@ module DB = Data.Items.Database
 open Data.Items
 open DMLib
 open DMLib.Collections
-open Data.UI.AppSettings.Paths.Img
+open IO.AppSettings.Paths.Img
 open DMLib_WPF
 open GUI.Interfaces
 
@@ -20,22 +20,6 @@ type NavListItem(uniqueId: string, d: Raw) =
     inherit WPFBindable()
     static let maxImgNumber = 6
 
-    let shuffle xs =
-        let swap i j (array: _ []) =
-            let tmp = array.[i]
-            array.[i] <- array.[j]
-            array.[j] <- tmp
-
-        let rnd = System.Random()
-        let xArray = Seq.toArray xs
-        let n = Array.length xArray
-
-        for i in [ 0 .. (n - 2) ] do
-            let j = rnd.Next(i, n - 1)
-            swap i j xArray
-
-        xArray |> Seq.ofArray
-
     let getImgOutfits () =
         let r =
             Outfits.outfitsWithPiecesImg uniqueId
@@ -44,10 +28,7 @@ type NavListItem(uniqueId: string, d: Raw) =
         let maxOutfits = maxImgNumber - 1
 
         if r.Length > maxOutfits then
-            r
-            |> shuffle
-            |> Array.ofSeq
-            |> Array.truncate maxOutfits
+            r |> Array.shuffle |> Array.truncate maxOutfits
         else
             r
 

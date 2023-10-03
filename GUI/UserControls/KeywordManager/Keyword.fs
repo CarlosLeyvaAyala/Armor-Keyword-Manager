@@ -5,7 +5,6 @@ open System.Windows
 open DMLib
 open DMLib.String
 open DMLib_WPF
-open Data.UI
 open GUI
 open DMLib.Collections
 open System
@@ -22,7 +21,10 @@ type KeywordSelectEventArgs(routedEvent, source, keywords) =
 [<Sealed>]
 type KeywordManagerCtx() =
     inherit PageNavigationContext()
-    let saveJsonDB () = IO.Keywords.File.Save()
+
+    let saveJsonDB () =
+        IO.AppSettings.Paths.KeywordsFile()
+        |> IO.Keywords.File.Save
 
     let mutable filter = ""
 
@@ -80,12 +82,12 @@ type KeywordManagerCtx() =
     /// Sets the image for a keyword.
     member t.SetImage() =
         Dialogs.File.Open(
-            AppSettings.Paths.Img.filter,
+            IO.AppSettings.Paths.Img.filter,
             (Action<string> (fun fn ->
                 let k = t.KeywordId
-                let ext = AppSettings.Paths.Img.Keywords.copyImg k fn
+                let ext = IO.AppSettings.Paths.Img.Keywords.copyImg k fn
                 DB.edit k (fun v -> { v with image = ext })
-                IO.Keywords.File.Save()
+                saveJsonDB ()
                 t.NavSelectedItem.Img <- ext)),
             "AD38DF40-B7E2-4390-A163-B51F0E47D837"
         )

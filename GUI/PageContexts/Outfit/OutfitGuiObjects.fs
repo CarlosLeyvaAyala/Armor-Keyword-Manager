@@ -5,9 +5,8 @@ open DMLib
 open DMLib.Types
 open DMLib.String
 open DMLib.Collections
-open Data.UI.AppSettings.Paths.Img.Outfit
+open IO.AppSettings.Paths.Img.Outfit
 open FSharpx.Collections
-open Data.UI
 open GUI.Interfaces
 open DMLib_WPF
 open DMLib.Combinators

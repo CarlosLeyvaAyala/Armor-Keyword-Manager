@@ -1,4 +1,4 @@
-﻿namespace Data.UI.BatchRename
+﻿namespace GUI.UserControls.BatchRename
 
 open DMLib_WPF
 

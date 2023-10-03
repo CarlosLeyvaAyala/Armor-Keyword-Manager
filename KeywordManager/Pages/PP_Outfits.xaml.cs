@@ -68,7 +68,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
 
   private void OnBatchRename(object sender, RoutedEventArgs e) =>
     MainWindow.Instance?.OpenDimDialog(() => ctx.BatchRename(sel =>
-      BatchRename_Window.Execute(Owner, new ObservableCollection<Data.UI.BatchRename.Item>(sel)))
+      BatchRename_Window.Execute(Owner, new ObservableCollection<GUI.UserControls.BatchRename.Item>(sel)))
     );
 
   private void OnRename(object sender, RoutedEventArgs e) =>

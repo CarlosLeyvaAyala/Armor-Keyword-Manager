@@ -1,4 +1,4 @@
-﻿using Data.UI.BatchRename;
+﻿using GUI.UserControls.BatchRename;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

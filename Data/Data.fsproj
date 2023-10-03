@@ -27,7 +27,6 @@
     <Compile Include="UI\Edit\Outfit.fs" />
     <Compile Include="UI\Keyword.fs" />
     <Compile Include="UI\Item.fs" />
-    <Compile Include="UI\Outfit.fs" />
     <Compile Include="UI\BatchRename.fs" />
     <Compile Include="PropietaryFile.fs" />
     <None Include="scripts\Scratchpad.fsx" />

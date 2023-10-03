@@ -13,6 +13,9 @@ open System
 open DMLib_WPF.Contexts
 open DMLib_WPF.Dialogs
 open GUI
+open GUI.PageContexts.Outfit
+
+module DB = Data.Outfit.Database
 
 /// Context for working with the outfits page
 [<Sealed>]
@@ -37,7 +40,8 @@ type OutfitPageCtx() =
     // PageNavigationContext implementation
 
     member t.Nav =
-        Nav.createFull ()
+        DB.toArrayOfRaw ()
+        |> Array.sortBy (snd >> fun v -> v.name)
         |> t.appyFilter
         |> Array.Parallel.map NavListItem
         |> toObservableCollection

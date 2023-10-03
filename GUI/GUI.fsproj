@@ -12,6 +12,7 @@
     <Compile Include="ListBox.fs" />
     <Compile Include="UserControls\FilterByTag.fs" />
     <Compile Include="UserControls\Keyword.fs" />
+    <Compile Include="PageContexts\Outfit\Objects.fs" />
     <Compile Include="PageContexts\Item.fs" />
     <Compile Include="PageContexts\SpidAutocompleter.fs" />
     <Compile Include="PageContexts\Outfit.fs" />

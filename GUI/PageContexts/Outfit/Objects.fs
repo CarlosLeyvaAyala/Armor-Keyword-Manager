@@ -1,4 +1,4 @@
-﻿namespace Data.UI.Outfit
+﻿namespace GUI.PageContexts.Outfit
 
 open Data.Outfit
 open DMLib
@@ -23,7 +23,7 @@ module Get =
 
     let internal tags outfit (pieces: (string * Data.Items.Raw option) list) =
         pieces
-        |> List.choose (fun (_, v) -> v |> Option.map (fun x -> x.tags))
+        |> List.choose (snd >> Option.map (fun x -> x.tags))
         |> List.collect id
         |> List.append outfit.tags
         |> List.distinct
@@ -188,10 +188,3 @@ type NavSelectedItem(uId: string) =
     member _.IsDistributable =
         isEmpty // Don't show warning is no outfit is selected
         || outfit.edid |> dont (contains DB.UnboundEDID)
-
-[<RequireQualifiedAccess>]
-module Nav =
-    /// Creates a list of unfiltered navigation objects
-    let createFull () =
-        DB.toArrayOfRaw ()
-        |> Array.sortBy (fun (_, v) -> v.name)

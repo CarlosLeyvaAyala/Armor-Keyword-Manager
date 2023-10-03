@@ -48,11 +48,6 @@ type NavListItem(key: string, r: Raw) =
 
     new(key) = NavListItem(key, DB.findDefault key)
 
-module Get =
-    let internal all () =
-        DB.toArrayOfRaw ()
-        |> Array.Parallel.map (fun (k, _) -> k)
-
 [<RequireQualifiedAccess>]
 module File =
     open Data.UI.AppSettings

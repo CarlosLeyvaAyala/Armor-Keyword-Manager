@@ -11,11 +11,11 @@
     <Compile Include="Interfaces.fs" />
     <Compile Include="Commands.fs" />
     <Compile Include="Controls.fs" />
-    <Compile Include="Keyword.fs" />
     <Compile Include="ListBox.fs" />
+    <Compile Include="UserControls\KeywordManager\Objects.fs" />
+    <Compile Include="UserControls\KeywordManager\Keyword.fs" />
     <Compile Include="UserControls\BatchRename.fs" />
     <Compile Include="UserControls\FilterByTag.fs" />
-    <Compile Include="UserControls\Keyword.fs" />
     <Compile Include="PageContexts\Item\Objects.fs" />
     <Compile Include="PageContexts\Item\Item.fs" />
     <Compile Include="PageContexts\Outfit\SpidAutocompleter.fs" />

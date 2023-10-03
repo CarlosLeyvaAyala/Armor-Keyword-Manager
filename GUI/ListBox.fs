@@ -9,9 +9,6 @@ open System.Windows.Controls
 let internal selectByUId lst uid =
     ListBox.selectBy<IHasUniqueId> lst (fun v -> v.UId = uid)
 
-let internal selectByKeyword lst key =
-    ListBox.selectBy<GUI.PageContexts.Keywords.NavListItem> lst (fun k -> k.Name = key)
-
 /// Focus a ListBox from a filter TextBox.
 [<CompiledName("FocusFromFilter")>]
 let focusFromFilter (lst: ListBox) =

@@ -5,6 +5,7 @@ open DMLib.String
 open Data.Keywords
 open Data.UI.AppSettings.Paths.Img.Keywords
 open DMLib_WPF
+open GUI.Interfaces
 
 module DB = Data.Keywords.Database
 
@@ -13,6 +14,9 @@ type NavListItem(key: string, r: Raw) =
     let mutable img = r.image
     let mutable color = r.color
     let mutable description = r.description
+
+    interface IHasUniqueId with
+        member _.UId = key
 
     member _.Name = key
 

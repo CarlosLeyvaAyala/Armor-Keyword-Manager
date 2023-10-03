@@ -5,7 +5,6 @@ open System.Windows
 open DMLib
 open DMLib.String
 open DMLib_WPF
-open Data.UI.Keywords
 open Data.UI
 open GUI
 open DMLib.Collections
@@ -53,7 +52,7 @@ type KeywordManagerCtx() =
 
     member t.ReloadNavAndGoTo kId =
         t.LoadNav()
-        ListBox.selectByKeyword t.NavControl kId
+        ListBox.selectByUId t.NavControl kId
 
     override t.ReloadNavAndGoToCurrent() = t.ReloadNavAndGoTo t.KeywordId
 

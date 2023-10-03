@@ -86,10 +86,13 @@ type OutfitPageCtx() =
         else
             false
 
+    member private _.rename uId newName =
+        DB.update uId (fun d -> { d with name = newName })
+
     /// Renames a single element
     member t.Rename newName =
         let uid = t.UId
-        Edit.Rename uid newName
+        t.rename uid newName
         t.OnPropertyChanged()
         ListBox.selectByUId t.NavControl uid
 
@@ -102,7 +105,7 @@ type OutfitPageCtx() =
 
         match r with
         | null -> ()
-        | x -> x |> Seq.iter (fun v -> Edit.Rename v.UId v.Name)
+        | x -> x |> Seq.iter (fun v -> t.rename v.UId v.Name)
 
         t.ReloadNavAndGoToCurrent()
 

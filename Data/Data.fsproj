@@ -23,14 +23,11 @@
     <Compile Include="IO\Outfit.fs" />
     <Compile Include="UI\Interfaces.fs" />
     <Compile Include="UI\Filtering\Filters.fs" />
-    <Compile Include="UI\Common.fs" />
     <Compile Include="UI\AppSettings.fs" />
-    <Compile Include="UI\Edit\Item.fs" />
     <Compile Include="UI\Edit\Outfit.fs" />
     <Compile Include="UI\Keyword.fs" />
     <Compile Include="UI\Item.fs" />
     <Compile Include="UI\Outfit.fs" />
-    <Compile Include="UI\Tags.fs" />
     <Compile Include="UI\BatchRename.fs" />
     <Compile Include="PropietaryFile.fs" />
     <None Include="scripts\Scratchpad.fsx" />

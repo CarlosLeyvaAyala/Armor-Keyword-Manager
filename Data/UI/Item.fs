@@ -6,9 +6,7 @@ module DB = Data.Items.Database
 open Data.Items
 open DMLib
 open DMLib.Collections
-open Data.UI.Common
 open Data.UI.AppSettings.Paths.Img
-open Data.UI.Filtering
 open DMLib_WPF
 open Data.UI.Interfaces
 
@@ -94,6 +92,22 @@ type NavListItem(uniqueId: string, d: Raw) =
         outfitsImg <- getImgOutfits ()
         t.OnPropertyChanged()
 
+[<AutoOpen>]
+module private SelItemTagsEvents =
+    open Data.Tags
+
+    let mutable private tags: (Manager.TagName * Manager.TagSource) array = [||]
+
+    Manager.onTagsChanged
+    |> Event.add (fun t -> tags <- t)
+
+    let allTags () =
+        tags
+        |> Array.Parallel.choose (fun (name, source) ->
+            match source with
+            | Manager.TagSource.ManuallyAdded -> Some name
+            | _ -> None)
+
 type NavSelectedItem(uniqueId: string) =
     let d =
         if uniqueId = "" then
@@ -111,9 +125,10 @@ type NavSelectedItem(uniqueId: string) =
 
     member t.Tags = d.tags |> List.sort |> toCList
 
-    member t.MissingTags =
+    /// Gets all tags still not added to this item.
+    member _.MissingTags =
         let existing = d.tags |> Set.ofList
-        let all = Tags.getAll () |> Set.ofArray
+        let all = allTags () |> Set.ofArray
 
         Set.difference all existing
         |> Set.toArray

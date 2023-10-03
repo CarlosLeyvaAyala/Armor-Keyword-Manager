@@ -168,14 +168,11 @@ type ItemsPageCtx() =
             keywords
             |> Array.iter (fun k -> DB.delKeyword i.UId k))
 
-    member private t.changeTags op change tag (reloadUI: Action) =
-        Tags.Edit.onObject (fun () -> t.iterSelected (fun i -> change i.UId tag)) op tag reloadUI
+    member private t.changeTags change tag =
+        t.iterSelected (fun i -> change i.UId tag)
 
-    member t.AddTag tag reloadUI =
-        t.changeTags Tags.Add DB.addTag tag reloadUI
-
-    member t.DeleteTag tag reloadUI =
-        t.changeTags Tags.Remove DB.delTag tag reloadUI
+    member t.AddTag tag = t.changeTags DB.addTag tag
+    member t.DeleteTag tag = t.changeTags DB.delTag tag
 
     member t.SetImage filename =
         t.NavSelectedItems

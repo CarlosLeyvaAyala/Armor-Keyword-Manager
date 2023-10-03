@@ -80,11 +80,11 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
 
     var tag = cbItemTags.Text.ToLower().Trim();
     if (tag == "") return;
-    ctx.AddTag(tag, Owner.ReloadTags);
+    ctx.AddTag(tag);
     cbItemTags.Text = "";
   }
 
-  private void OnDeleteTag(object sender, RoutedEventArgs e) => ctx.DeleteTag(((ClickTagEventArgs)e).Tag, Owner.ReloadTags);
+  private void OnDeleteTag(object sender, RoutedEventArgs e) => ctx.DeleteTag(((ClickTagEventArgs)e).Tag);
 
   private void OnCanCreateUnboundOutfit(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.AreAllSelectedArmors;
 

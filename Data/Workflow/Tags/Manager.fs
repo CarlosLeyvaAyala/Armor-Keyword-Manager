@@ -1,4 +1,9 @@
-﻿module Data.Tags.Manager
+﻿/// Keeps a centralized count of which tags are in the database.
+///
+/// This is used primarily to synchronize tags between elements that use them and
+/// to avoid costly calculations (and GUI object creation on the filter pane) each
+/// time a tag is added to some item/outfit/etc.
+module Data.Tags.Manager
 
 open DMLib
 open DMLib.Tuples

@@ -5,7 +5,7 @@ using System.Windows.Controls;
 
 namespace KeywordManager.UserControls;
 
-public partial class FilterByTag : UserControl, IFileDisplayable {
+public partial class FilterByTag : UserControl {
   #region Properties
   public bool CanFilterByPic {
     get => ctx.CanFilterByPic;
@@ -21,18 +21,9 @@ public partial class FilterByTag : UserControl, IFileDisplayable {
   }
   #endregion
 
-  #region File interface
-  public void OnFileOpen(string _) => ctx.LoadTagsFromFile();
-  public void OnNewFile() => ctx.LoadTagsFromFile();
-  #endregion
-
   public FilterByTag() => InitializeComponent();
 
   public void RestoreFilter(FilterTagEventArgs e) => ctx.SetArguments(e);
-
-  #region Tag functions
-  public void LoadTags() => ctx.LoadTagsFromFile();
-  #endregion
 
   #region Private internal events
   private void OnSelectNone(object sender, RoutedEventArgs e) {

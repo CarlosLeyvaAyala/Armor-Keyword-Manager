@@ -5,9 +5,10 @@ open System.Windows
 open System.Collections
 open DMLib_WPF
 open DMLib.Collections
-open Data.UI.Tags
 open System.Collections.ObjectModel
 open DMLib.String
+open System
+open Data.Tags
 
 type CList<'a> = Generic.List<'a>
 
@@ -41,7 +42,7 @@ type IFilterableByTag =
     abstract ApplyTagFilter: FilterTagEventArgs -> unit
 
 /// Individual filtering by tag item
-type FilterTagItem(name: string) =
+type FilterTagItem(name: string, tagType: Manager.TagSource) =
     inherit WPFBindable()
 
     let mutable isVisible = true
@@ -62,15 +63,20 @@ type FilterTagItem(name: string) =
             isVisible <- v
             nameof t.IsVisible |> t.OnPropertyChanged
 
-    member val IsKeyword = false with get, set
+    member val IsKeyword =
+        match tagType with
+        | Manager.TagSource.Keyword -> true
+        | _ -> false with get, set
 
     static member ofStringList list =
         list
         |> Seq.map FilterTagItem
         |> toObservableCollection
 
+    new(name) = FilterTagItem(name, Data.Tags.Manager.TagSource.ManuallyAdded)
+
 /// DataContext for the filter by tag dialog
-type FilterByTagCtx() =
+type FilterByTagCtx() as t =
     inherit WPFBindable()
     let mutable canFilterByPic = true
     let mutable canFilterByDistr = true
@@ -78,18 +84,15 @@ type FilterByTagCtx() =
     let mutable tags = ObservableCollection()
     let mutable filter = ""
 
-    let loadTags () =
-        tags <-
-            let keys =
-                Get.allKeywords ()
+    do
+        Data.Tags.Manager.onTagsChanged
+        |> Event.add (fun newTags ->
+            tags <-
+                newTags
                 |> Array.Parallel.map FilterTagItem
+                |> toObservableCollection
 
-            keys
-            |> Array.Parallel.iter (fun v -> v.IsKeyword <- true)
-
-            keys
-            |> Array.append (Get.allTags () |> Array.Parallel.map FilterTagItem)
-            |> toObservableCollection
+            t.OnPropertyChanged())
 
     let resetVisibility () =
         tags |> Seq.iter (fun v -> v.IsVisible <- true)
@@ -151,10 +154,6 @@ type FilterByTagCtx() =
                 | _ -> false)
 
         tags
-
-    member t.LoadTagsFromFile() =
-        loadTags ()
-        t.OnPropertyChanged()
 
     member t.SelectNone() =
         tags |> Seq.iter (fun v -> v.IsChecked <- false)

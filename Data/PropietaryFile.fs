@@ -42,16 +42,17 @@ let Save filename =
 let SaveJson filename =
     getDomainData () |> Json.writeToFile true filename
 
+let private fileOpenEvent = new Event<unit>()
+
 let private setDomainData (d: PropietaryFile) =
     IO.Items.File.ofJson d.itemKeywords
     IO.Outfit.File.ofJson d.outfits
-    Data.UI.Common.Tags.precalculate ()
-    ()
+    fileOpenEvent.Trigger()
 
 let New () =
     Data.Items.Database.clear ()
     Data.Outfit.Database.clear ()
-    Data.UI.Common.Tags.precalculate ()
+    fileOpenEvent.Trigger()
 
 let Open filename =
     filename
@@ -87,3 +88,8 @@ let Generate workingFile dir =
     |> Array.map (fun (_, n) -> getFileName n)
     |> Array.fold smartPrettyComma ""
     |> fun s -> $"Created files: {s}"
+
+////////////////////////////////////////////////////////////////
+// Events
+////////////////////////////////////////////////////////////////
+let onFileOpen = fileOpenEvent.Publish

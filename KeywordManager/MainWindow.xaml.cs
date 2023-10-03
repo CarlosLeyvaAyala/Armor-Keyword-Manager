@@ -13,8 +13,6 @@ public partial class MainWindow : Window {
   public FilterTagEventArgs FilterByTagParameters => filterByTag.SelectedParameters;
   private readonly List<object> pages;
 
-  public void ReloadTags() => filterByTag.LoadTags();
-
   private string _workingFile = "";
   private string WorkingFile {
     get => _workingFile;

@@ -7,16 +7,18 @@
 
   <ItemGroup>
     <None Include="scripts\Command binding generator.fsx" />
+    <Compile Include="Interfaces.fs" />
     <Compile Include="Commands.fs" />
     <Compile Include="Controls.fs" />
     <Compile Include="ListBox.fs" />
     <Compile Include="UserControls\BatchRename.fs" />
     <Compile Include="UserControls\FilterByTag.fs" />
     <Compile Include="UserControls\Keyword.fs" />
+    <Compile Include="PageContexts\Item\Objects.fs" />
+    <Compile Include="PageContexts\Item\Item.fs" />
+    <Compile Include="PageContexts\Outfit\SpidAutocompleter.fs" />
     <Compile Include="PageContexts\Outfit\Objects.fs" />
-    <Compile Include="PageContexts\Item.fs" />
-    <Compile Include="PageContexts\SpidAutocompleter.fs" />
-    <Compile Include="PageContexts\Outfit.fs" />
+    <Compile Include="PageContexts\Outfit\Outfit.fs" />
     <Compile Include="Validators\SPID.fs" />
     <Compile Include="Validators\Keywords.fs" />
     <Compile Include="ApplicationContext\FileWatchers.fs" />

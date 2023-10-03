@@ -1,4 +1,4 @@
-﻿namespace Data.UI.Items
+﻿namespace GUI.PageContexts.Items
 
 open FSharpx.Collections
 module DB = Data.Items.Database
@@ -8,7 +8,7 @@ open DMLib
 open DMLib.Collections
 open Data.UI.AppSettings.Paths.Img
 open DMLib_WPF
-open Data.UI.Interfaces
+open GUI.Interfaces
 
 module Outfits = Data.Outfit.Database
 

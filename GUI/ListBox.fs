@@ -2,7 +2,7 @@
 module GUI.ListBox
 
 open DMLib_WPF.Controls
-open Data.UI.Interfaces
+open GUI.Interfaces
 open Data.UI
 open System.Windows.Controls
 

@@ -13,7 +13,7 @@ open FsToolkit.ErrorHandling
 open Data.UI.Filtering
 open DMLib.Combinators
 open Data.UI
-open Data.UI.Items
+open GUI.PageContexts.Items
 
 module DB = Data.Items.Database
 module Img = AppSettings.Paths.Img.Item

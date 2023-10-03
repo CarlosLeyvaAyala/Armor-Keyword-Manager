@@ -21,12 +21,10 @@
     <Compile Include="IO\Keyword.fs" />
     <Compile Include="IO\Item.fs" />
     <Compile Include="IO\Outfit.fs" />
-    <Compile Include="UI\Interfaces.fs" />
     <Compile Include="UI\Filtering\Filters.fs" />
     <Compile Include="UI\AppSettings.fs" />
     <Compile Include="UI\Edit\Outfit.fs" />
     <Compile Include="UI\Keyword.fs" />
-    <Compile Include="UI\Item.fs" />
     <Compile Include="PropietaryFile.fs" />
     <None Include="scripts\Scratchpad.fsx" />
     <None Include="scripts\Ini to Json.fsx" />

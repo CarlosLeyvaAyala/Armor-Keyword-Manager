@@ -8,7 +8,7 @@ open DMLib.Collections
 open Data.UI.AppSettings.Paths.Img.Outfit
 open FSharpx.Collections
 open Data.UI
-open Data.UI.Interfaces
+open GUI.Interfaces
 open DMLib_WPF
 open DMLib.Combinators
 

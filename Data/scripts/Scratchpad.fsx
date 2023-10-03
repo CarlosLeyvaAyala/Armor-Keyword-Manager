@@ -90,6 +90,8 @@ let loadKeywords () =
     IO.Keywords.File.Open @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\KeywordManager\Data\Keywords.json"
 
 loadKeywords ()
+Manager.addReservedTags Data.SPID.SpidRule.allAutoTags AutoOutfit
+
 let inF = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors and outfits.skyitms"
 IO.PropietaryFile.Open inF
 let items = Items.toArrayOfRaw ()
@@ -972,34 +974,34 @@ loadKeywords ()
 
 Manager.onTagsChanged |> Event.add (printfn "%A")
 
+Manager.reserved ()
+Manager.addReservedTags Data.SPID.SpidRule.allAutoTags AutoOutfit
 
+type FilterFlags =
+    | TagManuallyAdded = 1
+    | TagKeywords = 2
+    | TagAutoItem = 4
+    | TagAutoOutfit = 8
+    | TagReserved1 = 16
+    | TagReserved2 = 32
+    | TagReserved3 = 64
+    | TagReserved4 = 128
+    | TagReserved5 = 256
+    | Image = 512
+    | ItemType = 1024
 
-module DB = Data.Items.Database
-open Data.Items
+module FilterFlags =
+    let private hasFlag (flag: FilterFlags) v = (flag &&& v) = flag
+    let hasTagManuallyAdded = hasFlag FilterFlags.TagManuallyAdded
+    let hasTagKeywords = hasFlag FilterFlags.TagKeywords
+    let hasTagAutoItem = hasFlag FilterFlags.TagAutoItem
+    let hasTagAutoOutfit = hasFlag FilterFlags.TagAutoOutfit
+    let hasImage = hasFlag FilterFlags.Image
+    let hasItemType = hasFlag FilterFlags.ItemType
 
-let maxArmorsPerLine = 20
+let t =
+    FilterFlags.ItemType
+    ||| FilterFlags.TagManuallyAdded
 
-DB.toArrayOfRaw ()
-|> Array.Parallel.map (
-    snd
-    >> (fun v ->
-        ([| v.edid, v.itemType |], v.keywords |> List.toArray)
-        ||> Array.allPairs)
-) // Asociate each armor with each keyword
-|> Array.Parallel.collect id
-|> Array.Parallel.map (fun ((edid, itemType), keyword) -> itemType |> enum |> ItemType.toKID, keyword, edid)
-|> Array.groupBy (fun (itemType, _, _) -> itemType) // Prepare to process each item by type
-|> Array.map (fun (itemType, dataArray) ->
-    dataArray
-    |> Array.Parallel.map (fun (_, keyword, edid) -> keyword, edid) // Remove excess item type from groupBy
-    |> Array.groupBy (fun (keyword, _) -> keyword)
-    |> Array.Parallel.map (fun (keyword, arr) ->
-        arr
-        |> Array.Parallel.map snd // Remove excess keyword from groupBy
-        |> Array.chunkBySize maxArmorsPerLine
-        |> Array.Parallel.map (fun a ->
-            let armors = a |> Array.fold (smartFold ",") ""
-            sprintf "Keyword = %s|%s|%s" keyword itemType armors)) // Transform chunks into final text
-    |> Array.Parallel.collect id
-    |> Array.sort) // Convert each item batch by type
-|> Array.Parallel.collect id
+t
+t &&& FilterFlags.ItemType |> int |> printfn "%B"

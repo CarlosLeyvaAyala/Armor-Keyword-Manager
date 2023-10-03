@@ -54,6 +54,26 @@ type FilterDistrSettings =
         | [| _; _; true |] -> OnlyIfHasNoRules
         | _ -> Either
 
+type FilterItemTypeSettings =
+    | Any
+    | OnlyArmors
+    | OnlyWeapons
+    | OnlyAmmo
+
+    member t.asArrayOfBool =
+        match t with
+        | Any -> [| true; false; false; false |]
+        | OnlyArmors -> [| false; true; false; false |]
+        | OnlyWeapons -> [| false; false; true; false |]
+        | OnlyAmmo -> [| false; false; false; true |]
+
+    static member ofArrayOfBool a =
+        match a with
+        | [| _; true; _; _ |] -> OnlyArmors
+        | [| _; _; true; _ |] -> OnlyWeapons
+        | [| _; _; _; true |] -> OnlyAmmo
+        | _ -> Any
+
 module Filter =
     /// Filters nothing.
     let nothing a = id a

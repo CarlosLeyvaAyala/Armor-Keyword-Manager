@@ -33,11 +33,33 @@ type FilterTagEventArgs(routedEvent, source, tags, mode, picMode, distrMode) =
     static member Empty =
         FilterTagEventArgs(null, null, CList(), FilterTagMode.And, FilterPicSettings.Either, FilterDistrSettings.Either)
 
+[<Flags>]
+type FilterFlags =
+    | None = 0
+    | TagManuallyAdded = 1
+    | TagKeywords = 2
+    | TagAutoItem = 4
+    | TagAutoOutfit = 8
+    | TagReserved1 = 16
+    | TagReserved2 = 32
+    | TagReserved3 = 64
+    | TagReserved4 = 128
+    | TagReserved5 = 256
+    | Image = 512
+    | ItemType = 1024
+
+module FilterFlags =
+    let private hasFlag (flag: FilterFlags) v = (flag &&& v) = flag
+    let hasTagManuallyAdded = hasFlag FilterFlags.TagManuallyAdded
+    let hasTagKeywords = hasFlag FilterFlags.TagKeywords
+    let hasTagAutoItem = hasFlag FilterFlags.TagAutoItem
+    let hasTagAutoOutfit = hasFlag FilterFlags.TagAutoOutfit
+    let hasImage = hasFlag FilterFlags.Image
+    let hasItemType = hasFlag FilterFlags.ItemType
+
 /// Interface for pages that can filter things by tag
 type IFilterableByTag =
-    abstract member CanFilterByPic: bool
-    abstract member CanFilterByDistr: bool
-    abstract member CanShowKeywords: bool
+    abstract member FilteringFlags: FilterFlags
     abstract member OldFilter: FilterTagEventArgs
     abstract ApplyTagFilter: FilterTagEventArgs -> unit
 
@@ -68,6 +90,11 @@ type FilterTagItem(name: string, tagType: TagSource) =
         | Keyword -> true
         | _ -> false with get, set
 
+    member val IsAutoOutfit =
+        match tagType with
+        | AutoOutfit -> true
+        | _ -> false with get, set
+
     static member ofStringList list =
         list
         |> Seq.map FilterTagItem
@@ -78,9 +105,7 @@ type FilterTagItem(name: string, tagType: TagSource) =
 /// DataContext for the filter by tag dialog
 type FilterByTagCtx() as t =
     inherit WPFBindable()
-    let mutable canFilterByPic = true
-    let mutable canFilterByDistr = true
-    let mutable canShowKeywords = false
+    let mutable flags = FilterFlags.None
     let mutable tags = ObservableCollection()
     let mutable filter = ""
 
@@ -95,12 +120,16 @@ type FilterByTagCtx() as t =
             t.OnPropertyChanged())
 
     let resetVisibility () =
-        tags |> Seq.iter (fun v -> v.IsVisible <- true)
+        let changeVis isSomething hasFlag =
+            let visible = hasFlag flags
 
-    let keywordVisibility () =
-        tags
-        |> Seq.filter (fun v -> v.IsKeyword)
-        |> Seq.iter (fun v -> v.IsVisible <- canShowKeywords)
+            tags
+            |> Seq.filter isSomething
+            |> Seq.iter (fun v -> v.IsVisible <- visible)
+
+        tags |> Seq.iter (fun v -> v.IsVisible <- true)
+        changeVis (fun v -> v.IsKeyword) FilterFlags.hasTagKeywords
+        changeVis (fun v -> v.IsAutoOutfit) FilterFlags.hasTagAutoOutfit
 
     member val TagMode = FilterTagMode.And.asArrayOfBool with get, set
     member val PicMode = FilterPicSettings.Either.asArrayOfBool with get, set
@@ -110,28 +139,18 @@ type FilterByTagCtx() as t =
     member t.SelectedPicMode = FilterPicSettings.ofArrayOfBool t.PicMode
     member t.SelectedDistrMode = FilterDistrSettings.ofArrayOfBool t.DistrMode
 
-    member t.CanFilterByPic
-        with get () = canFilterByPic
+    member t.FilterFlags
+        with get () = flags
         and set v =
-            canFilterByPic <- v
-            nameof t.CanFilterByPic |> t.OnPropertyChanged
-            nameof t.ShowBottomPanel |> t.OnPropertyChanged
+            flags <- v
+            t.OnPropertyChanged()
 
-    member t.CanFilterByDistr
-        with get () = canFilterByDistr
-        and set v =
-            canFilterByDistr <- v
-            nameof t.CanFilterByDistr |> t.OnPropertyChanged
-            nameof t.ShowBottomPanel |> t.OnPropertyChanged
-
+    member t.CanFilterByPic = FilterFlags.hasImage flags
+    member t.CanFilterByDistr = false
     member t.ShowBottomPanel = t.CanFilterByPic || t.CanFilterByDistr
+    //member t.CanShowKeywords = FilterFlags.hasTagKeywords flags
 
-    member t.CanShowKeywords
-        with get () = canShowKeywords
-        and set v =
-            canShowKeywords <- v
-            t.OnPropertyChanged("")
-
+    /// Filter tags by name.
     member t.Filter
         with get () = filter
         and set v =
@@ -139,9 +158,9 @@ type FilterByTagCtx() as t =
             nameof t.Filter |> t.OnPropertyChanged
             nameof t.Tags |> t.OnPropertyChanged
 
-    member _.Tags =
+    member t.Tags =
         resetVisibility ()
-        keywordVisibility ()
+        //keywordVisibility ()
 
         tags
         |> Seq.filter (fun v -> v.IsVisible)
@@ -153,6 +172,9 @@ type FilterByTagCtx() as t =
                 | IsContainedInIC v.Name -> true
                 | _ -> false)
 
+        if tags |> Seq.forall (fun v -> not v.IsChecked) then
+            t.SelectNone()
+
         tags
 
     member t.SelectNone() =
@@ -162,6 +184,8 @@ type FilterByTagCtx() as t =
     member _.SelectInverse() =
         tags
         |> Seq.iter (fun v -> v.IsChecked <- not v.IsChecked)
+
+        nameof t.SelectedTags |> t.OnPropertyChanged
 
     member _.SelectedTags =
         tags

@@ -15,9 +15,13 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag 
   public PP_Items() => InitializeComponent();
 
   #region Interface: IFilterableByTag and filtering functions
-  public bool CanFilterByPic => true;
-  public bool CanFilterByDistr => false;
-  public bool CanShowKeywords => true;
+  public FilterFlags FilteringFlags =>
+    FilterFlags.TagManuallyAdded
+    | FilterFlags.TagAutoItem
+    | FilterFlags.TagKeywords
+    | FilterFlags.Image
+    | FilterFlags.ItemType;
+
   public FilterTagEventArgs OldFilter => ctx.Filter;
   public void ApplyTagFilter(FilterTagEventArgs e) => ctx.Filter = e;
   private void OnFilterNameByRegexClick(object sender, RoutedEventArgs e) =>

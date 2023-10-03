@@ -20,9 +20,11 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
   public void NavLoadAndGoToCurrent() => ctx.ReloadNavAndGoToCurrent();
 
   #region Interface: IFilterableByTag and filtering functions
-  public bool CanFilterByPic => true;
-  public bool CanFilterByDistr => true;
-  public bool CanShowKeywords => false;
+  public FilterFlags FilteringFlags =>
+    FilterFlags.TagManuallyAdded
+    | FilterFlags.TagAutoOutfit
+    | FilterFlags.Image;
+
   public FilterTagEventArgs OldFilter => ctx.Filter;
 
   public void ApplyTagFilter(FilterTagEventArgs e) => ctx.Filter = e;

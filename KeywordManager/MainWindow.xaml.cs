@@ -11,6 +11,7 @@ namespace KeywordManager;
 
 public partial class MainWindow : Window {
   public FilterTagEventArgs FilterByTagParameters => filterByTag.SelectedParameters;
+
   private readonly List<object> pages;
 
   private string _workingFile = "";

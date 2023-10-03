@@ -213,6 +213,9 @@
                     <DataTrigger Binding="{Binding IsKeyword}" Value="true">
                       <Setter Property="Foreground" Value="LightSlateGray" />
                     </DataTrigger>
+                    <DataTrigger Binding="{Binding IsAutoOutfit}" Value="true">
+                      <Setter Property="Foreground" Value="Coral" />
+                    </DataTrigger>
                   </Style.Triggers>
                 </Style>
               </CheckBox.Style>

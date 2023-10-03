@@ -1,6 +1,6 @@
 ﻿namespace Data.UI.BatchRename
 
-open DMLib
+open DMLib_WPF
 
 type Item(uid: string, name: string) =
     inherit WPFBindable()

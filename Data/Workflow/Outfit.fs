@@ -83,7 +83,7 @@ and Raw =
 
 type Database = Map<UniqueId, Data>
 
-module internal Database =
+module Database =
     [<Literal>]
     let UnboundEDID = "__DMSIM__"
 
@@ -96,7 +96,7 @@ module internal Database =
     let testDb () = db
     let clear () = db <- Map.empty
 
-    let inline toArray () = db |> Map.toArray
+    let toArray () = db |> Map.toArray
 
     let toArrayOfRaw () =
         toArray ()

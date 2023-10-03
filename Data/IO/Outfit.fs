@@ -44,7 +44,7 @@ module Import =
         filename |> File.ReadAllLines |> DB.importMany
 
 [<RequireQualifiedAccess>]
-module internal File =
+module File =
     let ofJson (d: JsonMap) =
         match d with
         | IsNull -> ()

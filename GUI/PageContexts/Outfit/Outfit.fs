@@ -74,15 +74,22 @@ type OutfitPageCtx() =
 
     override t.SelectCurrentItem() =
         base.SelectCurrentItem()
-        t.OnPropertyChanged(nameof t.IsNavSingleSelected)
-        t.OnPropertyChanged(nameof t.IsNavMultipleSelected)
-        t.OnPropertyChanged(nameof t.UId)
+
+        [ nameof t.IsNavSingleSelected
+          nameof t.IsNavMultipleSelected
+          nameof t.UId
+          nameof t.CanSpidRulesBeActive ]
+        |> t.OnPropertyChanged
 
     /// Current selected outfit context
     member t.SelectedItem = NavSelectedItem(t.UId)
 
     ///////////////////////////////////////////////
     // Custom implementation
+
+    member t.CanSpidRulesBeActive =
+        t.SelectedItem.IsDistributable
+        && t.HasItemsSelected
 
     member t.SetImage filename =
         let setImage uId filename =

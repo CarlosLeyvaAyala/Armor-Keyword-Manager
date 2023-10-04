@@ -99,10 +99,10 @@ type ItemsPageCtx() =
 
     override t.SelectCurrentItem() =
         base.SelectCurrentItem()
-        nameof t.UId |> t.OnPropertyChanged
-        nameof t.ItemType |> t.OnPropertyChanged
 
-        nameof t.AreAllSelectedArmors
+        [ nameof t.UId
+          nameof t.ItemType
+          nameof t.AreAllSelectedArmors ]
         |> t.OnPropertyChanged
 
     member t.NavSelectedItems =

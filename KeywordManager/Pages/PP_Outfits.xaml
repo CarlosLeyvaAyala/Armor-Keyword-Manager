@@ -212,7 +212,7 @@ It can not be exported to SPID.</sys:String>
       Grid.Column="2"
       md:ColorZoneAssist.Mode="SecondaryMid"
       Header="SPID rules"
-      IsEnabled="{Binding SelectedItem.IsDistributable}"
+      IsEnabled="{Binding CanSpidRulesBeActive}"
       Style="{StaticResource MaterialDesignCardGroupBox}">
       <Grid>
         <Grid.RowDefinitions>
@@ -483,8 +483,8 @@ It can not be exported to SPID.</sys:String>
       Grid.Column="4"
       md:ColorZoneAssist.Mode="PrimaryMid"
       Header="Outfit data"
+      IsEnabled="{Binding HasItemsSelected}"
       Style="{StaticResource MaterialDesignCardGroupBox}">
-
       <Grid>
         <Grid.RowDefinitions>
           <RowDefinition Height="10*" />

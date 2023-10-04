@@ -3,6 +3,7 @@
 open System.IO
 open DMLib.Objects
 open Data.SPID
+open DMLib
 
 module DB = Data.Outfit.Database
 
@@ -39,7 +40,7 @@ type JsonSpidRule =
               t = r.traits.teammate }
           ch = r.chance }
 
-    member t.toRaw() : SpidRuleRaw =
+    static member toRaw(t: JsonSpidRule) : SpidRuleRaw =
         { strings = t.sf
           forms = t.ff
           level =
@@ -61,6 +62,7 @@ type JsonData =
       img: string
       tags: string list
       autoTags: string list
+      spidRules: JsonSpidRule array
       comment: string
       pieces: string list
       active: bool }
@@ -71,6 +73,9 @@ type JsonData =
           img = d.img
           tags = d.tags
           autoTags = d.autoTags
+          spidRules =
+            d.spidRules
+            |> Array.Parallel.map JsonSpidRule.toRaw
           comment = d.comment
           pieces = d.pieces
           active = d.active }
@@ -81,6 +86,9 @@ type JsonData =
           img = d.img
           tags = d.tags
           autoTags = d.autoTags
+          spidRules =
+            d.spidRules
+            |> Array.Parallel.map JsonSpidRule.ofRaw
           comment = d.comment
           pieces = d.pieces
           active = d.active }

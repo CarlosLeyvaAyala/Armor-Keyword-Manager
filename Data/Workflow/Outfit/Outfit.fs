@@ -7,6 +7,8 @@ open DMLib.Types.Skyrim
 open DMLib.Types
 open FSharpx.Collections
 open System
+open Data.SPID
+open System
 
 module Items = Data.Items.Database
 
@@ -24,6 +26,7 @@ type Data =
       img: Image
       tags: Tag list
       autoTags: Tag list
+      spidRules: SpidRule list
       comment: Comment
       pieces: ArmorPiece list
       active: ActiveStatus }
@@ -33,6 +36,10 @@ type Data =
           edid = r.edid |> EDID
           img = r.img |> Image.ofString
           comment = r.comment
+          spidRules =
+            r.spidRules
+            |> Array.Parallel.map SpidRule.ofRaw
+            |> Array.toList
           tags = r.tags |> List.map Tag.ofString
           autoTags = r.autoTags |> List.map Tag.ofString
           pieces = r.pieces |> List.map ArmorPiece.ofString
@@ -43,6 +50,10 @@ type Data =
           edid = t.edid.Value
           img = t.img.toString ()
           comment = t.comment
+          spidRules =
+            t.spidRules
+            |> List.toArray
+            |> Array.Parallel.map SpidRule.toRaw
           tags = t.tags |> List.map Tag.toString
           autoTags = t.autoTags |> List.map Tag.toString
           pieces = t.pieces |> List.map ArmorPiece.toString
@@ -56,6 +67,7 @@ and Raw =
       img: string
       tags: string list
       autoTags: string list
+      spidRules: SpidRuleRaw array // It's an array to help with parallelization
       comment: string
       pieces: string list
       active: bool }
@@ -67,6 +79,7 @@ and Raw =
           edid = ""
           img = ""
           comment = ""
+          spidRules = [||]
           tags = []
           autoTags = []
           pieces = []

@@ -11,7 +11,6 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
   xmlns:sys="clr-namespace:System;assembly=System.Runtime"
-  xmlns:tb="clr-namespace:DMLib_WPF.Controls.TextBox.Behaviors;assembly=DMLib-Fs-WPF"
   xmlns:uc="clr-namespace:KeywordManager.UserControls"
   d:DesignHeight="800"
   d:DesignWidth="1200"
@@ -286,9 +285,6 @@ It can not be exported to SPID.</sys:String>
               md:HintAssist.Hint="Strings filter"
               md:TextFieldAssist.HasLeadingIcon="True"
               md:TextFieldAssist.LeadingIcon="HumanCapacityDecrease"
-              tb:Autocomplete.Indicator=",+-"
-              tb:Autocomplete.ItemsSource="{Binding SPIDStrings}"
-              tb:Autocomplete.StringComparison="CurrentCultureIgnoreCase"
               KeyDown="OnAutocompleteTbKeyDown">
               <TextBox.ToolTip>
                 <StackPanel>
@@ -349,9 +345,6 @@ It can not be exported to SPID.</sys:String>
               md:HintAssist.Hint="Forms filter"
               md:TextFieldAssist.HasLeadingIcon="True"
               md:TextFieldAssist.LeadingIcon="TextBoxOutline"
-              tb:Autocomplete.Indicator=",+-"
-              tb:Autocomplete.ItemsSource="{Binding SPIDStrings}"
-              tb:Autocomplete.StringComparison="CurrentCultureIgnoreCase"
               KeyDown="OnAutocompleteTbKeyDown">
               <TextBox.ToolTip>
                 <StackPanel>

@@ -149,6 +149,9 @@ type OutfitPageCtx() =
                 t.ReloadNavAndGoToFirst()))
         )
 
-    /// String filter autocompletion.
-    member _.SPIDStrings =
-        IO.File.ReadAllLines(@"F:\Skyrim SE\Tools\SSEEdit 4_x\Edit Scripts\___.spidstrs")
+    /// Select string dialog.
+    member _.SpidStringSelect = SpidAutocompletion.strings.SelectData
+    /// Reload suggestions.
+    member _.OnStringsSuggestionsChange a = SpidAutocompletion.OnStringsChange a
+    /// Reload suggestions.
+    member _.OnFormsSuggestionsChange a = SpidAutocompletion.OnFormsChange a

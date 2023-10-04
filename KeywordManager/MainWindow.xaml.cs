@@ -47,6 +47,7 @@ public partial class MainWindow : Window {
     ctx.FileWatchers.Dispatcher = Dispatcher;
 
     ctx.FileWatchers.SpidStrings.GUIAction = _ => ImportedInfoBox("SPID string");
+    ctx.FileWatchers.SpidForms.GUIAction = _ => ImportedInfoBox("SPID form");
 
     ctx.FileWatchers.Keywords.GUIAction = fn => {
       // The F# object already deals with adding them to the SPID prediction list

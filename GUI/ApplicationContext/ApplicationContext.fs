@@ -3,7 +3,7 @@
 open DMLib_WPF.Contexts
 open IO.AppSettingsTypes
 open IO
-open Data.Tags.Manager
+open GUI.PageContexts
 
 type AppCtx() =
     inherit ApplicationContext()
@@ -17,11 +17,14 @@ type AppCtx() =
         PropietaryFile.onFileOpen
         |> Event.add Data.Tags.Manager.rebuildCache
 
+        // onAppPathChanged
         AppSettings.Paths.onAppPathChanged
         |> Event.choose (fun e ->
             match e with
             | ApplicationPath _ -> Some()
             | DummyOption -> None)
-        |> Event.add (fun _ -> Keywords.File.Open(AppSettings.Paths.KeywordsFile()))
+        |> Event.add (fun _ ->
+            Keywords.File.Open(AppSettings.Paths.KeywordsFile())
+            SpidAutocompletion.init ())
 
     member val FileWatchers = FileWatchers()

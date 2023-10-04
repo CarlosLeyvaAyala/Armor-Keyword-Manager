@@ -68,7 +68,6 @@ type KeywordManagerCtx() =
         base.SelectCurrentItem()
         t.OnPropertyChanged(nameof t.KeywordId)
 
-
     ///////////////////////////////////////////////
     // Custom implementation
 

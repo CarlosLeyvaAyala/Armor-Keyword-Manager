@@ -6,39 +6,57 @@ open DMLib.String
 open DMLib
 open DMLib.Combinators
 
-type SpidAutocompleter() as t =
+type SpidAutocompleterType =
+    | Strings
+    | Forms
+
+type internal SpidAutocompleter() =
     /// Map got from application database
     let mutable dbMap = Map.empty
     /// Map got from working file
     let mutable fileMap = Map.empty
-
+    let mutable dbPath = ""
+    let suggestionsChangeEvent = Event<_>()
     let mutable suggestions = [||]
+    let mergeMaps (acc: Map<string, string>) k v = acc.Add(k, v)
 
     let calcSuggestions () =
-        let mergeMaps m =
-            Map.fold (fun (acc: Map<string, string>) k v -> acc.Add(k, v)) m
-
         suggestions <-
             dbMap
-            |> mergeMaps fileMap
+            |> Map.fold mergeMaps fileMap
             |> Map.toArray
             |> Array.Parallel.map fst
 
+        suggestionsChangeEvent.Trigger(suggestions)
+
     let saveDB () =
-        if Not isNullOrEmpty t.Database then
-            dbMap |> Json.writeToFile true t.Database
+        if Not isNullOrEmpty dbPath then
+            dbMap |> Json.writeToFile true dbPath
 
     let openDB () =
         try
-            if File.Exists t.Database then
-                dbMap <- Json.getFromFile t.Database
+            if File.Exists dbPath then
+                dbMap <- Json.getFromFile dbPath
                 calcSuggestions ()
         with
-        | :? IOException -> dbMap <- Map.empty
+        | :? IOException
+        | :? Text.Json.JsonException -> dbMap <- Map.empty
 
-    member val Database = "" with get, set
-    member _.OpenDatabase = openDB
+    member _.Database
+        with get () = dbPath
+        and set v =
+            dbPath <- v
+            openDB ()
+
+    member _.OnSuggestionsChanged = suggestionsChangeEvent.Publish
     member _.Suggestions = suggestions
+
+    /// Data to be used in the select strings dialog
+    member _.SelectData =
+        dbMap
+        |> Map.fold mergeMaps fileMap
+        |> Map.toArray
+        |> Array.Parallel.sortBy (fst >> toLower)
 
     /// Imports suggestions from xEdit to save them to database.
     member _.ImportxEdit filename =
@@ -48,27 +66,24 @@ type SpidAutocompleter() as t =
                 match v |> split "|" with
                 | [| name; cat |] -> name, cat
                 | _ -> failwith $"Bad SPID import format for \"{v}\". Contact the developer.")
-            |> Array.groupBy (fun (name, _) -> name)
+            |> Array.groupBy fst
             |> Array.Parallel.map (fun (name, cats) ->
                 let cs =
                     cats
-                    |> Array.map (fun (_, cat) -> cat)
+                    |> Array.map snd
                     |> Array.sort
                     |> Array.distinct
                     |> Array.fold (smartFold "/") ""
 
                 name, cs)
             |> Map.ofArray
-            |> Map.fold (fun (acc: Map<string, string>) k v -> acc.Add(k, v)) dbMap
+            |> Map.fold mergeMaps dbMap
 
         saveDB ()
         calcSuggestions ()
 
-    /// Adds suggestions from a SPID filter.
-    ///
-    /// This may be called when a file is opened or when the user adds a new string/form filter
-    /// for an outfit.
-    member _.AddFromFilter filter =
+    /// Gets all individual elements in a filtering string.
+    member _.GetAtoms filter =
         let lowerCaseMap =
             dbMap
             |> Map.toArray
@@ -78,26 +93,52 @@ type SpidAutocompleter() as t =
             filter
             |> split ","
             |> Array.distinct
-            |> Array.map (fun s -> toLower s, s)
+            |> Array.map (Tuple.dupMapFst toLower)
             |> Map.ofArray
 
         let removeOperator c =
             Array.Parallel.map (split c) >> Array.collect id
 
+        allAtoms
+        |> Map.toArray
+        |> Array.Parallel.map (fst >> toLower)
+        |> Array.except lowerCaseMap // Remove people with - in their names, like "Danica Pure-Spring"
+        |> removeOperator "-" // Separate exclusions and delete existing ones
+        |> removeOperator "+" // Separate requirements
+        |> Array.except lowerCaseMap
+        |> Array.Parallel.filter (function
+            | StartsWithIC "0x"
+            | Contains "~"
+            | Contains "*" -> false
+            | _ -> true) // Ignore wildcards and formIDs
+
+    /// Adds suggestions from a SPID filter.
+    ///
+    /// This may be called when a file is opened or when the user adds a new string/form filter
+    /// for an outfit.
+    member t.AddFromFilter filter =
         fileMap <-
-            allAtoms
-            |> Map.toArray
-            |> Array.Parallel.map (fst >> toLower)
-            |> Array.except lowerCaseMap // Remove people with - in their names, like "Danica Pure-Spring"
-            |> removeOperator "-" // Separate exclusions and delete existing ones
-            |> removeOperator "+" // Separate requirements
-            |> Array.except lowerCaseMap
-            |> Array.Parallel.filter (function
-                | StartsWithIC "0x"
-                | Contains "~"
-                | Contains "*" -> false
-                | _ -> true) // Ignore wildcards and formIDs
-            |> Array.Parallel.map (fun s -> allAtoms[s], "In file")
+            t.GetAtoms filter
+            |> Array.Parallel.map (setSnd "In file")
             |> Map.ofArray // At this point we have all the atoms not in database
 
         calcSuggestions ()
+
+module internal SpidAutocompletion =
+    let strings = SpidAutocompleter()
+    let forms = SpidAutocompleter()
+    let mutable private onStringSuggestionChanged = Action<string array>(fun _ -> ())
+    let mutable private onFormSuggestionChanged = Action<string array>(fun _ -> ())
+
+    let init () =
+        strings.Database <- IO.AppSettings.Paths.SpidStringsFile()
+        forms.Database <- IO.AppSettings.Paths.SpidFormsFile()
+
+    strings.OnSuggestionsChanged
+    |> Event.add (fun a -> onStringSuggestionChanged.Invoke a)
+
+    forms.OnSuggestionsChanged
+    |> Event.add (fun a -> onFormSuggestionChanged.Invoke a)
+
+    let OnStringsChange a = onStringSuggestionChanged <- a
+    let OnFormsChange a = onStringSuggestionChanged <- a

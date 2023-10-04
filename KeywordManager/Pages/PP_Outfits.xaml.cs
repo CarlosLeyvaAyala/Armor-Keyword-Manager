@@ -1,8 +1,10 @@
 ﻿using DM_WpfControls;
+using DMLib_WPF.Controls.TextBox.Behaviors;
 using GUI;
 using GUI.UserControls;
 using IO;
 using KeywordManager.Dialogs;
+using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -15,7 +17,21 @@ namespace KeywordManager.Pages;
 public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTag, IWorkspacePage {
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
 
-  public PP_Outfits() => InitializeComponent();
+  public PP_Outfits() {
+    InitializeComponent();
+
+    ctx.OnStringsSuggestionsChange(a => {
+      Autocomplete.SetItemsSource(edtStringsFilter, a);
+      Autocomplete.SetIndicator(edtStringsFilter, ", +-");
+      Autocomplete.SetStringComparison(edtStringsFilter, StringComparison.CurrentCultureIgnoreCase);
+    });
+
+    ctx.OnFormsSuggestionsChange(a => {
+      Autocomplete.SetItemsSource(edtFormsFilter, a);
+      Autocomplete.SetIndicator(edtFormsFilter, ", +-");
+      Autocomplete.SetStringComparison(edtFormsFilter, StringComparison.CurrentCultureIgnoreCase);
+    });
+  }
 
   public void NavLoadAndGoTo(string uid) => ctx.ReloadNavAndGoTo(uid);
   public void NavLoadAndGoToCurrent() => ctx.ReloadNavAndGoToCurrent();
@@ -86,7 +102,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
   }
 
   private void BtnStringsFilterClick(object sender, RoutedEventArgs e) => MainWindow.ExecuteSelectStringDlg(new SelectStringDlgParams() {
-    Values = ctx.SPIDStrings.Select(v => new DisplayStrings(v, v)).ToList(),
+    Values = ctx.SpidStringSelect.Select(v => new DisplayStrings(v.Item1, v.Item1)).ToList(),
     OnOk = lst => {
       Debug.WriteLine(lst[0]);
     }

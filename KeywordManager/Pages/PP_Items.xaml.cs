@@ -41,8 +41,8 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag,
   private void OnLoaded(object sender, RoutedEventArgs e) {
     if (ctx.IsFinishedLoading) return; // Avoid repeated loading
     ctx.UseRegexForNameFilter = tbFilterByRegex.IsChecked == true;
-    ctx.ReloadNavAndGoToFirst();
     ctx.IsFinishedLoading = true;
+    ctx.ReloadNavAndGoToFirst();
   }
 
 #pragma warning disable IDE0051 // Remove unused private members

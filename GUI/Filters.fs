@@ -78,7 +78,7 @@ module Filter =
     /// Filters nothing.
     let nothing a = id a
 
-    let tags mode (expectedTags: seq<string>) getTags a =
+    let inline tags mode (expectedTags: seq<string>) (a: 'a array when 'a: (member Tags: string list)) =
         let tagsAnd searchFor searchIn =
             searchIn
             |> List.choose (fun tags -> searchFor |> List.tryFind (fun t -> t = tags))
@@ -101,25 +101,25 @@ module Filter =
                 | Or -> tagsOr
 
             a
-            |> Array.Parallel.filter (fun v -> v |> getTags |> andOr searchFor)
+            |> Array.Parallel.filter (fun v -> v.Tags |> andOr searchFor)
 
     // These functions operate on the array and not on individual elements for performance reasons.
 
-    let inline pics settings (a: ('b * 'a) array when 'a: (member img: string)) =
+    let inline pics settings (a: 'a array when 'a: (member HasSearchableImg: bool)) =
         let filter f =
             a
-            |> Array.Parallel.filter (snd >> fun v -> f v.img)
+            |> Array.Parallel.filter (fun v -> f v.HasSearchableImg)
 
         match settings with
         | FilterPicSettings.Either -> nothing a
-        | OnlyIfHasPic -> filter (Not String.isNullOrEmpty)
-        | OnlyIfHasNoPic -> filter String.isNullOrEmpty
+        | OnlyIfHasPic -> filter id
+        | OnlyIfHasNoPic -> filter not
 
     /// Filter by word content
     let words word useRegex filterMatching a =
         let filterItems f a =
             a
-            |> Array.Parallel.filter (snd >> fun v -> filterMatching f v)
+            |> Array.Parallel.filter (fun v -> filterMatching f v)
 
         let filterSimple word a =
             let f = containsIC word

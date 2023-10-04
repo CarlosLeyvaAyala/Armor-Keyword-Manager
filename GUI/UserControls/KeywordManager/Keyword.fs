@@ -10,6 +10,7 @@ open DMLib.Collections
 open System
 open Data.Keywords.Database
 open GUI.PageContexts.Keywords
+open Data.Keywords
 
 module DB = Data.Keywords.Database
 
@@ -21,6 +22,7 @@ type KeywordSelectEventArgs(routedEvent, source, keywords) =
 [<Sealed>]
 type KeywordManagerCtx() =
     inherit PageNavigationContext()
+    let mutable nav: (string * Raw) array = [||]
 
     let saveJsonDB () =
         IO.AppSettings.Paths.KeywordsFile()
@@ -37,8 +39,10 @@ type KeywordManagerCtx() =
     ///////////////////////////////////////////////
     // PageNavigationContext implementation
 
+    override _.RebuildNav() = nav <- DB.toArrayOfRaw ()
+
     member _.Nav =
-        DB.toArrayOfRaw ()
+        nav
         |> Array.Parallel.choose (fun (k, v) ->
             match filter with
             | IsEmptyStr

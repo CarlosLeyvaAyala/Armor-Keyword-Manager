@@ -24,6 +24,7 @@ type OutfitPageCtx() =
     inherit PageNavigationContext()
 
     let mutable filter = FilterTagEventArgs.Empty
+    let mutable nav: NavListItem array = [||]
 
     member t.Filter
         with get () = filter
@@ -31,24 +32,25 @@ type OutfitPageCtx() =
             filter <- v
             t.OnPropertyChanged()
 
-    member private _.appyFilter(a: (string * Raw) array) =
+    member private _.appyFilter(a: NavListItem array) =
         // TODO: Filter by distribution
         a
-        |> Filter.tags filter.TagMode filter.Tags (snd >> DB.allOutfitTags)
+        |> Filter.tags filter.TagMode filter.Tags
         |> Filter.pics filter.PicMode
 
     ///////////////////////////////////////////////
     // PageNavigationContext implementation
 
+    override _.RebuildNav() =
+        nav <-
+            DB.toArrayOfRaw ()
+            |> Array.Parallel.map NavListItem
+            |> Array.Parallel.sortBy (fun v -> v.Name.ToLower())
+
     override t.Activate() =
         GUI.Workspace.changePage GUI.AppWorkspacePage.Outfits
 
-    member t.Nav =
-        DB.toArrayOfRaw ()
-        |> Array.sortBy (snd >> fun v -> v.name)
-        |> t.appyFilter
-        |> Array.Parallel.map NavListItem
-        |> toObservableCollection
+    member t.Nav = nav |> t.appyFilter |> toObservableCollection
 
     member t.UId =
         match t.NavControl.SelectedItem with

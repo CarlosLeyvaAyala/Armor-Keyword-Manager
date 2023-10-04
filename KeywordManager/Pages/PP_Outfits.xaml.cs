@@ -40,8 +40,8 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
 
   private void OnLoaded(object sender, RoutedEventArgs e) {
     if (ctx.IsFinishedLoading) return; // Avoid repeated loading
-    ctx.ReloadNavAndGoToFirst();
     ctx.IsFinishedLoading = true;
+    ctx.ReloadNavAndGoToFirst();
   }
 
 #pragma warning disable IDE0051 // Remove unused private members

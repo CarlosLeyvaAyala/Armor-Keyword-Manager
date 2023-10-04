@@ -26,6 +26,7 @@ type ItemsPageCtx() =
     let mutable filter = FilterTagEventArgs.Empty
     let mutable nameFilter = ""
     let mutable useRegexForNameFilter = false
+    let mutable nav: NavListItem array = [||]
 
     member t.Filter
         with get () = filter
@@ -65,25 +66,25 @@ type ItemsPageCtx() =
     //        return NavListItem(uid, tag)
     //    }
 
-    member private _.applyFilter(a: (string * Raw) array) =
-        // TODO: Maybe use outfit pics
+    member private _.applyFilter(a: NavListItem array) =
         a
-        |> Filter.words nameFilter useRegexForNameFilter (fun f v -> f v.name || f v.esp || f v.edid)
-        |> Filter.tags filter.TagMode filter.Tags (snd >> DB.allItemTags)
+        |> Filter.words nameFilter useRegexForNameFilter (fun f v -> f v.Name || f v.Esp || f v.EDID)
+        |> Filter.tags filter.TagMode filter.Tags
         |> Filter.pics filter.PicMode
 
     ///////////////////////////////////////////////
     // PageNavigationContext implementation
 
-    override t.Activate() =
+    override _.Activate() =
         GUI.Workspace.changePage GUI.AppWorkspacePage.Items
 
-    member t.Nav =
-        DB.toArrayOfRaw ()
-        |> t.applyFilter
-        |> Array.Parallel.map NavListItem
-        |> Array.sortBy (fun v -> v.Name.ToLower())
-        |> toObservableCollection
+    override _.RebuildNav() =
+        nav <-
+            DB.toArrayOfRaw ()
+            |> Array.Parallel.map NavListItem
+            |> Array.Parallel.sortBy (fun v -> v.Name.ToLower())
+
+    member t.Nav = nav |> t.applyFilter |> toObservableCollection
 
     member t.UId =
         match ListBox.getSelectedItem t.NavControl with
@@ -193,4 +194,4 @@ type ItemsPageCtx() =
             DB.update i.UId (fun d -> { d with img = ext })
             Img.expandImg i.UId ext |> ignore)
 
-        t.ReloadNavAndGoToCurrent()
+        nameof t.Nav |> t.OnPropertyChanged

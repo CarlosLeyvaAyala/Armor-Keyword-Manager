@@ -51,6 +51,7 @@ type NavListItem(uniqueId: string, d: Raw) =
     member _.HasImage = u.img <> ""
     member _.HasTags = u.tags.Length > 0
     member _.HasKeywords = u.keywords.Length > 0
+    member _.Tags = d |> DB.allItemTags
 
     override this.ToString() = this.Name
 
@@ -64,6 +65,8 @@ type NavListItem(uniqueId: string, d: Raw) =
         |> Array.map TooltipImage
         |> toCList
 
+    /// Used by filter search. Not intended for general UI use.
+    member t.HasSearchableImg = t.Imgs.Count > 0
     member t.TooltipVisible = t.HasImage || t.BelongsToOutfitWithImg
     member _.BelongsToOutfitWithImg = outfitsImg.Length > 0
     member _.BelongsToOutfit = (Outfits.outfitsWithPieces uniqueId |> Array.length) > 0

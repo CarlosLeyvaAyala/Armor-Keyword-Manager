@@ -98,7 +98,8 @@ type NavListItem(uId: string, d: Raw) =
             img <- v
             nameof t.Img |> t.OnPropertyChanged
 
-    member t.HasImg = d.img <> ""
+    member _.HasImg = d.img <> ""
+    member t.HasSearchableImg = t.HasImg
     member t.Refresh() = t.OnPropertyChanged()
     override t.ToString() = t.Name
 
@@ -112,6 +113,8 @@ type NavListItem(uId: string, d: Raw) =
 
     /// Does this outfit has pieces not added to the database?
     member t.HasMissingPieces = t.MissingPieces.Length > 0
+
+    member t.Tags = DB.allOutfitTags d
 
 type ArmorPiece(uId: string, d: Data.Items.Raw option) =
     let fullname =

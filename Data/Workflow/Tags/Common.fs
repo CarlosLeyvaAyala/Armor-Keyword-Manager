@@ -45,6 +45,8 @@ module internal Edit =
     /// Tries to delete a tag to some list. It triggers a change event in the tag manager if needed.
     let delete = changeTags Manager.delete List.delWord
 
+[<RequireQualifiedAccess>]
+module Get =
     /// Converts an array of raw to all its tags. It is used to display tags in the filter bar.
     let allTags getTags a =
         a

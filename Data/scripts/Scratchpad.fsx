@@ -971,52 +971,44 @@ Outfits.update "__DMUnboundItemManagerOutfit__.esm|13" (fun v -> { v with tags =
 loadKeywords ()
 
 Manager.onTagsChanged |> Event.add (printfn "%A")
-
+Manager.rebuildCache ()
 Manager.reserved ()
-Manager.addReservedTags Data.SPID.SpidRule.allAutoTags AutoOutfit
+//Manager.addReservedTags Data.SPID.SpidRule.allAutoTags AutoOutfit
 
-let dupFst a = setSnd a a
-let mapFst mapper (first, second) = mapper first, second
-let mapSnd mapper (first, second) = first, mapper second
+let mutable gotTags: (TagName * TagSource) array = [||]
 
-let allItemTags (v: Data.Items.Raw) = v.keywords @ v.tags @ v.autoTags
+Manager.onTagsChanged
+|> Event.add (fun v -> gotTags <- v)
 
-let allTags getTags a =
-    a
-    |> Array.Parallel.map (snd >> getTags >> List.toArray)
-    |> Array.Parallel.collect id
-    |> Array.distinct
-    |> Array.Parallel.sort
+gotTags
 
-/// Outfit tags that can not be altered by the player. This is called by the selected outfit.
-let readOnlyTags outfitRawData =
-    outfitRawData.pieces
-    |> List.map (fun uid -> uid, Items.tryFind uid)
-    |> List.choose (snd >> Option.map allItemTags)
-    |> List.collect id
-    |> List.append outfitRawData.autoTags
-    |> List.distinct
+let mutable pageTags: string array = [||]
 
-/// All tags an outfit unit can have. This includes all piece tags.
-///
-/// Called by the filter bar.
-let allOutfitTags outfitRawData =
-    outfitRawData
-    |> readOnlyTags
-    |> List.append outfitRawData.tags
+pageTags <-
+    Items.toArrayOfRaw ()
+    |> Data.Tags.Get.allTags Items.allItemTags
 
-Outfits.toArrayOfRaw ()
-let testoft = Outfits.find "__DMUnboundItemManagerOutfit__.esm|12"
+type AppWorkspacePage =
+    | Items
+    | Outfits
+    | WaedEnchantments
+    | WaedBuilds
+    | Skimpify
 
-testoft
-|> readOnlyTags
-|> List.append testoft.tags
+type IWorkspacePage =
+    abstract member SetActivePage: unit -> unit
 
+let pageChangeEvent = Event<string array>()
 
-
-Items.update "[COCO] Mysterious Mage [SE].esp|910" (fun v -> { v with autoTags = [ "  skimpy: change" ] })
-Outfits.update "__DMUnboundItemManagerOutfit__.esm|12" (fun v -> { v with tags = [ "ass crack" ] })
-Outfits.update "__DMUnboundItemManagerOutfit__.esm|12" (fun v -> { v with autoTags = [ "  outfit: ass crack" ] })
-
-Items.toArrayOfRaw () |> allTags allItemTags
-Outfits.toArrayOfRaw () |> allTags allOutfitTags
+let changePage page =
+    match page with
+    | Items ->
+        Items.toArrayOfRaw ()
+        |> Data.Tags.Get.allTags Items.allItemTags
+    | Outfits ->
+        Outfits.toArrayOfRaw ()
+        |> Data.Tags.Get.allTags Outfits.allOutfitTags
+    | WaedEnchantments -> failwith "Not implemented"
+    | WaedBuilds -> failwith "Not implemented"
+    | Skimpify -> failwith "Not implemented"
+    |> pageChangeEvent.Trigger

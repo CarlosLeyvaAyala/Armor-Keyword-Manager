@@ -40,6 +40,9 @@ type OutfitPageCtx() =
     ///////////////////////////////////////////////
     // PageNavigationContext implementation
 
+    override t.Activate() =
+        GUI.Workspace.changePage GUI.AppWorkspacePage.Outfits
+
     member t.Nav =
         DB.toArrayOfRaw ()
         |> Array.sortBy (snd >> fun v -> v.name)

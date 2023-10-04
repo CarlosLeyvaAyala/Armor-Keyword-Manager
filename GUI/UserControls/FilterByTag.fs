@@ -9,6 +9,7 @@ open System.Collections.ObjectModel
 open DMLib.String
 open System
 open Data.Tags
+open DMLib.TupleCommon
 
 type CList<'a> = Generic.List<'a>
 
@@ -70,7 +71,8 @@ type FilterTagItem(name: string, tagType: TagSource) =
     let mutable isVisible = true
     let mutable isChecked = false
 
-    member _.Name = name
+    member _.OriginalName = name
+    member _.Name = trim name
 
     /// Used for knowing what will never be displayed
     member val Flags = FilterFlags.None
@@ -114,10 +116,26 @@ type FilterTagItem(name: string, tagType: TagSource) =
 type FilterByTagCtx() as t =
     inherit WPFBindable()
     let mutable flags = FilterFlags.None
-    let mutable tags = ObservableCollection()
+    let mutable pageTags: Map<string, string> = Map.empty
+    let mutable tags: ObservableCollection<FilterTagItem> = ObservableCollection()
     let mutable filter = ""
 
+    let resetVisibility () =
+        let vis =
+            if pageTags.IsEmpty then
+                fun _ -> true
+            else
+                fun (v: FilterTagItem) ->
+                    pageTags
+                    |> Map.tryFind v.OriginalName
+                    |> Option.isSome
+
+        tags |> Seq.iter (fun v -> v.IsVisible <- vis v)
+
     do
+        GUI.Workspace.onChangePageTags
+        |> Event.add (fun tags -> pageTags <- tags |> Array.Parallel.map dupFst |> Map.ofArray)
+
         Data.Tags.Manager.onTagsChanged
         |> Event.add (fun newTags ->
             tags <-
@@ -126,18 +144,6 @@ type FilterByTagCtx() as t =
                 |> toObservableCollection
 
             t.OnPropertyChanged())
-
-    let resetVisibility () =
-        let changeVis isSomething hasFlag =
-            let visible = hasFlag flags
-
-            tags
-            |> Seq.filter isSomething
-            |> Seq.iter (fun v -> v.IsVisible <- visible)
-
-        tags |> Seq.iter (fun v -> v.IsVisible <- true)
-        changeVis (fun v -> v.IsKeyword) FilterFlags.hasTagKeywords
-        changeVis (fun v -> v.IsAutoOutfit) FilterFlags.hasTagAutoOutfit
 
     member val TagMode = FilterTagMode.And.asArrayOfBool with get, set
     member val PicMode = FilterPicSettings.Either.asArrayOfBool with get, set

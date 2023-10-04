@@ -1,4 +1,5 @@
 ﻿using DM_WpfControls;
+using GUI;
 using GUI.UserControls;
 using IO;
 using KeywordManager.Dialogs;
@@ -11,13 +12,14 @@ using System.Windows.Input;
 
 namespace KeywordManager.Pages;
 
-public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTag {
+public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTag, IWorkspacePage {
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
 
   public PP_Outfits() => InitializeComponent();
 
   public void NavLoadAndGoTo(string uid) => ctx.ReloadNavAndGoTo(uid);
   public void NavLoadAndGoToCurrent() => ctx.ReloadNavAndGoToCurrent();
+  public void SetActivePage() => ctx.Activate();
 
   #region Interface: IFilterableByTag and filtering functions
   public FilterFlags FilteringFlags =>

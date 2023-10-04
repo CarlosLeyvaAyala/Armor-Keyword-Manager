@@ -75,6 +75,9 @@ type ItemsPageCtx() =
     ///////////////////////////////////////////////
     // PageNavigationContext implementation
 
+    override t.Activate() =
+        GUI.Workspace.changePage GUI.AppWorkspacePage.Items
+
     member t.Nav =
         DB.toArrayOfRaw ()
         |> t.applyFilter

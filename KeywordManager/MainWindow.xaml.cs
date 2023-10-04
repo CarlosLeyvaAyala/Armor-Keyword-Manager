@@ -1,4 +1,5 @@
-﻿using GUI.UserControls;
+﻿using GUI;
+using GUI.UserControls;
 using IO;
 using System;
 using System.Collections.Generic;
@@ -98,6 +99,7 @@ public partial class MainWindow : Window {
       Settings.Default.lastTab = tbcMain.SelectedIndex;
       Settings.Default.Save();
       oldTab = tbcMain.SelectedIndex;
+      if (CurrentPage is IWorkspacePage wp) wp.SetActivePage();
     });
 
   public enum TabId {

@@ -9,6 +9,7 @@
     <None Include="scripts\Command binding generator.fsx" />
     <Compile Include="Filters.fs" />
     <Compile Include="Interfaces.fs" />
+    <Compile Include="Workspace.fs" />
     <Compile Include="Commands.fs" />
     <Compile Include="Controls.fs" />
     <Compile Include="ListBox.fs" />

@@ -1,4 +1,5 @@
-﻿using GUI.UserControls;
+﻿using GUI;
+using GUI.UserControls;
 using IO;
 using KeywordManager.UserControls;
 using System;
@@ -9,10 +10,11 @@ using System.Windows.Input;
 
 namespace KeywordManager.Pages;
 
-public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag {
+public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag, IWorkspacePage {
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
 
   public PP_Items() => InitializeComponent();
+  public void SetActivePage() => ctx.Activate();
 
   #region Interface: IFilterableByTag and filtering functions
   public FilterFlags FilteringFlags =>

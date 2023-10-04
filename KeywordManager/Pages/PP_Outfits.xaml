@@ -70,11 +70,11 @@ It can not be exported to SPID.</sys:String>
       <RowDefinition Height="4*" />
     </Grid.RowDefinitions>
     <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="8*" />
+      <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
+      <ColumnDefinition Width="9*" />
+      <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
       <ColumnDefinition Width="6*" />
-      <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
-      <ColumnDefinition Width="7*" />
-      <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
-      <ColumnDefinition Width="4*" />
     </Grid.ColumnDefinitions>
 
     <!--  NAVIGATOR  -->

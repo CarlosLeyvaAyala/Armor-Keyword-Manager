@@ -35,19 +35,19 @@ module Paths =
 
         let private expand imagePath uId ext =
             match ext with
-            | IsEmptyStr -> combine2 imagePath "_.png"
+            | IsEmptyStr -> combine2 (imagePath ()) "_.png"
             | _ ->
                 uId
                 |> uIdToFileName
                 |> changeExt ext
-                |> combine2 imagePath
+                |> combine2 (imagePath ())
 
         let private copyImage imageDirPath name sourceFileName =
             let dest =
                 sourceFileName
                 |> getExt
                 |> (changeExtension |> swap) (uIdToFileName name)
-                |> combine2 imageDirPath
+                |> combine2 (imageDirPath ())
 
             if File.Exists dest then
                 File.Delete dest
@@ -56,22 +56,27 @@ module Paths =
             getExtNoDot dest
 
         module Outfit =
+            module Thumb =
+                let dir () = combine2 app @"Data\Img\Outfits\thumbs"
+                let expandImg = expand dir
+                let copyImg = copyImage dir
+
             let dir () = combine2 app @"Data\Img\Outfits"
             ///Converts an uId and extension to its corresponding full file path
-            let expandImg uId ext = expand (dir ()) uId ext
-            let copyImg name sourceFileName = copyImage (dir ()) name sourceFileName
+            let expandImg = expand dir
+            let copyImg = copyImage dir
 
         module Item =
             let dir () = combine2 app @"Data\Img\Items"
             ///Converts an uId and extension to its corresponding full file path
-            let expandImg uId ext = expand (dir ()) uId ext
-            let copyImg name sourceFileName = copyImage (dir ()) name sourceFileName
+            let expandImg = expand dir
+            let copyImg = copyImage dir
 
         module Keywords =
             let dir () = combine2 app @"Data\Img\Keywords"
             ///Converts a keyword name and extension to its corresponding full file path
-            let expandImg keyword ext = expand (dir ()) keyword ext
-            let copyImg name sourceFileName = copyImage (dir ()) name sourceFileName
+            let expandImg = expand dir
+            let copyImg = copyImage dir
 
 [<RequireQualifiedAccess>]
 module Backup =

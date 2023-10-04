@@ -1,6 +1,7 @@
 ﻿#r "nuget: TextCopy"
 #r "nuget: FsToolkit.ErrorHandling"
 #r "nuget: FSharpx.Collections"
+#r "nuget: FreeImage.Standard, 4.3.8"
 
 // DMLib includes must be deleted once nuget works again
 #load "..\..\..\DMLib-FSharp\Combinators.fs"
@@ -943,72 +944,6 @@ open DMLib.String
 open DMLib.IO.Path
 open System.IO
 open DMLib.Combinators
-
-
 open Data.SPID
 
-let rule =
-    SpidRule.ofRaw
-        { strings =
-            "0xC33~[Rektas] Sanguine [SE].esp, RedguardRace,RedguardRaceVampire,    Priest,Danica Pure-Spring,Freir-Silana,*Draugr,Nura Snow-Shod,,,    "
-          forms = ""
-          level =
-            { Level.SpidLevelRaw.blank with
-                max = 49
-                sk = Level.Lockpicking.asRaw }
-          traits =
-            { Traits.SpidTraitsRaw.blank with
-                sex = Traits.Female.asStr
-                unique = Traits.UniqueNpcs.asStr }
-          chance = 50 }
-
-//////////////////////
-open FSharp.Control
-
-Outfits.update "__DMUnboundItemManagerOutfit__.esm|12" (fun v -> { v with tags = [ "ass crack" ] })
-Outfits.update "__DMUnboundItemManagerOutfit__.esm|13" (fun v -> { v with tags = [ "ass crack" ] })
-
-loadKeywords ()
-
-Manager.onTagsChanged |> Event.add (printfn "%A")
-Manager.rebuildCache ()
-Manager.reserved ()
-//Manager.addReservedTags Data.SPID.SpidRule.allAutoTags AutoOutfit
-
-let mutable gotTags: (TagName * TagSource) array = [||]
-
-Manager.onTagsChanged
-|> Event.add (fun v -> gotTags <- v)
-
-gotTags
-
-let mutable pageTags: string array = [||]
-
-pageTags <-
-    Items.toArrayOfRaw ()
-    |> Data.Tags.Get.allTags Items.allItemTags
-
-type AppWorkspacePage =
-    | Items
-    | Outfits
-    | WaedEnchantments
-    | WaedBuilds
-    | Skimpify
-
-type IWorkspacePage =
-    abstract member SetActivePage: unit -> unit
-
-let pageChangeEvent = Event<string array>()
-
-let changePage page =
-    match page with
-    | Items ->
-        Items.toArrayOfRaw ()
-        |> Data.Tags.Get.allTags Items.allItemTags
-    | Outfits ->
-        Outfits.toArrayOfRaw ()
-        |> Data.Tags.Get.allTags Outfits.allOutfitTags
-    | WaedEnchantments -> failwith "Not implemented"
-    | WaedBuilds -> failwith "Not implemented"
-    | Skimpify -> failwith "Not implemented"
-    |> pageChangeEvent.Trigger
+//            "0xC33~[Rektas] Sanguine [SE].esp, RedguardRace,RedguardRaceVampire,    Priest,Danica Pure-Spring,Freir-Silana,*Draugr,Nura Snow-Shod,,,    "

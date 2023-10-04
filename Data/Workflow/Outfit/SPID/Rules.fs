@@ -26,6 +26,8 @@ type SpidRule =
           traits = r.traits.asRaw
           chance = r.chance.asRaw }
 
+    member t.asRaw = SpidRule.toRaw t
+
     static member allAutoTags =
         [| getUnionCases<Traits.Sex> ()
            |> Array.map (fun c -> c.tag)
@@ -72,3 +74,10 @@ and SpidRuleRaw =
       level: Level.SpidLevelRaw
       traits: Traits.SpidTraitsRaw
       chance: int }
+
+    static member blank =
+        { strings = ""
+          forms = ""
+          level = Level.SpidLevelRaw.blank
+          traits = Traits.SpidTraitsRaw.blank
+          chance = SpidChance.blank.asRaw }

@@ -2,8 +2,58 @@
 
 open System.IO
 open DMLib.Objects
+open Data.SPID
 
 module DB = Data.Outfit.Database
+
+type JsonSpidTraits =
+    { g: string
+      u: string
+      s: string
+      c: string
+      l: string
+      t: string }
+
+type JsonSpidLevel = { sk: int; min: int; max: int }
+
+type JsonSpidRule =
+    { sf: string
+      ff: string
+      l: JsonSpidLevel
+      t: JsonSpidTraits
+      ch: int }
+
+    static member ofRaw(r: SpidRuleRaw) =
+        { sf = r.strings
+          ff = r.forms
+          l =
+            { sk = r.level.sk
+              min = r.level.min
+              max = r.level.max }
+          t =
+            { g = r.traits.sex
+              u = r.traits.unique
+              s = r.traits.summonable
+              c = r.traits.child
+              l = r.traits.leveled
+              t = r.traits.teammate }
+          ch = r.chance }
+
+    member t.toRaw() : SpidRuleRaw =
+        { strings = t.sf
+          forms = t.ff
+          level =
+            { sk = t.l.sk
+              min = t.l.min
+              max = t.l.max }
+          traits =
+            { sex = t.t.g
+              unique = t.t.u
+              summonable = t.t.s
+              child = t.t.c
+              leveled = t.t.l
+              teammate = t.t.t }
+          chance = t.ch }
 
 type JsonData =
     { name: string

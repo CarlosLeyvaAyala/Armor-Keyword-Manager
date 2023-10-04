@@ -52,11 +52,8 @@ type internal SpidAutocompleter() =
     member _.Suggestions = suggestions
 
     /// Data to be used in the select strings dialog
-    member _.SelectData =
-        dbMap
-        |> Map.fold mergeMaps fileMap
-        |> Map.toArray
-        |> Array.Parallel.sortBy (fst >> toLower)
+    member _.SelectData = dbMap |> Map.fold mergeMaps fileMap |> Map.toArray
+    //|> Array.Parallel.sortBy (fst >> toLower) // Dialog will sort this
 
     /// Imports suggestions from xEdit to save them to database.
     member _.ImportxEdit filename =

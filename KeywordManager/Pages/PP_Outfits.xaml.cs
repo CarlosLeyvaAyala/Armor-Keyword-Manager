@@ -102,7 +102,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
   }
 
   private void BtnStringsFilterClick(object sender, RoutedEventArgs e) => MainWindow.ExecuteSelectStringDlg(new SelectStringDlgParams() {
-    Values = ctx.SpidStringSelect.Select(v => new DisplayStrings(v.Item1, v.Item1)).ToList(),
+    Values = ctx.SpidStringSelect.Select(v => new DisplayStrings(v.Item1, v.Item1, centerRightDetail: v.Item2)).ToList(),
     OnOk = lst => {
       Debug.WriteLine(lst[0]);
     }

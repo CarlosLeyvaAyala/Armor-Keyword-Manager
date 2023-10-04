@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FreeImage-dotnet-core" Version="4.3.6" />
     <PackageReference Include="FSharpx.Collections" Version="3.1.0" />
     <PackageReference Include="TextCopy" Version="6.2.1" />
   </ItemGroup>

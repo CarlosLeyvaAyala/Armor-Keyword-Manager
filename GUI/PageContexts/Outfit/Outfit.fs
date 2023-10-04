@@ -87,15 +87,17 @@ type OutfitPageCtx() =
     member t.SetImage filename =
         let setImage uId filename =
             let ext = Paths.copyImg uId filename
+            Paths.Thumb.save uId filename
             DB.update uId (fun d -> { d with img = ext })
             Paths.expandImg uId ext
 
         if Path.Exists filename && t.UId <> "" then
+            let uid = t.UId // Needs to send back uid because it gets lost on reloading
             t.NavSelectedItem.Img <- setImage t.UId filename
             t.ReloadNavAndGoToCurrent()
-            true
+            uid
         else
-            false
+            ""
 
     member private _.rename uId newName =
         DB.update uId (fun d -> { d with name = newName })

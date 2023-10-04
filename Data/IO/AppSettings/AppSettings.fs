@@ -6,6 +6,7 @@ open DMLib.Combinators
 open System.IO
 open System
 open IO.AppSettingsTypes
+open FreeImageAPI
 
 [<RequireQualifiedAccess>]
 module Paths =
@@ -42,12 +43,14 @@ module Paths =
                 |> changeExt ext
                 |> combine2 (imagePath ())
 
+        let private getDestFile imageDirPath uId sourceFileName =
+            sourceFileName
+            |> getExt
+            |> (swap changeExtension) (uIdToFileName uId)
+            |> combine2 (imageDirPath ())
+
         let private copyImage imageDirPath name sourceFileName =
-            let dest =
-                sourceFileName
-                |> getExt
-                |> (changeExtension |> swap) (uIdToFileName name)
-                |> combine2 (imageDirPath ())
+            let dest = getDestFile imageDirPath name sourceFileName
 
             if File.Exists dest then
                 File.Delete dest
@@ -55,11 +58,37 @@ module Paths =
             File.Copy(sourceFileName, dest)
             getExtNoDot dest
 
+        let private resizeAndSave size sourceFilename dest =
+            if File.Exists dest then
+                File.Delete dest
+
+            use original = FreeImageBitmap.FromFile sourceFilename
+
+            let width, height =
+                match original.Width, original.Height with
+                | w, h when w > h -> size, h * size / w
+                | w, h -> w * size / h, size
+
+            use thumb = new FreeImageBitmap(original, width, height)
+
+            thumb.Save(
+                dest,
+                FREE_IMAGE_FORMAT.FIF_JPEG,
+                FREE_IMAGE_SAVE_FLAGS.JPEG_QUALITYAVERAGE
+                ||| FREE_IMAGE_SAVE_FLAGS.JPEG_BASELINE
+                ||| FREE_IMAGE_SAVE_FLAGS.JPEG_OPTIMIZE
+            )
+
+        let private saveThumb imageDirPath uId sourceFileName =
+            getDestFile imageDirPath uId sourceFileName
+            |> changeExt "jpg"
+            |> resizeAndSave 150 sourceFileName
+
         module Outfit =
             module Thumb =
-                let dir () = combine2 app @"Data\Img\Outfits\thumbs"
-                let expandImg = expand dir
-                let copyImg = copyImage dir
+                let private dir () = combine2 app @"Data\Img\Outfits\thumbs"
+                let expandImg = swap (expand dir) "jpg"
+                let save = saveThumb dir
 
             let dir () = combine2 app @"Data\Img\Outfits"
             ///Converts an uId and extension to its corresponding full file path

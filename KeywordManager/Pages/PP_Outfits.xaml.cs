@@ -57,7 +57,8 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
     SetImage(DMLib_WPF.Dialogs.File.Open(AppSettings.Paths.Img.filter, "f07db2f1-a50e-4487-b3b2-8f384d3732aa"));
 
   void SetImage(string filename) {
-    if (ctx.SetImage(filename)) Owner.OnOutfitImgWasSet(ctx.UId);
+    var r = ctx.SetImage(filename);
+    if (!string.IsNullOrEmpty(r)) Owner.OnOutfitImgWasSet(r);
   }
 
   private void OnNavSelectionChanged(object sender, SelectionChangedEventArgs e) => ctx.SelectCurrentItem();

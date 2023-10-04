@@ -111,7 +111,7 @@ It can not be exported to SPID.</sys:String>
 
                 <!--  ACTUAL IMAGE  -->
                 <Image
-                  Source="{Binding Img, Mode=OneWay, Converter={StaticResource StringToImgConverter}}"
+                  Source="{Binding Thumb, Mode=OneWay, Converter={StaticResource StringToImgConverter}}"
                   Style="{StaticResource preview}"
                   Visibility="{Binding HasImg, Converter={StaticResource BooleanToVisibilityConverter}}">
                   <Image.ToolTip>

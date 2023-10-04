@@ -98,6 +98,7 @@ type NavListItem(uId: string, d: Raw) =
             img <- v
             nameof t.Img |> t.OnPropertyChanged
 
+    member _.Thumb = Thumb.expandImg uId
     member _.HasImg = d.img <> ""
     member t.HasSearchableImg = t.HasImg
     member t.Refresh() = t.OnPropertyChanged()

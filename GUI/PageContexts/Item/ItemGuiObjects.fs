@@ -48,7 +48,7 @@ type NavListItem(uniqueId: string, d: Raw) =
     member _.IsArmor = u.itemType = int ItemType.Armor
     member _.IsWeapon = u.itemType = int ItemType.Weapon
     member _.IsAmmo = u.itemType = int ItemType.Ammo
-    member _.HasImage = u.image <> ""
+    member _.HasImage = u.img <> ""
     member _.HasTags = u.tags.Length > 0
     member _.HasKeywords = u.keywords.Length > 0
 
@@ -57,7 +57,7 @@ type NavListItem(uniqueId: string, d: Raw) =
     member _.Imgs =
         outfitsImg
         |> Array.append (
-            match u.image with
+            match u.img with
             | "" -> [||]
             | img -> [| u.name, Item.expandImg uniqueId img |]
         )

@@ -78,7 +78,6 @@ module Filter =
     /// Filters nothing.
     let nothing a = id a
 
-    [<Obsolete("Delete")>]
     let tags mode (expectedTags: seq<string>) getTags a =
         let tagsAnd searchFor searchIn =
             searchIn
@@ -104,85 +103,23 @@ module Filter =
             a
             |> Array.Parallel.filter (fun v -> v |> getTags |> andOr searchFor)
 
-    [<Obsolete("Delete")>]
-    let pics settings getImage a =
+    // These functions operate on the array and not on individual elements for performance reasons.
+
+    let inline pics settings (a: ('b * 'a) array when 'a: (member img: string)) =
         let filter f =
             a
-            |> Array.Parallel.filter (fun v -> v |> getImage |> f)
+            |> Array.Parallel.filter (snd >> fun v -> f v.img)
 
         match settings with
         | FilterPicSettings.Either -> nothing a
         | OnlyIfHasPic -> filter (Not String.isNullOrEmpty)
         | OnlyIfHasNoPic -> filter String.isNullOrEmpty
 
-    let private filterAdapter f v =
-        match f v with
-        | Some _ -> Some v
-        | _ -> None
-
-    let (|FilterNothing|_|) _ = Some()
-
-    let tagFilter mode (expectedTags: seq<string>) =
-        let searchFor = [ for i in expectedTags -> i ]
-
-        let tagsAnd searchIn =
-            searchIn
-            |> List.choose (fun tags -> searchFor |> List.tryFind (fun t -> t = tags))
-            |> fun l ->
-                match l.Length with
-                | Equals searchFor.Length -> Some()
-                | _ -> None
-
-        let tagsOr searchIn =
-            searchIn
-            |> List.allPairs searchFor
-            |> List.tryFind (fun (a, b) -> a = b)
-            |> Option.map (fun _ -> ())
-
-        match searchFor with
-        | [] -> (|FilterNothing|_|)
-        | _ ->
-            match mode with
-            | FilterTagMode.And -> tagsAnd
-            | Or -> tagsOr
-
-    let tag filter getTag = filterAdapter (getTag >> filter)
-
-    let picFilter =
-        function
-        | FilterPicSettings.Either -> (|FilterNothing|_|)
-        | OnlyIfHasPic -> (|IsNotEmptyStr|_|)
-        | OnlyIfHasNoPic -> (|IsEmptyStr|_|)
-
-    let pic filter getImage = filterAdapter (getImage >> filter)
-
-    let wordFilter word useRegex =
-        let filterRegex regex s =
-            try
-                // Check if regex is valid. Otherwise, filter nothing.
-                let rx = Regex(regex, RegexOptions.IgnoreCase)
-
-                rx.Match(s).Success
-            with
-            | _ -> false
-
-        match word, useRegex with
-        | IsEmptyStr, _ -> fun _ -> true
-        | w, true -> filterRegex w
-        | w, false -> containsIC w
-
-    /// Filter by word content
-    let word (filter: string -> bool) filterMatching v =
-        if filterMatching filter v then
-            Some v
-        else
-            None
-
     /// Filter by word content
     let words word useRegex filterMatching a =
         let filterItems f a =
             a
-            |> Array.Parallel.filter (fun v -> filterMatching f v)
+            |> Array.Parallel.filter (snd >> fun v -> filterMatching f v)
 
         let filterSimple word a =
             let f = containsIC word
@@ -206,3 +143,66 @@ module Filter =
                 filterRegex w a
             else
                 filterSimple w a
+
+//let private filterAdapter f v =
+//    match f v with
+//    | Some _ -> Some v
+//    | _ -> None
+
+//let (|FilterNothing|_|) _ = Some()
+
+//let tagFilter mode (expectedTags: seq<string>) =
+//    let searchFor = [ for i in expectedTags -> i ]
+
+//    let tagsAnd searchIn =
+//        searchIn
+//        |> List.choose (fun tags -> searchFor |> List.tryFind (fun t -> t = tags))
+//        |> fun l ->
+//            match l.Length with
+//            | Equals searchFor.Length -> Some()
+//            | _ -> None
+
+//    let tagsOr searchIn =
+//        searchIn
+//        |> List.allPairs searchFor
+//        |> List.tryFind (fun (a, b) -> a = b)
+//        |> Option.map (fun _ -> ())
+
+//    match searchFor with
+//    | [] -> (|FilterNothing|_|)
+//    | _ ->
+//        match mode with
+//        | FilterTagMode.And -> tagsAnd
+//        | Or -> tagsOr
+
+//let tag filter getTag = filterAdapter (getTag >> filter)
+
+//let picFilter =
+//    function
+//    | FilterPicSettings.Either -> (|FilterNothing|_|)
+//    | OnlyIfHasPic -> (|IsNotEmptyStr|_|)
+//    | OnlyIfHasNoPic -> (|IsEmptyStr|_|)
+
+//let pic filter getImage = filterAdapter (getImage >> filter)
+
+//let wordFilter word useRegex =
+//    let filterRegex regex s =
+//        try
+//            // Check if regex is valid. Otherwise, filter nothing.
+//            let rx = Regex(regex, RegexOptions.IgnoreCase)
+
+//            rx.Match(s).Success
+//        with
+//        | _ -> false
+
+//    match word, useRegex with
+//    | IsEmptyStr, _ -> fun _ -> true
+//    | w, true -> filterRegex w
+//    | w, false -> containsIC w
+
+///// Filter by word content
+//let word (filter: string -> bool) filterMatching v =
+//    if filterMatching filter v then
+//        Some v
+//    else
+//        None

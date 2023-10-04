@@ -13,6 +13,7 @@ open DMLib_WPF.Contexts
 open DMLib_WPF.Dialogs
 open GUI
 open GUI.PageContexts.Outfit
+open Data.Outfit
 
 module DB = Data.Outfit.Database
 module Paths = IO.AppSettings.Paths.Img.Outfit
@@ -30,11 +31,11 @@ type OutfitPageCtx() =
             filter <- v
             t.OnPropertyChanged()
 
-    member private _.appyFilter(a: (string * Data.Outfit.Raw) array) =
+    member private _.appyFilter(a: (string * Raw) array) =
         // TODO: Filter by distribution
         a
         |> Filter.tags filter.TagMode filter.Tags (snd >> DB.allOutfitTags)
-        |> Filter.pics filter.PicMode (fun (_, v) -> v.img)
+        |> Filter.pics filter.PicMode
 
     ///////////////////////////////////////////////
     // PageNavigationContext implementation

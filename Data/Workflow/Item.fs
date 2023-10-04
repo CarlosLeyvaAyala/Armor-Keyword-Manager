@@ -81,7 +81,7 @@ type Data =
           comments = r.comments
           tags = r.tags |> List.map Tag.ofString
           autoTags = r.autoTags |> List.map Tag.ofString
-          image = r.image |> Image.ofString
+          image = r.img |> Image.ofString
           name = r.name |> FULL.ofString
           edid = r.edid |> EDID
           esp = r.esp |> EspFileName
@@ -94,7 +94,7 @@ type Data =
           comments = d.comments
           tags = d.tags |> List.map Tag.toString
           autoTags = d.autoTags |> List.map Tag.toString
-          image = d.image.Value
+          img = d.image.Value
           name = d.name.Value
           edid = d.edid.Value
           esp = d.esp.Value
@@ -109,7 +109,7 @@ and Raw =
       comments: string
       tags: string list
       autoTags: string list
-      image: string
+      img: string
       name: string
       edid: string
       esp: string
@@ -125,7 +125,7 @@ and Raw =
           autoTags = []
           enchantments = []
           esp = ""
-          image = ""
+          img = ""
           name = ""
           itemType = int ItemType.Armor
           active = true }

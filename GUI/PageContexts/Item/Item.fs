@@ -47,31 +47,38 @@ type ItemsPageCtx() =
             if Not isNullOrEmpty nameFilter then
                 t.OnPropertyChanged()
 
-    member private _.doFilter(uid, v) =
-        let wordFilter =
-            Filter.word (Filter.wordFilter nameFilter useRegexForNameFilter) (fun f (v: Raw) ->
-                f v.name || f v.esp || f v.edid)
+    //member private _.doFilter(uid, v) =
+    //    let wordFilter =
+    //        Filter.word (Filter.wordFilter nameFilter useRegexForNameFilter) (fun f (v: Raw) ->
+    //            f v.name || f v.esp || f v.edid)
 
+    //    // TODO: Maybe use outfit pics
+    //    let picFilter = Filter.pic (Filter.picFilter filter.PicMode) (fun (v: Raw) -> v.img)
+
+    //    let tagFilter =
+    //        Filter.tag (Filter.tagFilter filter.TagMode filter.Tags) (fun (v: Raw) -> v.tags |> List.append v.keywords)
+
+    //    option {
+    //        let! word = wordFilter v
+    //        let! pic = picFilter word
+    //        let! tag = tagFilter pic
+    //        return NavListItem(uid, tag)
+    //    }
+
+    member private _.applyFilter(a: (string * Raw) array) =
         // TODO: Maybe use outfit pics
-        let picFilter =
-            Filter.pic (Filter.picFilter filter.PicMode) (fun (v: Raw) -> v.image)
-
-        let tagFilter =
-            Filter.tag (Filter.tagFilter filter.TagMode filter.Tags) (fun (v: Raw) -> v.tags |> List.append v.keywords)
-
-        option {
-            let! word = wordFilter v
-            let! pic = picFilter word
-            let! tag = tagFilter pic
-            return NavListItem(uid, tag)
-        }
+        a
+        |> Filter.words nameFilter useRegexForNameFilter (fun f v -> f v.name || f v.esp || f v.edid)
+        |> Filter.tags filter.TagMode filter.Tags (snd >> DB.allItemTags)
+        |> Filter.pics filter.PicMode
 
     ///////////////////////////////////////////////
     // PageNavigationContext implementation
 
     member t.Nav =
         DB.toArrayOfRaw ()
-        |> Array.Parallel.choose t.doFilter
+        |> t.applyFilter
+        |> Array.Parallel.map NavListItem
         |> Array.sortBy (fun v -> v.Name.ToLower())
         |> toObservableCollection
 
@@ -180,7 +187,7 @@ type ItemsPageCtx() =
         t.NavSelectedItems
         |> Seq.iter (fun i ->
             let ext = Img.copyImg i.UId filename
-            DB.update i.UId (fun d -> { d with image = ext })
+            DB.update i.UId (fun d -> { d with img = ext })
             Img.expandImg i.UId ext |> ignore)
 
         t.ReloadNavAndGoToCurrent()

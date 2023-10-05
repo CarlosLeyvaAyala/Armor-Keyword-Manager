@@ -217,321 +217,593 @@ It can not be exported to SPID.</sys:String>
         <Grid.RowDefinitions>
           <RowDefinition Height="*" />
           <RowDefinition Height="{StaticResource GridSepVerticalNarrow}" />
-          <RowDefinition Height="auto" />
+          <RowDefinition Height="4*" />
         </Grid.RowDefinitions>
-        <!--  RULE LIST  -->
-        <ListBox Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
         <!--  UNBOUND OUTFIT WARNING  -->
-        <StackPanel
-          Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.7}"
+        <Grid
+          Grid.RowSpan="7"
+          Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.8}"
           VerticalAlignment="Center"
           Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
 
           <md:PackIcon
-            Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}}"
+            Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.7}"
             Height="{Binding Width, RelativeSource={RelativeSource Self}}"
             HorizontalAlignment="Stretch"
             Foreground="{StaticResource ColorWarning}"
-            Kind="Warning" />
+            Kind="Warning"
+            Opacity="0.15" />
 
           <TextBlock
+            Margin="{StaticResource MgTopNormal}"
+            VerticalAlignment="Center"
             Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
             Text="{DynamicResource nonDistributableMessage}"
             TextAlignment="Center"
-            TextWrapping="WrapWithOverflow" />
-        </StackPanel>
+            TextTrimming="WordEllipsis"
+            TextWrapping="Wrap" />
+        </Grid>
 
-        <!--  RULE CONTROLS  -->
-        <StackPanel Grid.Row="2" Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <StackPanel.Resources>
-            <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox">
-              <Setter Property="ToolTipService.HorizontalOffset" Value="-150" />
-              <Setter Property="ToolTipService.Placement" Value="Right" />
-              <Setter Property="ToolTipService.InitialShowDelay" Value="50" />
-            </Style>
-            <Style BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}" TargetType="ComboBox">
-              <Setter Property="IsEditable" Value="True" />
-              <Setter Property="Margin" Value="{StaticResource MgTopNaarrow}" />
-            </Style>
-            <Style TargetType="ItemsControl">
-              <Setter Property="Margin" Value="15,2,0,7" />
-            </Style>
-            <Style x:Key="operatorList" TargetType="StackPanel">
-              <Setter Property="Margin" Value="15,2,0,7" />
-            </Style>
-            <Style x:Key="tooltipSymbols" TargetType="Run">
-              <Setter Property="FontFamily" Value="Consolas" />
-              <Setter Property="FontSize" Value="14" />
-              <Setter Property="FontWeight" Value="Normal" />
-              <Setter Property="Foreground" Value="{StaticResource SecondaryHueLightBrush}" />
-            </Style>
-          </StackPanel.Resources>
+        <!--  RULE LIST  -->
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="auto" />
+          </Grid.ColumnDefinitions>
+          <ListBox
+            HorizontalContentAlignment="Stretch"
+            d:ItemsSource="{d:SampleData ItemCount=5}"
+            Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                  </Grid.ColumnDefinitions>
+                  <Grid.Resources>
+                    <Style TargetType="TextBlock">
+                      <Setter Property="Margin" Value="10,0,0,0" />
+                      <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                    </Style>
+                  </Grid.Resources>
+                  <TextBlock Margin="0" Text="Bla bla bla bla bla bla bla" />
+                  <TextBlock Grid.Column="1" Text="Bla bla bla bla bla bla bla" />
+                  <TextBlock
+                    Grid.Column="2"
+                    MaxWidth="80"
+                    Text="10-100 One handed" />
+                  <TextBlock
+                    Grid.Column="3"
+                    MaxWidth="40"
+                    Text="F/U/-S/C" />
+                  <TextBlock Grid.Column="4" Text="100%" />
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
 
-          <!--  STRING FILTERS  -->
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="auto" />
-              <ColumnDefinition Width="*" />
-              <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-            <!--  FORMID WARNING  -->
-            <md:PackIcon Style="{StaticResource icFormIdWarning}" Visibility="{Binding Text, Converter={StaticResource SpidFormIdWarning}, ElementName=edtStringsFilter}" />
-
-            <!--  EDIT  -->
-            <TextBox
-              x:Name="edtStringsFilter"
-              Grid.Column="1"
-              md:HintAssist.Hint="Strings filter"
-              md:TextFieldAssist.HasLeadingIcon="True"
-              md:TextFieldAssist.LeadingIcon="HumanCapacityDecrease"
-              KeyDown="OnAutocompleteTbKeyDown">
-              <TextBox.ToolTip>
-                <StackPanel>
-                  <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="Quick reference" />
-                  <TextBlock Margin="{StaticResource MgTopNaaarrow}">
-                    <Run>Imported data to be autocompleted when writing</Run>
-                    <Run Style="{StaticResource tooltipSymbols}">
-                      ,+-
-                    </Run>
-                    <Run>:</Run>
-                  </TextBlock>
-                  <ItemsControl>
-                    <sys:String>&#8226; Keywords</sys:String>
-                    <sys:String>&#8226; NPCs</sys:String>
-                  </ItemsControl>
-                  <TextBlock Text="Advanced matching functions allowed (sorted by priority):" />
-                  <StackPanel Style="{StaticResource operatorList}">
-                    <TextBlock>
-                      <Run Style="{StaticResource tooltipSymbols}">(+)</Run>
-                      <Run>requirement</Run>
-                    </TextBlock>
-                    <TextBlock>
-                      <Run Style="{StaticResource tooltipSymbols}">(-)</Run>
-                      <Run>exclusion</Run>
-                    </TextBlock>
-                    <TextBlock>
-                      <Run Style="{StaticResource tooltipSymbols}">(*)</Run>
-                      <Run>wildcard</Run>
-                    </TextBlock>
-                  </StackPanel>
-                </StackPanel>
-              </TextBox.ToolTip>
-            </TextBox>
-            <Button
-              Grid.Column="2"
-              Margin="0,2,0,3"
-              Click="BtnStringsFilterClick"
-              Content="{md:PackIcon Kind=HumanCapacityDecrease}"
-              Style="{StaticResource MaterialDesignOutlinedButton}" />
-          </Grid>
-
-          <!--  FORM FILTERS  -->
-          <Grid Margin="{StaticResource MgTopXWide}">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="auto" />
-              <ColumnDefinition Width="*" />
-              <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-            <Grid.Resources />
-
-            <!--  FORMID WARNING  -->
-            <md:PackIcon Style="{StaticResource icFormIdWarning}" Visibility="{Binding Text, Converter={StaticResource SpidFormIdWarning}, ElementName=edtFormsFilter}" />
-
-            <!--  EDIT  -->
-            <TextBox
-              x:Name="edtFormsFilter"
-              Grid.Column="1"
-              md:HintAssist.Hint="Forms filter"
-              md:TextFieldAssist.HasLeadingIcon="True"
-              md:TextFieldAssist.LeadingIcon="TextBoxOutline"
-              KeyDown="OnAutocompleteTbKeyDown">
-              <TextBox.ToolTip>
-                <StackPanel>
-                  <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="Quick reference" />
-                  <TextBlock Margin="{StaticResource MgTopNaaarrow}">
-                    <Run>Imported data to be autocompleted when writing</Run>
-                    <Run Style="{StaticResource tooltipSymbols}">
-                      ,+-
-                    </Run>
-                    <Run>:</Run>
-                  </TextBlock>
-                  <ItemsControl>
-                    <sys:String>&#8226; Race</sys:String>
-                    <sys:String>&#8226; Class</sys:String>
-                    <sys:String>&#8226; Faction</sys:String>
-                    <sys:String>&#8226; Combat Style</sys:String>
-                    <sys:String>&#8226; Cell NPC</sys:String>
-                    <sys:String>&#8226; Location</sys:String>
-                    <sys:String>&#8226; Voice Type</sys:String>
-                    <sys:String>&#8226; FormID List</sys:String>
-                    <sys:String>&#8226; Spell</sys:String>
-                  </ItemsControl>
-                  <TextBlock Text="Advanced matching functions allowed (sorted by priority):" />
-                  <StackPanel Style="{StaticResource operatorList}">
-                    <TextBlock>
-                      <Run Style="{StaticResource tooltipSymbols}">(+)</Run>
-                      <Run>requirement</Run>
-                    </TextBlock>
-                    <TextBlock>
-                      <Run Style="{StaticResource tooltipSymbols}">(-)</Run>
-                      <Run>exclusion</Run>
-                    </TextBlock>
-                  </StackPanel>
-                </StackPanel>
-              </TextBox.ToolTip>
-              <TextBox.Text>
-                <Binding
-                  Mode="OneWay"
-                  Path="Text"
-                  RelativeSource="{RelativeSource Self}"
-                  UpdateSourceTrigger="PropertyChanged">
-                  <Binding.ValidationRules>
-                    <v:SpidFormWildcardRule xmlns:v="clr-namespace:GUI.Validators;assembly=GUI" ValidatesOnTargetUpdated="True" />
-                  </Binding.ValidationRules>
-                </Binding>
-              </TextBox.Text>
-            </TextBox>
-            <Button
-              Grid.Column="2"
-              Margin="0,2,0,3"
-              Content="{md:PackIcon Kind=TextBoxOutline}"
-              Style="{StaticResource MaterialDesignOutlinedButton}" />
-          </Grid>
-
-
-          <Grid Margin="{StaticResource MgTopXXWide}">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*" />
-              <ColumnDefinition Width="auto" />
-              <ColumnDefinition Width="{StaticResource GridSepHorizontalWiide}" />
-              <ColumnDefinition Width="*" />
-              <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-
-            <!--  LEVEL  -->
-            <TextBox
-              VerticalAlignment="Center"
-              md:HintAssist.Hint="Level"
-              md:HintAssist.IsFloating="True" />
-            <Button
-              Grid.Column="1"
-              VerticalAlignment="Center"
-              Content="{md:PackIcon Kind=HumanHandsup}"
-              DockPanel.Dock="Right"
-              Style="{StaticResource MaterialDesignOutlinedButton}" />
-
-            <!--  TRAITS  -->
-            <TextBox
-              Grid.Column="3"
-              VerticalAlignment="Center"
-              md:HintAssist.Hint="Traits"
-              md:HintAssist.IsFloating="True" />
-            <Button
-              Grid.Column="4"
-              VerticalAlignment="Center"
-              Content="{md:PackIcon Kind=AccountGroup}"
-              Style="{StaticResource MaterialDesignOutlinedButton}" />
-          </Grid>
-
-          <DockPanel Margin="{StaticResource MgTopXXWide}">
-            <TextBlock Margin="0,0,20,0" Text="Chance" />
-
-            <!--  CHANCE  -->
-            <Slider
-              Grid.Column="3"
-              Maximum="100"
-              Minimum="1"
-              Style="{StaticResource MaterialDesignDiscreteHorizontalSlider}"
-              Value="100" />
-          </DockPanel>
-
-          <Button Margin="{StaticResource MgTopXWide}" Content="_Add rule">
-            <Button.Style>
-              <Style BasedOn="{StaticResource MaterialDesignRaisedSecondaryButton}" TargetType="Button">
-                <Style.Triggers>
-                  <!--  DISABLE IF FIELDS ARE EMPTY  -->
-                  <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                      <Condition Binding="{Binding Path=Text, ElementName=edtStringsFilter}" Value="" />
-                      <Condition Binding="{Binding Path=Text, ElementName=edtFormsFilter}" Value="" />
-                    </MultiDataTrigger.Conditions>
-                    <Setter Property="IsEnabled" Value="False" />
-                  </MultiDataTrigger>
-
-                  <!--  DISABLE ON VALIDATION ERROR  -->
-                  <DataTrigger Binding="{Binding ElementName=edtFormsFilter, Path=(Validation.HasError)}" Value="true">
-                    <Setter Property="IsEnabled" Value="False" />
-                  </DataTrigger>
-                </Style.Triggers>
+          <StackPanel Grid.Column="1">
+            <StackPanel.Resources>
+              <Style BasedOn="{StaticResource MaterialDesignToolButton}" TargetType="Button">
+                <Setter Property="Margin" Value="5,10" />
+                <Setter Property="Foreground" Value="{StaticResource PrimaryHueMidBrush}" />
               </Style>
-            </Button.Style>
-          </Button>
-        </StackPanel>
+            </StackPanel.Resources>
+            <Button Content="{md:PackIcon Plus}" />
+            <Button Content="{md:PackIcon Minus}" />
+          </StackPanel>
+        </Grid>
+
+        <ScrollViewer
+          Grid.Row="2"
+          HorizontalScrollBarVisibility="Auto"
+          VerticalScrollBarVisibility="Auto">
+          <TabControl md:ColorZoneAssist.Mode="SecondaryLight" Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TabControl.Resources>
+              <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox">
+                <Setter Property="ToolTipService.HorizontalOffset" Value="-150" />
+                <Setter Property="ToolTipService.Placement" Value="Right" />
+                <Setter Property="ToolTipService.InitialShowDelay" Value="50" />
+              </Style>
+              <Style TargetType="ItemsControl">
+                <Setter Property="Margin" Value="15,2,0,7" />
+              </Style>
+              <Style x:Key="operatorList" TargetType="StackPanel">
+                <Setter Property="Margin" Value="15,2,0,7" />
+              </Style>
+              <Style x:Key="tooltipSymbols" TargetType="Run">
+                <Setter Property="FontFamily" Value="Consolas" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontWeight" Value="Normal" />
+                <Setter Property="Foreground" Value="{StaticResource SecondaryHueLightBrush}" />
+              </Style>
+            </TabControl.Resources>
+
+            <!--  BASIC  -->
+            <TabItem Header="Basic">
+              <StackPanel Margin="15,30" VerticalAlignment="Stretch">
+                <!--  STRING FILTERS  -->
+                <Grid Margin="{StaticResource MgTopNormal}">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                  </Grid.ColumnDefinitions>
+                  <!--  FORMID WARNING  -->
+                  <md:PackIcon Style="{StaticResource icFormIdWarning}" Visibility="{Binding Text, Converter={StaticResource SpidFormIdWarning}, ElementName=edtStringsFilter}" />
+
+                  <!--  EDIT  -->
+                  <TextBox
+                    x:Name="edtStringsFilter"
+                    Grid.Column="1"
+                    md:HintAssist.Hint="Strings filter"
+                    KeyDown="OnAutocompleteTbKeyDown">
+                    <TextBox.ToolTip>
+                      <StackPanel>
+                        <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="Quick reference" />
+                        <TextBlock Margin="{StaticResource MgTopNaaarrow}">
+                          <Run>Imported data to be autocompleted when writing</Run>
+                          <Run Style="{StaticResource tooltipSymbols}">
+                            ,+-
+                          </Run>
+                          <Run>:</Run>
+                        </TextBlock>
+                        <ItemsControl>
+                          <sys:String>&#8226; Keywords</sys:String>
+                          <sys:String>&#8226; NPCs</sys:String>
+                        </ItemsControl>
+                        <TextBlock Text="Advanced matching functions allowed (sorted by priority):" />
+                        <StackPanel Style="{StaticResource operatorList}">
+                          <TextBlock>
+                            <Run Style="{StaticResource tooltipSymbols}">(+)</Run>
+                            <Run>requirement</Run>
+                          </TextBlock>
+                          <TextBlock>
+                            <Run Style="{StaticResource tooltipSymbols}">(-)</Run>
+                            <Run>exclusion</Run>
+                          </TextBlock>
+                          <TextBlock>
+                            <Run Style="{StaticResource tooltipSymbols}">(*)</Run>
+                            <Run>wildcard</Run>
+                          </TextBlock>
+                        </StackPanel>
+                      </StackPanel>
+                    </TextBox.ToolTip>
+                  </TextBox>
+                  <Button
+                    Grid.Column="2"
+                    Margin="0,2,0,3"
+                    Click="BtnStringsFilterClick"
+                    Content="{md:PackIcon Kind=Account}"
+                    Style="{StaticResource MaterialDesignOutlinedButton}" />
+                </Grid>
+
+                <!--  FORM FILTERS  -->
+                <Grid Margin="{StaticResource MgTopXXWide}">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                  </Grid.ColumnDefinitions>
+                  <Grid.Resources />
+
+                  <!--  FORMID WARNING  -->
+                  <md:PackIcon Style="{StaticResource icFormIdWarning}" Visibility="{Binding Text, Converter={StaticResource SpidFormIdWarning}, ElementName=edtFormsFilter}" />
+
+                  <!--  EDIT  -->
+                  <TextBox
+                    x:Name="edtFormsFilter"
+                    Grid.Column="1"
+                    md:HintAssist.Hint="Forms filter"
+                    KeyDown="OnAutocompleteTbKeyDown">
+                    <TextBox.ToolTip>
+                      <StackPanel>
+                        <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="Quick reference" />
+                        <TextBlock Margin="{StaticResource MgTopNaaarrow}">
+                          <Run>Imported data to be autocompleted when writing</Run>
+                          <Run Style="{StaticResource tooltipSymbols}">
+                            ,+-
+                          </Run>
+                          <Run>:</Run>
+                        </TextBlock>
+                        <ItemsControl>
+                          <sys:String>&#8226; Race</sys:String>
+                          <sys:String>&#8226; Class</sys:String>
+                          <sys:String>&#8226; Faction</sys:String>
+                          <sys:String>&#8226; Combat Style</sys:String>
+                          <sys:String>&#8226; Cell NPC</sys:String>
+                          <sys:String>&#8226; Location</sys:String>
+                          <sys:String>&#8226; Voice Type</sys:String>
+                          <sys:String>&#8226; FormID List</sys:String>
+                          <sys:String>&#8226; Spell</sys:String>
+                        </ItemsControl>
+                        <TextBlock Text="Advanced matching functions allowed (sorted by priority):" />
+                        <StackPanel Style="{StaticResource operatorList}">
+                          <TextBlock>
+                            <Run Style="{StaticResource tooltipSymbols}">(+)</Run>
+                            <Run>requirement</Run>
+                          </TextBlock>
+                          <TextBlock>
+                            <Run Style="{StaticResource tooltipSymbols}">(-)</Run>
+                            <Run>exclusion</Run>
+                          </TextBlock>
+                        </StackPanel>
+                      </StackPanel>
+                    </TextBox.ToolTip>
+                    <TextBox.Text>
+                      <Binding
+                        Mode="OneWay"
+                        Path="Text"
+                        RelativeSource="{RelativeSource Self}"
+                        UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                          <v:SpidFormWildcardRule xmlns:v="clr-namespace:GUI.Validators;assembly=GUI" ValidatesOnTargetUpdated="True" />
+                        </Binding.ValidationRules>
+                      </Binding>
+                    </TextBox.Text>
+                  </TextBox>
+                  <Button
+                    Grid.Column="2"
+                    Margin="0,2,0,3"
+                    Content="{md:PackIcon Kind=BowArrow}"
+                    Style="{StaticResource MaterialDesignOutlinedButton}" />
+                </Grid>
+
+                <!--  CHANCE  -->
+                <TextBlock Margin="{StaticResource MgTopXXWide}" Text="{Binding Value, ElementName=slChance, StringFormat={}Chance: {0}%}" />
+
+                <Slider
+                  x:Name="slChance"
+                  Margin="{StaticResource MgTopNaarrow}"
+                  Maximum="100"
+                  Minimum="1"
+                  Style="{StaticResource MaterialDesignDiscreteHorizontalSlider}"
+                  Value="100" />
+              </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Level">
+              <Grid Margin="15,10">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="*" />
+                  <RowDefinition Height="*" />
+                  <RowDefinition Height="*" />
+                  <RowDefinition Height="*" />
+                  <RowDefinition Height="*" />
+                  <RowDefinition Height="*" />
+                  <RowDefinition Height="*" />
+                  <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.Resources>
+                  <Style BasedOn="{StaticResource MaterialDesignChoiceChipPrimaryOutlineRadioButton}" TargetType="RadioButton">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                  </Style>
+                </Grid.Resources>
+
+                <TextBox
+                  Grid.Row="0"
+                  Margin="0,0,0,15"
+                  VerticalAlignment="Top"
+                  md:HintAssist.Hint="Min level" />
+                <TextBox
+                  Grid.Row="0"
+                  Grid.Column="2"
+                  VerticalAlignment="Top"
+                  md:HintAssist.Hint="Max level" />
+
+                <RadioButton
+                  Grid.Row="1"
+                  Grid.Column="1"
+                  HorizontalAlignment="Center"
+                  Content="Actor level"
+                  IsChecked="True" />
+
+                <RadioButton
+                  Grid.Row="2"
+                  Content="Smithing"
+                  Tag="4" />
+                <RadioButton
+                  Grid.Row="2"
+                  Grid.Column="1"
+                  Content="Heavy armor"
+                  Tag="5" />
+                <RadioButton
+                  Grid.Row="2"
+                  Grid.Column="2"
+                  Content="Block"
+                  Tag="3" />
+
+                <RadioButton
+                  Grid.Row="3"
+                  Grid.Column="0"
+                  Content="Two-handed"
+                  Tag="1" />
+                <RadioButton
+                  Grid.Row="3"
+                  Grid.Column="1"
+                  Content="One-handed"
+                  Tag="0" />
+                <RadioButton
+                  Grid.Row="3"
+                  Grid.Column="3"
+                  Content="Archery"
+                  Tag="2" />
+
+                <RadioButton
+                  Grid.Row="4"
+                  Grid.Column="0"
+                  Content="Light armor"
+                  Tag="6" />
+                <RadioButton
+                  Grid.Row="4"
+                  Grid.Column="1"
+                  Content="Sneak"
+                  Tag="9" />
+                <RadioButton
+                  Grid.Row="4"
+                  Grid.Column="3"
+                  Content="Lockpicking"
+                  Tag="8" />
+
+                <RadioButton
+                  Grid.Row="5"
+                  Grid.Column="0"
+                  Content="Pickpocket"
+                  Tag="7" />
+                <RadioButton
+                  Grid.Row="5"
+                  Grid.Column="1"
+                  Content="Speech"
+                  Tag="11" />
+                <RadioButton
+                  Grid.Row="5"
+                  Grid.Column="3"
+                  Content="Alchemy"
+                  Tag="10" />
+
+                <RadioButton
+                  Grid.Row="6"
+                  Grid.Column="0"
+                  Content="Illusion"
+                  Tag="15" />
+                <RadioButton
+                  Grid.Row="6"
+                  Grid.Column="1"
+                  Content="Conjuration"
+                  Tag="13" />
+                <RadioButton
+                  Grid.Row="6"
+                  Grid.Column="3"
+                  Content="Destruction"
+                  Tag="14" />
+
+                <RadioButton
+                  Grid.Row="7"
+                  Grid.Column="0"
+                  Content="Restoration"
+                  Tag="16" />
+                <RadioButton
+                  Grid.Row="7"
+                  Grid.Column="1"
+                  Content="Alteration"
+                  Tag="12" />
+                <RadioButton
+                  Grid.Row="7"
+                  Grid.Column="3"
+                  Content="Enchanting"
+                  Tag="17" />
+              </Grid>
+            </TabItem>
+
+            <TabItem Header="Traits">
+              <Grid Margin="15,20" VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                  <ColumnDefinition />
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="auto" />
+                  <RowDefinition Height="auto" />
+                  <RowDefinition Height="auto" />
+                  <RowDefinition Height="auto" />
+                  <RowDefinition Height="auto" />
+                  <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.Resources>
+                  <Style BasedOn="{StaticResource MaterialDesignChoiceChipPrimaryOutlineRadioButton}" TargetType="RadioButton">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="Margin" Value="0,0,0,15" />
+                  </Style>
+                </Grid.Resources>
+
+                <RadioButton
+                  Grid.Row="0"
+                  Grid.Column="0"
+                  Content="Any"
+                  GroupName="Sex"
+                  IsChecked="True" />
+                <RadioButton
+                  Grid.Row="0"
+                  Grid.Column="1"
+                  Content="Male"
+                  GroupName="Sex" />
+                <RadioButton
+                  Grid.Row="0"
+                  Grid.Column="2"
+                  Content="Female"
+                  GroupName="Sex" />
+
+                <RadioButton
+                  Grid.Row="1"
+                  Grid.Column="0"
+                  Content="Any"
+                  GroupName="U"
+                  IsChecked="True" />
+                <RadioButton
+                  Grid.Row="1"
+                  Grid.Column="1"
+                  Content="Unique NPCs"
+                  GroupName="U" />
+                <RadioButton
+                  Grid.Row="1"
+                  Grid.Column="2"
+                  Content="Non-unique NPCs"
+                  GroupName="U" />
+
+                <RadioButton
+                  Grid.Row="2"
+                  Grid.Column="0"
+                  Content="Any"
+                  GroupName="S"
+                  IsChecked="True" />
+                <RadioButton
+                  Grid.Row="2"
+                  Grid.Column="1"
+                  Content="Summonable"
+                  GroupName="S" />
+                <RadioButton
+                  Grid.Row="2"
+                  Grid.Column="2"
+                  Content="Non-summonable"
+                  GroupName="S" />
+
+                <RadioButton
+                  Grid.Row="3"
+                  Grid.Column="0"
+                  Content="Any"
+                  GroupName="C"
+                  IsChecked="True" />
+                <RadioButton
+                  Grid.Row="3"
+                  Grid.Column="1"
+                  Content="Child"
+                  GroupName="C" />
+                <RadioButton
+                  Grid.Row="3"
+                  Grid.Column="2"
+                  Content="Non-child"
+                  GroupName="C" />
+
+                <RadioButton
+                  Grid.Row="4"
+                  Grid.Column="0"
+                  Content="Any"
+                  GroupName="L"
+                  IsChecked="True" />
+                <RadioButton
+                  Grid.Row="4"
+                  Grid.Column="1"
+                  Content="Leveled"
+                  GroupName="L" />
+                <RadioButton
+                  Grid.Row="4"
+                  Grid.Column="2"
+                  Content="Non-leveled"
+                  GroupName="L" />
+
+                <RadioButton
+                  Grid.Row="5"
+                  Grid.Column="0"
+                  Content="Any"
+                  GroupName="T"
+                  IsChecked="True" />
+                <RadioButton
+                  Grid.Row="5"
+                  Grid.Column="1"
+                  Content="Teammate"
+                  GroupName="T" />
+                <RadioButton
+                  Grid.Row="5"
+                  Grid.Column="2"
+                  Content="Non-teammate"
+                  GroupName="T" />
+              </Grid>
+            </TabItem>
+          </TabControl>
+        </ScrollViewer>
+
+        <!--<Button
+          Grid.Row="2"
+          Margin="10,20,10,10"
+          Click="OnManageRules"
+          Content="_Manage rules"
+          Style="{StaticResource MaterialDesignRaisedSecondaryButton}"
+          Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}" />-->
       </Grid>
     </GroupBox>
 
-    <!--  OUTFIT DATA  -->
+    <!--  PIECES DATA  -->
     <GroupBox
       Grid.Column="4"
-      md:ColorZoneAssist.Mode="PrimaryMid"
-      Header="Outfit data"
+      md:ColorZoneAssist.Mode="PrimaryDark"
+      Header="Armor pieces data"
       IsEnabled="{Binding HasItemsSelected}"
       Style="{StaticResource MaterialDesignCardGroupBox}">
       <Grid>
         <Grid.RowDefinitions>
           <RowDefinition Height="10*" />
           <RowDefinition Height="{StaticResource GridSepVertical}" />
-          <RowDefinition Height="5*" />
+          <RowDefinition Height="7*" />
         </Grid.RowDefinitions>
 
         <!--  TAGS  -->
         <GroupBox
           Grid.Row="2"
-          md:ColorZoneAssist.Mode="PrimaryLight"
+          md:ColorZoneAssist.Mode="PrimaryMid"
           BorderThickness="0"
           Header="Tags">
           <uc:TagViewer x:Name="lstItemTags" ItemsSource="{Binding SelectedItem.Tags}" />
         </GroupBox>
 
         <!--  ARMOR PIECES  -->
-        <GroupBox
+        <!--<GroupBox
           Margin="{StaticResource MgTopNaarrow}"
           md:ColorZoneAssist.Mode="PrimaryLight"
           BorderThickness="0"
           Header="Armor pieces">
-          <ListBox d:ItemsSource="{d:SampleData ItemCount=10}" ItemsSource="{Binding SelectedItem.ArmorPieces}">
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                <StackPanel
-                  d:DataContext="{d:DesignInstance guiobjs:ArmorPiece}"
-                  ToolTip="{Binding FullName}"
-                  ToolTipService.InitialShowDelay="10">
+        </GroupBox>-->
+        <ListBox d:ItemsSource="{d:SampleData ItemCount=10}" ItemsSource="{Binding SelectedItem.ArmorPieces}">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <StackPanel
+                d:DataContext="{d:DesignInstance guiobjs:ArmorPiece}"
+                ToolTip="{Binding FullName}"
+                ToolTipService.InitialShowDelay="10">
 
-                  <!--  SHORT NAME  -->
-                  <TextBlock Text="{Binding ShortName, FallbackValue=Name}">
-                    <TextBlock.Style>
-                      <Style BasedOn="{StaticResource MaterialDesignTextBlock}" TargetType="TextBlock">
-                        <Style.Triggers>
-                          <DataTrigger Binding="{Binding IsInDB}" Value="False">
-                            <Setter Property="Opacity" Value="0.5" />
-                            <Setter Property="ToolTip" Value="This item has not been added to this database" />
-                          </DataTrigger>
-                        </Style.Triggers>
-                      </Style>
-                    </TextBlock.Style>
-                  </TextBlock>
+                <!--  SHORT NAME  -->
+                <TextBlock Text="{Binding ShortName, FallbackValue=Name}">
+                  <TextBlock.Style>
+                    <Style BasedOn="{StaticResource MaterialDesignTextBlock}" TargetType="TextBlock">
+                      <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsInDB}" Value="False">
+                          <Setter Property="Opacity" Value="0.5" />
+                          <Setter Property="ToolTip" Value="This item has not been added to this database" />
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </TextBlock.Style>
+                </TextBlock>
 
-                  <!--  LONG NAME  -->
-                  <TextBlock
-                    Style="{StaticResource NavTxtD1}"
-                    Text="{Binding FullName}"
-                    Visibility="{Binding NameWasShortened, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                </StackPanel>
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
-        </GroupBox>
+                <!--  LONG NAME  -->
+                <TextBlock
+                  Style="{StaticResource NavTxtD1}"
+                  Text="{Binding FullName}"
+                  Visibility="{Binding NameWasShortened, Converter={StaticResource BooleanToVisibilityConverter}}" />
+              </StackPanel>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
 
         <!--  IMAGE  -->
         <!--

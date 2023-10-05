@@ -83,8 +83,6 @@ loadDecls @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\Data\"
 
 fsi.AddPrinter(fun (r: NonEmptyString) -> r.ToString())
 fsi.AddPrinter(fun (r: UniqueId) -> r.ToString())
-module Items = Data.Items.Database
-module Outfits = Data.Outfit.Database
 
 let loadKeywords () =
     IO.Keywords.File.Open @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\KeywordManager\Data\Keywords.json"
@@ -94,6 +92,8 @@ Manager.addReservedTags Data.SPID.SpidRule.allAutoTags AutoOutfit
 
 let inF = @"F:\Skyrim SE\MO2\mods\DM-Dynamic-Armors\Armors and outfits.skyitms"
 IO.PropietaryFile.Open inF
+module Items = Data.Items.Database
+module Outfits = Data.Outfit.Database
 let items = Items.toArrayOfRaw ()
 let outfits = Outfits.toArrayOfRaw ()
 
@@ -946,4 +946,9 @@ open System.IO
 open DMLib.Combinators
 open Data.SPID
 
+let mutable db  = Outfits.testDb()
+
+let addRule 
+"OverQueen.esp|d7f"
+Outfits.update 
 //            "0xC33~[Rektas] Sanguine [SE].esp, RedguardRace,RedguardRaceVampire,    Priest,Danica Pure-Spring,Freir-Silana,*Draugr,Nura Snow-Shod,,,    "

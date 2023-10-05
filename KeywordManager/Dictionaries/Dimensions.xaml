@@ -10,6 +10,7 @@
   <Thickness x:Key="MgTopWide">0,25,0,0</Thickness>
   <Thickness x:Key="MgTopXWide">0,30,0,0</Thickness>
   <Thickness x:Key="MgTopXXWide">0,35,0,0</Thickness>
+  <Thickness x:Key="MgTopXXXWide">0,45,0,0</Thickness>
   <Thickness x:Key="MarginStd">10</Thickness>
   <GridLength x:Key="GridSepHorizontal">20</GridLength>
   <GridLength x:Key="GridSepHorizontalWide">30</GridLength>

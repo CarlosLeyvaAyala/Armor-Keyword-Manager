@@ -10,6 +10,7 @@
              xmlns:t="clr-namespace:GUI.PageContexts;assembly=GUI"
              xmlns:uc="clr-namespace:KeywordManager.UserControls"
              xmlns:uw="http://cla.me/wpf/xaml/controls"
+             xmlns:wc="clr-namespace:DMLib_WPF.Converters;assembly=DMLib-Fs-WPF"
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d">
@@ -261,15 +262,17 @@
           <uw:IconRadioButton GroupName="Name"
                               IconKind="HumanMaleFemale"
                               IconPosition="Left"
-                              IsChecked="True"
+                              IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Both}}"
                               Text="Both" />
           <uw:IconRadioButton GroupName="Name"
                               IconKind="HumanFemale"
                               IconPosition="Left"
+                              IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Female}}"
                               Text="Female" />
           <uw:IconRadioButton GroupName="Name"
                               IconKind="HumanMale"
                               IconPosition="Left"
+                              IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Male}}"
                               Text="Male" />
         </StackPanel>
 

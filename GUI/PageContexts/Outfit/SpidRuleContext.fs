@@ -40,6 +40,11 @@ module SpidTraitsGUI =
     let Leveled = SpidTraitRadioButton("L", "-L", "l", "leveled NPCs")
     let Teammate = SpidTraitRadioButton("T", "-T", "t", "teammates")
 
+type SexTrait =
+    | Both = 0
+    | Female = 1
+    | Male = 2
+
 /// Context to manage the SPID rule data.
 type SpidRuleCxt() =
     inherit WPFBindable()
@@ -50,3 +55,5 @@ type SpidRuleCxt() =
     member _.OnStringsSuggestionsChange a = SpidAutocompletion.OnStringsChange a
     /// Reload suggestions.
     member _.OnFormsSuggestionsChange a = SpidAutocompletion.OnFormsChange a
+
+    member val Sex = SexTrait.Male with get, set

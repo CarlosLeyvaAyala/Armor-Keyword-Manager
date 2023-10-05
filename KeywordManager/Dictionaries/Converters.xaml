@@ -3,11 +3,11 @@
                     xmlns:fswpf="https://github.com/ChrisPulman/FSharp.Core.Wpf"
                     xmlns:local="clr-namespace:KeywordManager"
                     xmlns:settings="clr-namespace:KeywordManager.Properties"
-                    xmlns:v="clr-namespace:GUI.Validators;assembly=GUI">
-
+                    xmlns:v="clr-namespace:GUI.Validators;assembly=GUI"
+                    xmlns:wc="clr-namespace:DMLib_WPF.Converters;assembly=DMLib-Fs-WPF">
   <settings:Settings x:Key="appSettings" />
-
   <local:IntToKeywordColor x:Key="IntToKeywordColor" />
   <local:StringToImgConverter x:Key="StringToImgConverter" />
   <v:SpidFormIdWarning x:Key="SpidFormIdWarning" />
+  <wc:ComparisonConverter x:Key="ComparisonConverter" />
 </ResourceDictionary>

@@ -43,3 +43,10 @@ module SpidTraitsGUI =
 /// Context to manage the SPID rule data.
 type SpidRuleCxt() =
     inherit WPFBindable()
+
+    /// Select string dialog.
+    member _.SpidStringSelect = SpidAutocompletion.strings.SelectData
+    /// Reload suggestions.
+    member _.OnStringsSuggestionsChange a = SpidAutocompletion.OnStringsChange a
+    /// Reload suggestions.
+    member _.OnFormsSuggestionsChange a = SpidAutocompletion.OnFormsChange a

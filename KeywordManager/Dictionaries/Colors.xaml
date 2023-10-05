@@ -1,7 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <SolidColorBrush x:Key="ColorError" Color="#D93B38" />
   <SolidColorBrush x:Key="ColorWarning" Color="#FFFFCC00" />
-  <!--<SolidColorBrush x:Key="ColorWarning" Color="#E0B300" />-->
-  <!--<SolidColorBrush x:Key="ColorError" Color="#fff86a4e" />-->
-  <SolidColorBrush x:Key="ColorOk" Color="#007f4e" />
+  <SolidColorBrush x:Key="ColorOk" Color="#72b043" />
 </ResourceDictionary>

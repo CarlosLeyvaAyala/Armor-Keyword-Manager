@@ -148,10 +148,3 @@ type OutfitPageCtx() =
 
                 t.ReloadNavAndGoToFirst()))
         )
-
-    /// Select string dialog.
-    member _.SpidStringSelect = SpidAutocompletion.strings.SelectData
-    /// Reload suggestions.
-    member _.OnStringsSuggestionsChange a = SpidAutocompletion.OnStringsChange a
-    /// Reload suggestions.
-    member _.OnFormsSuggestionsChange a = SpidAutocompletion.OnFormsChange a

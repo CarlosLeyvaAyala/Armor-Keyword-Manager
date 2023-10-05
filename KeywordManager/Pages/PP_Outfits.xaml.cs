@@ -1,13 +1,8 @@
-﻿using DM_WpfControls;
-using DMLib_WPF.Controls.TextBox.Behaviors;
-using GUI;
+﻿using GUI;
 using GUI.UserControls;
 using IO;
 using KeywordManager.Dialogs;
-using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -19,17 +14,17 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
 
   public PP_Outfits() {
     InitializeComponent();
-    ctx.OnStringsSuggestionsChange(a => {
-      Autocomplete.SetItemsSource(edtStringsFilter, a);
-      Autocomplete.SetIndicator(edtStringsFilter, ", +-");
-      Autocomplete.SetStringComparison(edtStringsFilter, StringComparison.CurrentCultureIgnoreCase);
-    });
+    //ctx.OnStringsSuggestionsChange(a => {
+    //  Autocomplete.SetItemsSource(edtStringsFilter, a);
+    //  Autocomplete.SetIndicator(edtStringsFilter, ", +-");
+    //  Autocomplete.SetStringComparison(edtStringsFilter, StringComparison.CurrentCultureIgnoreCase);
+    //});
 
-    ctx.OnFormsSuggestionsChange(a => {
-      Autocomplete.SetItemsSource(edtFormsFilter, a);
-      Autocomplete.SetIndicator(edtFormsFilter, ", +-");
-      Autocomplete.SetStringComparison(edtFormsFilter, StringComparison.CurrentCultureIgnoreCase);
-    });
+    //ctx.OnFormsSuggestionsChange(a => {
+    //  Autocomplete.SetItemsSource(edtFormsFilter, a);
+    //  Autocomplete.SetIndicator(edtFormsFilter, ", +-");
+    //  Autocomplete.SetStringComparison(edtFormsFilter, StringComparison.CurrentCultureIgnoreCase);
+    //});
   }
 
   public void NavLoadAndGoTo(string uid) => ctx.ReloadNavAndGoTo(uid);
@@ -95,15 +90,15 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
   private void OnRename(object sender, RoutedEventArgs e) =>
     MainWindow.ExecuteAcceptCancelDlg(new() { Hint = "New name", Text = ctx.SelectedItem.Name, OnOk = ctx.Rename });
 
-  private void OnAutocompleteTbKeyDown(object sender, KeyEventArgs e) {
-    if (e.Key != Key.Return || sender is not TextBox tb || tb.SelectedText == null) return;
-    tb.CaretIndex = tb.Text.Length;
-  }
+  //private void OnAutocompleteTbKeyDown(object sender, KeyEventArgs e) {
+  //  if (e.Key != Key.Return || sender is not TextBox tb || tb.SelectedText == null) return;
+  //  tb.CaretIndex = tb.Text.Length;
+  //}
 
-  private void BtnStringsFilterClick(object sender, RoutedEventArgs e) => MainWindow.ExecuteSelectStringDlg(new SelectStringDlgParams() {
-    Values = ctx.SpidStringSelect.Select(v => new DisplayStrings(v.Item1, v.Item1, centerRightDetail: v.Item2)).ToList(),
-    OnOk = lst => {
-      Debug.WriteLine(lst[0]);
-    }
-  });
+  //private void BtnStringsFilterClick(object sender, RoutedEventArgs e) => MainWindow.ExecuteSelectStringDlg(new SelectStringDlgParams() {
+  //  Values = ctx.SpidStringSelect.Select(v => new DisplayStrings(v.Item1, v.Item1, centerRightDetail: v.Item2)).ToList(),
+  //  OnOk = lst => {
+  //    Debug.WriteLine(lst[0]);
+  //  }
+  //});
 }

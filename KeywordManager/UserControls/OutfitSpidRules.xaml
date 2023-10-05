@@ -267,8 +267,7 @@
                               IconKind="HumanFemale"
                               IconPosition="Left"
                               Text="Female" />
-          <uw:IconRadioButton Click="OnTestClick"
-                              GroupName="Name"
+          <uw:IconRadioButton GroupName="Name"
                               IconKind="HumanMale"
                               IconPosition="Left"
                               Text="Male" />

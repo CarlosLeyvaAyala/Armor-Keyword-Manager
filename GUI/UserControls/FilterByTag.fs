@@ -49,15 +49,6 @@ type FilterFlags =
     | Image = 512
     | ItemType = 1024
 
-module FilterFlags =
-    let private hasFlag (flag: FilterFlags) v = (flag &&& v) = flag
-    let hasTagManuallyAdded = hasFlag FilterFlags.TagManuallyAdded
-    let hasTagKeywords = hasFlag FilterFlags.TagKeywords
-    let hasTagAutoItem = hasFlag FilterFlags.TagAutoItem
-    let hasTagAutoOutfit = hasFlag FilterFlags.TagAutoOutfit
-    let hasImage = hasFlag FilterFlags.Image
-    let hasItemType = hasFlag FilterFlags.ItemType
-
 /// Interface for pages that can filter things by tag
 type IFilterableByTag =
     abstract member FilteringFlags: FilterFlags
@@ -159,7 +150,7 @@ type FilterByTagCtx() as t =
             flags <- v
             t.OnPropertyChanged()
 
-    member t.CanFilterByPic = FilterFlags.hasImage flags
+    member t.CanFilterByPic = flags.HasFlag FilterFlags.Image
     member t.CanFilterByDistr = false
     member t.ShowBottomPanel = t.CanFilterByPic || t.CanFilterByDistr
 

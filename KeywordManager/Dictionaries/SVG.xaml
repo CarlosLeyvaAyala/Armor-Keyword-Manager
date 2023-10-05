@@ -68,36 +68,32 @@
         <DrawingGroup Opacity="1">
           <GeometryDrawing Brush="#FF757575">
             <GeometryDrawing.Geometry>
-              <RectangleGeometry
-                RadiusX="7.2057"
-                RadiusY="7.2057"
-                Rect="0,0,132.2917,132.2917" />
+              <RectangleGeometry RadiusX="7.2057"
+                                 RadiusY="7.2057"
+                                 Rect="0,0,132.2917,132.2917" />
             </GeometryDrawing.Geometry>
           </GeometryDrawing>
           <GeometryDrawing>
             <GeometryDrawing.Pen>
-              <Pen
-                Brush="#FFF86A4E"
-                EndLineCap="Flat"
-                LineJoin="Bevel"
-                StartLineCap="Flat"
-                Thickness="18.5208" />
+              <Pen Brush="#FFF86A4E"
+                   EndLineCap="Flat"
+                   LineJoin="Bevel"
+                   StartLineCap="Flat"
+                   Thickness="18.5208" />
             </GeometryDrawing.Pen>
             <GeometryDrawing.Geometry>
-              <EllipseGeometry
-                Center="66.1458,66.1458"
-                RadiusX="56.3799"
-                RadiusY="56.3799" />
+              <EllipseGeometry Center="66.1458,66.1458"
+                               RadiusX="56.3799"
+                               RadiusY="56.3799" />
             </GeometryDrawing.Geometry>
           </GeometryDrawing>
           <GeometryDrawing Geometry="F1 M132.29166,132.29167z M0,0z M26.279233,106.01242L106.01242,26.279233">
             <GeometryDrawing.Pen>
-              <Pen
-                Brush="#FFF86A4E"
-                EndLineCap="Flat"
-                LineJoin="Bevel"
-                StartLineCap="Flat"
-                Thickness="18.5208" />
+              <Pen Brush="#FFF86A4E"
+                   EndLineCap="Flat"
+                   LineJoin="Bevel"
+                   StartLineCap="Flat"
+                   Thickness="18.5208" />
             </GeometryDrawing.Pen>
           </GeometryDrawing>
           <DrawingGroup Opacity="1">

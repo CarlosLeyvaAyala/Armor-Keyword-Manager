@@ -138,4 +138,4 @@ module internal SpidAutocompletion =
     |> Event.add (fun a -> onFormSuggestionChanged.Invoke a)
 
     let OnStringsChange a = onStringSuggestionChanged <- a
-    let OnFormsChange a = onStringSuggestionChanged <- a
+    let OnFormsChange a = onFormSuggestionChanged <- a

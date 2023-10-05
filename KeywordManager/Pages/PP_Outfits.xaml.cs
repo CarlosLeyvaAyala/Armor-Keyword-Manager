@@ -19,7 +19,6 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
 
   public PP_Outfits() {
     InitializeComponent();
-
     ctx.OnStringsSuggestionsChange(a => {
       Autocomplete.SetItemsSource(edtStringsFilter, a);
       Autocomplete.SetIndicator(edtStringsFilter, ", +-");

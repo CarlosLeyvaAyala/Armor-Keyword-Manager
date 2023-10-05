@@ -20,6 +20,7 @@
     <Compile Include="PageContexts\Item\ItemGuiObjects.fs" />
     <Compile Include="PageContexts\Item\Item.fs" />
     <Compile Include="PageContexts\Outfit\SpidAutocompleter.fs" />
+    <Compile Include="PageContexts\Outfit\SpidRuleContext.fs" />
     <Compile Include="PageContexts\Outfit\OutfitGuiObjects.fs" />
     <Compile Include="PageContexts\Outfit\Outfit.fs" />
     <Compile Include="Validators\SPID.fs" />

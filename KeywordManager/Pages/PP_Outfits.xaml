@@ -1,21 +1,21 @@
-﻿<UserControl
-  x:Class="KeywordManager.Pages.PP_Outfits"
-  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:bhv="http://cla.me/wpf/xaml/controls"
-  xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
-  xmlns:ctx="clr-namespace:GUI.PageContexts;assembly=GUI"
-  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-  xmlns:guiobjs="clr-namespace:GUI.PageContexts.Outfit;assembly=GUI"
-  xmlns:local="clr-namespace:KeywordManager.Pages"
-  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-  xmlns:sys="clr-namespace:System;assembly=System.Runtime"
-  xmlns:uc="clr-namespace:KeywordManager.UserControls"
-  d:DesignHeight="800"
-  d:DesignWidth="1200"
-  Loaded="OnLoaded"
-  mc:Ignorable="d">
+﻿<UserControl x:Class="KeywordManager.Pages.PP_Outfits"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:bhv="http://cla.me/wpf/xaml/controls"
+             xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
+             xmlns:ctx="clr-namespace:GUI.PageContexts;assembly=GUI"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:guiobjs="clr-namespace:GUI.PageContexts.Outfit;assembly=GUI"
+             xmlns:local="clr-namespace:KeywordManager.Pages"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+             xmlns:t="clr-namespace:GUI.PageContexts;assembly=GUI"
+             xmlns:uc="clr-namespace:KeywordManager.UserControls"
+             d:DesignHeight="800"
+             d:DesignWidth="1200"
+             Loaded="OnLoaded"
+             mc:Ignorable="d">
   <UserControl.Resources>
     <sys:Double x:Key="rowHeightPieces">120</sys:Double>
     <sys:String x:Key="nonDistributableMessage" xml:space="preserve">This outfit does not belong to any plugin.
@@ -35,14 +35,12 @@ It can not be exported to SPID.</sys:String>
           <ToolTip>
             <StackPanel MaxWidth="210">
               <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" Text="SPID001" />
-              <TextBlock
-                Margin="{StaticResource MgTopNaaarrow}"
-                Text="FormIDs are not banned by this app, but they are still discouraged."
-                TextWrapping="WrapWithOverflow" />
-              <TextBlock
-                Margin="{StaticResource MgTopNarrow}"
-                Text="Read the help file to find more about it."
-                TextWrapping="WrapWithOverflow" />
+              <TextBlock Margin="{StaticResource MgTopNaaarrow}"
+                         Text="FormIDs are not banned by this app, but they are still discouraged."
+                         TextWrapping="WrapWithOverflow" />
+              <TextBlock Margin="{StaticResource MgTopNarrow}"
+                         Text="Read the help file to find more about it."
+                         TextWrapping="WrapWithOverflow" />
             </StackPanel>
           </ToolTip>
         </Setter.Value>
@@ -51,17 +49,15 @@ It can not be exported to SPID.</sys:String>
   </UserControl.Resources>
 
   <UserControl.DataContext>
-    <ctx:OutfitPageCtx
-      x:Name="ctx"
-      EnabledControlsConditions="CanEnableControls"
-      NavControl="{x:Reference lstNav}" />
+    <ctx:OutfitPageCtx x:Name="ctx"
+                       EnabledControlsConditions="CanEnableControls"
+                       NavControl="{x:Reference lstNav}" />
   </UserControl.DataContext>
 
   <UserControl.CommandBindings>
-    <CommandBinding
-      CanExecute="OnCanDel"
-      Command="c:OutfitCmds.Del"
-      Executed="OnDel" />
+    <CommandBinding CanExecute="OnCanDel"
+                    Command="c:OutfitCmds.Del"
+                    Executed="OnDel" />
   </UserControl.CommandBindings>
 
   <Grid x:Name="cntMain" IsEnabled="{Binding CanItemBeSelected}">
@@ -77,19 +73,17 @@ It can not be exported to SPID.</sys:String>
     </Grid.ColumnDefinitions>
 
     <!--  NAVIGATOR  -->
-    <GroupBox
-      Grid.RowSpan="3"
-      Header="Navigate"
-      Style="{StaticResource MaterialDesignCardGroupBox}">
+    <GroupBox Grid.RowSpan="3"
+              Header="Navigate"
+              Style="{StaticResource MaterialDesignCardGroupBox}">
       <DockPanel>
-        <ListBox
-          x:Name="lstNav"
-          HorizontalContentAlignment="Stretch"
-          d:ItemsSource="{d:SampleData ItemCount=10}"
-          ItemsSource="{Binding Nav}"
-          KeyDown="OnLstNavKeyDown"
-          SelectionChanged="OnNavSelectionChanged"
-          SelectionMode="Extended">
+        <ListBox x:Name="lstNav"
+                 HorizontalContentAlignment="Stretch"
+                 d:ItemsSource="{d:SampleData ItemCount=10}"
+                 ItemsSource="{Binding Nav}"
+                 KeyDown="OnLstNavKeyDown"
+                 SelectionChanged="OnNavSelectionChanged"
+                 SelectionMode="Extended">
           <ListBox.ItemTemplate>
             <DataTemplate>
               <Grid d:DataContext="{d:DesignInstance Type=guiobjs:NavListItem}">
@@ -109,20 +103,18 @@ It can not be exported to SPID.</sys:String>
                 </Grid.Resources>
 
                 <!--  ACTUAL IMAGE  -->
-                <Image
-                  Source="{Binding Thumb, Mode=OneWay, Converter={StaticResource StringToImgConverter}}"
-                  Style="{StaticResource preview}"
-                  Visibility="{Binding HasImg, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Image Source="{Binding Thumb, Mode=OneWay, Converter={StaticResource StringToImgConverter}}"
+                       Style="{StaticResource preview}"
+                       Visibility="{Binding HasImg, Converter={StaticResource BooleanToVisibilityConverter}}">
                   <Image.ToolTip>
                     <Image Height="400" Source="{Binding Img, Mode=OneWay, Converter={StaticResource StringToImgConverter}}" />
                   </Image.ToolTip>
                 </Image>
 
                 <!--  MISSING IMAGE  -->
-                <Image
-                  Source="{StaticResource svgNoImage}"
-                  Style="{StaticResource preview}"
-                  Visibility="{Binding HasImg, Converter={StaticResource InverseBoolToVisConverter}}">
+                <Image Source="{StaticResource svgNoImage}"
+                       Style="{StaticResource preview}"
+                       Visibility="{Binding HasImg, Converter={StaticResource InverseBoolToVisConverter}}">
                   <Image.ToolTip>
                     <Image Height="400" Source="{StaticResource svgNoImage}" />
                   </Image.ToolTip>
@@ -131,17 +123,15 @@ It can not be exported to SPID.</sys:String>
                 <!--  TEXT  -->
                 <StackPanel Grid.Column="2" VerticalAlignment="Center">
                   <!--  NAME  -->
-                  <TextBlock
-                    Style="{StaticResource NavTxtMain}"
-                    Text="{Binding Name, FallbackValue=Name}"
-                    ToolTip="Name will not be used outside this app"
-                    Visibility="{Binding HasMissingPieces, Converter={StaticResource InverseBoolToVisConverter}}" />
+                  <TextBlock Style="{StaticResource NavTxtMain}"
+                             Text="{Binding Name, FallbackValue=Name}"
+                             ToolTip="Name will not be used outside this app"
+                             Visibility="{Binding HasMissingPieces, Converter={StaticResource InverseBoolToVisConverter}}" />
 
                   <!--  NAME WITH MISSING PIECES  -->
-                  <StackPanel
-                    Orientation="Horizontal"
-                    ToolTipService.InitialShowDelay="50"
-                    Visibility="{Binding HasMissingPieces, Converter={StaticResource BooleanToVisibilityConverter}}">
+                  <StackPanel Orientation="Horizontal"
+                              ToolTipService.InitialShowDelay="50"
+                              Visibility="{Binding HasMissingPieces, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <StackPanel.ToolTip>
                       <StackPanel>
                         <TextBlock Text="This outfit has pieces not found in this database:" />
@@ -153,20 +143,18 @@ It can not be exported to SPID.</sys:String>
                     <md:PackIcon Foreground="{StaticResource ColorWarning}" Kind="Warning" />
 
                     <!--  NAME  -->
-                    <TextBlock
-                      Margin="5,0"
-                      FontWeight="Black"
-                      Foreground="{StaticResource ColorWarning}"
-                      Style="{StaticResource NavTxtMain}"
-                      Text="{Binding Name, FallbackValue=Missing pieces name}" />
+                    <TextBlock Margin="5,0"
+                               FontWeight="Black"
+                               Foreground="{StaticResource ColorWarning}"
+                               Style="{StaticResource NavTxtMain}"
+                               Text="{Binding Name, FallbackValue=Missing pieces name}" />
                   </StackPanel>
 
                   <!--  EDID  -->
-                  <TextBlock
-                    Margin="{StaticResource MgTopNaaarrow}"
-                    Style="{StaticResource NavTxtD1}"
-                    Text="{Binding EDID, FallbackValue=EDID}"
-                    ToolTip="Editor ID (EDID)" />
+                  <TextBlock Margin="{StaticResource MgTopNaaarrow}"
+                             Style="{StaticResource NavTxtD1}"
+                             Text="{Binding EDID, FallbackValue=EDID}"
+                             ToolTip="Editor ID (EDID)" />
                   <TextBlock Text="{Binding Esp, FallbackValue=Esp}">
                     <TextBlock.Style>
                       <Style BasedOn="{StaticResource NavTxtD1}" TargetType="TextBlock">
@@ -188,14 +176,12 @@ It can not be exported to SPID.</sys:String>
           </ListBox.ItemTemplate>
           <ListBox.ContextMenu>
             <ContextMenu>
-              <MenuItem
-                Click="OnRename"
-                Header="_Rename"
-                IsEnabled="{Binding IsNavSingleSelected}" />
-              <MenuItem
-                Click="OnBatchRename"
-                Header="Batch _rename"
-                IsEnabled="{Binding IsNavMultipleSelected}" />
+              <MenuItem Click="OnRename"
+                        Header="_Rename"
+                        IsEnabled="{Binding IsNavSingleSelected}" />
+              <MenuItem Click="OnBatchRename"
+                        Header="Batch _rename"
+                        IsEnabled="{Binding IsNavMultipleSelected}" />
               <Separator />
               <MenuItem Click="OnSetImgClick" Header="Set _image" />
               <Separator />
@@ -207,42 +193,38 @@ It can not be exported to SPID.</sys:String>
     </GroupBox>
 
     <!--  DISTRIBUTION  -->
-    <GroupBox
-      Grid.Column="2"
-      md:ColorZoneAssist.Mode="SecondaryMid"
-      Header="SPID rules"
-      IsEnabled="{Binding CanSpidRulesBeActive}"
-      Style="{StaticResource MaterialDesignCardGroupBox}">
+    <GroupBox Grid.Column="2"
+              md:ColorZoneAssist.Mode="SecondaryMid"
+              Header="SPID rules"
+              IsEnabled="{Binding CanSpidRulesBeActive}"
+              Style="{StaticResource MaterialDesignCardGroupBox}">
       <Grid>
         <Grid.RowDefinitions>
           <RowDefinition Height="*" />
           <RowDefinition Height="{StaticResource GridSepVerticalNarrow}" />
-          <RowDefinition Height="4*" />
+          <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
         <!--  UNBOUND OUTFIT WARNING  -->
-        <Grid
-          Grid.RowSpan="7"
-          Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.8}"
-          VerticalAlignment="Center"
-          Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+        <Grid Grid.RowSpan="7"
+              Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.8}"
+              VerticalAlignment="Center"
+              Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
 
-          <md:PackIcon
-            Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.7}"
-            Height="{Binding Width, RelativeSource={RelativeSource Self}}"
-            HorizontalAlignment="Stretch"
-            Foreground="{StaticResource ColorWarning}"
-            Kind="Warning"
-            Opacity="0.15" />
+          <md:PackIcon Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.7}"
+                       Height="{Binding Width, RelativeSource={RelativeSource Self}}"
+                       HorizontalAlignment="Stretch"
+                       Foreground="{StaticResource ColorWarning}"
+                       Kind="Warning"
+                       Opacity="0.15" />
 
-          <TextBlock
-            Margin="{StaticResource MgTopNormal}"
-            VerticalAlignment="Center"
-            Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-            Text="{DynamicResource nonDistributableMessage}"
-            TextAlignment="Center"
-            TextTrimming="WordEllipsis"
-            TextWrapping="Wrap" />
+          <TextBlock Margin="{StaticResource MgTopNormal}"
+                     VerticalAlignment="Center"
+                     Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                     Text="{DynamicResource nonDistributableMessage}"
+                     TextAlignment="Center"
+                     TextTrimming="WordEllipsis"
+                     TextWrapping="Wrap" />
         </Grid>
 
         <!--  RULE LIST  -->
@@ -251,10 +233,9 @@ It can not be exported to SPID.</sys:String>
             <ColumnDefinition />
             <ColumnDefinition Width="auto" />
           </Grid.ColumnDefinitions>
-          <ListBox
-            HorizontalContentAlignment="Stretch"
-            d:ItemsSource="{d:SampleData ItemCount=5}"
-            Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
+          <ListBox HorizontalContentAlignment="Stretch"
+                   d:ItemsSource="{d:SampleData ItemCount=5}"
+                   Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ListBox.ItemTemplate>
               <DataTemplate>
                 <Grid>
@@ -273,20 +254,19 @@ It can not be exported to SPID.</sys:String>
                   </Grid.Resources>
                   <TextBlock Margin="0" Text="Bla bla bla bla bla bla bla" />
                   <TextBlock Grid.Column="1" Text="Bla bla bla bla bla bla bla" />
-                  <TextBlock
-                    Grid.Column="2"
-                    MaxWidth="80"
-                    Text="10-100 One handed" />
-                  <TextBlock
-                    Grid.Column="3"
-                    MaxWidth="40"
-                    Text="F/U/-S/C" />
+                  <TextBlock Grid.Column="2"
+                             MaxWidth="80"
+                             Text="10-100 One handed" />
+                  <TextBlock Grid.Column="3"
+                             MaxWidth="40"
+                             Text="F/U/-S/C" />
                   <TextBlock Grid.Column="4" Text="100%" />
                 </Grid>
               </DataTemplate>
             </ListBox.ItemTemplate>
           </ListBox>
 
+          <!--  RULE TOOBAR  -->
           <StackPanel Grid.Column="1">
             <StackPanel.Resources>
               <Style BasedOn="{StaticResource MaterialDesignToolButton}" TargetType="Button">
@@ -299,11 +279,16 @@ It can not be exported to SPID.</sys:String>
           </StackPanel>
         </Grid>
 
-        <ScrollViewer
-          Grid.Row="2"
-          HorizontalScrollBarVisibility="Auto"
-          VerticalScrollBarVisibility="Auto">
-          <TabControl md:ColorZoneAssist.Mode="SecondaryLight" Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <!--  RULE DATA  -->
+        <ScrollViewer Grid.Row="2"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+          <TabControl md:ColorZoneAssist.Mode="SecondaryLight">
+            <TabControl.DataContext>
+              <t:SpidRuleCxt />
+            </TabControl.DataContext>
             <TabControl.Resources>
               <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox">
                 <Setter Property="ToolTipService.HorizontalOffset" Value="-150" />
@@ -338,11 +323,10 @@ It can not be exported to SPID.</sys:String>
                   <md:PackIcon Style="{StaticResource icFormIdWarning}" Visibility="{Binding Text, Converter={StaticResource SpidFormIdWarning}, ElementName=edtStringsFilter}" />
 
                   <!--  EDIT  -->
-                  <TextBox
-                    x:Name="edtStringsFilter"
-                    Grid.Column="1"
-                    md:HintAssist.Hint="Strings filter"
-                    KeyDown="OnAutocompleteTbKeyDown">
+                  <TextBox x:Name="edtStringsFilter"
+                           Grid.Column="1"
+                           md:HintAssist.Hint="Strings filter"
+                           KeyDown="OnAutocompleteTbKeyDown">
                     <TextBox.ToolTip>
                       <StackPanel>
                         <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="Quick reference" />
@@ -375,12 +359,11 @@ It can not be exported to SPID.</sys:String>
                       </StackPanel>
                     </TextBox.ToolTip>
                   </TextBox>
-                  <Button
-                    Grid.Column="2"
-                    Margin="0,2,0,3"
-                    Click="BtnStringsFilterClick"
-                    Content="{md:PackIcon Kind=Account}"
-                    Style="{StaticResource MaterialDesignOutlinedButton}" />
+                  <Button Grid.Column="2"
+                          Margin="0,2,0,3"
+                          Click="BtnStringsFilterClick"
+                          Content="{md:PackIcon Kind=Account}"
+                          Style="{StaticResource MaterialDesignOutlinedButton}" />
                 </Grid>
 
                 <!--  FORM FILTERS  -->
@@ -396,11 +379,10 @@ It can not be exported to SPID.</sys:String>
                   <md:PackIcon Style="{StaticResource icFormIdWarning}" Visibility="{Binding Text, Converter={StaticResource SpidFormIdWarning}, ElementName=edtFormsFilter}" />
 
                   <!--  EDIT  -->
-                  <TextBox
-                    x:Name="edtFormsFilter"
-                    Grid.Column="1"
-                    md:HintAssist.Hint="Forms filter"
-                    KeyDown="OnAutocompleteTbKeyDown">
+                  <TextBox x:Name="edtFormsFilter"
+                           Grid.Column="1"
+                           md:HintAssist.Hint="Forms filter"
+                           KeyDown="OnAutocompleteTbKeyDown">
                     <TextBox.ToolTip>
                       <StackPanel>
                         <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="Quick reference" />
@@ -436,176 +418,171 @@ It can not be exported to SPID.</sys:String>
                       </StackPanel>
                     </TextBox.ToolTip>
                     <TextBox.Text>
-                      <Binding
-                        Mode="OneWay"
-                        Path="Text"
-                        RelativeSource="{RelativeSource Self}"
-                        UpdateSourceTrigger="PropertyChanged">
+                      <Binding Mode="OneWay"
+                               Path="Text"
+                               RelativeSource="{RelativeSource Self}"
+                               UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>
                           <v:SpidFormWildcardRule xmlns:v="clr-namespace:GUI.Validators;assembly=GUI" ValidatesOnTargetUpdated="True" />
                         </Binding.ValidationRules>
                       </Binding>
                     </TextBox.Text>
                   </TextBox>
-                  <Button
-                    Grid.Column="2"
-                    Margin="0,2,0,3"
-                    Content="{md:PackIcon Kind=BowArrow}"
-                    Style="{StaticResource MaterialDesignOutlinedButton}" />
+                  <Button Grid.Column="2"
+                          Margin="0,2,0,3"
+                          Content="{md:PackIcon Kind=BowArrow}"
+                          Style="{StaticResource MaterialDesignOutlinedButton}" />
                 </Grid>
 
                 <!--  CHANCE  -->
                 <TextBlock Margin="{StaticResource MgTopXXWide}" Text="{Binding Value, ElementName=slChance, StringFormat={}Chance: {0}%}" />
 
-                <Slider
-                  x:Name="slChance"
-                  Margin="{StaticResource MgTopNaarrow}"
-                  Maximum="100"
-                  Minimum="1"
-                  Style="{StaticResource MaterialDesignDiscreteHorizontalSlider}"
-                  Value="100" />
+                <DockPanel Margin="{StaticResource MgTopNaarrow}">
+                  <TextBlock VerticalAlignment="Center"
+                             Style="{StaticResource NavTxtD1}"
+                             Text="1" />
+                  <TextBlock VerticalAlignment="Center"
+                             DockPanel.Dock="Right"
+                             Style="{StaticResource NavTxtD1}"
+                             Text="100" />
+                  <Slider x:Name="slChance"
+                          Margin="10,0"
+                          Maximum="100"
+                          Minimum="1"
+                          Style="{StaticResource MaterialDesignDiscreteHorizontalSlider}"
+                          Value="100" />
+                </DockPanel>
               </StackPanel>
             </TabItem>
 
-            <TabItem Header="Level">
-              <Grid Margin="15,10">
-                <Grid.RowDefinitions>
-                  <RowDefinition Height="*" />
-                  <RowDefinition Height="*" />
-                  <RowDefinition Height="*" />
-                  <RowDefinition Height="*" />
-                  <RowDefinition Height="*" />
-                  <RowDefinition Height="*" />
-                  <RowDefinition Height="*" />
-                  <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="*" />
-                  <ColumnDefinition Width="*" />
-                  <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.Resources>
-                  <Style BasedOn="{StaticResource MaterialDesignChoiceChipPrimaryOutlineRadioButton}" TargetType="RadioButton">
-                    <Setter Property="HorizontalAlignment" Value="Center" />
-                  </Style>
-                </Grid.Resources>
+            <!--  OTHER  -->
+            <TabItem Header="Other">
+              <StackPanel Margin="15,30">
+                <Grid VerticalAlignment="Top">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
+                    <ColumnDefinition Width="*" />
+                  </Grid.ColumnDefinitions>
 
-                <TextBox
-                  Grid.Row="0"
-                  Margin="0,0,0,15"
-                  VerticalAlignment="Top"
-                  md:HintAssist.Hint="Min level" />
-                <TextBox
-                  Grid.Row="0"
-                  Grid.Column="2"
-                  VerticalAlignment="Top"
-                  md:HintAssist.Hint="Max level" />
+                  <TextBox md:HintAssist.Hint="Min level" />
 
-                <RadioButton
-                  Grid.Row="1"
-                  Grid.Column="1"
-                  HorizontalAlignment="Center"
-                  Content="Actor level"
-                  IsChecked="True" />
+                  <TextBox Grid.Column="2" md:HintAssist.Hint="Max level" />
 
-                <RadioButton
-                  Grid.Row="2"
-                  Content="Smithing"
-                  Tag="4" />
-                <RadioButton
-                  Grid.Row="2"
-                  Grid.Column="1"
-                  Content="Heavy armor"
-                  Tag="5" />
-                <RadioButton
-                  Grid.Row="2"
-                  Grid.Column="2"
-                  Content="Block"
-                  Tag="3" />
+                  <ComboBox Grid.Column="4"
+                            VerticalAlignment="Bottom"
+                            md:HintAssist.HelperText="Skill level"
+                            SelectedIndex="0">
+                    <ComboBoxItem Content="Actor level" Tag="-1" />
+                    <ComboBoxItem Content="One-handed" Tag="0" />
+                    <ComboBoxItem Content="Two-handed" Tag="1" />
+                    <ComboBoxItem Content="Archery" Tag="2" />
+                    <ComboBoxItem Content="Block" Tag="3" />
+                    <ComboBoxItem Content="Smithing" Tag="4" />
+                    <ComboBoxItem Content="Heavy armor" Tag="5" />
+                    <ComboBoxItem Content="Light armor" Tag="6" />
+                    <ComboBoxItem Content="Pickpocket" Tag="7" />
+                    <ComboBoxItem Content="Lockpicking" Tag="8" />
+                    <ComboBoxItem Content="Sneak" Tag="9" />
+                    <ComboBoxItem Content="Alchemy" Tag="10" />
+                    <ComboBoxItem Content="Speech" Tag="11" />
+                    <ComboBoxItem Content="Alteration" Tag="12" />
+                    <ComboBoxItem Content="Conjuration" Tag="13" />
+                    <ComboBoxItem Content="Destruction" Tag="14" />
+                    <ComboBoxItem Content="Illusion" Tag="15" />
+                    <ComboBoxItem Content="Restoration" Tag="16" />
+                    <ComboBoxItem Content="Enchanting" Tag="17" />
+                  </ComboBox>
+                </Grid>
 
-                <RadioButton
-                  Grid.Row="3"
-                  Grid.Column="0"
-                  Content="Two-handed"
-                  Tag="1" />
-                <RadioButton
-                  Grid.Row="3"
-                  Grid.Column="1"
-                  Content="One-handed"
-                  Tag="0" />
-                <RadioButton
-                  Grid.Row="3"
-                  Grid.Column="3"
-                  Content="Archery"
-                  Tag="2" />
+                <!--  SEX TRAIT  -->
+                <StackPanel Margin="{StaticResource MgTopXXXWide}"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                  <StackPanel.Resources>
+                    <Style TargetType="md:PackIcon">
+                      <Setter Property="HorizontalAlignment" Value="Center" />
+                    </Style>
+                    <Style TargetType="TextBlock">
+                      <Setter Property="Margin" Value="0,4,0,0" />
+                    </Style>
+                    <Style BasedOn="{StaticResource MaterialDesignTabRadioButton}" TargetType="RadioButton" />
+                  </StackPanel.Resources>
 
-                <RadioButton
-                  Grid.Row="4"
-                  Grid.Column="0"
-                  Content="Light armor"
-                  Tag="6" />
-                <RadioButton
-                  Grid.Row="4"
-                  Grid.Column="1"
-                  Content="Sneak"
-                  Tag="9" />
-                <RadioButton
-                  Grid.Row="4"
-                  Grid.Column="3"
-                  Content="Lockpicking"
-                  Tag="8" />
+                  <RadioButton IsChecked="True">
+                    <StackPanel>
+                      <md:PackIcon Kind="HumanMaleFemale" />
+                      <TextBlock Text="BOTH" />
+                    </StackPanel>
+                  </RadioButton>
+                  <RadioButton>
+                    <StackPanel>
+                      <md:PackIcon Kind="HumanFemale" />
+                      <TextBlock Text="FEMALE" />
+                    </StackPanel>
+                  </RadioButton>
+                  <RadioButton>
+                    <StackPanel>
+                      <md:PackIcon Kind="HumanMale" />
+                      <TextBlock Text="MALE" />
+                    </StackPanel>
+                  </RadioButton>
+                </StackPanel>
 
-                <RadioButton
-                  Grid.Row="5"
-                  Grid.Column="0"
-                  Content="Pickpocket"
-                  Tag="7" />
-                <RadioButton
-                  Grid.Row="5"
-                  Grid.Column="1"
-                  Content="Speech"
-                  Tag="11" />
-                <RadioButton
-                  Grid.Row="5"
-                  Grid.Column="3"
-                  Content="Alchemy"
-                  Tag="10" />
+                <!--  TRAITS  -->
+                <Grid Margin="{StaticResource MgTopWide}">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                  </Grid.ColumnDefinitions>
+                  <Grid.Resources>
+                    <Style BasedOn="{StaticResource MaterialDesignFlatToggleButton}" TargetType="ToggleButton">
+                      <Setter Property="IsThreeState" Value="True" />
+                      <Setter Property="IsChecked" Value="{Binding IsChecked, Mode=TwoWay}" />
+                      <Setter Property="Content" Value="{Binding Display}" />
+                      <Setter Property="Cursor" Value="Hand" />
+                      <Setter Property="ToolTip">
+                        <Setter.Value>
+                          <ToolTip>
+                            <StackPanel>
+                              <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" Text="Trait" />
+                              <TextBlock Margin="{StaticResource MgTopNaaarrow}" Text="{Binding Tooltip}" />
+                            </StackPanel>
+                          </ToolTip>
+                        </Setter.Value>
+                      </Setter>
+                      <Style.Triggers>
+                        <Trigger Property="IsChecked" Value="False">
+                          <Setter Property="Background" Value="{StaticResource ColorError}" />
+                          <Setter Property="Foreground" Value="{StaticResource ColorError}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                          <Setter Property="Background" Value="{StaticResource ColorOk}" />
+                          <Setter Property="Foreground" Value="{StaticResource PrimaryHueDarkForegroundBrush}" />
+                        </Trigger>
+                        <!--<trigger property="ischecked" value="{x:null}">
+                          <setter property="foreground" value="darkslategray" />
+                        </trigger>-->
+                      </Style.Triggers>
+                    </Style>
+                  </Grid.Resources>
 
-                <RadioButton
-                  Grid.Row="6"
-                  Grid.Column="0"
-                  Content="Illusion"
-                  Tag="15" />
-                <RadioButton
-                  Grid.Row="6"
-                  Grid.Column="1"
-                  Content="Conjuration"
-                  Tag="13" />
-                <RadioButton
-                  Grid.Row="6"
-                  Grid.Column="3"
-                  Content="Destruction"
-                  Tag="14" />
+                  <ToggleButton DataContext="{x:Static t:SpidTraitsGUI.Unique}" />
+                  <ToggleButton Grid.Column="1" DataContext="{x:Static t:SpidTraitsGUI.Summonable}" />
+                  <ToggleButton Grid.Column="2" DataContext="{x:Static t:SpidTraitsGUI.Child}" />
+                  <ToggleButton Grid.Column="3" DataContext="{x:Static t:SpidTraitsGUI.Leveled}" />
+                  <ToggleButton Grid.Column="4" DataContext="{x:Static t:SpidTraitsGUI.Teammate}" />
+                </Grid>
 
-                <RadioButton
-                  Grid.Row="7"
-                  Grid.Column="0"
-                  Content="Restoration"
-                  Tag="16" />
-                <RadioButton
-                  Grid.Row="7"
-                  Grid.Column="1"
-                  Content="Alteration"
-                  Tag="12" />
-                <RadioButton
-                  Grid.Row="7"
-                  Grid.Column="3"
-                  Content="Enchanting"
-                  Tag="17" />
-              </Grid>
+              </StackPanel>
             </TabItem>
 
-            <TabItem Header="Traits">
+            <!--<TabItem Header="Traits">
               <Grid Margin="15,20" VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition />
@@ -627,144 +604,108 @@ It can not be exported to SPID.</sys:String>
                   </Style>
                 </Grid.Resources>
 
-                <RadioButton
-                  Grid.Row="0"
-                  Grid.Column="0"
-                  Content="Any"
-                  GroupName="Sex"
-                  IsChecked="True" />
-                <RadioButton
-                  Grid.Row="0"
-                  Grid.Column="1"
-                  Content="Male"
-                  GroupName="Sex" />
-                <RadioButton
-                  Grid.Row="0"
-                  Grid.Column="2"
-                  Content="Female"
-                  GroupName="Sex" />
+                <RadioButton Grid.Row="0"
+                             Grid.Column="0"
+                             Content="Any"
+                             GroupName="Sex"
+                             IsChecked="True" />
+                <RadioButton Grid.Row="0"
+                             Grid.Column="1"
+                             Content="Male"
+                             GroupName="Sex" />
+                <RadioButton Grid.Row="0"
+                             Grid.Column="2"
+                             Content="Female"
+                             GroupName="Sex" />
 
-                <RadioButton
-                  Grid.Row="1"
-                  Grid.Column="0"
-                  Content="Any"
-                  GroupName="U"
-                  IsChecked="True" />
-                <RadioButton
-                  Grid.Row="1"
-                  Grid.Column="1"
-                  Content="Unique NPCs"
-                  GroupName="U" />
-                <RadioButton
-                  Grid.Row="1"
-                  Grid.Column="2"
-                  Content="Non-unique NPCs"
-                  GroupName="U" />
+                <RadioButton Grid.Row="1"
+                             Grid.Column="0"
+                             Content="Any"
+                             GroupName="U"
+                             IsChecked="True" />
+                <RadioButton Grid.Row="1"
+                             Grid.Column="1"
+                             Content="Unique NPCs"
+                             GroupName="U" />
+                <RadioButton Grid.Row="1"
+                             Grid.Column="2"
+                             Content="Non-unique NPCs"
+                             GroupName="U" />
 
-                <RadioButton
-                  Grid.Row="2"
-                  Grid.Column="0"
-                  Content="Any"
-                  GroupName="S"
-                  IsChecked="True" />
-                <RadioButton
-                  Grid.Row="2"
-                  Grid.Column="1"
-                  Content="Summonable"
-                  GroupName="S" />
-                <RadioButton
-                  Grid.Row="2"
-                  Grid.Column="2"
-                  Content="Non-summonable"
-                  GroupName="S" />
+                <RadioButton Grid.Row="2"
+                             Grid.Column="0"
+                             Content="Any"
+                             GroupName="S"
+                             IsChecked="True" />
+                <RadioButton Grid.Row="2"
+                             Grid.Column="1"
+                             Content="Summonable"
+                             GroupName="S" />
+                <RadioButton Grid.Row="2"
+                             Grid.Column="2"
+                             Content="Non-summonable"
+                             GroupName="S" />
 
-                <RadioButton
-                  Grid.Row="3"
-                  Grid.Column="0"
-                  Content="Any"
-                  GroupName="C"
-                  IsChecked="True" />
-                <RadioButton
-                  Grid.Row="3"
-                  Grid.Column="1"
-                  Content="Child"
-                  GroupName="C" />
-                <RadioButton
-                  Grid.Row="3"
-                  Grid.Column="2"
-                  Content="Non-child"
-                  GroupName="C" />
+                <RadioButton Grid.Row="3"
+                             Grid.Column="0"
+                             Content="Any"
+                             GroupName="C"
+                             IsChecked="True" />
+                <RadioButton Grid.Row="3"
+                             Grid.Column="1"
+                             Content="Child"
+                             GroupName="C" />
+                <RadioButton Grid.Row="3"
+                             Grid.Column="2"
+                             Content="Non-child"
+                             GroupName="C" />
 
-                <RadioButton
-                  Grid.Row="4"
-                  Grid.Column="0"
-                  Content="Any"
-                  GroupName="L"
-                  IsChecked="True" />
-                <RadioButton
-                  Grid.Row="4"
-                  Grid.Column="1"
-                  Content="Leveled"
-                  GroupName="L" />
-                <RadioButton
-                  Grid.Row="4"
-                  Grid.Column="2"
-                  Content="Non-leveled"
-                  GroupName="L" />
+                <RadioButton Grid.Row="4"
+                             Grid.Column="0"
+                             Content="Any"
+                             GroupName="L"
+                             IsChecked="True" />
+                <RadioButton Grid.Row="4"
+                             Grid.Column="1"
+                             Content="Leveled"
+                             GroupName="L" />
+                <RadioButton Grid.Row="4"
+                             Grid.Column="2"
+                             Content="Non-leveled"
+                             GroupName="L" />
 
-                <RadioButton
-                  Grid.Row="5"
-                  Grid.Column="0"
-                  Content="Any"
-                  GroupName="T"
-                  IsChecked="True" />
-                <RadioButton
-                  Grid.Row="5"
-                  Grid.Column="1"
-                  Content="Teammate"
-                  GroupName="T" />
-                <RadioButton
-                  Grid.Row="5"
-                  Grid.Column="2"
-                  Content="Non-teammate"
-                  GroupName="T" />
+                <RadioButton Grid.Row="5"
+                             Grid.Column="0"
+                             Content="Any"
+                             GroupName="T"
+                             IsChecked="True" />
+                <RadioButton Grid.Row="5"
+                             Grid.Column="1"
+                             Content="Teammate"
+                             GroupName="T" />
+                <RadioButton Grid.Row="5"
+                             Grid.Column="2"
+                             Content="Non-teammate"
+                             GroupName="T" />
               </Grid>
-            </TabItem>
+            </TabItem>-->
           </TabControl>
         </ScrollViewer>
-
-        <!--<Button
-          Grid.Row="2"
-          Margin="10,20,10,10"
-          Click="OnManageRules"
-          Content="_Manage rules"
-          Style="{StaticResource MaterialDesignRaisedSecondaryButton}"
-          Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}" />-->
       </Grid>
     </GroupBox>
 
     <!--  PIECES DATA  -->
-    <GroupBox
-      Grid.Column="4"
-      md:ColorZoneAssist.Mode="PrimaryDark"
-      Header="Armor pieces data"
-      IsEnabled="{Binding HasItemsSelected}"
-      Style="{StaticResource MaterialDesignCardGroupBox}">
+    <GroupBox Grid.Column="4"
+              md:ColorZoneAssist.Mode="PrimaryDark"
+              Header="Armor pieces data"
+              IsEnabled="{Binding HasItemsSelected}"
+              Style="{StaticResource MaterialDesignCardGroupBox}">
       <Grid>
         <Grid.RowDefinitions>
           <RowDefinition Height="10*" />
           <RowDefinition Height="{StaticResource GridSepVertical}" />
           <RowDefinition Height="7*" />
         </Grid.RowDefinitions>
-
-        <!--  TAGS  -->
-        <GroupBox
-          Grid.Row="2"
-          md:ColorZoneAssist.Mode="PrimaryMid"
-          BorderThickness="0"
-          Header="Tags">
-          <uc:TagViewer x:Name="lstItemTags" ItemsSource="{Binding SelectedItem.Tags}" />
-        </GroupBox>
 
         <!--  ARMOR PIECES  -->
         <!--<GroupBox
@@ -776,10 +717,9 @@ It can not be exported to SPID.</sys:String>
         <ListBox d:ItemsSource="{d:SampleData ItemCount=10}" ItemsSource="{Binding SelectedItem.ArmorPieces}">
           <ListBox.ItemTemplate>
             <DataTemplate>
-              <StackPanel
-                d:DataContext="{d:DesignInstance guiobjs:ArmorPiece}"
-                ToolTip="{Binding FullName}"
-                ToolTipService.InitialShowDelay="10">
+              <StackPanel d:DataContext="{d:DesignInstance guiobjs:ArmorPiece}"
+                          ToolTip="{Binding FullName}"
+                          ToolTipService.InitialShowDelay="10">
 
                 <!--  SHORT NAME  -->
                 <TextBlock Text="{Binding ShortName, FallbackValue=Name}">
@@ -796,14 +736,21 @@ It can not be exported to SPID.</sys:String>
                 </TextBlock>
 
                 <!--  LONG NAME  -->
-                <TextBlock
-                  Style="{StaticResource NavTxtD1}"
-                  Text="{Binding FullName}"
-                  Visibility="{Binding NameWasShortened, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <TextBlock Style="{StaticResource NavTxtD1}"
+                           Text="{Binding FullName}"
+                           Visibility="{Binding NameWasShortened, Converter={StaticResource BooleanToVisibilityConverter}}" />
               </StackPanel>
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
+
+        <!--  TAGS  -->
+        <GroupBox Grid.Row="2"
+                  md:ColorZoneAssist.Mode="PrimaryMid"
+                  BorderThickness="0"
+                  Header="Tags">
+          <uc:TagViewer x:Name="lstItemTags" ItemsSource="{Binding SelectedItem.Tags}" />
+        </GroupBox>
 
         <!--  IMAGE  -->
         <!--

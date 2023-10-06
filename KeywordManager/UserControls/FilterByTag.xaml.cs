@@ -48,9 +48,9 @@ public partial class FilterByTag : UserControl {
       FilterTagsEvent,
       this,
       ctx.SelectedTags,
-      ctx.SelectedTagMode,
-      ctx.SelectedPicMode,
-      ctx.SelectedDistrMode);
+      ctx.TagMode,
+      ctx.PicMode,
+      ctx.ItemTypeMode);
 
   private void DoFilter(object sender, RoutedEventArgs e) {
     OnDoFilter();

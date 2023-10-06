@@ -38,6 +38,6 @@ public partial class OutfitSpidRules : UserControl {
   });
 
   private void OnTestClick(object sender, RoutedEventArgs e) {
-    Debug.WriteLine("Test good");
+    Debug.WriteLine(ctx.Sex);
   }
 }

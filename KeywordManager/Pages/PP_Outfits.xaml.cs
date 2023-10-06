@@ -12,20 +12,7 @@ namespace KeywordManager.Pages;
 public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTag, IWorkspacePage {
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
 
-  public PP_Outfits() {
-    InitializeComponent();
-    //ctx.OnStringsSuggestionsChange(a => {
-    //  Autocomplete.SetItemsSource(edtStringsFilter, a);
-    //  Autocomplete.SetIndicator(edtStringsFilter, ", +-");
-    //  Autocomplete.SetStringComparison(edtStringsFilter, StringComparison.CurrentCultureIgnoreCase);
-    //});
-
-    //ctx.OnFormsSuggestionsChange(a => {
-    //  Autocomplete.SetItemsSource(edtFormsFilter, a);
-    //  Autocomplete.SetIndicator(edtFormsFilter, ", +-");
-    //  Autocomplete.SetStringComparison(edtFormsFilter, StringComparison.CurrentCultureIgnoreCase);
-    //});
-  }
+  public PP_Outfits() => InitializeComponent();
 
   public void NavLoadAndGoTo(string uid) => ctx.ReloadNavAndGoTo(uid);
   public void NavLoadAndGoToCurrent() => ctx.ReloadNavAndGoToCurrent();

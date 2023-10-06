@@ -1,16 +1,17 @@
-﻿<UserControl
-  x:Class="KeywordManager.UserControls.FilterByTag"
-  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-  xmlns:guiobjs="clr-namespace:GUI.UserControls;assembly=GUI"
-  xmlns:local="clr-namespace:KeywordManager.UserControls"
-  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-  xmlns:uc="clr-namespace:KeywordManager.UserControls"
-  d:DesignHeight="250"
-  d:DesignWidth="800"
-  mc:Ignorable="d">
+﻿<UserControl x:Class="KeywordManager.UserControls.FilterByTag"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:guiobjs="clr-namespace:GUI.UserControls;assembly=GUI"
+             xmlns:local="clr-namespace:KeywordManager.UserControls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:t="clr-namespace:GUI.Filtering;assembly=GUI"
+             xmlns:uc="clr-namespace:KeywordManager.UserControls"
+             xmlns:uw="http://cla.me/wpf/xaml/controls"
+             d:DesignHeight="250"
+             d:DesignWidth="800"
+             mc:Ignorable="d">
   <UserControl.DataContext>
     <guiobjs:FilterByTagCtx x:Name="ctx" />
   </UserControl.DataContext>
@@ -43,38 +44,34 @@
 
         <!--  AND OR  -->
         <StackPanel Grid.Column="0">
-          <RadioButton
-            Click="DoFilter"
-            Content="AND"
-            GroupName="AndOr"
-            IsChecked="{Binding Path=TagMode[0], Mode=TwoWay}"
-            Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
-            ToolTip="All selected tags must exist" />
-          <RadioButton
-            Click="DoFilter"
-            Content="OR"
-            GroupName="AndOr"
-            IsChecked="{Binding Path=TagMode[1], Mode=TwoWay}"
-            Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
-            ToolTip="Any selected tag may exist" />
+          <RadioButton Click="DoFilter"
+                       Content="AND"
+                       GroupName="AndOr"
+                       IsChecked="{Binding Path=TagMode, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:FilterTagMode.And}}"
+                       Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
+                       ToolTip="All selected tags must exist" />
+          <RadioButton Click="DoFilter"
+                       Content="OR"
+                       GroupName="AndOr"
+                       IsChecked="{Binding Path=TagMode, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:FilterTagMode.Or}}"
+                       Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
+                       ToolTip="Any selected tag may exist" />
         </StackPanel>
 
         <!--  FIND  -->
-        <TextBox
-          Grid.Column="2"
-          md:HintAssist.Hint="Find tags..."
-          md:TextFieldAssist.HasClearButton="True"
-          md:TextFieldAssist.HasLeadingIcon="True"
-          md:TextFieldAssist.LeadingIcon="Search"
-          Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox Grid.Column="2"
+                 md:HintAssist.Hint="Find tags..."
+                 md:TextFieldAssist.HasClearButton="True"
+                 md:TextFieldAssist.HasLeadingIcon="True"
+                 md:TextFieldAssist.LeadingIcon="Search"
+                 Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
       </Grid>
     </md:Card>
 
     <!--  BOTTOM PANEL  -->
-    <md:Card
-      md:ElevationAssist.Elevation="Dp0"
-      DockPanel.Dock="Bottom"
-      Visibility="{Binding ShowBottomPanel, Converter={StaticResource BooleanToVisibilityConverter}}">
+    <md:Card md:ElevationAssist.Elevation="Dp0"
+             DockPanel.Dock="Bottom"
+             Visibility="{Binding ShowBottomPanel, Converter={StaticResource BooleanToVisibilityConverter}}">
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="auto" />
@@ -94,7 +91,7 @@
             <ColumnDefinition.Style>
               <Style BasedOn="{StaticResource {x:Type ColumnDefinition}}" TargetType="ColumnDefinition">
                 <Style.Triggers>
-                  <DataTrigger Binding="{Binding CanFilterByDistr}" Value="false">
+                  <DataTrigger Binding="{Binding CanFilterByItemType}" Value="false">
                     <Setter Property="Width" Value="0" />
                   </DataTrigger>
                 </Style.Triggers>
@@ -105,76 +102,55 @@
 
         <!--  PIC SETTINGS  -->
         <StackPanel Visibility="{Binding CanFilterByPic, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <RadioButton
-            Click="DoFilter"
-            GroupName="Pic"
-            IsChecked="{Binding Path=PicMode[1], Mode=TwoWay}"
-            Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
-            ToolTip="Must have a picture associated with it">
-            <StackPanel Orientation="Vertical">
-              <md:PackIcon HorizontalAlignment="Center" Kind="Image" />
-              <TextBlock Margin="0,4,0,0" Text="HAS" />
-            </StackPanel>
-          </RadioButton>
-          <RadioButton
-            Click="DoFilter"
-            GroupName="Pic"
-            IsChecked="{Binding Path=PicMode[2], Mode=TwoWay}"
-            Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
-            ToolTip="Must NOT have a picture associated with it">
-            <StackPanel Orientation="Vertical">
-              <md:PackIcon HorizontalAlignment="Center" Kind="ImageOff" />
-              <TextBlock Margin="0,4,0,0" Text="HAS NOT" />
-            </StackPanel>
-          </RadioButton>
-          <RadioButton
-            Click="DoFilter"
-            GroupName="Pic"
-            IsChecked="{Binding Path=PicMode[0], Mode=TwoWay}"
-            Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
-            ToolTip="May or may not have a picture associated with it">
-            <StackPanel Orientation="Vertical">
-              <md:PackIcon HorizontalAlignment="Center" Kind="QuestionMark" />
-              <TextBlock Margin="0,4,0,0" Text="EITHER" />
-            </StackPanel>
-          </RadioButton>
+          <uw:IconRadioButton Click="DoFilter"
+                              GroupName="Pic"
+                              IconKind="QuestionMark"
+                              IconPosition="Top"
+                              IsChecked="{Binding Path=PicMode, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:FilterPicMode.Either}, UpdateSourceTrigger=PropertyChanged}"
+                              Text="EITHER"
+                              ToolTip="May or may not have a picture associated with it" />
+          <uw:IconRadioButton Click="DoFilter"
+                              GroupName="Pic"
+                              IconKind="Image"
+                              IconPosition="Top"
+                              IsChecked="{Binding Path=PicMode, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:FilterPicMode.OnlyIfHasPic}, UpdateSourceTrigger=PropertyChanged}"
+                              Text="HAS"
+                              ToolTip="Must have a picture associated with it" />
+          <uw:IconRadioButton Click="DoFilter"
+                              GroupName="Pic"
+                              IconKind="ImageOff"
+                              IconPosition="Top"
+                              IsChecked="{Binding Path=PicMode, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:FilterPicMode.OnlyIfHasNoPic}, UpdateSourceTrigger=PropertyChanged}"
+                              Text="HAS NOT"
+                              ToolTip="Must NOT have a picture associated with it" />
         </StackPanel>
 
         <!--  OUTFIT DISTRIBUTION  -->
-        <StackPanel Grid.Column="2" Visibility="{Binding CanFilterByDistr, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <RadioButton
-            Click="DoFilter"
-            GroupName="Dist"
-            IsChecked="{Binding Path=DistrMode[1], Mode=TwoWay}"
-            Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
-            ToolTip="Must have distribution rules">
-            <StackPanel Orientation="Vertical">
-              <md:PackIcon HorizontalAlignment="Center" Kind="Share" />
-              <TextBlock Margin="0,4,0,0" Text="HAS" />
-            </StackPanel>
-          </RadioButton>
-          <RadioButton
-            Click="DoFilter"
-            GroupName="Dist"
-            IsChecked="{Binding Path=DistrMode[2], Mode=TwoWay}"
-            Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
-            ToolTip="Must have NO distribution rules">
-            <StackPanel Orientation="Vertical">
-              <md:PackIcon HorizontalAlignment="Center" Kind="ShareOff" />
-              <TextBlock Margin="0,4,0,0" Text="HAS NOT" />
-            </StackPanel>
-          </RadioButton>
-          <RadioButton
-            Click="DoFilter"
-            GroupName="Dist"
-            IsChecked="{Binding Path=DistrMode[0], Mode=TwoWay}"
-            Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
-            ToolTip="May or may not have distribution rules">
-            <StackPanel Orientation="Vertical">
-              <md:PackIcon HorizontalAlignment="Center" Kind="Help" />
-              <TextBlock Margin="0,4,0,0" Text="EITHER" />
-            </StackPanel>
-          </RadioButton>
+        <StackPanel Grid.Column="2" Visibility="{Binding CanFilterByItemType, Converter={StaticResource BooleanToVisibilityConverter}}">
+          <uw:IconRadioButton GroupName="ItemType"
+                              IconKind="QuestionMark"
+                              IconPosition="Top"
+                              IsChecked="{Binding Path=ItemTypeMode, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:FilterItemTypeMode.Any}}"
+                              Text="ANY"
+                              ToolTip="Any kind of item" />
+          <uw:IconRadioButton GroupName="ItemType"
+                              IconKind="Shield"
+                              IconPosition="Top"
+                              IsChecked="{Binding Path=ItemTypeMode, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:FilterItemTypeMode.OnlyArmors}}"
+                              Text="ARMORS"
+                              ToolTip="Only armors" />
+          <uw:IconRadioButton GroupName="ItemType"
+                              IconKind="SwordCross"
+                              IconPosition="Top"
+                              IsChecked="{Binding Path=ItemTypeMode, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:FilterItemTypeMode.OnlyWeapons}}"
+                              Text="WEAPONS"
+                              ToolTip="Only weapons" />
+          <uw:IconRadioButton GroupName="ItemType"
+                              IconKind="BowArrow"
+                              IconPosition="Top"
+                              IsChecked="{Binding Path=ItemTypeMode, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:FilterItemTypeMode.OnlyAmmo}}"
+                              Text="AMMO"
+                              ToolTip="Only ammo" />
         </StackPanel>
       </Grid>
     </md:Card>
@@ -188,10 +164,9 @@
         </ContextMenu>
       </ScrollViewer.ContextMenu>
 
-      <ItemsControl
-        x:Name="lstTags"
-        d:ItemsSource="{d:SampleData ItemCount=60}"
-        ItemsSource="{Binding Tags}">
+      <ItemsControl x:Name="lstTags"
+                    d:ItemsSource="{d:SampleData ItemCount=60}"
+                    ItemsSource="{Binding Tags}">
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
             <!--  https://github.com/sbaeumlisberger/VirtualizingWrapPanel/blob/v2/GettingStarted.md  -->
@@ -200,13 +175,12 @@
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <CheckBox
-              x:Name="chkFilter"
-              d:DataContext="{d:DesignInstance Type=guiobjs:FilterTagItem}"
-              Click="DoFilter"
-              Content="{Binding Name, FallbackValue=Missing tag value}"
-              IsChecked="{Binding IsChecked}"
-              Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <CheckBox x:Name="chkFilter"
+                      d:DataContext="{d:DesignInstance Type=guiobjs:FilterTagItem}"
+                      Click="DoFilter"
+                      Content="{Binding Name, FallbackValue=Missing tag value}"
+                      IsChecked="{Binding IsChecked}"
+                      Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
               <CheckBox.Style>
                 <Style BasedOn="{StaticResource MaterialDesignFilterChipSecondaryOutlineCheckBox}" TargetType="CheckBox">
                   <Style.Triggers>

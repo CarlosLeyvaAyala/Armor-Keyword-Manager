@@ -14,15 +14,15 @@ open DMLib.TupleCommon
 type CList<'a> = Generic.List<'a>
 
 /// Data sent when the tag dialog triggers a filtering event
-type FilterTagEventArgs(routedEvent, source, tags, mode, picMode, distrMode) =
+type FilterTagEventArgs(routedEvent, source, tags, tagMode, picMode, itemTypeMode) =
     inherit RoutedEventArgs(routedEvent, source)
 
     //////////////////////////////////////////////////////////////
     // Properties we care about
     member _.Tags: CList<string> = tags
-    member _.TagMode: FilterTagMode = mode
-    member _.PicMode: FilterPicSettings = picMode
-    member _.DistrMode: FilterDistrSettings = distrMode
+    member _.TagMode: FilterTagMode = tagMode
+    member _.PicMode: FilterPicMode = picMode
+    member _.ItemTypeMode: FilterItemTypeMode = itemTypeMode
 
     /// Text search. Separated from the SearchByTag panel.
     member val Text = "" with get, set
@@ -32,7 +32,7 @@ type FilterTagEventArgs(routedEvent, source, tags, mode, picMode, distrMode) =
     //////////////////////////////////////////////////////////////
     // Utility functions
     static member Empty =
-        FilterTagEventArgs(null, null, CList(), FilterTagMode.And, FilterPicSettings.Either, FilterDistrSettings.Either)
+        FilterTagEventArgs(null, null, CList(), FilterTagMode.And, FilterPicMode.Either, FilterItemTypeMode.Any)
 
 [<Flags>]
 type FilterFlags =
@@ -136,13 +136,9 @@ type FilterByTagCtx() as t =
 
             t.OnPropertyChanged())
 
-    member val TagMode = FilterTagMode.And.asArrayOfBool with get, set
-    member val PicMode = FilterPicSettings.Either.asArrayOfBool with get, set
-    member val DistrMode = FilterDistrSettings.Either.asArrayOfBool with get, set
-
-    member t.SelectedTagMode = FilterTagMode.ofArrayOfBool t.TagMode
-    member t.SelectedPicMode = FilterPicSettings.ofArrayOfBool t.PicMode
-    member t.SelectedDistrMode = FilterDistrSettings.ofArrayOfBool t.DistrMode
+    member val TagMode = FilterTagMode.And with get, set
+    member val PicMode = FilterPicMode.Either with get, set
+    member val ItemTypeMode = FilterItemTypeMode.Any with get, set
 
     member t.FilterFlags
         with get () = flags
@@ -150,9 +146,9 @@ type FilterByTagCtx() as t =
             flags <- v
             t.OnPropertyChanged()
 
-    member t.CanFilterByPic = flags.HasFlag FilterFlags.Image
-    member t.CanFilterByDistr = false
-    member t.ShowBottomPanel = t.CanFilterByPic || t.CanFilterByDistr
+    member _.CanFilterByPic = flags.HasFlag FilterFlags.Image
+    member _.CanFilterByItemType = flags.HasFlag FilterFlags.ItemType
+    member t.ShowBottomPanel = t.CanFilterByPic || t.CanFilterByItemType
 
     /// Filter tags by name.
     member t.Filter
@@ -197,9 +193,9 @@ type FilterByTagCtx() as t =
 
     /// Set the arguments so this can be restored between tab changes
     member t.SetArguments(args: FilterTagEventArgs) =
-        t.TagMode <- args.TagMode.asArrayOfBool
-        t.PicMode <- args.PicMode.asArrayOfBool
-        t.DistrMode <- args.DistrMode.asArrayOfBool
+        t.TagMode <- args.TagMode
+        t.PicMode <- args.PicMode
+        t.ItemTypeMode <- args.ItemTypeMode
 
         t.SelectNone()
 

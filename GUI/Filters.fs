@@ -7,72 +7,24 @@ open System.Text.RegularExpressions
 open System
 
 type FilterTagMode =
-    | And
-    | Or
+    | And = 0
+    | Or = 1
 
-    member t.asArrayOfBool =
-        match t with
-        | And -> [| true; false |]
-        | Or -> [| false; true |]
+type FilterPicMode =
+    | Either = 0
+    | OnlyIfHasPic = 1
+    | OnlyIfHasNoPic = 2
 
-    static member ofArrayOfBool a =
-        match a with
-        | [| _; true |] -> Or
-        | _ -> And
+//type FilterDistrSettings =
+//    | Either = 0
+//    | OnlyIfHasRules = 1
+//    | OnlyIfHasNoRules = 2
 
-type FilterPicSettings =
-    | Either
-    | OnlyIfHasPic
-    | OnlyIfHasNoPic
-
-    member t.asArrayOfBool =
-        match t with
-        | Either -> [| true; false; false |]
-        | OnlyIfHasPic -> [| false; true; false |]
-        | OnlyIfHasNoPic -> [| false; false; true |]
-
-    static member ofArrayOfBool a =
-        match a with
-        | [| _; true; _ |] -> OnlyIfHasPic
-        | [| _; _; true |] -> OnlyIfHasNoPic
-        | _ -> Either
-
-type FilterDistrSettings =
-    | Either
-    | OnlyIfHasRules
-    | OnlyIfHasNoRules
-
-    member t.asArrayOfBool =
-        match t with
-        | Either -> [| true; false; false |]
-        | OnlyIfHasRules -> [| false; true; false |]
-        | OnlyIfHasNoRules -> [| false; false; true |]
-
-    static member ofArrayOfBool a =
-        match a with
-        | [| _; true; _ |] -> OnlyIfHasRules
-        | [| _; _; true |] -> OnlyIfHasNoRules
-        | _ -> Either
-
-type FilterItemTypeSettings =
-    | Any
-    | OnlyArmors
-    | OnlyWeapons
-    | OnlyAmmo
-
-    member t.asArrayOfBool =
-        match t with
-        | Any -> [| true; false; false; false |]
-        | OnlyArmors -> [| false; true; false; false |]
-        | OnlyWeapons -> [| false; false; true; false |]
-        | OnlyAmmo -> [| false; false; false; true |]
-
-    static member ofArrayOfBool a =
-        match a with
-        | [| _; true; _; _ |] -> OnlyArmors
-        | [| _; _; true; _ |] -> OnlyWeapons
-        | [| _; _; _; true |] -> OnlyAmmo
-        | _ -> Any
+type FilterItemTypeMode =
+    | Any = 0
+    | OnlyArmors = 1
+    | OnlyWeapons = 2
+    | OnlyAmmo = 3
 
 module Filter =
     /// Filters nothing.
@@ -98,7 +50,8 @@ module Filter =
             let andOr =
                 match mode with
                 | FilterTagMode.And -> tagsAnd
-                | Or -> tagsOr
+                | FilterTagMode.Or -> tagsOr
+                | _ -> failwith "Never should've come here"
 
             a
             |> Array.Parallel.filter (fun v -> v.Tags |> andOr searchFor)
@@ -111,9 +64,10 @@ module Filter =
             |> Array.Parallel.filter (fun v -> f v.HasSearchableImg)
 
         match settings with
-        | FilterPicSettings.Either -> nothing a
-        | OnlyIfHasPic -> filter id
-        | OnlyIfHasNoPic -> filter not
+        | FilterPicMode.Either -> nothing a
+        | FilterPicMode.OnlyIfHasPic -> filter id
+        | FilterPicMode.OnlyIfHasNoPic -> filter not
+        | _ -> failwith "Never should've come here"
 
     /// Filter by word content
     let words word useRegex filterMatching a =

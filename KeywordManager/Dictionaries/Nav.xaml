@@ -3,7 +3,13 @@
                     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
                     xmlns:uw="http://cla.me/wpf/xaml/controls">
 
-  <Style BasedOn="{StaticResource MaterialDesignTabRadioButtonBottom}" TargetType="uw:IconRadioButton" />
+  <Style BasedOn="{StaticResource MaterialDesignTabRadioButtonBottom}" TargetType="uw:IconRadioButton">
+    <Setter Property="Cursor" Value="Hand" />
+  </Style>
+
+  <Style BasedOn="{StaticResource MaterialDesignTabRadioButtonBottom}" TargetType="RadioButton">
+    <Setter Property="Cursor" Value="Hand" />
+  </Style>
 
   <Style x:Key="NavTxtMain" TargetType="TextBlock">
     <Setter Property="FontSize" Value="13" />

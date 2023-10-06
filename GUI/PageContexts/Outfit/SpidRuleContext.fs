@@ -52,6 +52,7 @@ type SpidRuleCxt() =
     inherit WPFBindable()
     let mutable strings = ""
     let mutable forms = ""
+    let mutable sex = SexTrait.Both
 
     /// Select string dialog.
     member _.SpidStringSelect = SpidAutocompletion.strings.SelectData
@@ -74,4 +75,8 @@ type SpidRuleCxt() =
             forms <- v
             nameof t.Forms |> t.OnPropertyChanged
 
-    member val Sex = SexTrait.Both with get, set
+    member t.Sex
+        with get () = sex
+        and set v =
+            sex <- v
+            nameof t.Sex |> t.OnPropertyChanged

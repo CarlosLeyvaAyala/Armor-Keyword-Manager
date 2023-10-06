@@ -43,18 +43,16 @@
         </Grid.ColumnDefinitions>
 
         <!--  AND OR  -->
-        <StackPanel Grid.Column="0">
+        <StackPanel Grid.Column="0" Orientation="Horizontal">
           <RadioButton Click="DoFilter"
                        Content="AND"
                        GroupName="AndOr"
                        IsChecked="{Binding Path=TagMode, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:FilterTagMode.And}}"
-                       Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
                        ToolTip="All selected tags must exist" />
           <RadioButton Click="DoFilter"
                        Content="OR"
                        GroupName="AndOr"
                        IsChecked="{Binding Path=TagMode, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:FilterTagMode.Or}}"
-                       Style="{StaticResource MaterialDesignTabRadioButtonBottom}"
                        ToolTip="Any selected tag may exist" />
         </StackPanel>
 

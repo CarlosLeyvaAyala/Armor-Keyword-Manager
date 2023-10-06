@@ -1,139 +1,120 @@
-﻿<Window
-  x:Class="KeywordManager.MainWindow"
-  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:System="clr-namespace:System;assembly=System.Runtime"
-  xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
-  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-  xmlns:diag="clr-namespace:System.Diagnostics;assembly=mscorlib"
-  xmlns:local="clr-namespace:KeywordManager"
-  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-  xmlns:pp="clr-namespace:KeywordManager.Pages"
-  xmlns:uc="clr-namespace:KeywordManager.UserControls"
-  x:Name="mainWindow"
-  Title="Skyrim Item Manager"
-  Width="1100"
-  Height="690"
-  Background="{DynamicResource MaterialDesignPaper}"
-  FontFamily="{DynamicResource MaterialDesignFont}"
-  Loaded="Window_Loaded"
-  ResizeMode="CanResizeWithGrip"
-  TextElement.FontSize="13"
-  TextElement.FontWeight="Regular"
-  TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-  TextOptions.TextFormattingMode="Ideal"
-  TextOptions.TextRenderingMode="Auto"
-  WindowStartupLocation="CenterScreen"
-  WindowState="Maximized"
-  mc:Ignorable="d">
+﻿<Window x:Class="KeywordManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:System="clr-namespace:System;assembly=System.Runtime"
+        xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:diag="clr-namespace:System.Diagnostics;assembly=mscorlib"
+        xmlns:local="clr-namespace:KeywordManager"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:pp="clr-namespace:KeywordManager.Pages"
+        xmlns:uc="clr-namespace:KeywordManager.UserControls"
+        x:Name="mainWindow"
+        Title="Skyrim Item Manager"
+        Width="1100"
+        Height="690"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Loaded="Window_Loaded"
+        ResizeMode="CanResizeWithGrip"
+        TextElement.FontSize="13"
+        TextElement.FontWeight="Regular"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        mc:Ignorable="d">
 
   <Window.DataContext>
-    <ctx:AppCtx
-      xmlns:ctx="clr-namespace:GUI;assembly=GUI"
-      x:Name="ctx"
-      OwnerWindow="{x:Reference mainWindow}" />
+    <ctx:AppCtx xmlns:ctx="clr-namespace:GUI;assembly=GUI"
+                x:Name="ctx"
+                OwnerWindow="{x:Reference mainWindow}" />
   </Window.DataContext>
 
   <Window.CommandBindings>
-    <CommandBinding
-      CanExecute="OnCanNew"
-      Command="c:AppCmds.New"
-      Executed="OnNew" />
+    <CommandBinding CanExecute="OnCanNew"
+                    Command="c:AppCmds.New"
+                    Executed="OnNew" />
 
-    <CommandBinding
-      CanExecute="OnCanOpen"
-      Command="c:AppCmds.Open"
-      Executed="OnOpen" />
+    <CommandBinding CanExecute="OnCanOpen"
+                    Command="c:AppCmds.Open"
+                    Executed="OnOpen" />
 
-    <CommandBinding
-      CanExecute="OnCanSave"
-      Command="c:AppCmds.Save"
-      Executed="OnSave" />
+    <CommandBinding CanExecute="OnCanSave"
+                    Command="c:AppCmds.Save"
+                    Executed="OnSave" />
 
-    <CommandBinding
-      CanExecute="OnCanSaveAs"
-      Command="c:AppCmds.SaveAs"
-      Executed="OnSaveAs" />
+    <CommandBinding CanExecute="OnCanSaveAs"
+                    Command="c:AppCmds.SaveAs"
+                    Executed="OnSaveAs" />
 
-    <CommandBinding
-      CanExecute="OnCanExportAs"
-      Command="c:AppCmds.ExportAs"
-      Executed="OnExportAs" />
+    <CommandBinding CanExecute="OnCanExportAs"
+                    Command="c:AppCmds.ExportAs"
+                    Executed="OnExportAs" />
 
-    <CommandBinding
-      CanExecute="OnCanExport"
-      Command="c:AppCmds.Export"
-      Executed="OnExport" />
+    <CommandBinding CanExecute="OnCanExport"
+                    Command="c:AppCmds.Export"
+                    Executed="OnExport" />
 
-    <CommandBinding
-      CanExecute="OnCanFileJsonExport"
-      Command="c:AppCmds.FileJsonExport"
-      Executed="OnFileJsonExport" />
+    <CommandBinding CanExecute="OnCanFileJsonExport"
+                    Command="c:AppCmds.FileJsonExport"
+                    Executed="OnFileJsonExport" />
 
-    <CommandBinding
-      CanExecute="OnCanFileJsonImport"
-      Command="c:AppCmds.FileJsonImport"
-      Executed="OnFileJsonImport" />
+    <CommandBinding CanExecute="OnCanFileJsonImport"
+                    Command="c:AppCmds.FileJsonImport"
+                    Executed="OnFileJsonImport" />
 
-    <CommandBinding
-      CanExecute="OnCanFilter"
-      Command="c:AppCmds.Filter"
-      Executed="OnFilter" />
+    <CommandBinding CanExecute="OnCanFilter"
+                    Command="c:AppCmds.Filter"
+                    Executed="OnFilter" />
 
-    <CommandBinding
-      CanExecute="OnCanTest"
-      Command="c:AppCmds.Test"
-      Executed="OnTest" />
+    <CommandBinding CanExecute="OnCanTest"
+                    Command="c:AppCmds.Test"
+                    Executed="OnTest" />
 
-    <CommandBinding
-      CanExecute="OnCanRestoreSettings"
-      Command="c:AppCmds.RestoreSettings"
-      Executed="OnRestoreSettings" />
+    <CommandBinding CanExecute="OnCanRestoreSettings"
+                    Command="c:AppCmds.RestoreSettings"
+                    Executed="OnRestoreSettings" />
 
-    <CommandBinding
-      CanExecute="OnCanBackupSettings"
-      Command="c:AppCmds.BackupSettings"
-      Executed="OnBackupSettings" />
+    <CommandBinding CanExecute="OnCanBackupSettings"
+                    Command="c:AppCmds.BackupSettings"
+                    Executed="OnBackupSettings" />
   </Window.CommandBindings>
 
   <Window.Resources>
-    <uw:QueryDlg
-      xmlns:uw="http://cla.me/wpf/xaml/controls"
-      x:Key="queryDlg"
-      MinWidth="230"
-      ButtonCancelStyle="{StaticResource MaterialDesignFlatButton}"
-      ButtonOkStyle="{StaticResource MaterialDesignFlatAccentButton}"
-      TextBoxStyle="{StaticResource MaterialDesignFloatingHintTextBox}" />
+    <uw:QueryDlg xmlns:uw="http://cla.me/wpf/xaml/controls"
+                 x:Key="queryDlg"
+                 MinWidth="230"
+                 ButtonCancelStyle="{StaticResource MaterialDesignFlatButton}"
+                 ButtonOkStyle="{StaticResource MaterialDesignFlatAccentButton}"
+                 TextBoxStyle="{StaticResource MaterialDesignFloatingHintTextBox}" />
   </Window.Resources>
 
-  <md:DrawerHost
-    x:Name="dhMain"
-    IsTopDrawerOpen="False"
-    OpenMode="Default"
-    TopDrawerCornerRadius="0 0 20 20">
+  <md:DrawerHost x:Name="dhMain"
+                 IsTopDrawerOpen="False"
+                 OpenMode="Default"
+                 TopDrawerCornerRadius="0 0 20 20">
 
     <!--  TAG FILTER  -->
     <md:DrawerHost.TopDrawerContent>
-      <uc:FilterByTag
-        x:Name="filterByTag"
-        MaxHeight="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type md:DrawerHost}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.7}"
-        FilterTags="OnFilterByTag" />
+      <uc:FilterByTag x:Name="filterByTag"
+                      MaxHeight="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type md:DrawerHost}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.7}"
+                      FilterTags="OnFilterByTag" />
     </md:DrawerHost.TopDrawerContent>
 
-    <md:DialogHost
-      CloseOnClickAway="True"
-      Identifier="MainDlgHost"
-      OverlayBackground="{DynamicResource PrimaryHueDarkBrush}"
-      Placement="MousePoint">
+    <md:DialogHost CloseOnClickAway="True"
+                   Identifier="MainDlgHost"
+                   OverlayBackground="{DynamicResource PrimaryHueDarkBrush}"
+                   Placement="MousePoint">
       <Grid>
         <DockPanel>
           <!--  MENU  -->
-          <md:ColorZone
-            Margin="0,0,0,15"
-            md:ElevationAssist.Elevation="Dp2"
-            DockPanel.Dock="Top"
-            Mode="PrimaryMid">
+          <md:ColorZone Margin="0,0,0,15"
+                        md:ElevationAssist.Elevation="Dp2"
+                        DockPanel.Dock="Top"
+                        Mode="PrimaryMid">
             <Menu>
               <MenuItem Header="_File">
                 <MenuItem Command="c:AppCmds.New" Header="_New" />
@@ -142,32 +123,27 @@
                 <MenuItem Command="c:AppCmds.SaveAs" Header="_Save as..." />
                 <Separator />
                 <MenuItem Header="_Export">
-                  <MenuItem
-                    Command="c:AppCmds.FileJsonExport"
-                    Header="_Json"
-                    ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                  <MenuItem Command="c:AppCmds.FileJsonExport"
+                            Header="_Json"
+                            ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
                 </MenuItem>
                 <MenuItem Header="_Import">
-                  <MenuItem
-                    Command="c:AppCmds.FileJsonImport"
-                    Header="_Json"
-                    ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                  <MenuItem Command="c:AppCmds.FileJsonImport"
+                            Header="_Json"
+                            ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
                 </MenuItem>
                 <Separator />
-                <MenuItem
-                  Command="c:AppCmds.Export"
-                  Header="_Generate"
-                  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-                <MenuItem
-                  Command="c:AppCmds.ExportAs"
-                  Header="Generate _at..."
-                  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                <MenuItem Command="c:AppCmds.Export"
+                          Header="_Generate"
+                          ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                <MenuItem Command="c:AppCmds.ExportAs"
+                          Header="Generate _at..."
+                          ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
               </MenuItem>
               <MenuItem Header="_Data">
-                <MenuItem
-                  Command="c:AppCmds.Filter"
-                  Header="_Filter"
-                  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                <MenuItem Command="c:AppCmds.Filter"
+                          Header="_Filter"
+                          ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
                 <Separator />
                 <MenuItem Header="Missing _keywords">
                   <MenuItem Header="_Add to app" />
@@ -180,18 +156,15 @@
                 <Separator />
 
                 <MenuItem Header="_Backup">
-                  <MenuItem
-                    Command="c:AppCmds.BackupSettings"
-                    Header="Create _backup"
-                    ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-                  <MenuItem
-                    Click="OnGitBackupClick"
-                    Header="Create backup for _Github"
-                    Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                  <MenuItem
-                    Command="c:AppCmds.RestoreSettings"
-                    Header="_Restore backup"
-                    ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                  <MenuItem Command="c:AppCmds.BackupSettings"
+                            Header="Create _backup"
+                            ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                  <MenuItem Click="OnGitBackupClick"
+                            Header="Create backup for _Github"
+                            Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                  <MenuItem Command="c:AppCmds.RestoreSettings"
+                            Header="_Restore backup"
+                            ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
                   <Separator />
                   <MenuItem Header="Backup _Keywords" />
                   <MenuItem Header="Replace Keywords" ToolTip="All keywords will be replaced" />
@@ -236,25 +209,23 @@
             </Separator>
 
             <StatusBarItem Grid.Column="2">
-              <TextBlock
-                x:Name="txtStatus"
-                Margin="0"
-                Text="" />
+              <TextBlock x:Name="txtStatus"
+                         Margin="0"
+                         Text="" />
             </StatusBarItem>
           </StatusBar>
 
           <!--  CONTENTS  -->
-          <TabControl
-            x:Name="tbcMain"
-            Margin="0"
-            HorizontalContentAlignment="Center"
-            md:ColorZoneAssist.Mode="PrimaryLight"
-            md:NavigationRailAssist.SelectionCornerRadius="0 20 20 0"
-            md:NavigationRailAssist.ShowSelectionBackground="True"
-            SelectionChanged="OnChangeTab"
-            SnapsToDevicePixels="True"
-            Style="{StaticResource MaterialDesignNavigationRailTabControl}"
-            TabStripPlacement="Left">
+          <TabControl x:Name="tbcMain"
+                      Margin="0"
+                      HorizontalContentAlignment="Center"
+                      md:ColorZoneAssist.Mode="PrimaryLight"
+                      md:NavigationRailAssist.SelectionCornerRadius="0 20 20 0"
+                      md:NavigationRailAssist.ShowSelectionBackground="True"
+                      SelectionChanged="OnChangeTab"
+                      SnapsToDevicePixels="True"
+                      Style="{StaticResource MaterialDesignNavigationRailTabControl}"
+                      TabStripPlacement="Left">
             <TabControl.Resources>
               <Thickness x:Key="MgTabContent">30,0,20,20</Thickness>
             </TabControl.Resources>
@@ -289,18 +260,17 @@
                 </StackPanel>
               </TabItem.Header>
               <Grid>
-                <TextBlock
-                  Margin="0,-20,0,0"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center"
-                  FontSize="100"
-                  FontWeight="Bold"
-                  Text="Soon&#8482;" />
+                <TextBlock Margin="0,-20,0,0"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="100"
+                           FontWeight="Bold"
+                           Text="Soon&#8482;" />
               </Grid>
               <!--<pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />-->
             </TabItem>
 
-            <!--  ENCHANTMENTS  -->
+            <!--  BUILDS  -->
             <TabItem>
               <TabItem.Header>
                 <StackPanel Width="auto" Height="auto">
@@ -318,6 +288,25 @@
                   Text="Soon&#8482;" />
               </Grid>-->
               <pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />
+            </TabItem>
+
+            <!--  ENCHANTMENTS  -->
+            <TabItem>
+              <TabItem.Header>
+                <StackPanel Width="auto" Height="auto">
+                  <md:PackIcon Kind="Lingerie" Style="{StaticResource piNav}" />
+                  <TextBlock Style="{StaticResource txtNav}" Text="Skimpy" />
+                </StackPanel>
+              </TabItem.Header>
+              <Grid>
+                <TextBlock Margin="0,-20,0,0"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="100"
+                           FontWeight="Bold"
+                           Text="Soon&#8482;" />
+              </Grid>
+              <!--<pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />-->
             </TabItem>
           </TabControl>
         </DockPanel>

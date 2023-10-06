@@ -71,6 +71,18 @@ type ItemsPageCtx() =
         |> Filter.words nameFilter useRegexForNameFilter (fun f v -> f v.Name || f v.Esp || f v.EDID)
         |> Filter.tags filter.TagMode filter.Tags
         |> Filter.pics filter.PicMode
+        |> fun a ->
+            match filter.ItemTypeMode with
+            | FilterItemTypeMode.Any -> a
+            | _ ->
+                let f =
+                    match filter.ItemTypeMode with
+                    | FilterItemTypeMode.OnlyArmors -> fun (v: NavListItem) -> v.IsArmor
+                    | FilterItemTypeMode.OnlyWeapons -> fun v -> v.IsWeapon
+                    | FilterItemTypeMode.OnlyAmmo -> fun v -> v.IsAmmo
+                    | _ -> failwith "Never should've come here"
+
+                a |> Array.Parallel.filter f
 
     ///////////////////////////////////////////////
     // PageNavigationContext implementation

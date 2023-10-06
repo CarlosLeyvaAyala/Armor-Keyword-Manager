@@ -127,27 +127,27 @@
 
         <!--  OUTFIT DISTRIBUTION  -->
         <StackPanel Grid.Column="2" Visibility="{Binding CanFilterByItemType, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <uw:IconRadioButton GroupName="ItemType"
+          <uw:IconRadioButton Click="DoFilter"
+                              GroupName="ItemType"
                               IconKind="QuestionMark"
-                              IconPosition="Top"
                               IsChecked="{Binding Path=ItemTypeMode, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:FilterItemTypeMode.Any}}"
                               Text="ANY"
                               ToolTip="Any kind of item" />
-          <uw:IconRadioButton GroupName="ItemType"
+          <uw:IconRadioButton Click="DoFilter"
+                              GroupName="ItemType"
                               IconKind="Shield"
-                              IconPosition="Top"
                               IsChecked="{Binding Path=ItemTypeMode, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:FilterItemTypeMode.OnlyArmors}}"
                               Text="ARMORS"
                               ToolTip="Only armors" />
-          <uw:IconRadioButton GroupName="ItemType"
+          <uw:IconRadioButton Click="DoFilter"
+                              GroupName="ItemType"
                               IconKind="SwordCross"
-                              IconPosition="Top"
                               IsChecked="{Binding Path=ItemTypeMode, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:FilterItemTypeMode.OnlyWeapons}}"
                               Text="WEAPONS"
                               ToolTip="Only weapons" />
-          <uw:IconRadioButton GroupName="ItemType"
+          <uw:IconRadioButton Click="DoFilter"
+                              GroupName="ItemType"
                               IconKind="BowArrow"
-                              IconPosition="Top"
                               IsChecked="{Binding Path=ItemTypeMode, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:FilterItemTypeMode.OnlyAmmo}}"
                               Text="AMMO"
                               ToolTip="Only ammo" />

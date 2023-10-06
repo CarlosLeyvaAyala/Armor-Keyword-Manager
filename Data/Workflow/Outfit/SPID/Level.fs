@@ -5,7 +5,11 @@ open Data.Tags.Create
 
 type ValidLevel =
     | ValidLevel of int
-    static member ofInt x = Math.Max(1, x) |> ValidLevel
+    static member minLvl = 1
+
+    static member ofInt x =
+        Math.Max(ValidLevel.minLvl, x) |> ValidLevel
+
     static member toInt(ValidLevel x) = x
     member t.value = ValidLevel.toInt t
     member t.asStr = let (ValidLevel x) = t in x.ToString()
@@ -139,7 +143,7 @@ type SpidLevel =
     { skill: AttributeType
       level: AttributeLevel }
 
-    static member invalidMax = -1
+    static member invalidMax = 0
 
     member t.exported =
         match t.skill.exported, t.level.exported with
@@ -148,12 +152,14 @@ type SpidLevel =
         | Choice1Of2 skill, Choice1Of2 level
         | Choice1Of2 skill, Choice2Of2 level -> Choice1Of2 $"{skill}({level})"
 
+    static member defaultMin = ValidLevel.minLvl
+
     static member ofRaw(r: SpidLevelRaw) =
         { skill = r.sk |> AttributeType.ofRaw
           level =
             { min = ValidLevel.ofInt r.min
               max =
-                if r.max <> SpidLevel.invalidMax then
+                if r.max > SpidLevel.invalidMax then
                     r.max |> ValidLevel.ofInt |> Some
                 else
                     None } }
@@ -179,5 +185,5 @@ and SpidLevelRaw =
       max: int }
     static member blank =
         { sk = AttributeType.ActorLevel.asRaw
-          min = 1
+          min = SpidLevel.defaultMin
           max = SpidLevel.invalidMax }

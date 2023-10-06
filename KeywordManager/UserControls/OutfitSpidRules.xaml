@@ -280,7 +280,7 @@
                   Maximum="100"
                   Minimum="1"
                   Style="{StaticResource MaterialDesignDiscreteHorizontalSlider}"
-                  Value="100" />
+                  Value="{Binding Chance, Mode=TwoWay}" />
         </DockPanel>
       </StackPanel>
     </TabItem>
@@ -300,33 +300,31 @@
             <ColumnDefinition Width="*" />
           </Grid.ColumnDefinitions>
 
-          <TextBox md:HintAssist.Hint="Min level" />
+          <TextBox md:HintAssist.Hint="Min level" Text="{Binding MinLvl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-          <TextBox Grid.Column="2" md:HintAssist.Hint="Max level" />
+          <TextBox Grid.Column="2"
+                   md:HintAssist.Hint="Max level"
+                   Text="{Binding MaxLvl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-          <ComboBox Grid.Column="4"
+          <ComboBox x:Name="cbSkills"
+                    Grid.Column="4"
                     VerticalAlignment="Bottom"
                     md:HintAssist.HelperText="Skill level"
-                    SelectedIndex="0">
-            <ComboBoxItem Content="Actor level" Tag="-1" />
-            <ComboBoxItem Content="One-handed" Tag="0" />
-            <ComboBoxItem Content="Two-handed" Tag="1" />
-            <ComboBoxItem Content="Archery" Tag="2" />
-            <ComboBoxItem Content="Block" Tag="3" />
-            <ComboBoxItem Content="Smithing" Tag="4" />
-            <ComboBoxItem Content="Heavy armor" Tag="5" />
-            <ComboBoxItem Content="Light armor" Tag="6" />
-            <ComboBoxItem Content="Pickpocket" Tag="7" />
-            <ComboBoxItem Content="Lockpicking" Tag="8" />
-            <ComboBoxItem Content="Sneak" Tag="9" />
-            <ComboBoxItem Content="Alchemy" Tag="10" />
-            <ComboBoxItem Content="Speech" Tag="11" />
-            <ComboBoxItem Content="Alteration" Tag="12" />
-            <ComboBoxItem Content="Conjuration" Tag="13" />
-            <ComboBoxItem Content="Destruction" Tag="14" />
-            <ComboBoxItem Content="Illusion" Tag="15" />
-            <ComboBoxItem Content="Restoration" Tag="16" />
-            <ComboBoxItem Content="Enchanting" Tag="17" />
+                    SelectedIndex="{Binding Skill}">
+            <ComboBox.GroupStyle>
+              <GroupStyle>
+                <GroupStyle.HeaderTemplate>
+                  <DataTemplate>
+                    <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" Text="{Binding Name}" />
+                  </DataTemplate>
+                </GroupStyle.HeaderTemplate>
+              </GroupStyle>
+            </ComboBox.GroupStyle>
+            <ComboBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Name}" />
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
           </ComboBox>
         </Grid>
 
@@ -411,11 +409,19 @@
             </Style>
           </Grid.Style>
 
-          <ToggleButton DataContext="{x:Static t:SpidTraitsGUI.Unique}" />
-          <ToggleButton Grid.Column="1" DataContext="{x:Static t:SpidTraitsGUI.Summonable}" />
-          <ToggleButton Grid.Column="2" DataContext="{x:Static t:SpidTraitsGUI.Child}" />
-          <ToggleButton Grid.Column="3" DataContext="{x:Static t:SpidTraitsGUI.Leveled}" />
-          <ToggleButton Grid.Column="4" DataContext="{x:Static t:SpidTraitsGUI.Teammate}" />
+          <ToggleButton Click="OnTraitClick" DataContext="{Binding Unique}" />
+          <ToggleButton Grid.Column="1"
+                        Click="OnTraitClick"
+                        DataContext="{Binding Summonable}" />
+          <ToggleButton Grid.Column="2"
+                        Click="OnTraitClick"
+                        DataContext="{Binding Child}" />
+          <ToggleButton Grid.Column="3"
+                        Click="OnTraitClick"
+                        DataContext="{Binding Leveled}" />
+          <ToggleButton Grid.Column="4"
+                        Click="OnTraitClick"
+                        DataContext="{Binding Teammate}" />
         </Grid>
       </StackPanel>
     </TabItem>

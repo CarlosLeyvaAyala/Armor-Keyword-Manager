@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace KeywordManager.UserControls;
@@ -24,7 +25,12 @@ public partial class OutfitSpidRules : UserControl {
       Autocomplete.SetIndicator(edtFormsFilter, ", +-");
       Autocomplete.SetStringComparison(edtFormsFilter, StringComparison.CurrentCultureIgnoreCase);
     });
+
+    ListCollectionView lcv = new(ctx.SkillItems);
+    lcv.GroupDescriptions.Add(new PropertyGroupDescription("Category"));
+    cbSkills.ItemsSource = lcv;
   }
+
   private void OnAutocompleteTbKeyDown(object sender, KeyEventArgs e) {
     if (e.Key != Key.Return || sender is not TextBox tb || tb.SelectedText == null) return;
     tb.CaretIndex = tb.Text.Length;
@@ -40,4 +46,7 @@ public partial class OutfitSpidRules : UserControl {
   private void OnTestClick(object sender, RoutedEventArgs e) {
     Debug.WriteLine(ctx.Sex);
   }
+
+  private void OnTraitClick(object sender, RoutedEventArgs e) => ctx.CalculateRule();
+
 }

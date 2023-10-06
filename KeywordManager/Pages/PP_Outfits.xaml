@@ -233,7 +233,8 @@ It can not be exported to SPID.</sys:String>
             <ColumnDefinition />
             <ColumnDefinition Width="auto" />
           </Grid.ColumnDefinitions>
-          <ListBox HorizontalContentAlignment="Stretch"
+          <ListBox x:Name="lstRules"
+                   HorizontalContentAlignment="Stretch"
                    d:ItemsSource="{d:SampleData ItemCount=5}"
                    Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ListBox.ItemTemplate>
@@ -284,8 +285,18 @@ It can not be exported to SPID.</sys:String>
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto"
                       Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
-
-          <uc:OutfitSpidRules />
+          <uc:OutfitSpidRules>
+            <uc:OutfitSpidRules.Style>
+              <Style TargetType="uc:OutfitSpidRules">
+                <Setter Property="IsEnabled" Value="True" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding SelectedIndex, ElementName=lstRules}" Value="-1">
+                    <Setter Property="IsEnabled" Value="False" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </uc:OutfitSpidRules.Style>
+          </uc:OutfitSpidRules>
         </ScrollViewer>
       </Grid>
     </GroupBox>

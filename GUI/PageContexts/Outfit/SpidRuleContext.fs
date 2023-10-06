@@ -45,9 +45,12 @@ type SexTrait =
     | Female = 1
     | Male = 2
 
+open Data.SPID
+
 /// Context to manage the SPID rule data.
 type SpidRuleCxt() =
     inherit WPFBindable()
+    let mutable strings = ""
 
     /// Select string dialog.
     member _.SpidStringSelect = SpidAutocompletion.strings.SelectData
@@ -56,4 +59,12 @@ type SpidRuleCxt() =
     /// Reload suggestions.
     member _.OnFormsSuggestionsChange a = SpidAutocompletion.OnFormsChange a
 
-    member val Sex = SexTrait.Male with get, set
+    member val Rule = SpidRuleRaw.blank with get, set
+
+    member t.Strings
+        with get () = strings
+        and set v =
+            strings <- v
+            nameof t.Strings |> t.OnPropertyChanged
+
+    member val Sex = SexTrait.Both with get, set

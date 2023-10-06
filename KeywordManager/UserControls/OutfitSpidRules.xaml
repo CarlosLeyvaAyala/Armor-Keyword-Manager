@@ -40,6 +40,85 @@
         </Setter.Value>
       </Setter>
     </Style>
+    <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox">
+      <Setter Property="ToolTipService.HorizontalOffset" Value="-150" />
+      <Setter Property="ToolTipService.Placement" Value="Right" />
+      <Setter Property="ToolTipService.InitialShowDelay" Value="50" />
+    </Style>
+    <Style TargetType="ItemsControl">
+      <Setter Property="Margin" Value="15,2,0,7" />
+    </Style>
+    <Style x:Key="operatorList" TargetType="StackPanel">
+      <Setter Property="Margin" Value="15,2,0,7" />
+    </Style>
+    <Style x:Key="tooltipSymbols" TargetType="Run">
+      <Setter Property="FontFamily" Value="Consolas" />
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="FontWeight" Value="Normal" />
+      <Setter Property="Foreground" Value="{StaticResource SecondaryHueLightBrush}" />
+    </Style>
+
+    <StackPanel x:Key="tooltipStrings">
+      <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="Quick reference" />
+      <TextBlock Margin="{StaticResource MgTopNaaarrow}">
+        <Run>Imported data to be autocompleted when writing</Run>
+        <Run Style="{StaticResource tooltipSymbols}">
+          ,+-
+        </Run>
+        <Run>:</Run>
+      </TextBlock>
+      <ItemsControl>
+        <sys:String>&#8226; Keywords</sys:String>
+        <sys:String>&#8226; NPCs</sys:String>
+      </ItemsControl>
+      <TextBlock Text="Advanced matching functions allowed (sorted by priority):" />
+      <StackPanel Style="{StaticResource operatorList}">
+        <TextBlock>
+          <Run Style="{StaticResource tooltipSymbols}">(+)</Run>
+          <Run>requirement</Run>
+        </TextBlock>
+        <TextBlock>
+          <Run Style="{StaticResource tooltipSymbols}">(-)</Run>
+          <Run>exclusion</Run>
+        </TextBlock>
+        <TextBlock>
+          <Run Style="{StaticResource tooltipSymbols}">(*)</Run>
+          <Run>wildcard</Run>
+        </TextBlock>
+      </StackPanel>
+    </StackPanel>
+    <StackPanel x:Key="tooltipForms">
+      <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="Quick reference" />
+      <TextBlock Margin="{StaticResource MgTopNaaarrow}">
+        <Run>Imported data to be autocompleted when writing</Run>
+        <Run Style="{StaticResource tooltipSymbols}">
+          ,+-
+        </Run>
+        <Run>:</Run>
+      </TextBlock>
+      <ItemsControl>
+        <sys:String>&#8226; Race</sys:String>
+        <sys:String>&#8226; Class</sys:String>
+        <sys:String>&#8226; Faction</sys:String>
+        <sys:String>&#8226; Combat Style</sys:String>
+        <sys:String>&#8226; Cell NPC</sys:String>
+        <sys:String>&#8226; Location</sys:String>
+        <sys:String>&#8226; Voice Type</sys:String>
+        <sys:String>&#8226; FormID List</sys:String>
+        <sys:String>&#8226; Spell</sys:String>
+      </ItemsControl>
+      <TextBlock Text="Advanced matching functions allowed (sorted by priority):" />
+      <StackPanel Style="{StaticResource operatorList}">
+        <TextBlock>
+          <Run Style="{StaticResource tooltipSymbols}">(+)</Run>
+          <Run>requirement</Run>
+        </TextBlock>
+        <TextBlock>
+          <Run Style="{StaticResource tooltipSymbols}">(-)</Run>
+          <Run>exclusion</Run>
+        </TextBlock>
+      </StackPanel>
+    </StackPanel>
   </UserControl.Resources>
 
   <UserControl.DataContext>
@@ -47,36 +126,19 @@
   </UserControl.DataContext>
 
   <TabControl md:ColorZoneAssist.Mode="SecondaryLight">
-    <TabControl.Resources>
-      <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="TextBox">
-        <Setter Property="ToolTipService.HorizontalOffset" Value="-150" />
-        <Setter Property="ToolTipService.Placement" Value="Right" />
-        <Setter Property="ToolTipService.InitialShowDelay" Value="50" />
-      </Style>
-      <Style TargetType="ItemsControl">
-        <Setter Property="Margin" Value="15,2,0,7" />
-      </Style>
-      <Style x:Key="operatorList" TargetType="StackPanel">
-        <Setter Property="Margin" Value="15,2,0,7" />
-      </Style>
-      <Style x:Key="tooltipSymbols" TargetType="Run">
-        <Setter Property="FontFamily" Value="Consolas" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="FontWeight" Value="Normal" />
-        <Setter Property="Foreground" Value="{StaticResource SecondaryHueLightBrush}" />
-      </Style>
-    </TabControl.Resources>
-
     <!--  BASIC  -->
     <TabItem Header="Basic">
-      <StackPanel Margin="15,30" VerticalAlignment="Stretch">
+      <StackPanel x:Name="pnlBasic"
+                  Margin="15,30"
+                  VerticalAlignment="Stretch">
         <!--  STRING FILTERS  -->
-        <Grid Margin="{StaticResource MgTopNormal}">
+        <Grid Margin="{StaticResource MgTopNaaarrow}">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
           </Grid.ColumnDefinitions>
+
           <!--  FORMID WARNING  -->
           <md:PackIcon Style="{StaticResource icFormIdWarning}" Visibility="{Binding Text, Converter={StaticResource SpidFormIdWarning}, ElementName=edtStringsFilter}" />
 
@@ -84,39 +146,9 @@
           <TextBox x:Name="edtStringsFilter"
                    Grid.Column="1"
                    md:HintAssist.Hint="Strings filter"
-                   KeyDown="OnAutocompleteTbKeyDown">
-            <TextBox.ToolTip>
-              <StackPanel>
-                <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="Quick reference" />
-                <TextBlock Margin="{StaticResource MgTopNaaarrow}">
-                  <Run>Imported data to be autocompleted when writing</Run>
-                  <Run Style="{StaticResource tooltipSymbols}">
-                    ,+-
-                  </Run>
-                  <Run>:</Run>
-                </TextBlock>
-                <ItemsControl>
-                  <sys:String>&#8226; Keywords</sys:String>
-                  <sys:String>&#8226; NPCs</sys:String>
-                </ItemsControl>
-                <TextBlock Text="Advanced matching functions allowed (sorted by priority):" />
-                <StackPanel Style="{StaticResource operatorList}">
-                  <TextBlock>
-                    <Run Style="{StaticResource tooltipSymbols}">(+)</Run>
-                    <Run>requirement</Run>
-                  </TextBlock>
-                  <TextBlock>
-                    <Run Style="{StaticResource tooltipSymbols}">(-)</Run>
-                    <Run>exclusion</Run>
-                  </TextBlock>
-                  <TextBlock>
-                    <Run Style="{StaticResource tooltipSymbols}">(*)</Run>
-                    <Run>wildcard</Run>
-                  </TextBlock>
-                </StackPanel>
-              </StackPanel>
-            </TextBox.ToolTip>
-          </TextBox>
+                   KeyDown="OnAutocompleteTbKeyDown"
+                   Text="{Binding Strings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                   ToolTip="{StaticResource tooltipStrings}" />
           <Button Grid.Column="2"
                   Margin="0,2,0,3"
                   Click="BtnStringsFilterClick"
@@ -140,41 +172,8 @@
           <TextBox x:Name="edtFormsFilter"
                    Grid.Column="1"
                    md:HintAssist.Hint="Forms filter"
-                   KeyDown="OnAutocompleteTbKeyDown">
-            <TextBox.ToolTip>
-              <StackPanel>
-                <TextBlock Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="Quick reference" />
-                <TextBlock Margin="{StaticResource MgTopNaaarrow}">
-                  <Run>Imported data to be autocompleted when writing</Run>
-                  <Run Style="{StaticResource tooltipSymbols}">
-                    ,+-
-                  </Run>
-                  <Run>:</Run>
-                </TextBlock>
-                <ItemsControl>
-                  <sys:String>&#8226; Race</sys:String>
-                  <sys:String>&#8226; Class</sys:String>
-                  <sys:String>&#8226; Faction</sys:String>
-                  <sys:String>&#8226; Combat Style</sys:String>
-                  <sys:String>&#8226; Cell NPC</sys:String>
-                  <sys:String>&#8226; Location</sys:String>
-                  <sys:String>&#8226; Voice Type</sys:String>
-                  <sys:String>&#8226; FormID List</sys:String>
-                  <sys:String>&#8226; Spell</sys:String>
-                </ItemsControl>
-                <TextBlock Text="Advanced matching functions allowed (sorted by priority):" />
-                <StackPanel Style="{StaticResource operatorList}">
-                  <TextBlock>
-                    <Run Style="{StaticResource tooltipSymbols}">(+)</Run>
-                    <Run>requirement</Run>
-                  </TextBlock>
-                  <TextBlock>
-                    <Run Style="{StaticResource tooltipSymbols}">(-)</Run>
-                    <Run>exclusion</Run>
-                  </TextBlock>
-                </StackPanel>
-              </StackPanel>
-            </TextBox.ToolTip>
+                   KeyDown="OnAutocompleteTbKeyDown"
+                   ToolTip="{StaticResource tooltipForms}">
             <TextBox.Text>
               <Binding Mode="OneWay"
                        Path="Text"
@@ -215,7 +214,10 @@
 
     <!--  OTHER  -->
     <TabItem Header="More...">
-      <StackPanel Margin="15,30">
+      <StackPanel MinHeight="{Binding ActualHeight, ElementName=pnlBasic, Mode=OneWay}"
+                  Margin="15,30"
+                  VerticalAlignment="Center">
+        <!--  LEVEL  -->
         <Grid VerticalAlignment="Top">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />

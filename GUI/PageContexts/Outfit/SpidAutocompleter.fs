@@ -18,6 +18,7 @@ type internal SpidAutocompleter() =
     let mutable dbPath = ""
     let suggestionsChangeEvent = Event<_>()
     let mutable suggestions = [||]
+    /// Merge maps by replacing old data with new data
     let mergeMaps (acc: Map<string, string>) k v = acc.Add(k, v)
 
     let calcSuggestions () =
@@ -59,6 +60,7 @@ type internal SpidAutocompleter() =
     member _.ImportxEdit filename =
         dbMap <-
             IO.File.ReadAllLines filename
+            |> Array.Parallel.filter (Not isNullOrEmpty)
             |> Array.Parallel.map (fun v ->
                 match v |> split "|" with
                 | [| name; cat |] -> name, cat

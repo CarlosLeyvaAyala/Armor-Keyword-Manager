@@ -101,11 +101,11 @@
         <sys:String>&#8226; Class</sys:String>
         <sys:String>&#8226; Faction</sys:String>
         <sys:String>&#8226; Combat Style</sys:String>
-        <sys:String>&#8226; Cell NPC</sys:String>
-        <sys:String>&#8226; Location</sys:String>
         <sys:String>&#8226; Voice Type</sys:String>
+        <sys:String>&#8226; NPC Reference</sys:String>
+        <sys:String>&#8226; Location</sys:String>
         <sys:String>&#8226; FormID List</sys:String>
-        <sys:String>&#8226; Spell</sys:String>
+        <!--<sys:String>&#8226; Spell</sys:String>-->
       </ItemsControl>
       <TextBlock Text="Advanced matching functions allowed (sorted by priority):" />
       <StackPanel Style="{StaticResource operatorList}">
@@ -175,9 +175,8 @@
                    KeyDown="OnAutocompleteTbKeyDown"
                    ToolTip="{StaticResource tooltipForms}">
             <TextBox.Text>
-              <Binding Mode="OneWay"
-                       Path="Text"
-                       RelativeSource="{RelativeSource Self}"
+              <Binding Mode="TwoWay"
+                       Path="Forms"
                        UpdateSourceTrigger="PropertyChanged">
                 <Binding.ValidationRules>
                   <v:SpidFormWildcardRule xmlns:v="clr-namespace:GUI.Validators;assembly=GUI" ValidatesOnTargetUpdated="True" />

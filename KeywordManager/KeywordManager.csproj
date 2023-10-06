@@ -47,6 +47,12 @@
     <None Update="Data\Keywords.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Data\spid forms.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\spid strings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Data\_.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

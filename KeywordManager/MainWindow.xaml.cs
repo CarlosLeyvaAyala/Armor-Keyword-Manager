@@ -46,13 +46,13 @@ public partial class MainWindow : Window {
     ctx.FileWatchers.Path = Settings.Default.xEditDir;
     ctx.FileWatchers.Dispatcher = Dispatcher;
 
-    ctx.FileWatchers.SpidStrings.GUIAction = _ => ImportedInfoBox("SPID string");
-    ctx.FileWatchers.SpidForms.GUIAction = _ => ImportedInfoBox("SPID form");
+    ctx.FileWatchers.SpidStrings.GUIAction = _ => ImportedSpidStatus("SPID string");
+    ctx.FileWatchers.SpidForms.GUIAction = _ => ImportedSpidStatus("SPID form");
 
     ctx.FileWatchers.Keywords.GUIAction = fn => {
       // The F# object already deals with adding them to the SPID prediction list
       ppItems.keywordMgr.ctx.AddKeywords(fn);
-      ImportedInfoBox("keyword");
+      ImportedSpidStatus("keyword");
     };
 
     ctx.FileWatchers.Items.GUIAction = fn => {
@@ -61,12 +61,12 @@ public partial class MainWindow : Window {
       // Needs to reload to clear warnings in the nav and maybe missing items in the selected outfit
       ReloadOutfitsNavAndGoToCurrent();
 
-      ImportedInfoBox("item");
+      ImportedSpidStatus("item");
     };
 
     ctx.FileWatchers.Outfits.GUIAction = _ => {
       ppOutfits.NavLoadAndGoToCurrent();
-      ImportedInfoBox("outfit");
+      ImportedSpidStatus("outfit");
     };
   }
 

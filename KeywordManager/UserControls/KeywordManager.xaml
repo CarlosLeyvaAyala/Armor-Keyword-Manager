@@ -1,18 +1,17 @@
-﻿<UserControl
-  x:Class="KeywordManager.UserControls.KeywordManagerUC"
-  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
-  xmlns:ctx="clr-namespace:GUI.UserControls;assembly=GUI"
-  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-  xmlns:guiobjs="clr-namespace:GUI.PageContexts.Keywords;assembly=GUI"
-  xmlns:local="clr-namespace:KeywordManager.UserControls"
-  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-  d:DesignHeight="450"
-  d:DesignWidth="400"
-  Loaded="OnLoaded"
-  mc:Ignorable="d">
+﻿<UserControl x:Class="KeywordManager.UserControls.KeywordManagerUC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
+             xmlns:ctx="clr-namespace:GUI.UserControls;assembly=GUI"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:guiobjs="clr-namespace:GUI.PageContexts.Keywords;assembly=GUI"
+             xmlns:local="clr-namespace:KeywordManager.UserControls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             d:DesignHeight="450"
+             d:DesignWidth="400"
+             Loaded="OnLoaded"
+             mc:Ignorable="d">
 
   <UserControl.CommandBindings>
     <!--  this command is a hack because popup menus are retarded  -->
@@ -32,29 +31,26 @@
 
     <!--  FILTER BY NAME  -->
     <Label Content="_K" Style="{StaticResource lblInvis}" />
-    <TextBox
-      x:Name="edtFilter"
-      md:HintAssist.Hint="Search..."
-      md:TextFieldAssist.HasClearButton="True"
-      md:TextFieldAssist.HasLeadingIcon="True"
-      md:TextFieldAssist.LeadingIcon="Search"
-      KeyDown="OnFilterKeyDown"
-      Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+    <TextBox x:Name="edtFilter"
+             md:HintAssist.Hint="Search..."
+             md:TextFieldAssist.HasClearButton="True"
+             md:TextFieldAssist.HasLeadingIcon="True"
+             md:TextFieldAssist.LeadingIcon="Search"
+             KeyDown="OnFilterKeyDown"
+             Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
     <!--  KEYWORD LIST  -->
-    <Label
-      Grid.Row="2"
-      Content="_A"
-      Style="{StaticResource lblInvis}"
-      Target="{x:Reference lstNav}" />
-    <ListBox
-      x:Name="lstNav"
-      Grid.Row="2"
-      d:ItemsSource="{d:SampleData ItemCount=30}"
-      ItemsSource="{Binding Nav}"
-      KeyDown="OnLstKeyDown"
-      MouseDoubleClick="OnLstDoubleClick"
-      SelectionMode="Extended">
+    <Label Grid.Row="2"
+           Content="_A"
+           Style="{StaticResource lblInvis}"
+           Target="{x:Reference lstNav}" />
+    <ListBox x:Name="lstNav"
+             Grid.Row="2"
+             d:ItemsSource="{d:SampleData ItemCount=30}"
+             ItemsSource="{Binding Nav}"
+             KeyDown="OnLstKeyDown"
+             MouseDoubleClick="OnLstDoubleClick"
+             SelectionMode="Extended">
       <ListBox.ItemTemplate>
         <DataTemplate>
           <Grid d:DataContext="{d:DesignInstance Type=guiobjs:NavListItem}">
@@ -63,34 +59,31 @@
               <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Image
-              Grid.Column="0"
-              Width="{DynamicResource ImgListPreviewSize}"
-              Height="{DynamicResource ImgListPreviewSize}"
-              HorizontalAlignment="Left"
-              Cursor="Help"
-              Source="{Binding Img, Converter={StaticResource StringToImgConverter}}"
-              Stretch="UniformToFill"
-              ToolTipService.InitialShowDelay="50">
+            <Image Grid.Column="0"
+                   Width="{DynamicResource ImgListPreviewSize}"
+                   Height="{DynamicResource ImgListPreviewSize}"
+                   HorizontalAlignment="Left"
+                   Cursor="Help"
+                   Source="{Binding Img, Converter={StaticResource StringToImgConverter}}"
+                   Stretch="UniformToFill"
+                   ToolTipService.InitialShowDelay="50">
               <Image.ToolTip>
                 <StackPanel>
-                  <TextBlock
-                    Margin="0,0,0,5"
-                    FontSize="13"
-                    FontWeight="DemiBold"
-                    Text="{Binding Name}" />
+                  <TextBlock Margin="0,0,0,5"
+                             FontSize="13"
+                             FontWeight="DemiBold"
+                             Text="{Binding Name}" />
                   <TextBlock Text="{Binding Description}" />
                 </StackPanel>
               </Image.ToolTip>
             </Image>
 
-            <TextBlock
-              Grid.Column="1"
-              VerticalAlignment="Center"
-              FontSize="11"
-              FontWeight="SemiBold"
-              Foreground="{Binding Color, Converter={StaticResource IntToKeywordColor}}"
-              Text="{Binding Name}" />
+            <TextBlock Grid.Column="1"
+                       VerticalAlignment="Center"
+                       FontSize="11"
+                       FontWeight="SemiBold"
+                       Foreground="{Binding Color, Converter={StaticResource IntToKeywordColor}}"
+                       Text="{Binding Name}" />
           </Grid>
         </DataTemplate>
       </ListBox.ItemTemplate>
@@ -106,52 +99,43 @@
           <MenuItem Click="OnChangePicClick" Header="Change _picture" />
           <Separator />
           <MenuItem Header="Keyword _color">
-            <MenuItem
-              Background="{DynamicResource ColorKeywordRed}"
-              Click="OnSetKeywordColor"
-              Style="{StaticResource MenuItemColor}"
-              Tag="1" />
-            <MenuItem
-              Background="{DynamicResource ColorKeywordPurple}"
-              Click="OnSetKeywordColor"
-              Style="{StaticResource MenuItemColor}"
-              Tag="2" />
-            <MenuItem
-              Background="{DynamicResource ColorKeywordBlue}"
-              Click="OnSetKeywordColor"
-              Style="{StaticResource MenuItemColor}"
-              Tag="3" />
-            <MenuItem
-              Background="{DynamicResource ColorKeywordGreen}"
-              Click="OnSetKeywordColor"
-              Style="{StaticResource MenuItemColor}"
-              Tag="4" />
-            <MenuItem
-              Background="{DynamicResource ColorKeywordOrange}"
-              Click="OnSetKeywordColor"
-              Style="{StaticResource MenuItemColor}"
-              Tag="5" />
-            <MenuItem
-              Background="{DynamicResource ColorKeywordGray}"
-              Click="OnSetKeywordColor"
-              Style="{StaticResource MenuItemColor}"
-              Tag="6" />
-            <MenuItem
-              Background="{DynamicResource ColorKeywordDefault}"
-              Click="OnSetKeywordColor"
-              Style="{StaticResource MenuItemColor}"
-              Tag="Color selected by F#" />
+            <MenuItem Background="{DynamicResource ColorKeywordRed}"
+                      Click="OnSetKeywordColor"
+                      Style="{StaticResource MenuItemColor}"
+                      Tag="1" />
+            <MenuItem Background="{DynamicResource ColorKeywordPurple}"
+                      Click="OnSetKeywordColor"
+                      Style="{StaticResource MenuItemColor}"
+                      Tag="2" />
+            <MenuItem Background="{DynamicResource ColorKeywordBlue}"
+                      Click="OnSetKeywordColor"
+                      Style="{StaticResource MenuItemColor}"
+                      Tag="3" />
+            <MenuItem Background="{DynamicResource ColorKeywordGreen}"
+                      Click="OnSetKeywordColor"
+                      Style="{StaticResource MenuItemColor}"
+                      Tag="4" />
+            <MenuItem Background="{DynamicResource ColorKeywordOrange}"
+                      Click="OnSetKeywordColor"
+                      Style="{StaticResource MenuItemColor}"
+                      Tag="5" />
+            <MenuItem Background="{DynamicResource ColorKeywordGray}"
+                      Click="OnSetKeywordColor"
+                      Style="{StaticResource MenuItemColor}"
+                      Tag="6" />
+            <MenuItem Background="{DynamicResource ColorKeywordDefault}"
+                      Click="OnSetKeywordColor"
+                      Style="{StaticResource MenuItemColor}"
+                      Tag="Color selected by F#" />
           </MenuItem>
           <Separator />
-          <MenuItem
-            Click="OnDeleteKeywordClick"
-            Command="c:KeywordCmds.Del"
-            Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-          <MenuItem
-            Click="OnNewKeywordClick"
-            Header="Create _new keyword"
-            ToolTip="The preferred method for adding keywords is to use the included xEdit script"
-            ToolTipService.InitialShowDelay="0" />
+          <MenuItem Click="OnDeleteKeywordClick"
+                    Command="c:KeywordCmds.Del"
+                    Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+          <MenuItem Click="OnNewKeywordClick"
+                    Header="Create _new keyword"
+                    ToolTip="The preferred method for adding keywords is to use the included xEdit script"
+                    ToolTipService.InitialShowDelay="0" />
         </ContextMenu>
       </ListBox.ContextMenu>
     </ListBox>

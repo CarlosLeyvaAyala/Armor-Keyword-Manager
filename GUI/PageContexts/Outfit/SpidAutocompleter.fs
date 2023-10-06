@@ -61,6 +61,7 @@ type internal SpidAutocompleter() =
         dbMap <-
             IO.File.ReadAllLines filename
             |> Array.Parallel.filter (Not isNullOrEmpty)
+            |> Array.distinct
             |> Array.Parallel.map (fun v ->
                 match v |> split "|" with
                 | [| name; cat |] -> name, cat

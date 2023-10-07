@@ -242,7 +242,6 @@ It can not be exported to SPID.</sys:String>
                 <Grid>
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition />
-                    <ColumnDefinition />
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="auto" />
@@ -254,14 +253,13 @@ It can not be exported to SPID.</sys:String>
                     </Style>
                   </Grid.Resources>
                   <TextBlock Margin="0" Text="Bla bla bla bla bla bla bla" />
-                  <TextBlock Grid.Column="1" Text="Bla bla bla bla bla bla bla" />
-                  <TextBlock Grid.Column="2"
+                  <TextBlock Grid.Column="1"
                              MaxWidth="80"
                              Text="10-100 One handed" />
-                  <TextBlock Grid.Column="3"
+                  <TextBlock Grid.Column="2"
                              MaxWidth="40"
                              Text="F/U/-S/C" />
-                  <TextBlock Grid.Column="4" Text="100%" />
+                  <TextBlock Grid.Column="3" Text="100%" />
                 </Grid>
               </DataTemplate>
             </ListBox.ItemTemplate>

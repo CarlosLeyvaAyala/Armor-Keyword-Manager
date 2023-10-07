@@ -213,6 +213,31 @@ module Database =
 
     let getPieces uid = (find uid).pieces
 
+    let addRule uId =
+        update uId (fun v ->
+            { v with
+                spidRules =
+                    v.spidRules
+                    |> Array.append' [| SpidRuleRaw.blank |] })
+
+    let getRule uId ruleIndex =
+        (find uId).spidRules |> Array.item ruleIndex
+
+    let updateRule uId ruleIndex rule =
+        update uId (fun v ->
+            v.spidRules[ ruleIndex ] <- rule
+            v)
+
+    let deleteRule uId ruleIndex =
+        update uId (fun v -> { v with spidRules = v.spidRules |> Array.removeAt ruleIndex })
+
+    let getRuleExportStr uId ruleIndex =
+        db[UniqueId uId].spidRules[ruleIndex].exported
+
+    /// Gets the data that will be displayed in the navigator
+    let getRuleDisplay uId ruleIndex =
+        db[UniqueId uId].spidRules[ruleIndex].display
+
     open Data.Tags
 
     Manager.addCommonTags (fun () -> toArrayOfRaw () |> Manager.getTagsAsMap)

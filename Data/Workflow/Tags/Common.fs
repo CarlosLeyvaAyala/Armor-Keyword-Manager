@@ -31,7 +31,8 @@ module internal Create =
 module internal Edit =
     open CommonTypes
 
-    let private changeTags onChanged transform (tag: string) (tags: string list) =
+    /// If the list of tags is different after applying a transformation, triggers the onChange function.
+    let changeTags onChanged transform (tag: string) (tags: string list) =
         let current = tags
         let r = transform tag tags
 

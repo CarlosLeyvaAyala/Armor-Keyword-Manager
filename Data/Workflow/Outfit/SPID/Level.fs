@@ -2,6 +2,8 @@
 
 open System
 open Data.Tags.Create
+open DMLib.Combinators
+open DMLib.String
 
 type ValidLevel =
     | ValidLevel of int
@@ -137,6 +139,28 @@ type AttributeType =
         | Restoration -> c "restoration"
         | Enchanting -> c "enchanting"
 
+    member t.display =
+        match t with
+        | ActorLevel -> ""
+        | OneHanded -> "1H"
+        | TwoHanded -> "2H"
+        | Marksman -> "arch"
+        | Block -> "blck"
+        | Smithing -> "smth"
+        | HeavyArmor -> "hv"
+        | LightArmor -> "lt"
+        | Pickpocket -> "pck"
+        | Lockpicking -> "lock"
+        | Sneak -> "snk"
+        | Alchemy -> "alch"
+        | Speechcraft -> "spch"
+        | Alteration -> "alt"
+        | Conjuration -> "con"
+        | Destruction -> "des"
+        | Illusion -> "ill"
+        | Restoration -> "res"
+        | Enchanting -> "ench"
+
     member t.asRaw = AttributeType.toRaw t
 
 type SpidLevel =
@@ -151,6 +175,15 @@ type SpidLevel =
         | Choice2Of2 _, Choice1Of2 level -> Choice1Of2 $"{level}"
         | Choice1Of2 skill, Choice1Of2 level
         | Choice1Of2 skill, Choice2Of2 level -> Choice1Of2 $"{skill}({level})"
+
+    member t.display =
+        (t.level.min.asStr,
+         t.level.max
+         |> Option.map (fun x -> x.asStr)
+         |> Option.defaultValue "∞")
+        ||> sprintf "%s-%s"
+        |> swap (sprintf "%s %s") t.skill.display
+        |> trim
 
     static member defaultMin = ValidLevel.minLvl
 

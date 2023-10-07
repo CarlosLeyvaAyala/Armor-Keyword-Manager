@@ -5,6 +5,13 @@ open Data.SPID
 open DMLib.Objects
 open DMLib.Combinators
 
+/// Used for displaying the rule in a ListBox
+type SpidRuleDisplay =
+    { filter: string
+      level: string
+      traits: string
+      chance: string }
+
 type SpidRule =
     { strings: SpidFilter
       forms: SpidFilter
@@ -64,9 +71,22 @@ type SpidRule =
         |> Array.rev
         |> Array.map (fun v ->
             match v with
-            | Choice1Of2 s
+            | Choice1Of2 s -> s
             | Choice2Of2 s -> s)
         |> Array.fold (smartFold "|") ""
+
+    member t.display =
+        let getEither =
+            function
+            | Choice1Of2 x -> x
+            | Choice2Of2 y -> y
+
+        { filter =
+            (t.strings.exported |> getEither, t.forms.exported |> getEither)
+            ||> sprintf "%s|%s"
+          level = t.level.display
+          traits = t.traits.exported |> getEither
+          chance = t.chance.asRaw.ToString() }
 
 and SpidRuleRaw =
     { strings: string

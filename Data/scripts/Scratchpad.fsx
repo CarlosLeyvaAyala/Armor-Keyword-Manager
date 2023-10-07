@@ -946,9 +946,60 @@ open System.IO
 open DMLib.Combinators
 open Data.SPID
 
-let mutable db  = Outfits.testDb()
 
-let addRule 
-"OverQueen.esp|d7f"
-Outfits.update 
-//            "0xC33~[Rektas] Sanguine [SE].esp, RedguardRace,RedguardRaceVampire,    Priest,Danica Pure-Spring,Freir-Silana,*Draugr,Nura Snow-Shod,,,    "
+let blankRule = SpidRuleRaw.blank
+
+let testRule =
+    { SpidRuleRaw.blank with
+        strings =
+            "0xC33~[Rektas] Sanguine [SE].esp, RedguardRace,RedguardRaceVampire,    Priest,Danica Pure-Spring,Freir-Silana,*Draugr,Nura Snow-Shod,,,    " }
+
+Outfits.updateRule "OverQueen.esp|d7f" 1 { testRule with traits = { testRule.traits with sex = "F" } }
+
+Outfits.updateRule
+    "OverQueen.esp|d7f"
+    0
+    { blankRule with
+        traits = { testRule.traits with sex = "F" }
+        level = { testRule.level with sk = Level.Illusion.asRaw } }
+
+Outfits.updateRule
+    "OverQueen.esp|d7f"
+    1
+    { testRule with
+        traits =
+            { testRule.traits with
+                unique = "-U"
+                summonable = "S"
+                sex = "F" }
+        level = { testRule.level with sk = Level.OneHanded.asRaw } }
+
+Outfits.getRuleExportStr "OverQueen.esp|d7f" 1
+Outfits.addRule "OverQueen.esp|d7f"
+Outfits.find "OverQueen.esp|d7f"
+
+(Outfits.getRule "OverQueen.esp|d7f" 1)
+
+let mutable db = Outfits.testDb ()
+
+let getRuleDisplay uId ruleIndex =
+    db[UniqueId uId].spidRules[ruleIndex].display
+
+getRuleDisplay "OverQueen.esp|d7f" 0
+SpidRule.allAutoTags
+
+let getAutotagsFromCurrRules uId =
+    db[UniqueId uId].spidRules
+    |> List.map (fun sel ->
+        sel.level.tags
+        |> Array.append sel.traits.tags
+        |> Array.toList)
+    |> List.collect id
+    |> List.distinct
+
+let old =
+    db[UniqueId "OverQueen.esp|d7f"].autoTags
+    |> List.map (fun v -> v.toString ())
+
+getAutotagsFromCurrRules "OverQueen.esp|d7f"
+|> List.except old

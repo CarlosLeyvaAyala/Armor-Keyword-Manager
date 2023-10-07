@@ -223,13 +223,50 @@ module Database =
     let getRule uId ruleIndex =
         (find uId).spidRules |> Array.item ruleIndex
 
+    let private setAutoTags changeRules uId =
+        let oldRules =
+            db[UniqueId uId].autoTags
+            |> List.map (fun v -> v.toString ())
+
+        changeRules ()
+
+        let newRules =
+            db[UniqueId uId].spidRules
+            |> List.map (fun sel ->
+                sel.level.tags
+                |> Array.append sel.traits.tags
+                |> Array.toList)
+            |> List.collect id
+            |> List.distinct
+
+        let diff = newRules |> List.except oldRules
+
+        let changeAutoTags transform tag (v: Raw) =
+            { v with autoTags = v.autoTags |> transform tag }
+
+        let editTag dbEdit (tag: string) = update uId (changeAutoTags dbEdit tag)
+
+        match diff.Length with
+        | GreaterThan oldRules.Length -> diff |> List.iter (editTag Data.Tags.Edit.add)
+        | LesserThan oldRules.Length ->
+            oldRules
+            |> List.except newRules
+            |> List.iter (editTag Data.Tags.Edit.delete)
+        | _ -> ()
+
     let updateRule uId ruleIndex rule =
-        update uId (fun v ->
-            v.spidRules[ ruleIndex ] <- rule
-            v)
+        let doUpdate () =
+            update uId (fun v ->
+                v.spidRules[ ruleIndex ] <- rule
+                v)
+
+        setAutoTags doUpdate uId
 
     let deleteRule uId ruleIndex =
-        update uId (fun v -> { v with spidRules = v.spidRules |> Array.removeAt ruleIndex })
+        let doDelete () =
+            update uId (fun v -> { v with spidRules = v.spidRules |> Array.removeAt ruleIndex })
+
+        setAutoTags doDelete uId
 
     let getRuleExportStr uId ruleIndex =
         db[UniqueId uId].spidRules[ruleIndex].exported

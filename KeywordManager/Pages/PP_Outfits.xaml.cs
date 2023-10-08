@@ -77,6 +77,8 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
   private void OnRename(object sender, RoutedEventArgs e) =>
     MainWindow.ExecuteAcceptCancelDlg(new() { Hint = "New name", Text = ctx.SelectedItem.Name, OnOk = ctx.Rename });
 
+  private void OnAddRule(object sender, RoutedEventArgs e) => ctx.NewRule();
+
   //private void OnAutocompleteTbKeyDown(object sender, KeyEventArgs e) {
   //  if (e.Key != Key.Return || sender is not TextBox tb || tb.SelectedText == null) return;
   //  tb.CaretIndex = tb.Text.Length;

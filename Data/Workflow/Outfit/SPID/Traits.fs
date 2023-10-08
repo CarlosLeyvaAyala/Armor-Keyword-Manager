@@ -72,6 +72,12 @@ type Unique =
         | NullableV false -> "-U"
         | NullableNull -> "N"
 
+    static member toBool =
+        function
+        | UniqueNpcs -> Nullable true
+        | NonUniqueNpcs -> Nullable false
+        | DontCare -> Nullable()
+
     member t.asStr = Unique.toStr t
     member t.exported = Unique.export t
     member t.isExportEmpty = t = DontCare
@@ -111,6 +117,12 @@ type Summonable =
         | NullableV false -> "-S"
         | NullableNull -> "N"
 
+    static member toBool =
+        function
+        | SummonableNpcs -> Nullable true
+        | NonSummonableNpcs -> Nullable false
+        | DontCare -> Nullable()
+
     member t.asStr = Summonable.toStr t
     member t.exported = Summonable.export t
     member t.isExportEmpty = t = DontCare
@@ -138,17 +150,23 @@ type Child =
         | NonChildNpcs -> "-C"
         | DontCare -> "N"
 
+    static member ofStr =
+        function
+        | "C" -> ChildNpcs
+        | "-C" -> NonChildNpcs
+        | _ -> DontCare
+
     static member ofBool =
         function
         | NullableV true -> "C"
         | NullableV false -> "-C"
         | NullableNull -> "N"
 
-    static member ofStr =
+    static member toBool =
         function
-        | "C" -> ChildNpcs
-        | "-C" -> NonChildNpcs
-        | _ -> DontCare
+        | ChildNpcs -> Nullable true
+        | NonChildNpcs -> Nullable false
+        | DontCare -> Nullable()
 
     member t.asStr = Child.toStr t
     member t.exported = Child.export t
@@ -177,17 +195,23 @@ type Leveled =
         | NonLeveledNpcs -> "-L"
         | DontCare -> "N"
 
+    static member ofStr =
+        function
+        | "L" -> LeveledNPCs
+        | "-L" -> NonLeveledNpcs
+        | _ -> DontCare
+
     static member ofBool =
         function
         | NullableV true -> "L"
         | NullableV false -> "-L"
         | NullableNull -> "N"
 
-    static member ofStr =
+    static member toBool =
         function
-        | "L" -> LeveledNPCs
-        | "-L" -> NonLeveledNpcs
-        | _ -> DontCare
+        | LeveledNPCs -> Nullable true
+        | NonLeveledNpcs -> Nullable false
+        | DontCare -> Nullable()
 
     member t.asStr = Leveled.toStr t
     member t.exported = Leveled.export t
@@ -216,17 +240,23 @@ type Teammate =
         | NonTeammateNpcs -> "-T"
         | DontCare -> "N"
 
+    static member ofStr =
+        function
+        | "T" -> TeammateNpcs
+        | "-T" -> NonTeammateNpcs
+        | _ -> DontCare
+
     static member ofBool =
         function
         | NullableV true -> "T"
         | NullableV false -> "-T"
         | NullableNull -> "N"
 
-    static member ofStr =
+    static member toBool =
         function
-        | "T" -> TeammateNpcs
-        | "-T" -> NonTeammateNpcs
-        | _ -> DontCare
+        | TeammateNpcs -> Nullable true
+        | NonTeammateNpcs -> Nullable false
+        | DontCare -> Nullable()
 
     member t.asStr = Teammate.toStr t
     member t.exported = Teammate.export t

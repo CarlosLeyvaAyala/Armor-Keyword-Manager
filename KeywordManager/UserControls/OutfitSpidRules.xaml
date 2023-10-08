@@ -11,8 +11,10 @@
              xmlns:uc="clr-namespace:KeywordManager.UserControls"
              xmlns:uw="http://cla.me/wpf/xaml/controls"
              xmlns:wc="clr-namespace:DMLib_WPF.Converters;assembly=DMLib-Fs-WPF"
+             d:DataContext="{d:DesignInstance Type=t:SpidRuleCxt}"
              d:DesignHeight="450"
              d:DesignWidth="800"
+             Loaded="OnLoaded"
              mc:Ignorable="d">
   <UserControl.Resources>
     <Style x:Key="icFormIdWarning" TargetType="md:PackIcon">
@@ -121,9 +123,9 @@
     </StackPanel>
   </UserControl.Resources>
 
-  <UserControl.DataContext>
+  <!--<UserControl.DataContext>
     <t:SpidRuleCxt x:Name="ctx" />
-  </UserControl.DataContext>
+  </UserControl.DataContext>-->
 
   <StackPanel>
     <TabControl md:ColorZoneAssist.Mode="SecondaryLight">
@@ -212,7 +214,8 @@
               </TextBox.Text>
             </TextBox>
             <Button Grid.Column="2"
-                    Margin="0,2,0,3"
+                    Margin="0,0,0,5"
+                    Click="BtnFormsFilterClick"
                     Content="{md:PackIcon Kind=BowArrow}"
                     Style="{StaticResource MaterialDesignOutlinedButton}" />
           </Grid>
@@ -428,7 +431,7 @@
       </TabItem>
     </TabControl>
 
-    <Button Content="_Apply changes">
+    <Button Click="OnApplyChanges" Content="_Apply changes">
       <Button.Style>
         <Style BasedOn="{StaticResource MaterialDesignRaisedSecondaryButton}" TargetType="Button">
           <Setter Property="Margin" Value="10,0,10,15" />
@@ -436,7 +439,7 @@
             <DataTrigger Binding="{Binding ElementName=edtFormsFilter, Path=(Validation.HasError)}" Value="true">
               <Setter Property="IsEnabled" Value="False" />
             </DataTrigger>
-            <DataTrigger Binding="{Binding ElementName=ctx, Path=RuleHasChanged}" Value="false">
+            <DataTrigger Binding="{Binding Path=RuleHasChanged}" Value="false">
               <Setter Property="IsEnabled" Value="False" />
             </DataTrigger>
           </Style.Triggers>

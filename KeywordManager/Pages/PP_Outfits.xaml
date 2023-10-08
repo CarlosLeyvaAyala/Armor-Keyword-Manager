@@ -51,7 +51,8 @@ It can not be exported to SPID.</sys:String>
   <UserControl.DataContext>
     <ctx:OutfitPageCtx x:Name="ctx"
                        EnabledControlsConditions="CanEnableControls"
-                       NavControl="{x:Reference lstNav}" />
+                       NavControl="{x:Reference lstNav}"
+                       RulesNav="{x:Reference lstRules}" />
   </UserControl.DataContext>
 
   <UserControl.CommandBindings>
@@ -236,10 +237,12 @@ It can not be exported to SPID.</sys:String>
           <ListBox x:Name="lstRules"
                    HorizontalContentAlignment="Stretch"
                    d:ItemsSource="{d:SampleData ItemCount=5}"
+                   ItemsSource="{Binding RulesList}"
+                   SelectedIndex="{Binding RuleIndex}"
                    Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ListBox.ItemTemplate>
               <DataTemplate>
-                <Grid>
+                <Grid d:DataContext="{d:DesignInstance Type=guiobjs:SpidRuleDisplay}">
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="auto" />
@@ -252,14 +255,14 @@ It can not be exported to SPID.</sys:String>
                       <Setter Property="TextTrimming" Value="CharacterEllipsis" />
                     </Style>
                   </Grid.Resources>
-                  <TextBlock Margin="0" Text="Bla bla bla bla bla bla bla" />
+                  <TextBlock Margin="0" Text="{Binding Filter, FallbackValue=NONE}" />
                   <TextBlock Grid.Column="1"
                              MaxWidth="80"
-                             Text="10-100 One handed" />
+                             Text="{Binding Level, FallbackValue=NONE}" />
                   <TextBlock Grid.Column="2"
                              MaxWidth="40"
-                             Text="F/U/-S/C" />
-                  <TextBlock Grid.Column="3" Text="100%" />
+                             Text="{Binding Traits, FallbackValue=NONE}" />
+                  <TextBlock Grid.Column="3" Text="{Binding Chance, FallbackValue=100%, StringFormat={}{0}%}" />
                 </Grid>
               </DataTemplate>
             </ListBox.ItemTemplate>
@@ -273,7 +276,7 @@ It can not be exported to SPID.</sys:String>
                 <Setter Property="Foreground" Value="{StaticResource PrimaryHueMidBrush}" />
               </Style>
             </StackPanel.Resources>
-            <Button Content="{md:PackIcon Plus}" />
+            <Button Click="OnAddRule" Content="{md:PackIcon Plus}" />
             <Button Content="{md:PackIcon Minus}" />
           </StackPanel>
         </Grid>
@@ -283,7 +286,7 @@ It can not be exported to SPID.</sys:String>
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto"
                       Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <uc:OutfitSpidRules>
+          <uc:OutfitSpidRules x:Name="spidRules" DataContext="{Binding RulesContext}">
             <uc:OutfitSpidRules.Style>
               <Style TargetType="uc:OutfitSpidRules">
                 <Setter Property="IsEnabled" Value="True" />

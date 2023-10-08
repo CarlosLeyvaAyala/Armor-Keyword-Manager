@@ -213,12 +213,19 @@ module Database =
 
     let getPieces uid = (find uid).pieces
 
+    let ruleAddedEvt = Event<string>()
+    let OnRuleAdded = ruleAddedEvt.Publish
+    let ruleUpdatedEvt = Event<string * int>()
+    let OnRuleUpdated = ruleUpdatedEvt.Publish
+
     let addRule uId =
         update uId (fun v ->
             { v with
                 spidRules =
                     v.spidRules
                     |> Array.append' [| SpidRuleRaw.blank |] })
+
+        ruleAddedEvt.Trigger uId
 
     let getRule uId ruleIndex =
         (find uId).spidRules |> Array.item ruleIndex
@@ -261,6 +268,7 @@ module Database =
                 v)
 
         setAutoTags doUpdate uId
+        ruleUpdatedEvt.Trigger(uId, ruleIndex)
 
     let deleteRule uId ruleIndex =
         let doDelete () =
@@ -274,6 +282,11 @@ module Database =
     /// Gets the data that will be displayed in the navigator
     let getRuleDisplay uId ruleIndex =
         db[UniqueId uId].spidRules[ruleIndex].display
+
+    /// Gets the data that will be displayed in the navigator
+    let getRuleDisplays uId =
+        db[UniqueId uId].spidRules
+        |> List.map SpidRule.getDisplay
 
     open Data.Tags
 

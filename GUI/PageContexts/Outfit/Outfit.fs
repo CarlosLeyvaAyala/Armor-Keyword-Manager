@@ -1,5 +1,6 @@
 ﻿namespace GUI.PageContexts
 
+open System.Windows.Controls
 open DMLib
 open DMLib.String
 open DMLib.Collections
@@ -14,17 +15,32 @@ open DMLib_WPF.Dialogs
 open GUI
 open GUI.PageContexts.Outfit
 open Data.Outfit
+open DMLib.Objects
 
 module DB = Data.Outfit.Database
 module Paths = IO.AppSettings.Paths.Img.Outfit
 
 /// Context for working with the outfits page
 [<Sealed>]
-type OutfitPageCtx() =
+type OutfitPageCtx() as t =
     inherit PageNavigationContext()
 
     let mutable filter = FilterTagEventArgs.Empty
     let mutable nav: NavListItem array = [||]
+
+    do
+        DB.OnRuleAdded
+        |> Event.add (fun _ ->
+            nameof t.RulesList |> t.OnPropertyChanged
+
+            match t.RulesNav with
+            | IsNotNull lst -> ListBox.selectLast lst
+            | _ -> ())
+
+        DB.OnRuleUpdated
+        |> Event.add (fun (_, idx) ->
+            nameof t.RulesList |> t.OnPropertyChanged
+            t.RulesNav.SelectedIndex <- idx)
 
     member t.Filter
         with get () = filter
@@ -37,6 +53,8 @@ type OutfitPageCtx() =
         a
         |> Filter.tags filter.TagMode filter.Tags
         |> Filter.pics filter.PicMode
+
+    member val RulesContext = SpidRuleCxt()
 
     ///////////////////////////////////////////////
     // PageNavigationContext implementation
@@ -74,10 +92,13 @@ type OutfitPageCtx() =
 
     override t.SelectCurrentItem() =
         base.SelectCurrentItem()
+        t.RulesContext.UniqueId <- t.UId
+        t.RulesContext.RuleIndex <- -1
 
         [ nameof t.IsNavSingleSelected
           nameof t.IsNavMultipleSelected
           nameof t.UId
+          nameof t.RulesList
           nameof t.CanSpidRulesBeActive ]
         |> t.OnPropertyChanged
 
@@ -86,10 +107,6 @@ type OutfitPageCtx() =
 
     ///////////////////////////////////////////////
     // Custom implementation
-
-    member t.CanSpidRulesBeActive =
-        t.SelectedItem.IsDistributable
-        && t.HasItemsSelected
 
     member t.SetImage filename =
         let setImage uId filename =
@@ -148,3 +165,28 @@ type OutfitPageCtx() =
 
                 t.ReloadNavAndGoToFirst()))
         )
+
+    ///////////////////////////////////////////////
+    // Rules
+
+    member val RulesNav: ListBox = null with get, set
+
+    member t.CanSpidRulesBeActive =
+        t.SelectedItem.IsDistributable
+        && t.HasItemsSelected
+
+    member t.RulesList =
+        match t.UId with
+        | IsEmptyStr -> []
+        | uId ->
+            DB.getRuleDisplays uId
+            |> List.map PageContexts.Outfit.SpidRuleDisplay
+        |> toCList
+
+    member t.RuleIndex
+        with get () = t.RulesContext.RuleIndex
+        and set v =
+            t.RulesContext.RuleIndex <- v
+            nameof t.RuleIndex |> t.OnPropertyChanged
+
+    member _.NewRule() = DB.addRule t.UId

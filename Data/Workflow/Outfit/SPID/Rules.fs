@@ -88,6 +88,8 @@ type SpidRule =
           traits = t.traits.exported |> getEither
           chance = t.chance.asRaw.ToString() }
 
+    static member getDisplay(t: SpidRule) = t.display
+
 and SpidRuleRaw =
     { strings: string
       forms: string

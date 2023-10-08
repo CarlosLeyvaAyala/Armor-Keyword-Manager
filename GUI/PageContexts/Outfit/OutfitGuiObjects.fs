@@ -185,3 +185,10 @@ type NavSelectedItem(uId: string) =
     member _.IsDistributable =
         isEmpty // Don't show warning is no outfit is selected
         || outfit.edid |> dont (contains DB.UnboundEDID)
+
+/// Spid rules in ListBox
+type SpidRuleDisplay(d: Data.SPID.SpidRuleDisplay) =
+    member _.Filter = d.filter
+    member _.Level = d.level
+    member _.Traits = d.traits
+    member _.Chance = d.chance

@@ -44,6 +44,8 @@ open Data.SPID.Level
 open Data.SPID.Traits
 open DMLib.Collections
 
+module DB = Data.Outfit.Database
+
 /// Combo box item.
 type SkillCbItem(spidId, name, category) =
     member _.Id = spidId
@@ -61,6 +63,7 @@ type SpidRuleCxt() as t =
     let mutable maxLvl = SpidLevelRaw.blank.max
     let mutable skill = SpidLevelRaw.blank.sk
     let mutable rule = SpidRuleRaw.blank
+    let mutable ruleIdx = -1
 
     let propChange (name: string) =
         t.CalculateRule()
@@ -68,12 +71,16 @@ type SpidRuleCxt() as t =
 
     /// Select string dialog.
     member _.SpidStringSelect = SpidAutocompletion.strings.SelectData
+    /// Select form dialog.
+    member _.SpidFormsSelect = SpidAutocompletion.forms.SelectData
     /// Reload suggestions.
     member _.OnStringsSuggestionsChange a = SpidAutocompletion.OnStringsChange a
     /// Reload suggestions.
     member _.OnFormsSuggestionsChange a = SpidAutocompletion.OnFormsChange a
+    member _.StringSuggestions() = SpidAutocompletion.strings.Suggestions
+    member _.FormSuggestions() = SpidAutocompletion.forms.Suggestions
 
-    member t.RuleHasChanged = rule <> SpidRuleRaw.blank
+    member _.RuleHasChanged = rule <> SpidRuleRaw.blank
 
     member t.Strings
         with get () = strings
@@ -188,3 +195,54 @@ type SpidRuleCxt() as t =
               chance = chance }
 
         nameof t.RuleHasChanged |> t.OnPropertyChanged
+
+    member val UniqueId = "" with get, set
+
+    member t.RuleIndex
+        with get () = ruleIdx
+        and set v =
+            ruleIdx <- v
+
+            rule <-
+                match v with
+                | -1 -> SpidRuleRaw.blank
+                | x -> DB.getRule t.UniqueId x
+
+            strings <- rule.strings
+            forms <- rule.forms
+
+            sex <-
+                match Sex.ofStr rule.traits.sex with
+                | Sex.Female -> SexTrait.Female
+                | Sex.Male -> SexTrait.Male
+                | Sex.DontCare -> SexTrait.Both
+
+            t.Unique.IsChecked <-
+                rule.traits.unique
+                |> Unique.ofStr
+                |> Unique.toBool
+
+            t.Summonable.IsChecked <-
+                rule.traits.summonable
+                |> Summonable.ofStr
+                |> Summonable.toBool
+
+            t.Child.IsChecked <- rule.traits.child |> Child.ofStr |> Child.toBool
+
+            t.Leveled.IsChecked <-
+                rule.traits.leveled
+                |> Leveled.ofStr
+                |> Leveled.toBool
+
+            t.Teammate.IsChecked <-
+                rule.traits.teammate
+                |> Teammate.ofStr
+                |> Teammate.toBool
+
+            chance <- rule.chance
+            minLvl <- rule.level.min
+            maxLvl <- rule.level.max
+            skill <- rule.level.sk
+            t.OnPropertyChanged()
+
+    member _.ApplyChanges() = DB.updateRule t.UniqueId ruleIdx rule

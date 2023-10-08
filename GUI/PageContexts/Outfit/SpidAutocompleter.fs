@@ -125,8 +125,8 @@ type internal SpidAutocompleter() =
         calcSuggestions ()
 
 module internal SpidAutocompletion =
-    let strings = SpidAutocompleter()
-    let forms = SpidAutocompleter()
+    let internal strings = SpidAutocompleter()
+    let internal forms = SpidAutocompleter()
     let mutable private onStringSuggestionChanged = Action<string array>(fun _ -> ())
     let mutable private onFormSuggestionChanged = Action<string array>(fun _ -> ())
 

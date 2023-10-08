@@ -322,11 +322,14 @@ It can not be exported to SPID.</sys:String>
 
             <DataGrid.RowStyle>
               <Style TargetType="DataGridRow">
+                <Setter Property="ToolTip" Value="{Binding Exported}" />
+
                 <Style.Triggers>
                   <DataTrigger Binding="{Binding IsEmpty}" Value="true">
                     <Setter Property="ToolTip" Value="This rule is actually empty and won't generate anything when exported." />
                     <Setter Property="Foreground" Value="Red" />
                     <Setter Property="FontWeight" Value="Bold" />
+                    <Setter Property="Opacity" Value="0.6" />
                     <Setter Property="BorderThickness" Value="0" />
                   </DataTrigger>
                 </Style.Triggers>

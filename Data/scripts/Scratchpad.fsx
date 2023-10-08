@@ -970,3 +970,7 @@ Outfits.deleteRule "OverQueen.esp|d7f" 0
 SpidRule.allAutoTags
 db <- Outfits.testDb ()
 db[UniqueId "OverQueen.esp|d7f"]
+
+let UId = UniqueId "OverQueen.esp|0xd7f"
+let swap (x, y) = (y, x)
+UId.Split() |> swap ||> sprintf "0x%s~%s"

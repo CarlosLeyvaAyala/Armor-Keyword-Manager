@@ -8,7 +8,6 @@ open DMLib.Types
 open FSharpx.Collections
 open System
 open Data.SPID
-open System
 
 module Items = Data.Items.Database
 
@@ -283,10 +282,20 @@ module Database =
     let getRuleDisplay uId ruleIndex =
         db[UniqueId uId].spidRules[ruleIndex].display
 
+    let private toSpidUId (uId: UniqueId) =
+        uId.Split() |> Tuple.swap ||> sprintf "0x%s~%s"
+
     /// Gets the data that will be displayed in the navigator
     let getRuleDisplays uId =
-        db[UniqueId uId].spidRules
+        let uid = UniqueId uId
+
+        db[uid].spidRules
         |> List.map SpidRule.getDisplay
+        |> List.map (fun v ->
+            { v with
+                exported =
+                    (uid |> toSpidUId, v.exported)
+                    ||> sprintf "Outfit = %s|%s" })
 
     open Data.Tags
 

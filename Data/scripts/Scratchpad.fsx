@@ -929,63 +929,12 @@ let outfits = Outfits.toArrayOfRaw ()
 //|> createRawDecls
 
 //////////////////////////////////
-//Outfit = Outfit EDID|string filter|form filter|level|traits|item count|chance
-
-let mutable db = Outfits.testDb ()
-
-let blankRule = SpidRuleRaw.blank
-
-let testRule =
-    { SpidRuleRaw.blank with
-        strings =
-            "0xC33~[Rektas] Sanguine [SE].esp, RedguardRace,RedguardRaceVampire,    Priest,Danica Pure-Spring,Freir-Silana,*Draugr,Nura Snow-Shod,,,    " }
-
-Outfits.addRule "OverQueen.esp|d7f"
-Outfits.updateRule "OverQueen.esp|d7f" 1 { testRule with traits = { testRule.traits with sex = "F" } }
-
-Outfits.updateRule
-    "OverQueen.esp|d7f"
-    0
-    { blankRule with
-        traits = { testRule.traits with sex = "F" }
-        level = { testRule.level with sk = Level.Illusion.asRaw } }
-
-Outfits.updateRule
-    "OverQueen.esp|d7f"
-    1
-    { testRule with
-        traits =
-            { testRule.traits with
-                unique = "-U"
-                summonable = "S"
-                sex = "F" }
-        level = { testRule.level with sk = Level.OneHanded.asRaw } }
-
-Outfits.find "OverQueen.esp|d7f"
-Outfits.deleteRule "OverQueen.esp|d7f" 0
-//Outfits.getRuleExportStr "OverQueen.esp|d7f" 1
-
-(Outfits.getRule "OverQueen.esp|d7f" 1)
-
-SpidRule.allAutoTags
-db <- Outfits.testDb ()
-db[UniqueId "OverQueen.esp|d7f"]
-
-let UId = UniqueId "OverQueen.esp|0xd7f"
-let swap (x, y) = (y, x)
-UId.Split() |> swap ||> sprintf "0x%s~%s"
-
-Outfits.toArray ()
-|> Array.Parallel.map (
-    (fun (uId, v) ->
-        v.spidRules
-        |> List.map (fun r ->
-            match r.isBlank with
-            | false ->
-                (v.edid.Value, r.exported)
-                ||> sprintf "Outfit = %s|%s"
-            | true -> "")
-        |> List.toArray)
+Outfits.toArrayOfRaw ()
+|> Array.Parallel.choose (
+    snd
+    >> (fun v ->
+        if v.autoTags.Length > 0 then
+            Some <| Outfits.allOutfitTags v
+        else
+            None)
 )
-|> Array.Parallel.collect id
-|> Array.filter (Not isNullOrEmpty)

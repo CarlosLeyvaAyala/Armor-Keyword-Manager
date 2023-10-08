@@ -301,12 +301,18 @@ module Database =
 
     Manager.addCommonTags (fun () -> toArrayOfRaw () |> Manager.getTagsAsMap)
 
-    /// Outfit tags that can not be altered by the player. This is called by the selected outfit.
-    let readOnlyTags outfitRawData =
+    /// Tags coming from items
+    let itemsTags outfitRawData =
         outfitRawData.pieces
         |> List.map (fun uid -> uid, Items.tryFind uid)
         |> List.choose (snd >> Option.map Items.allItemTags)
         |> List.collect id
+        |> List.distinct
+
+    /// Outfit tags that can not be altered by the player. This is called by the selected outfit.
+    let readOnlyTags outfitRawData =
+        outfitRawData
+        |> itemsTags
         |> List.append outfitRawData.autoTags
         |> List.distinct
 

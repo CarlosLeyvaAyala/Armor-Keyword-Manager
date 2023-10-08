@@ -115,7 +115,7 @@ type NavListItem(uId: string, d: Raw) =
     /// Does this outfit has pieces not added to the database?
     member t.HasMissingPieces = t.MissingPieces.Length > 0
 
-    member t.Tags = DB.allOutfitTags d
+    member _.SearchableTags = DB.allOutfitTags d
 
 type ArmorPiece(uId: string, d: Data.Items.Raw option) =
     let fullname =
@@ -143,8 +143,8 @@ type NavSelectedItem(uId: string) =
     let mutable name = outfit.name
     let pieces = outfit |> Get.pieces
 
-    member _.Tags =
-        DB.readOnlyTags outfit
+    member _.ItemsTags =
+        DB.itemsTags outfit
         |> List.sortWith compareICase
         |> toCList
 

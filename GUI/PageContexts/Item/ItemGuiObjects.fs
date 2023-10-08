@@ -52,6 +52,7 @@ type NavListItem(uniqueId: string, d: Raw) =
     member _.HasTags = u.tags.Length > 0
     member _.HasKeywords = u.keywords.Length > 0
     member _.Tags = d |> DB.allItemTags
+    member _.SearchableTags = d |> DB.allItemTags
 
     override this.ToString() = this.Name
 

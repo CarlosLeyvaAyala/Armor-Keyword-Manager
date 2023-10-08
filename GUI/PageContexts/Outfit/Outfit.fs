@@ -17,6 +17,7 @@ open GUI
 open GUI.PageContexts.Outfit
 open Data.Outfit
 open DMLib.Objects
+open System.Diagnostics
 
 module DB = Data.Outfit.Database
 module Paths = IO.AppSettings.Paths.Img.Outfit
@@ -51,6 +52,8 @@ type OutfitPageCtx() as t =
 
     member private _.appyFilter(a: NavListItem array) =
         // TODO: Filter by distribution
+        filter.Tags |> sprintf "%A" |> Debug.WriteLine
+
         a
         |> Filter.tags filter.TagMode filter.Tags
         |> Filter.pics filter.PicMode

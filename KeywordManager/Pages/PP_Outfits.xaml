@@ -449,7 +449,7 @@ It can not be exported to SPID.</sys:String>
                   md:ColorZoneAssist.Mode="PrimaryMid"
                   BorderThickness="0"
                   Header="Tags">
-          <uc:TagViewer x:Name="lstItemTags" ItemsSource="{Binding SelectedItem.Tags}" />
+          <uc:TagViewer x:Name="lstItemTags" ItemsSource="{Binding SelectedItem.ItemsTags}" />
         </GroupBox>
 
         <!--  IMAGE  -->

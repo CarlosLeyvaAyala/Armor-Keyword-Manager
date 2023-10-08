@@ -30,7 +30,7 @@ module Filter =
     /// Filters nothing.
     let nothing a = id a
 
-    let inline tags mode (expectedTags: seq<string>) (a: 'a array when 'a: (member Tags: string list)) =
+    let inline tags mode (expectedTags: seq<string>) (a: 'a array when 'a: (member SearchableTags: string list)) =
         let tagsAnd searchFor searchIn =
             searchIn
             |> List.choose (fun tags -> searchFor |> List.tryFind (fun t -> t = tags))
@@ -54,7 +54,7 @@ module Filter =
                 | _ -> failwith "Never should've come here"
 
             a
-            |> Array.Parallel.filter (fun v -> v.Tags |> andOr searchFor)
+            |> Array.Parallel.filter (fun v -> v.SearchableTags |> andOr searchFor)
 
     // These functions operate on the array and not on individual elements for performance reasons.
 

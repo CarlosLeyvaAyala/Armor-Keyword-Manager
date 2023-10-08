@@ -188,7 +188,7 @@ type FilterByTagCtx() as t =
         |> Seq.choose (fun v ->
             match v.IsChecked with
             | false -> None
-            | true -> Some v.Name)
+            | true -> Some v.OriginalName)
         |> toCList
 
     /// Set the arguments so this can be restored between tab changes

@@ -974,3 +974,18 @@ db[UniqueId "OverQueen.esp|d7f"]
 let UId = UniqueId "OverQueen.esp|0xd7f"
 let swap (x, y) = (y, x)
 UId.Split() |> swap ||> sprintf "0x%s~%s"
+
+Outfits.toArray ()
+|> Array.Parallel.map (
+    (fun (uId, v) ->
+        v.spidRules
+        |> List.map (fun r ->
+            match r.isBlank with
+            | false ->
+                (v.edid.Value, r.exported)
+                ||> sprintf "Outfit = %s|%s"
+            | true -> "")
+        |> List.toArray)
+)
+|> Array.Parallel.collect id
+|> Array.filter (Not isNullOrEmpty)

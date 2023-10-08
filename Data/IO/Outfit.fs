@@ -4,6 +4,8 @@ open System.IO
 open DMLib.Objects
 open Data.SPID
 open DMLib
+open DMLib.Combinators
+open DMLib.String
 
 module DB = Data.Outfit.Database
 
@@ -116,3 +118,24 @@ module File =
     let toJson () =
         DB.toArrayOfRaw ()
         |> IO.Common.toJson JsonData.ofRaw
+
+[<RequireQualifiedAccess>]
+module internal Export =
+    let Distr filename =
+        DB.toArray ()
+        |> Array.Parallel.map (
+            snd
+            >> (fun (v) ->
+                v.spidRules
+                |> List.map (fun r ->
+                    match r.isBlank with
+                    | false ->
+                        (v.edid.Value, r.exported)
+                        ||> sprintf "Outfit = %s|%s"
+                    | true -> "")
+                |> List.toArray)
+        )
+        |> Array.Parallel.collect id
+        |> Array.filter (Not isNullOrEmpty)
+        |> setFst filename
+        |> File.WriteAllLines

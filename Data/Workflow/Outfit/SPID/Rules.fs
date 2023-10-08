@@ -21,6 +21,8 @@ type SpidRule =
       traits: Traits.SpidTraits
       chance: SpidChance }
 
+    static member blank = SpidRuleRaw.blank |> SpidRule.ofRaw
+
     static member ofRaw(r: SpidRuleRaw) =
         { strings = r.strings |> SpidFilter.ofStr
           forms = r.forms |> SpidFilter.ofStr
@@ -93,6 +95,7 @@ type SpidRule =
           exported = t.exported }
 
     static member getDisplay(t: SpidRule) = t.display
+    member t.isBlank = t = SpidRule.blank
 
 and SpidRuleRaw =
     { strings: string

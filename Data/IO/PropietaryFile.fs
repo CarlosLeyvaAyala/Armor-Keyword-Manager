@@ -83,7 +83,8 @@ let Generate workingFile dir =
         |> getBaseName
 
     let fileGen =
-        [| IO.Items.Export.KID, "KID.ini" |] // Put here "DISTR.ini" for outfits and so on
+        [| IO.Items.Export.KID, "KID.ini"
+           IO.Outfit.Export.Distr, "DISTR.ini" |] // Put here "DISTR.ini" for outfits and so on
         |> Array.map (fun (f, t) -> f, $"{baseName}_{t}" |> combine2 dir)
 
     fileGen |> Array.Parallel.iter (fun (f, t) -> f t)

@@ -125,305 +125,323 @@
     <t:SpidRuleCxt x:Name="ctx" />
   </UserControl.DataContext>
 
-  <TabControl md:ColorZoneAssist.Mode="SecondaryLight">
-    <!--  BASIC  -->
-    <TabItem Header="Basic">
-      <StackPanel x:Name="pnlBasic"
-                  Margin="15,30"
-                  VerticalAlignment="Stretch">
-        <!--  STRING FILTERS  -->
-        <Grid x:Name="grStringsFilter" Margin="{StaticResource MgTopNaaarrow}">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="auto" />
-          </Grid.ColumnDefinitions>
+  <StackPanel>
+    <TabControl md:ColorZoneAssist.Mode="SecondaryLight">
+      <!--  BASIC  -->
+      <TabItem Header="Basic">
+        <StackPanel x:Name="pnlBasic"
+                    Margin="15,30"
+                    VerticalAlignment="Stretch">
+          <!--  STRING FILTERS  -->
+          <Grid x:Name="grStringsFilter" Margin="{StaticResource MgTopNaaarrow}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="auto" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
 
-          <Grid.Style>
-            <Style TargetType="Grid">
-              <Setter Property="Visibility" Value="Collapsed" />
-              <Style.Triggers>
-                <DataTrigger Binding="{Binding Text, ElementName=edtFormsFilter}" Value="">
-                  <Setter Property="Visibility" Value="Visible" />
-                </DataTrigger>
-              </Style.Triggers>
-            </Style>
-          </Grid.Style>
+            <Grid.Style>
+              <Style TargetType="Grid">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Text, ElementName=edtFormsFilter}" Value="">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Grid.Style>
 
-          <!--  FORMID WARNING  -->
-          <md:PackIcon Style="{StaticResource icFormIdWarning}" Visibility="{Binding Text, Converter={StaticResource SpidFormIdWarning}, ElementName=edtStringsFilter}" />
+            <!--  FORMID WARNING  -->
+            <md:PackIcon Style="{StaticResource icFormIdWarning}" Visibility="{Binding Text, Converter={StaticResource SpidFormIdWarning}, ElementName=edtStringsFilter}" />
 
-          <!--  EDIT  -->
-          <TextBox x:Name="edtStringsFilter"
-                   Grid.Column="1"
-                   md:HintAssist.Hint="Strings filter"
-                   KeyDown="OnAutocompleteTbKeyDown"
-                   Text="{Binding Strings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                   ToolTip="{StaticResource tooltipStrings}" />
-          <Button Grid.Column="2"
-                  Margin="0,2,0,3"
-                  Click="BtnStringsFilterClick"
-                  Content="{md:PackIcon Kind=Account}"
-                  Style="{StaticResource MaterialDesignOutlinedButton}" />
-        </Grid>
+            <!--  EDIT  -->
+            <TextBox x:Name="edtStringsFilter"
+                     Grid.Column="1"
+                     md:HintAssist.Hint="Strings filter"
+                     KeyDown="OnAutocompleteTbKeyDown"
+                     Text="{Binding Strings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     ToolTip="{StaticResource tooltipStrings}" />
+            <Button Grid.Column="2"
+                    Margin="0,2,0,3"
+                    Click="BtnStringsFilterClick"
+                    Content="{md:PackIcon Kind=Account}"
+                    Style="{StaticResource MaterialDesignOutlinedButton}" />
+          </Grid>
 
-        <!--  FORM FILTERS  -->
-        <Grid>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="auto" />
-          </Grid.ColumnDefinitions>
-          <Grid.Style>
-            <Style TargetType="Grid">
-              <Setter Property="Visibility" Value="Collapsed" />
-              <Style.Triggers>
-                <DataTrigger Binding="{Binding Text, ElementName=edtStringsFilter}" Value="">
-                  <Setter Property="Visibility" Value="Visible" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Visibility, ElementName=grStringsFilter}" Value="Collapsed">
-                  <Setter Property="Margin" Value="{StaticResource MgTopNaaarrow}" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Visibility, ElementName=grStringsFilter}" Value="Visible">
-                  <Setter Property="Margin" Value="{StaticResource MgTopXXWide}" />
-                </DataTrigger>
-              </Style.Triggers>
-            </Style>
-          </Grid.Style>
+          <!--  FORM FILTERS  -->
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="auto" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.Style>
+              <Style TargetType="Grid">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Text, ElementName=edtStringsFilter}" Value="">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding Visibility, ElementName=grStringsFilter}" Value="Collapsed">
+                    <Setter Property="Margin" Value="{StaticResource MgTopNaaarrow}" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding Visibility, ElementName=grStringsFilter}" Value="Visible">
+                    <Setter Property="Margin" Value="{StaticResource MgTopXXWide}" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Grid.Style>
 
-          <!--  FORMID WARNING  -->
-          <md:PackIcon Style="{StaticResource icFormIdWarning}" Visibility="{Binding Text, Converter={StaticResource SpidFormIdWarning}, ElementName=edtFormsFilter}" />
+            <!--  FORMID WARNING  -->
+            <md:PackIcon Style="{StaticResource icFormIdWarning}" Visibility="{Binding Text, Converter={StaticResource SpidFormIdWarning}, ElementName=edtFormsFilter}" />
 
-          <!--  EDIT  -->
-          <TextBox x:Name="edtFormsFilter"
-                   Grid.Column="1"
-                   md:HintAssist.Hint="Forms filter"
-                   KeyDown="OnAutocompleteTbKeyDown"
-                   ToolTip="{StaticResource tooltipForms}">
-            <TextBox.Text>
-              <Binding Mode="TwoWay"
-                       Path="Forms"
-                       UpdateSourceTrigger="PropertyChanged">
-                <Binding.ValidationRules>
-                  <v:SpidFormWildcardRule xmlns:v="clr-namespace:GUI.Validators;assembly=GUI" ValidatesOnTargetUpdated="True" />
-                </Binding.ValidationRules>
-              </Binding>
-            </TextBox.Text>
-          </TextBox>
-          <Button Grid.Column="2"
-                  Margin="0,2,0,3"
-                  Content="{md:PackIcon Kind=BowArrow}"
-                  Style="{StaticResource MaterialDesignOutlinedButton}" />
-        </Grid>
+            <!--  EDIT  -->
+            <TextBox x:Name="edtFormsFilter"
+                     Grid.Column="1"
+                     md:HintAssist.Hint="Forms filter"
+                     KeyDown="OnAutocompleteTbKeyDown"
+                     ToolTip="{StaticResource tooltipForms}">
+              <TextBox.Text>
+                <Binding Mode="TwoWay"
+                         Path="Forms"
+                         UpdateSourceTrigger="PropertyChanged">
+                  <Binding.ValidationRules>
+                    <v:SpidFormWildcardRule xmlns:v="clr-namespace:GUI.Validators;assembly=GUI" ValidatesOnTargetUpdated="True" />
+                  </Binding.ValidationRules>
+                </Binding>
+              </TextBox.Text>
+            </TextBox>
+            <Button Grid.Column="2"
+                    Margin="0,2,0,3"
+                    Content="{md:PackIcon Kind=BowArrow}"
+                    Style="{StaticResource MaterialDesignOutlinedButton}" />
+          </Grid>
 
-        <!--  SEX TRAIT  -->
-        <StackPanel x:Name="sexTrait1"
-                    Margin="{StaticResource MgTopXXXWide}"
-                    HorizontalAlignment="Center"
-                    Orientation="Horizontal">
-          <StackPanel.Style>
-            <Style TargetType="StackPanel">
-              <Style.Triggers>
-                <MultiDataTrigger>
-                  <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding Text, ElementName=edtStringsFilter}" Value="" />
-                    <Condition Binding="{Binding Text, ElementName=edtFormsFilter}" Value="" />
-                  </MultiDataTrigger.Conditions>
-                  <Setter Property="Visibility" Value="Collapsed" />
-                </MultiDataTrigger>
-              </Style.Triggers>
-            </Style>
-          </StackPanel.Style>
-          <uw:IconRadioButton GroupName="Sex1"
-                              IconKind="HumanMaleFemale"
-                              IconPosition="Left"
-                              IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Both}}"
-                              Text="Both" />
-          <uw:IconRadioButton GroupName="Sex1"
-                              IconKind="HumanFemale"
-                              IconPosition="Left"
-                              IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Female}}"
-                              Text="Female" />
-          <uw:IconRadioButton GroupName="Sex1"
-                              IconKind="HumanMale"
-                              IconPosition="Left"
-                              IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Male}}"
-                              Text="Male" />
+          <!--  SEX TRAIT  -->
+          <StackPanel x:Name="sexTrait1"
+                      Margin="{StaticResource MgTopXXXWide}"
+                      HorizontalAlignment="Center"
+                      Orientation="Horizontal">
+            <StackPanel.Style>
+              <Style TargetType="StackPanel">
+                <Style.Triggers>
+                  <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                      <Condition Binding="{Binding Text, ElementName=edtStringsFilter}" Value="" />
+                      <Condition Binding="{Binding Text, ElementName=edtFormsFilter}" Value="" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Visibility" Value="Collapsed" />
+                  </MultiDataTrigger>
+                </Style.Triggers>
+              </Style>
+            </StackPanel.Style>
+            <uw:IconRadioButton GroupName="Sex1"
+                                IconKind="HumanMaleFemale"
+                                IconPosition="Left"
+                                IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Both}}"
+                                Text="Both" />
+            <uw:IconRadioButton GroupName="Sex1"
+                                IconKind="HumanFemale"
+                                IconPosition="Left"
+                                IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Female}}"
+                                Text="Female" />
+            <uw:IconRadioButton GroupName="Sex1"
+                                IconKind="HumanMale"
+                                IconPosition="Left"
+                                IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Male}}"
+                                Text="Male" />
+          </StackPanel>
+
+          <!--  CHANCE  -->
+          <TextBlock Text="{Binding Value, ElementName=slChance, StringFormat={}Chance: {0}%}">
+            <TextBlock.Style>
+              <Style TargetType="TextBlock">
+                <Setter Property="Margin" Value="{StaticResource MgTopXXWide}" />
+
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Visibility, ElementName=sexTrait1}" Value="Visible">
+                    <Setter Property="Margin" Value="{StaticResource MgTopXWide}" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+
+            </TextBlock.Style>
+          </TextBlock>
+
+          <DockPanel Margin="{StaticResource MgTopNaarrow}">
+            <TextBlock VerticalAlignment="Center"
+                       Style="{StaticResource NavTxtD1}"
+                       Text="1" />
+            <TextBlock VerticalAlignment="Center"
+                       DockPanel.Dock="Right"
+                       Style="{StaticResource NavTxtD1}"
+                       Text="100" />
+            <Slider x:Name="slChance"
+                    Margin="10,0"
+                    Maximum="100"
+                    Minimum="1"
+                    Style="{StaticResource MaterialDesignDiscreteHorizontalSlider}"
+                    Value="{Binding Chance, Mode=TwoWay}" />
+          </DockPanel>
         </StackPanel>
+      </TabItem>
 
-        <!--  CHANCE  -->
-        <TextBlock Text="{Binding Value, ElementName=slChance, StringFormat={}Chance: {0}%}">
-          <TextBlock.Style>
-            <Style TargetType="TextBlock">
-              <Setter Property="Margin" Value="{StaticResource MgTopXXWide}" />
+      <!--  OTHER  -->
+      <TabItem Header="More...">
+        <StackPanel MinHeight="{Binding ActualHeight, ElementName=pnlBasic, Mode=OneWay}"
+                    Margin="15,30"
+                    VerticalAlignment="Center">
+          <!--  LEVEL  -->
+          <Grid VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="auto" />
+              <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
+              <ColumnDefinition Width="auto" />
+              <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-              <Style.Triggers>
-                <DataTrigger Binding="{Binding Visibility, ElementName=sexTrait1}" Value="Visible">
-                  <Setter Property="Margin" Value="{StaticResource MgTopXWide}" />
-                </DataTrigger>
-              </Style.Triggers>
-            </Style>
+            <TextBox md:HintAssist.Hint="Min level" Text="{Binding MinLvl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-          </TextBlock.Style>
-        </TextBlock>
+            <TextBox Grid.Column="2"
+                     md:HintAssist.Hint="Max level"
+                     Text="{Binding MaxLvl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-        <DockPanel Margin="{StaticResource MgTopNaarrow}">
-          <TextBlock VerticalAlignment="Center"
-                     Style="{StaticResource NavTxtD1}"
-                     Text="1" />
-          <TextBlock VerticalAlignment="Center"
-                     DockPanel.Dock="Right"
-                     Style="{StaticResource NavTxtD1}"
-                     Text="100" />
-          <Slider x:Name="slChance"
-                  Margin="10,0"
-                  Maximum="100"
-                  Minimum="1"
-                  Style="{StaticResource MaterialDesignDiscreteHorizontalSlider}"
-                  Value="{Binding Chance, Mode=TwoWay}" />
-        </DockPanel>
-      </StackPanel>
-    </TabItem>
+            <ComboBox x:Name="cbSkills"
+                      Grid.Column="4"
+                      VerticalAlignment="Bottom"
+                      md:HintAssist.HelperText="Skill level"
+                      SelectedIndex="{Binding Skill}">
+              <ComboBox.GroupStyle>
+                <GroupStyle>
+                  <GroupStyle.HeaderTemplate>
+                    <DataTemplate>
+                      <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" Text="{Binding Name}" />
+                    </DataTemplate>
+                  </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+              </ComboBox.GroupStyle>
+              <ComboBox.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding Name}" />
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+          </Grid>
 
-    <!--  OTHER  -->
-    <TabItem Header="More...">
-      <StackPanel MinHeight="{Binding ActualHeight, ElementName=pnlBasic, Mode=OneWay}"
-                  Margin="15,30"
-                  VerticalAlignment="Center">
-        <!--  LEVEL  -->
-        <Grid VerticalAlignment="Top">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
-            <ColumnDefinition Width="*" />
-          </Grid.ColumnDefinitions>
+          <!--  SEX TRAIT  -->
+          <StackPanel Margin="{StaticResource MgTopXXXWide}"
+                      HorizontalAlignment="Center"
+                      Orientation="Horizontal">
+            <uw:IconRadioButton GroupName="Sex2"
+                                IconKind="HumanMaleFemale"
+                                IconPosition="Left"
+                                IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Both}}"
+                                Text="Both" />
+            <uw:IconRadioButton GroupName="Sex2"
+                                IconKind="HumanFemale"
+                                IconPosition="Left"
+                                IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Female}}"
+                                Text="Female" />
+            <uw:IconRadioButton GroupName="Sex2"
+                                IconKind="HumanMale"
+                                IconPosition="Left"
+                                IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Male}}"
+                                Text="Male" />
+            <StackPanel.Style>
+              <Style TargetType="StackPanel">
+                <Setter Property="Visibility" Value="Visible" />
 
-          <TextBox md:HintAssist.Hint="Min level" Text="{Binding MinLvl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Visibility, ElementName=sexTrait1}" Value="Visible">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </StackPanel.Style>
+          </StackPanel>
 
-          <TextBox Grid.Column="2"
-                   md:HintAssist.Hint="Max level"
-                   Text="{Binding MaxLvl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+          <!--  TRAITS  -->
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition />
+              <ColumnDefinition />
+              <ColumnDefinition />
+              <ColumnDefinition />
+              <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.Resources>
+              <Style BasedOn="{StaticResource MaterialDesignFlatToggleButton}" TargetType="ToggleButton">
+                <Setter Property="IsThreeState" Value="True" />
+                <Setter Property="IsChecked" Value="{Binding IsChecked, Mode=TwoWay}" />
+                <Setter Property="Content" Value="{Binding Display}" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="ToolTip">
+                  <Setter.Value>
+                    <ToolTip>
+                      <StackPanel>
+                        <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" Text="Trait" />
+                        <TextBlock Margin="{StaticResource MgTopNaaarrow}" Text="{Binding Tooltip}" />
+                      </StackPanel>
+                    </ToolTip>
+                  </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                  <Trigger Property="IsChecked" Value="False">
+                    <Setter Property="Background" Value="{StaticResource ColorError}" />
+                    <Setter Property="Foreground" Value="{StaticResource ColorError}" />
+                  </Trigger>
+                  <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" Value="{StaticResource ColorOk}" />
+                    <Setter Property="Foreground" Value="{StaticResource PrimaryHueDarkForegroundBrush}" />
+                  </Trigger>
+                </Style.Triggers>
+              </Style>
+            </Grid.Resources>
+            <Grid.Style>
+              <Style TargetType="Grid">
+                <Setter Property="Margin" Value="{StaticResource MgTopWide}" />
 
-          <ComboBox x:Name="cbSkills"
-                    Grid.Column="4"
-                    VerticalAlignment="Bottom"
-                    md:HintAssist.HelperText="Skill level"
-                    SelectedIndex="{Binding Skill}">
-            <ComboBox.GroupStyle>
-              <GroupStyle>
-                <GroupStyle.HeaderTemplate>
-                  <DataTemplate>
-                    <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" Text="{Binding Name}" />
-                  </DataTemplate>
-                </GroupStyle.HeaderTemplate>
-              </GroupStyle>
-            </ComboBox.GroupStyle>
-            <ComboBox.ItemTemplate>
-              <DataTemplate>
-                <TextBlock Text="{Binding Name}" />
-              </DataTemplate>
-            </ComboBox.ItemTemplate>
-          </ComboBox>
-        </Grid>
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Visibility, ElementName=sexTrait1}" Value="Visible">
+                    <Setter Property="Margin" Value="{StaticResource MgTopXXXWide}" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Grid.Style>
 
-        <!--  SEX TRAIT  -->
-        <StackPanel Margin="{StaticResource MgTopXXXWide}"
-                    HorizontalAlignment="Center"
-                    Orientation="Horizontal">
-          <uw:IconRadioButton GroupName="Sex2"
-                              IconKind="HumanMaleFemale"
-                              IconPosition="Left"
-                              IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Both}}"
-                              Text="Both" />
-          <uw:IconRadioButton GroupName="Sex2"
-                              IconKind="HumanFemale"
-                              IconPosition="Left"
-                              IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Female}}"
-                              Text="Female" />
-          <uw:IconRadioButton GroupName="Sex2"
-                              IconKind="HumanMale"
-                              IconPosition="Left"
-                              IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Male}}"
-                              Text="Male" />
-          <StackPanel.Style>
-            <Style TargetType="StackPanel">
-              <Setter Property="Visibility" Value="Visible" />
-
-              <Style.Triggers>
-                <DataTrigger Binding="{Binding Visibility, ElementName=sexTrait1}" Value="Visible">
-                  <Setter Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-              </Style.Triggers>
-            </Style>
-          </StackPanel.Style>
+            <ToggleButton Click="OnTraitClick" DataContext="{Binding Unique}" />
+            <ToggleButton Grid.Column="1"
+                          Click="OnTraitClick"
+                          DataContext="{Binding Summonable}" />
+            <ToggleButton Grid.Column="2"
+                          Click="OnTraitClick"
+                          DataContext="{Binding Child}" />
+            <ToggleButton Grid.Column="3"
+                          Click="OnTraitClick"
+                          DataContext="{Binding Leveled}" />
+            <ToggleButton Grid.Column="4"
+                          Click="OnTraitClick"
+                          DataContext="{Binding Teammate}" />
+          </Grid>
         </StackPanel>
+      </TabItem>
+    </TabControl>
 
-        <!--  TRAITS  -->
-        <Grid>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-          </Grid.ColumnDefinitions>
-          <Grid.Resources>
-            <Style BasedOn="{StaticResource MaterialDesignFlatToggleButton}" TargetType="ToggleButton">
-              <Setter Property="IsThreeState" Value="True" />
-              <Setter Property="IsChecked" Value="{Binding IsChecked, Mode=TwoWay}" />
-              <Setter Property="Content" Value="{Binding Display}" />
-              <Setter Property="Cursor" Value="Hand" />
-              <Setter Property="ToolTip">
-                <Setter.Value>
-                  <ToolTip>
-                    <StackPanel>
-                      <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" Text="Trait" />
-                      <TextBlock Margin="{StaticResource MgTopNaaarrow}" Text="{Binding Tooltip}" />
-                    </StackPanel>
-                  </ToolTip>
-                </Setter.Value>
-              </Setter>
-              <Style.Triggers>
-                <Trigger Property="IsChecked" Value="False">
-                  <Setter Property="Background" Value="{StaticResource ColorError}" />
-                  <Setter Property="Foreground" Value="{StaticResource ColorError}" />
-                </Trigger>
-                <Trigger Property="IsChecked" Value="True">
-                  <Setter Property="Background" Value="{StaticResource ColorOk}" />
-                  <Setter Property="Foreground" Value="{StaticResource PrimaryHueDarkForegroundBrush}" />
-                </Trigger>
-              </Style.Triggers>
-            </Style>
-          </Grid.Resources>
-          <Grid.Style>
-            <Style TargetType="Grid">
-              <Setter Property="Margin" Value="{StaticResource MgTopWide}" />
-
-              <Style.Triggers>
-                <DataTrigger Binding="{Binding Visibility, ElementName=sexTrait1}" Value="Visible">
-                  <Setter Property="Margin" Value="{StaticResource MgTopXXXWide}" />
-                </DataTrigger>
-              </Style.Triggers>
-            </Style>
-          </Grid.Style>
-
-          <ToggleButton Click="OnTraitClick" DataContext="{Binding Unique}" />
-          <ToggleButton Grid.Column="1"
-                        Click="OnTraitClick"
-                        DataContext="{Binding Summonable}" />
-          <ToggleButton Grid.Column="2"
-                        Click="OnTraitClick"
-                        DataContext="{Binding Child}" />
-          <ToggleButton Grid.Column="3"
-                        Click="OnTraitClick"
-                        DataContext="{Binding Leveled}" />
-          <ToggleButton Grid.Column="4"
-                        Click="OnTraitClick"
-                        DataContext="{Binding Teammate}" />
-        </Grid>
-      </StackPanel>
-    </TabItem>
-  </TabControl>
+    <Button Content="_Apply changes">
+      <Button.Style>
+        <Style BasedOn="{StaticResource MaterialDesignRaisedSecondaryButton}" TargetType="Button">
+          <Setter Property="Margin" Value="10,0,10,15" />
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding ElementName=edtFormsFilter, Path=(Validation.HasError)}" Value="true">
+              <Setter Property="IsEnabled" Value="False" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ElementName=ctx, Path=RuleHasChanged}" Value="false">
+              <Setter Property="IsEnabled" Value="False" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Button.Style>
+    </Button>
+  </StackPanel>
 </UserControl>

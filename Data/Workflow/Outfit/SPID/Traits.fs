@@ -1,7 +1,9 @@
 ﻿namespace Data.SPID.Traits
 
+open System
 open System.Text.RegularExpressions
 open DMLib.String
+open DMLib.Objects
 open Data.Tags.Create
 
 [<AutoOpen>]
@@ -64,6 +66,12 @@ type Unique =
         | "-U" -> NonUniqueNpcs
         | _ -> DontCare
 
+    static member ofBool =
+        function
+        | NullableV true -> "U"
+        | NullableV false -> "-U"
+        | NullableNull -> "N"
+
     member t.asStr = Unique.toStr t
     member t.exported = Unique.export t
     member t.isExportEmpty = t = DontCare
@@ -97,6 +105,12 @@ type Summonable =
         | "-S" -> NonSummonableNpcs
         | _ -> DontCare
 
+    static member ofBool =
+        function
+        | NullableV true -> "S"
+        | NullableV false -> "-S"
+        | NullableNull -> "N"
+
     member t.asStr = Summonable.toStr t
     member t.exported = Summonable.export t
     member t.isExportEmpty = t = DontCare
@@ -123,6 +137,12 @@ type Child =
         | ChildNpcs -> "C"
         | NonChildNpcs -> "-C"
         | DontCare -> "N"
+
+    static member ofBool =
+        function
+        | NullableV true -> "C"
+        | NullableV false -> "-C"
+        | NullableNull -> "N"
 
     static member ofStr =
         function
@@ -157,6 +177,12 @@ type Leveled =
         | NonLeveledNpcs -> "-L"
         | DontCare -> "N"
 
+    static member ofBool =
+        function
+        | NullableV true -> "L"
+        | NullableV false -> "-L"
+        | NullableNull -> "N"
+
     static member ofStr =
         function
         | "L" -> LeveledNPCs
@@ -189,6 +215,12 @@ type Teammate =
         | TeammateNpcs -> "T"
         | NonTeammateNpcs -> "-T"
         | DontCare -> "N"
+
+    static member ofBool =
+        function
+        | NullableV true -> "T"
+        | NullableV false -> "-T"
+        | NullableNull -> "N"
 
     static member ofStr =
         function

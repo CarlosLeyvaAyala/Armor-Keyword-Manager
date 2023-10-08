@@ -48,5 +48,4 @@ public partial class OutfitSpidRules : UserControl {
   }
 
   private void OnTraitClick(object sender, RoutedEventArgs e) => ctx.CalculateRule();
-
 }

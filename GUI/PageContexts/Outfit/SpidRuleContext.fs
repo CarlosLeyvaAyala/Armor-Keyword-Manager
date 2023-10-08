@@ -41,6 +41,7 @@ type SexTrait =
 
 open Data.SPID
 open Data.SPID.Level
+open Data.SPID.Traits
 open DMLib.Collections
 
 /// Combo box item.
@@ -55,15 +56,14 @@ type SpidRuleCxt() as t =
     let mutable strings = ""
     let mutable forms = ""
     let mutable sex = SexTrait.Both
-    let mutable chance = 100
+    let mutable chance = SpidChance.blank.asRaw
     let mutable minLvl = SpidLevelRaw.blank.min
     let mutable maxLvl = SpidLevelRaw.blank.max
     let mutable skill = SpidLevelRaw.blank.sk
-
-    let calcRule () = ()
+    let mutable rule = SpidRuleRaw.blank
 
     let propChange (name: string) =
-        calcRule ()
+        t.CalculateRule()
         t.OnPropertyChanged name
 
     /// Select string dialog.
@@ -73,7 +73,7 @@ type SpidRuleCxt() as t =
     /// Reload suggestions.
     member _.OnFormsSuggestionsChange a = SpidAutocompletion.OnFormsChange a
 
-    member val Rule = SpidRuleRaw.blank with get, set
+    member t.RuleHasChanged = rule <> SpidRuleRaw.blank
 
     member t.Strings
         with get () = strings
@@ -128,7 +128,6 @@ type SpidRuleCxt() as t =
     member val Child = SpidTraitRadioButton("C", "-C", "c", "children")
     member val Leveled = SpidTraitRadioButton("L", "-L", "l", "leveled NPCs")
     member val Teammate = SpidTraitRadioButton("T", "-T", "t", "teammates")
-    member _.CalculateRule() = calcRule ()
 
     member _.SkillItems =
         [| SkillCbItem(-1, "Actor level", "")
@@ -166,3 +165,26 @@ type SpidRuleCxt() as t =
                 |> snd
 
             nameof t.Skill |> propChange
+
+    member t.CalculateRule() =
+        rule <-
+            { strings = strings
+              forms = forms
+              level =
+                { sk = skill
+                  min = minLvl
+                  max = maxLvl }
+              traits =
+                { sex =
+                    match sex with
+                    | SexTrait.Female -> Sex.Female.asStr
+                    | SexTrait.Male -> Sex.Male.asStr
+                    | _ -> Sex.DontCare.asStr
+                  unique = Unique.ofBool t.Unique.IsChecked
+                  summonable = Summonable.ofBool t.Summonable.IsChecked
+                  child = Child.ofBool t.Child.IsChecked
+                  leveled = Leveled.ofBool t.Leveled.IsChecked
+                  teammate = Teammate.ofBool t.Teammate.IsChecked }
+              chance = chance }
+
+        nameof t.RuleHasChanged |> t.OnPropertyChanged

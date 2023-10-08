@@ -52,7 +52,7 @@ It can not be exported to SPID.</sys:String>
     <ctx:OutfitPageCtx x:Name="ctx"
                        EnabledControlsConditions="CanEnableControls"
                        NavControl="{x:Reference lstNav}"
-                       RulesNav="{x:Reference lstRules}" />
+                       RulesNav="{x:Reference dgRules}" />
   </UserControl.DataContext>
 
   <UserControl.CommandBindings>
@@ -156,6 +156,8 @@ It can not be exported to SPID.</sys:String>
                              Style="{StaticResource NavTxtD1}"
                              Text="{Binding EDID, FallbackValue=EDID}"
                              ToolTip="Editor ID (EDID)" />
+
+                  <!--  ESP  -->
                   <TextBlock Text="{Binding Esp, FallbackValue=Esp}">
                     <TextBlock.Style>
                       <Style BasedOn="{StaticResource NavTxtD1}" TargetType="TextBlock">
@@ -199,7 +201,7 @@ It can not be exported to SPID.</sys:String>
               Header="SPID rules"
               IsEnabled="{Binding CanSpidRulesBeActive}"
               Style="{StaticResource MaterialDesignCardGroupBox}">
-      <Grid>
+      <Grid Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
         <Grid.RowDefinitions>
           <RowDefinition Height="*" />
           <RowDefinition Height="{StaticResource GridSepVerticalNarrow}" />
@@ -234,39 +236,103 @@ It can not be exported to SPID.</sys:String>
             <ColumnDefinition />
             <ColumnDefinition Width="auto" />
           </Grid.ColumnDefinitions>
-          <ListBox x:Name="lstRules"
-                   HorizontalContentAlignment="Stretch"
-                   d:ItemsSource="{d:SampleData ItemCount=5}"
-                   ItemsSource="{Binding RulesList}"
-                   SelectedIndex="{Binding RuleIndex}"
-                   Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                <Grid d:DataContext="{d:DesignInstance Type=guiobjs:SpidRuleDisplay}">
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="auto" />
-                  </Grid.ColumnDefinitions>
-                  <Grid.Resources>
-                    <Style TargetType="TextBlock">
-                      <Setter Property="Margin" Value="10,0,0,0" />
-                      <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                    </Style>
-                  </Grid.Resources>
-                  <TextBlock Margin="0" Text="{Binding Filter, FallbackValue=NONE}" />
-                  <TextBlock Grid.Column="1"
-                             MaxWidth="80"
-                             Text="{Binding Level, FallbackValue=NONE}" />
-                  <TextBlock Grid.Column="2"
-                             MaxWidth="40"
-                             Text="{Binding Traits, FallbackValue=NONE}" />
-                  <TextBlock Grid.Column="3" Text="{Binding Chance, FallbackValue=100%, StringFormat={}{0}%}" />
-                </Grid>
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
+
+          <DataGrid x:Name="dgRules"
+                    AlternatingRowBackground="Linen"
+                    AutoGenerateColumns="False"
+                    BorderThickness="0"
+                    CanUserReorderColumns="False"
+                    CanUserResizeColumns="False"
+                    CanUserSortColumns="False"
+                    GridLinesVisibility="None"
+                    HeadersVisibility="Column"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding RulesList}"
+                    SelectedIndex="{Binding RuleIndex}"
+                    SelectionMode="Single">
+            <DataGrid.Columns>
+              <!--  FILTER  -->
+              <DataGridTextColumn Width="*"
+                                  Binding="{Binding Filter}"
+                                  Header="Filter">
+                <DataGridTextColumn.ElementStyle>
+                  <Style TargetType="TextBlock">
+                    <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                    <Setter Property="Margin" Value="0,5,1,5" />
+                  </Style>
+                </DataGridTextColumn.ElementStyle>
+              </DataGridTextColumn>
+
+              <!--  LEVEL  -->
+              <DataGridTextColumn Width="75"
+                                  Binding="{Binding Level}"
+                                  Header="Level">
+                <DataGridTextColumn.ElementStyle>
+                  <Style TargetType="TextBlock">
+                    <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                    <Setter Property="Margin" Value="0,5,10,5" />
+                    <Setter Property="HorizontalAlignment" Value="Right" />
+                  </Style>
+                </DataGridTextColumn.ElementStyle>
+              </DataGridTextColumn>
+
+              <!--  TRAITS  -->
+              <DataGridTextColumn MaxWidth="45"
+                                  Binding="{Binding Traits}"
+                                  Header="T">
+                <DataGridTextColumn.ElementStyle>
+                  <Style TargetType="TextBlock">
+                    <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                    <Setter Property="Margin" Value="0,5,5,5" />
+                    <Setter Property="HorizontalAlignment" Value="Right" />
+                  </Style>
+                </DataGridTextColumn.ElementStyle>
+              </DataGridTextColumn>
+
+              <!--  CHANCE  -->
+              <DataGridTextColumn Width="37"
+                                  Binding="{Binding Chance, FallbackValue=100%, StringFormat={}{0}%}"
+                                  Header="">
+                <DataGridTextColumn.ElementStyle>
+                  <Style TargetType="TextBlock">
+                    <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                    <Setter Property="Margin" Value="0,5" />
+                    <Setter Property="HorizontalAlignment" Value="Right" />
+                  </Style>
+                </DataGridTextColumn.ElementStyle>
+              </DataGridTextColumn>
+            </DataGrid.Columns>
+
+            <DataGrid.ColumnHeaderStyle>
+              <Style BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}" TargetType="DataGridColumnHeader">
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="FontSize" Value="9" />
+                <Setter Property="FontWeight" Value="Bold" />
+              </Style>
+            </DataGrid.ColumnHeaderStyle>
+
+            <DataGrid.CellStyle>
+              <Style TargetType="DataGridCell">
+                <Setter Property="BorderThickness" Value="0" />
+              </Style>
+            </DataGrid.CellStyle>
+
+            <DataGrid.RowStyle>
+              <Style TargetType="DataGridRow">
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding IsEmpty}" Value="true">
+                    <Setter Property="ToolTip" Value="This rule is actually empty and won't generate anything when exported." />
+                    <Setter Property="Foreground" Value="Red" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                    <Setter Property="BorderThickness" Value="0" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </DataGrid.RowStyle>
+          </DataGrid>
 
           <!--  RULE TOOBAR  -->
           <StackPanel Grid.Column="1">
@@ -291,7 +357,7 @@ It can not be exported to SPID.</sys:String>
               <Style TargetType="uc:OutfitSpidRules">
                 <Setter Property="IsEnabled" Value="True" />
                 <Style.Triggers>
-                  <DataTrigger Binding="{Binding SelectedIndex, ElementName=lstRules}" Value="-1">
+                  <DataTrigger Binding="{Binding SelectedIndex, ElementName=dgRules}" Value="-1">
                     <Setter Property="IsEnabled" Value="False" />
                   </DataTrigger>
                 </Style.Triggers>

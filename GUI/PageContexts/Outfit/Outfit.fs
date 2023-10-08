@@ -1,4 +1,5 @@
-﻿namespace GUI.PageContexts
+﻿#nowarn "57"
+namespace GUI.PageContexts
 
 open System.Windows.Controls
 open DMLib
@@ -34,7 +35,7 @@ type OutfitPageCtx() as t =
             nameof t.RulesList |> t.OnPropertyChanged
 
             match t.RulesNav with
-            | IsNotNull lst -> ListBox.selectLast lst
+            | IsNotNull lst -> DataGrid.selectLast lst
             | _ -> ())
 
         DB.OnRuleUpdated
@@ -169,7 +170,7 @@ type OutfitPageCtx() as t =
     ///////////////////////////////////////////////
     // Rules
 
-    member val RulesNav: ListBox = null with get, set
+    member val RulesNav: DataGrid = null with get, set
 
     member t.CanSpidRulesBeActive =
         t.SelectedItem.IsDistributable

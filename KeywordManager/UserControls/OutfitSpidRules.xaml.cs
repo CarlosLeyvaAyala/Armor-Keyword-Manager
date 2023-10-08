@@ -7,7 +7,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Input;
 
 namespace KeywordManager.UserControls;
 
@@ -42,11 +41,6 @@ public partial class OutfitSpidRules : UserControl {
 
   private void OnTraitClick(object sender, RoutedEventArgs e) => Ctx.CalculateRule();
   private void OnApplyChanges(object sender, RoutedEventArgs e) => Ctx.ApplyChanges();
-
-  private void OnAutocompleteTbKeyDown(object sender, KeyEventArgs e) {
-    if (e.Key != Key.Return || sender is not TextBox tb || tb.SelectedText == null) return;
-    tb.CaretIndex = tb.Text.Length;
-  }
 
   private void BtnStringsFilterClick(object sender, RoutedEventArgs e) =>
     GetFilterByDlg(Ctx.SpidStringSelect);

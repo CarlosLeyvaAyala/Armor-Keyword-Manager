@@ -10,7 +10,8 @@ type SpidRuleDisplay =
     { filter: string
       level: string
       traits: string
-      chance: string }
+      chance: string
+      isEmpty: bool }
 
 type SpidRule =
     { strings: SpidFilter
@@ -86,7 +87,8 @@ type SpidRule =
             ||> sprintf "%s|%s"
           level = t.level.display
           traits = t.traits.exported |> getEither
-          chance = t.chance.asRaw.ToString() }
+          chance = t.chance.asRaw.ToString()
+          isEmpty = t.asRaw = SpidRuleRaw.blank }
 
     static member getDisplay(t: SpidRule) = t.display
 

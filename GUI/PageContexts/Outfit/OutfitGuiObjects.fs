@@ -192,3 +192,4 @@ type SpidRuleDisplay(d: Data.SPID.SpidRuleDisplay) =
     member _.Level = d.level
     member _.Traits = d.traits
     member _.Chance = d.chance
+    member _.IsEmpty = d.isEmpty

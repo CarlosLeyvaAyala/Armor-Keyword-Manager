@@ -160,7 +160,6 @@
             <TextBox x:Name="edtStringsFilter"
                      Grid.Column="1"
                      md:HintAssist.Hint="Strings filter"
-                     KeyDown="OnAutocompleteTbKeyDown"
                      Text="{Binding Strings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      ToolTip="{StaticResource tooltipStrings}" />
             <Button Grid.Column="2"
@@ -201,7 +200,6 @@
             <TextBox x:Name="edtFormsFilter"
                      Grid.Column="1"
                      md:HintAssist.Hint="Forms filter"
-                     KeyDown="OnAutocompleteTbKeyDown"
                      ToolTip="{StaticResource tooltipForms}">
               <TextBox.Text>
                 <Binding Mode="TwoWay"

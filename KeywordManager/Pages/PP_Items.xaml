@@ -130,7 +130,7 @@
                               <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <Grid.Resources>
-                              <Style BasedOn="{StaticResource MaterialDesignTextBlock}" TargetType="TextBlock">
+                              <Style BasedOn="{StaticResource previewImgCaption}" TargetType="TextBlock">
                                 <Setter Property="Grid.Row" Value="0" />
                                 <Setter Property="Grid.Column" Value="1" />
                                 <Setter Property="MaxWidth" Value="{Binding ActualWidth, ElementName=imgTooltip, Mode=OneWay}" />

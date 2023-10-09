@@ -1,4 +1,7 @@
-﻿#r "nuget: TextCopy"
+﻿open IO
+
+
+#r "nuget: TextCopy"
 #r "nuget: FsToolkit.ErrorHandling"
 #r "nuget: FSharpx.Collections"
 #r "nuget: FreeImage.Standard, 4.3.8"
@@ -937,35 +940,16 @@ Outfits.toArrayOfRaw ()
 
 let db = Outfits.testDb ()
 
-let rule = db[UniqueId "[COCO] Mulan.esp|8a2"].spidRules[0]
+let d = Outfits.find "[Christine] High Priestess Bikini.esp|847"
+d.img <> ""
 
-[ rule.strings.value
-  rule.forms.value
-  rule.level.asStr
-  rule.traits.asStr
-  rule.chance.asRaw.ToString() ]
-|> List.fold (smartFold "|") ""
-
-//member t.asStr =
-//    sprintf
-//        "%s/%s/%s/%s/%s/%s"
-//        t.sex.asStr
-//        t.unique.asStr
-//        t.summonable.asStr
-//        t.child.asStr
-//        t.leveled.asStr
-//        t.teammate.asStr
-
-let str = rule.traits.asStr
-let a = str |> split "/"
-Traits.Sex.ofStr a[0]
-
-rule.asStr
-
-try
-    SpidRule.ofStr "|_SRE_EncClassVampDawnHeavyMelee|1/0/-1|F/N/N/N/N/N|50|"
-    |> ignore
-
-    true
-with
-| _ -> false
+d.pieces
+|> List.choose (fun id ->
+    match (Items.find id).img with
+    | IsEmptyStr -> None
+    | img ->
+        Some
+        <| IO.AppSettings.Paths.Img.Item.expandImg id img)
+|> List.toArray
+|> Array.shuffle
+|> Array.first

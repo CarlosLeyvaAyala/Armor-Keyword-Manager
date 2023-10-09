@@ -43,4 +43,15 @@
     <Setter Property="FontSize" Value="1" />
     <Setter Property="Margin" Value="0,-1,0,0" />
   </Style>
+
+  <Style x:Key="previewImgCaption"
+         BasedOn="{StaticResource MaterialDesignTextBlock}"
+         TargetType="TextBlock">
+    <Setter Property="Grid.Row" Value="0" />
+    <Setter Property="Grid.Column" Value="1" />
+    <Setter Property="FontSize" Value="10" />
+    <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    <Setter Property="Text" Value="{Binding Name}" />
+  </Style>
+
 </ResourceDictionary>

@@ -148,23 +148,53 @@ It can not be exported to SPID.</sys:String>
                   </Style>
                 </Grid.Resources>
 
-                <!--  ACTUAL IMAGE  -->
-                <Image Source="{Binding Thumb, Mode=OneWay, Converter={StaticResource StringToImgConverter}}"
-                       Style="{StaticResource preview}"
-                       Visibility="{Binding HasImg, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <!--  THUMBNAIL  -->
+                <Image d:DataContext="{d:DesignInstance Type=guiobjs:NavListItem}">
+                  <Image.Style>
+                    <Style BasedOn="{StaticResource preview}" TargetType="Image">
+                      <!--  HAS THUMBNAIL  -->
+                      <Setter Property="Source" Value="{Binding Thumb, Mode=OneWay, Converter={StaticResource StringToImgConverter}}" />
+                      <Style.Triggers>
+                        <DataTrigger Binding="{Binding HasImg}" Value="false">
+                          <!--  MISSING IMAGE  -->
+                          <Setter Property="Source" Value="{StaticResource svgNoImage}" />
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </Image.Style>
+
                   <Image.ToolTip>
-                    <Image Height="400" Source="{Binding Img, Mode=OneWay, Converter={StaticResource StringToImgConverter}}" />
+                    <Grid>
+
+                      <!--  IMAGE TOOLTIP  -->
+                      <Image>
+                        <Image.Style>
+                          <Style TargetType="Image">
+                            <!--  ACTUAL IMAGE  -->
+                            <Setter Property="Source" Value="{Binding DisplayImg, Mode=OneWay, Converter={StaticResource StringToImgConverter}}" />
+                            <Setter Property="Height" Value="400" />
+
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding HasImg}" Value="false">
+                                <!--  MISSING IMAGE  -->
+                                <Setter Property="Source" Value="{StaticResource svgNoImage}" />
+                              </DataTrigger>
+                            </Style.Triggers>
+                          </Style>
+                        </Image.Style>
+                      </Image>
+                    </Grid>
                   </Image.ToolTip>
                 </Image>
 
                 <!--  MISSING IMAGE  -->
-                <Image Source="{StaticResource svgNoImage}"
+                <!--<Image Source="{StaticResource svgNoImage}"
                        Style="{StaticResource preview}"
                        Visibility="{Binding HasImg, Converter={StaticResource InverseBoolToVisConverter}}">
                   <Image.ToolTip>
                     <Image Height="400" Source="{StaticResource svgNoImage}" />
                   </Image.ToolTip>
-                </Image>
+                </Image>-->
 
                 <!--  TEXT  -->
                 <StackPanel Grid.Column="2" VerticalAlignment="Center">
@@ -410,7 +440,7 @@ It can not be exported to SPID.</sys:String>
                     Style="{StaticResource RuleToolBtn}" />
 
             <!--  DELETE RULE  -->
-            <Button Content="{md:PackIcon Minus}" Click="OnDeleteRule">
+            <Button Click="OnDeleteRule" Content="{md:PackIcon Minus}">
               <Button.Style>
                 <Style BasedOn="{StaticResource RuleToolBtn}" TargetType="Button">
                   <Style.Triggers>

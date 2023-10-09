@@ -10,6 +10,7 @@ open FSharpx.Collections
 open GUI.Interfaces
 open DMLib_WPF
 open DMLib.Combinators
+open System
 
 module DB = Data.Outfit.Database
 module Items = Data.Items.Database
@@ -70,6 +71,19 @@ type NavListItem(uId: string, d: Raw) =
     inherit WPFBindable()
     let mutable img = expandImg uId d.img
     let mutable name = d.name
+    let blankImg = expandImg "" ""
+
+    let randomPieceImg =
+        d.pieces
+        |> List.choose (fun id ->
+            match (Items.find id).img with
+            | IsEmptyStr -> None
+            | img ->
+                Some
+                <| IO.AppSettings.Paths.Img.Item.expandImg id img)
+        |> List.toArray
+        |> Array.shuffle
+        |> Array.first
 
     member _.IsUnbound = d.edid |> contains DB.UnboundEDID
 
@@ -105,11 +119,25 @@ type NavListItem(uId: string, d: Raw) =
             img <- v
             nameof t.Img |> t.OnPropertyChanged
 
-    member _.Thumb = Thumb.expandImg uId
-    member _.HasImg = d.img <> ""
+    member _.RandomPieceImg = randomPieceImg |> Option.defaultValue blankImg
+
+    member t.Thumb =
+        if t.UseRandomPieceImg then
+            t.RandomPieceImg
+        else
+            Thumb.expandImg uId
+
+    member t.HasImg = d.img <> "" || t.UseRandomPieceImg
     member t.HasSearchImg = t.HasImg
     member t.Refresh() = t.OnPropertyChanged()
     override t.ToString() = t.Name
+    member _.UseRandomPieceImg = d.img = "" && randomPieceImg.IsSome
+
+    member t.DisplayImg =
+        if t.UseRandomPieceImg then
+            t.RandomPieceImg
+        else
+            t.Img
 
     /// Pieces not added to the database
     member _.MissingPieces =

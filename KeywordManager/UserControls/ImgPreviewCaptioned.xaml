@@ -34,8 +34,20 @@
            Grid.RowSpan="2"
            Grid.ColumnSpan="2"
            MaxWidth="350"
-           MaxHeight="350"
-           Source="{Binding Src, Converter={StaticResource StringToImgConverter}, FallbackValue={StaticResource svgNoImage}}" />
+           MaxHeight="350">
+      <Image.Style>
+        <Style TargetType="Image">
+          <!--  ACTUAL IMAGE  -->
+          <Setter Property="Source" Value="{Binding Src, Converter={StaticResource StringToImgConverter}}" />
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding IsEmpty}" Value="true">
+              <!--  NO IMAGE  -->
+              <Setter Property="Source" Value="{StaticResource svgNoImage}" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Image.Style>
+    </Image>
 
     <!--  OUTFIT/ITEM NAME  -->
     <Border Grid.Row="0"

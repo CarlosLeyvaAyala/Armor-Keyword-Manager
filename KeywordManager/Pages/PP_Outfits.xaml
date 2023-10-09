@@ -153,7 +153,7 @@ It can not be exported to SPID.</sys:String>
                   <Image.Style>
                     <Style BasedOn="{StaticResource preview}" TargetType="Image">
                       <!--  HAS THUMBNAIL  -->
-                      <Setter Property="Source" Value="{Binding Thumb, Mode=OneWay, Converter={StaticResource StringToImgConverter}}" />
+                      <Setter Property="Source" Value="{Binding Thumb, IsAsync=true, Mode=OneWay, Converter={StaticResource StringToImgConverter}}" />
                       <Style.Triggers>
                         <DataTrigger Binding="{Binding HasImg}" Value="false">
                           <!--  MISSING IMAGE  -->
@@ -164,26 +164,14 @@ It can not be exported to SPID.</sys:String>
                   </Image.Style>
 
                   <Image.ToolTip>
-                    <Grid>
-
-                      <!--  IMAGE TOOLTIP  -->
-                      <Image>
-                        <Image.Style>
-                          <Style TargetType="Image">
-                            <!--  ACTUAL IMAGE  -->
-                            <Setter Property="Source" Value="{Binding DisplayImg, Mode=OneWay, Converter={StaticResource StringToImgConverter}}" />
-                            <Setter Property="Height" Value="400" />
-
-                            <Style.Triggers>
-                              <DataTrigger Binding="{Binding HasImg}" Value="false">
-                                <!--  MISSING IMAGE  -->
-                                <Setter Property="Source" Value="{StaticResource svgNoImage}" />
-                              </DataTrigger>
-                            </Style.Triggers>
-                          </Style>
-                        </Image.Style>
-                      </Image>
-                    </Grid>
+                    <!--<TextBlock Text="aoeueou" />-->
+                    <ItemsControl ItemsSource="{Binding DisplayImg, IsAsync=True}">
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                          <uc:ImgPreviewCaptioned DataContext="{Binding}" MaxSize="400" />
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                   </Image.ToolTip>
                 </Image>
 

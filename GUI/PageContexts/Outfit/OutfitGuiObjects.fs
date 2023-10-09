@@ -11,9 +11,11 @@ open GUI.Interfaces
 open DMLib_WPF
 open DMLib.Combinators
 open System
+open GUI.PageContexts
 
 module DB = Data.Outfit.Database
 module Items = Data.Items.Database
+module ItemsPath = IO.AppSettings.Paths.Img.Item
 
 [<RequireQualifiedAccess>]
 module Get =
@@ -76,11 +78,13 @@ type NavListItem(uId: string, d: Raw) =
     let randomPieceImg =
         d.pieces
         |> List.choose (fun id ->
-            match (Items.find id).img with
+            let item = Items.find id
+
+            match item.img with
             | IsEmptyStr -> None
             | img ->
                 Some
-                <| IO.AppSettings.Paths.Img.Item.expandImg id img)
+                <| (sprintf "Piece: %s" item.name, ItemsPath.expandImg id img))
         |> List.toArray
         |> Array.shuffle
         |> Array.first
@@ -119,11 +123,13 @@ type NavListItem(uId: string, d: Raw) =
             img <- v
             nameof t.Img |> t.OnPropertyChanged
 
-    member _.RandomPieceImg = randomPieceImg |> Option.defaultValue blankImg
+    member _.RandomPieceImg =
+        randomPieceImg
+        |> Option.defaultValue ("", blankImg)
 
     member t.Thumb =
         if t.UseRandomPieceImg then
-            t.RandomPieceImg
+            snd t.RandomPieceImg
         else
             Thumb.expandImg uId
 
@@ -134,10 +140,14 @@ type NavListItem(uId: string, d: Raw) =
     member _.UseRandomPieceImg = d.img = "" && randomPieceImg.IsSome
 
     member t.DisplayImg =
-        if t.UseRandomPieceImg then
-            t.RandomPieceImg
-        else
-            t.Img
+        [ if t.UseRandomPieceImg then
+              t.RandomPieceImg
+          elif d.img <> "" then
+              "", t.Img
+          else
+              "", ""
+          |> TooltipImage ]
+        |> toCList // Transform to list so this can be used by the Preview with caption
 
     /// Pieces not added to the database
     member _.MissingPieces =

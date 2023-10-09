@@ -137,5 +137,6 @@ module internal Export =
         )
         |> Array.Parallel.collect id
         |> Array.filter (Not isNullOrEmpty)
+        |> Array.Parallel.sort
         |> setFst filename
         |> File.WriteAllLines

@@ -187,4 +187,3 @@ type ItemsPageCtx() =
             let ext = Img.copyImg i.UId filename
             DB.update i.UId (fun d -> { d with img = ext })
             i.Refresh())
-

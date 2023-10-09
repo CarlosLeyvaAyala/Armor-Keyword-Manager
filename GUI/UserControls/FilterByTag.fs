@@ -198,11 +198,7 @@ type FilterByTagCtx() as t =
         t.ItemTypeMode <- args.ItemTypeMode
 
         t.SelectNone()
-
-        let activate =
-            args.Tags
-            |> Seq.map (fun s -> s, true)
-            |> Map.ofSeq
+        let activate = args.Tags |> Seq.map (setSnd true) |> Map.ofSeq
 
         tags
         |> Seq.iter (fun t ->

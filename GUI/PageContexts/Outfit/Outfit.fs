@@ -17,7 +17,7 @@ open GUI
 open GUI.PageContexts.Outfit
 open Data.Outfit
 open DMLib.Objects
-open System.Diagnostics
+open DMLib.Combinators
 
 module DB = Data.Outfit.Database
 module Paths = IO.AppSettings.Paths.Img.Outfit
@@ -28,6 +28,8 @@ type OutfitPageCtx() as t =
     inherit PageNavigationContext()
 
     let mutable filter = FilterTagEventArgs.Empty
+    let mutable nameFilter = ""
+    let mutable useRegexForNameFilter = false
     let mutable nav: NavListItem array = [||]
 
     do
@@ -50,11 +52,24 @@ type OutfitPageCtx() as t =
             filter <- v
             t.OnPropertyChanged()
 
+    member t.NameFilter
+        with get () = nameFilter
+        and set v =
+            nameFilter <- v
+            t.OnPropertyChanged()
+
+    member t.UseRegexForNameFilter
+        with get () = useRegexForNameFilter
+        and set v =
+            useRegexForNameFilter <- v
+
+            if Not isNullOrEmpty nameFilter then
+                t.OnPropertyChanged()
+
     member private _.appyFilter(a: NavListItem array) =
         // TODO: Filter by distribution
-        filter.Tags |> sprintf "%A" |> Debug.WriteLine
-
         a
+        |> Filter.words nameFilter useRegexForNameFilter
         |> Filter.tags filter.TagMode filter.Tags
         |> Filter.pics filter.PicMode
 

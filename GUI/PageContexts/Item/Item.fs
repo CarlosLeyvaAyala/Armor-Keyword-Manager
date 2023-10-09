@@ -48,35 +48,17 @@ type ItemsPageCtx() =
             if Not isNullOrEmpty nameFilter then
                 t.OnPropertyChanged()
 
-    //member private _.doFilter(uid, v) =
-    //    let wordFilter =
-    //        Filter.word (Filter.wordFilter nameFilter useRegexForNameFilter) (fun f (v: Raw) ->
-    //            f v.name || f v.esp || f v.edid)
-
-    //    // TODO: Maybe use outfit pics
-    //    let picFilter = Filter.pic (Filter.picFilter filter.PicMode) (fun (v: Raw) -> v.img)
-
-    //    let tagFilter =
-    //        Filter.tag (Filter.tagFilter filter.TagMode filter.Tags) (fun (v: Raw) -> v.tags |> List.append v.keywords)
-
-    //    option {
-    //        let! word = wordFilter v
-    //        let! pic = picFilter word
-    //        let! tag = tagFilter pic
-    //        return NavListItem(uid, tag)
-    //    }
-
     member private _.applyFilter(a: NavListItem array) =
         a
-        |> Filter.words nameFilter useRegexForNameFilter (fun f v -> f v.Name || f v.Esp || f v.EDID)
+        |> Filter.words nameFilter useRegexForNameFilter
         |> Filter.tags filter.TagMode filter.Tags
         |> Filter.pics filter.PicMode
         |> fun a ->
             match filter.ItemTypeMode with
             | FilterItemTypeMode.Any -> a
-            | _ ->
+            | mode ->
                 let f =
-                    match filter.ItemTypeMode with
+                    match mode with
                     | FilterItemTypeMode.OnlyArmors -> fun (v: NavListItem) -> v.IsArmor
                     | FilterItemTypeMode.OnlyWeapons -> fun v -> v.IsWeapon
                     | FilterItemTypeMode.OnlyAmmo -> fun v -> v.IsAmmo

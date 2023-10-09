@@ -79,6 +79,13 @@ type NavListItem(uId: string, d: Raw) =
     member _.UId = uId
     member _.EDID = d.edid
 
+    member t.SearchWords f =
+        f t.Name
+        || f t.EDID
+        || d.spidRules
+           |> Array.Parallel.filter (fun r -> f r.strings || f r.forms)
+           |> Array.length > 0
+
     member t.Esp =
         match t.IsUnbound with
         | true -> "<No plugin>"
@@ -100,7 +107,7 @@ type NavListItem(uId: string, d: Raw) =
 
     member _.Thumb = Thumb.expandImg uId
     member _.HasImg = d.img <> ""
-    member t.HasSearchableImg = t.HasImg
+    member t.HasSearchImg = t.HasImg
     member t.Refresh() = t.OnPropertyChanged()
     override t.ToString() = t.Name
 
@@ -115,7 +122,7 @@ type NavListItem(uId: string, d: Raw) =
     /// Does this outfit has pieces not added to the database?
     member t.HasMissingPieces = t.MissingPieces.Length > 0
 
-    member _.SearchableTags = DB.allOutfitTags d
+    member _.SearchTags = DB.allOutfitTags d
 
 type ArmorPiece(uId: string, d: Data.Items.Raw option) =
     let fullname =

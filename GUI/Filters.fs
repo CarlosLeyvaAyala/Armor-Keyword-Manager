@@ -30,7 +30,7 @@ module Filter =
     /// Filters nothing.
     let nothing a = id a
 
-    let inline tags mode (expectedTags: seq<string>) (a: 'a array when 'a: (member SearchableTags: string list)) =
+    let inline tags mode (expectedTags: seq<string>) (a: 'a array when 'a: (member SearchTags: string list)) =
         let tagsAnd searchFor searchIn =
             searchIn
             |> List.choose (fun tags -> searchFor |> List.tryFind (fun t -> t = tags))
@@ -54,14 +54,14 @@ module Filter =
                 | _ -> failwith "Never should've come here"
 
             a
-            |> Array.Parallel.filter (fun v -> v.SearchableTags |> andOr searchFor)
+            |> Array.Parallel.filter (fun v -> v.SearchTags |> andOr searchFor)
 
     // These functions operate on the array and not on individual elements for performance reasons.
 
-    let inline pics settings (a: 'a array when 'a: (member HasSearchableImg: bool)) =
+    let inline pics settings (a: 'a array when 'a: (member HasSearchImg: bool)) =
         let filter f =
             a
-            |> Array.Parallel.filter (fun v -> f v.HasSearchableImg)
+            |> Array.Parallel.filter (fun v -> f v.HasSearchImg)
 
         match settings with
         | FilterPicMode.Either -> nothing a
@@ -69,11 +69,13 @@ module Filter =
         | FilterPicMode.OnlyIfHasNoPic -> filter not
         | _ -> failwith "Never should've come here"
 
+    type HasSearchWords<'a when 'a: (member SearchWords: (string -> bool) -> bool)> = 'a 
+
     /// Filter by word content
-    let words word useRegex filterMatching a =
-        let filterItems f a =
+    let inline words word useRegex (a: 'a array when HasSearchWords<'a>) =
+        let filterItems (f: string -> bool) (a: 'a array) =
             a
-            |> Array.Parallel.filter (fun v -> filterMatching f v)
+            |> Array.Parallel.filter (fun v -> v.SearchWords f)
 
         let filterSimple word a =
             let f = containsIC word

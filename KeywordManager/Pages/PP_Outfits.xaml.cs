@@ -78,6 +78,12 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
     MainWindow.ExecuteAcceptCancelDlg(new() { Hint = "New name", Text = ctx.SelectedItem.Name, OnOk = ctx.Rename });
 
   private void OnAddRule(object sender, RoutedEventArgs e) => ctx.NewRule();
+  private void OnFilterNameByRegexClick(object sender, RoutedEventArgs e) =>
+  ctx.UseRegexForNameFilter = tbFilterByRegex.IsChecked == true;
+
+  private void OnFilterKeyDown(object sender, KeyEventArgs e) {
+    if (e.Key == Key.Enter) GUI.ListBox.FocusFromFilter(lstNav);
+  }
 
   //private void OnAutocompleteTbKeyDown(object sender, KeyEventArgs e) {
   //  if (e.Key != Key.Return || sender is not TextBox tb || tb.SelectedText == null) return;

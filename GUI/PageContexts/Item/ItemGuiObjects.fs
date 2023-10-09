@@ -41,6 +41,7 @@ type NavListItem(uniqueId: string, d: Raw) =
     member _.EDID = u.edid
     member _.UniqueId = uniqueId
     member _.UId = uniqueId
+    member t.SearchWords f = f t.Name || f t.Esp || f t.EDID
 
     interface IHasUniqueId with
         member _.UId = uniqueId
@@ -52,7 +53,7 @@ type NavListItem(uniqueId: string, d: Raw) =
     member _.HasTags = u.tags.Length > 0
     member _.HasKeywords = u.keywords.Length > 0
     member _.Tags = d |> DB.allItemTags
-    member _.SearchableTags = d |> DB.allItemTags
+    member _.SearchTags = d |> DB.allItemTags
 
     override this.ToString() = this.Name
 
@@ -67,7 +68,7 @@ type NavListItem(uniqueId: string, d: Raw) =
         |> toCList
 
     /// Used by filter search. Not intended for general UI use.
-    member t.HasSearchableImg = t.Imgs.Count > 0
+    member t.HasSearchImg = t.Imgs.Count > 0
     member t.TooltipVisible = t.HasImage || t.BelongsToOutfitWithImg
     member _.BelongsToOutfitWithImg = outfitsImg.Length > 0
     member _.BelongsToOutfit = (Outfits.outfitsWithPieces uniqueId |> Array.length) > 0

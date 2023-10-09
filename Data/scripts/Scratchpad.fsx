@@ -929,12 +929,16 @@ let outfits = Outfits.toArrayOfRaw ()
 //|> createRawDecls
 
 //////////////////////////////////
+let word = "jord"
+let f = containsIC word
+
 Outfits.toArrayOfRaw ()
-|> Array.Parallel.choose (
+|> Array.Parallel.filter (
     snd
-    >> (fun v ->
-        if v.autoTags.Length > 0 then
-            Some <| Outfits.allOutfitTags v
-        else
-            None)
+    >> (fun t ->
+        f t.name
+        || f t.edid
+        || t.spidRules
+           |> Array.Parallel.filter (fun r -> f r.strings || f r.forms)
+           |> Array.length > 0)
 )

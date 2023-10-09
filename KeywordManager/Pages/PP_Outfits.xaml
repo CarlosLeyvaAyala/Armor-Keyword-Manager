@@ -78,6 +78,43 @@ It can not be exported to SPID.</sys:String>
               Header="Navigate"
               Style="{StaticResource MaterialDesignCardGroupBox}">
       <DockPanel>
+        <!--  FILTER  -->
+        <DockPanel DockPanel.Dock="Top">
+          <!--  USE REGEX  -->
+          <ToggleButton x:Name="tbFilterByRegex"
+                        Click="OnFilterNameByRegexClick"
+                        Content="{md:PackIcon Kind=Regex}"
+                        DockPanel.Dock="Right"
+                        IsChecked="{Binding Source={StaticResource appSettings}, Path=Default.itemFilterNameByRegex}"
+                        Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}"
+                        ToolTip="Use regular expression" />
+
+          <!--  FILTER TEXTBOX  -->
+          <Label Content="_N"
+                 DockPanel.Dock="Top"
+                 Style="{StaticResource lblInvis}"
+                 Target="{x:Reference edtFilter}" />
+          <TextBox x:Name="edtFilter"
+                   Margin="{DynamicResource MgGrpContent}"
+                   md:HintAssist.Hint="Search..."
+                   md:TextFieldAssist.HasClearButton="True"
+                   md:TextFieldAssist.HasLeadingIcon="True"
+                   md:TextFieldAssist.LeadingIcon="Search"
+                   KeyDown="OnFilterKeyDown"
+                   ToolTip="Searches by name, Editor ID (EDID) or SPID rules">
+            <TextBox.Text>
+              <Binding Mode="TwoWay"
+                       Path="NameFilter"
+                       UpdateSourceTrigger="PropertyChanged">
+                <Binding.ValidationRules>
+                  <v:RegexRule xmlns:v="clr-namespace:DMLib_WPF.Validators;assembly=DMLib-Fs-WPF" ValidatesOnTargetUpdated="True" />
+                </Binding.ValidationRules>
+              </Binding>
+            </TextBox.Text>
+          </TextBox>
+        </DockPanel>
+
+        <!--  NAV  -->
         <ListBox x:Name="lstNav"
                  HorizontalContentAlignment="Stretch"
                  d:ItemsSource="{d:SampleData ItemCount=10}"

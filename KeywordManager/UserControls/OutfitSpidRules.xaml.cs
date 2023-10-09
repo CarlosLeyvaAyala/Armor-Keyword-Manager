@@ -51,7 +51,9 @@ public partial class OutfitSpidRules : UserControl {
     Values = lst.Select(v => new DisplayStrings(v.Item1, v.Item1, centerRightDetail: v.Item2)).ToList(),
     OnOk = lst => {
       Debug.WriteLine(lst[0]);
-    }
+    },
+    RegexButton_Show = true,
+    RegexButton_Checked = Properties.Settings.Default.itemFilterNameByRegex,
   });
 
 }

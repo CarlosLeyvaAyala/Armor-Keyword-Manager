@@ -186,6 +186,5 @@ type ItemsPageCtx() =
         |> Seq.iter (fun i ->
             let ext = Img.copyImg i.UId filename
             DB.update i.UId (fun d -> { d with img = ext })
-            Img.expandImg i.UId ext |> ignore)
+            i.Refresh())
 
-        nameof t.Nav |> t.OnPropertyChanged

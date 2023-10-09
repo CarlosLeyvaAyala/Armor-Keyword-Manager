@@ -166,9 +166,9 @@ type FilterByTagCtx() as t =
         |> Seq.iter (fun v ->
             v.IsVisible <-
                 match filter with
-                | ""
                 | null
-                | IsContainedInIC v.Name -> true
+                | ""
+                | IsContainedInIC v.OriginalName -> true
                 | _ -> false)
 
         tags
@@ -207,7 +207,7 @@ type FilterByTagCtx() as t =
         tags
         |> Seq.iter (fun t ->
             t.IsChecked <-
-                match activate |> Map.tryFind t.Name with
+                match activate |> Map.tryFind t.OriginalName with
                 | None -> false
                 | Some v -> v)
 

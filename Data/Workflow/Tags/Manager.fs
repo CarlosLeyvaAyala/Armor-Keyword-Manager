@@ -21,8 +21,8 @@ let private sendTagsChanged () =
     let unsortedTags =
         commonTagsMap
         |> Map.map (fun _ _ -> ManuallyAdded)
-        |> Map.merge (fun _ (_, n) -> n) keywordsMap
-        |> Map.merge (fun _ (_, n) -> n) reservedTagsMap
+        |> Map.merge (fun _ (o, _) -> o) keywordsMap
+        |> Map.merge (fun _ (o, _) -> o) reservedTagsMap
         |> Map.toArray
 
     query {

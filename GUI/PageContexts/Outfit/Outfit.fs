@@ -41,7 +41,7 @@ type OutfitPageCtx() as t =
 
         DB.OnRuleUpdated
         |> Event.add (fun (_, idx) ->
-            nameof t.RulesList |> t.OnPropertyChanged
+            t.ReloadNavAndGoToCurrent()
             t.RulesNav.SelectedIndex <- idx)
 
     member t.Filter

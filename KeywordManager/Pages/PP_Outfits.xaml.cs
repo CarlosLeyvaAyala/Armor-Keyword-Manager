@@ -77,7 +77,6 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
   private void OnRename(object sender, RoutedEventArgs e) =>
     MainWindow.ExecuteAcceptCancelDlg(new() { Hint = "New name", Text = ctx.SelectedItem.Name, OnOk = ctx.Rename });
 
-  private void OnAddRule(object sender, RoutedEventArgs e) => ctx.NewRule();
   private void OnFilterNameByRegexClick(object sender, RoutedEventArgs e) =>
   ctx.UseRegexForNameFilter = tbFilterByRegex.IsChecked == true;
 
@@ -85,9 +84,12 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
     if (e.Key == Key.Enter) GUI.ListBox.FocusFromFilter(lstNav);
   }
 
+  #region Rules
+  private void OnAddRule(object sender, RoutedEventArgs e) => ctx.NewRule();
+  private void OnDeleteRule(object sender, RoutedEventArgs e) => ctx.DeleteRule();
   private void OnCopyRule(object sender, ExecutedRoutedEventArgs e) => ctx.CopyRule();
   private void OnCanCopyRule(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.CanCopyRule();
-
   private void OnCanPasteRule(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.CanPasteRule();
   private void OnPasteRule(object sender, ExecutedRoutedEventArgs e) => ctx.PasteRule();
+  #endregion
 }

@@ -212,9 +212,11 @@ module Database =
 
     let getPieces uid = (find uid).pieces
 
-    let ruleAddedEvt = Event<string>()
+    let private ruleAddedEvt = Event<string>()
     let OnRuleAdded = ruleAddedEvt.Publish
-    let ruleUpdatedEvt = Event<string * int>()
+    let private ruleDeletedEvt = Event<string * int>()
+    let OnRuleDeleted = ruleDeletedEvt.Publish
+    let private ruleUpdatedEvt = Event<string * int>()
     let OnRuleUpdated = ruleUpdatedEvt.Publish
 
     let addRule uId =
@@ -274,6 +276,7 @@ module Database =
             update uId (fun v -> { v with spidRules = v.spidRules |> Array.removeAt ruleIndex })
 
         setAutoTags doDelete uId
+        ruleDeletedEvt.Trigger(uId, db[UniqueId uId].spidRules.Length)
 
     let getRuleExportStr uId ruleIndex =
         db[UniqueId uId].spidRules[ruleIndex].exported

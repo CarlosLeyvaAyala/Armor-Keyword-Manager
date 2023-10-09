@@ -38,9 +38,14 @@ type OutfitPageCtx() as t =
         |> Event.add (fun _ ->
             nameof t.RulesList |> t.OnPropertyChanged
 
-            match t.RulesNav with
-            | IsNotNull lst -> DataGrid.selectLast lst
-            | _ -> ())
+            whenIsNotNull (fun lst -> DataGrid.selectLast lst) t.RulesNav)
+
+        DB.OnRuleDeleted
+        |> Event.add (fun _ ->
+            nameof t.RulesList |> t.OnPropertyChanged
+
+            t.RulesNav
+            |> whenIsNotNull (fun lst -> lst.SelectedIndex <- -1))
 
         DB.OnRuleUpdated
         |> Event.add (fun (_, idx) ->
@@ -210,6 +215,7 @@ type OutfitPageCtx() as t =
             nameof t.RuleIndex |> t.OnPropertyChanged
 
     member t.NewRule() = DB.addRule t.UId
+    member t.DeleteRule() = DB.deleteRule t.UId t.RuleIndex
     member t.CanCopyRule() = t.RulesNav.SelectedIndex >= 0
 
     member t.CopyRule() =

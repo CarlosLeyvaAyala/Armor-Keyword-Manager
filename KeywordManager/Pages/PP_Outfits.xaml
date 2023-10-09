@@ -410,7 +410,7 @@ It can not be exported to SPID.</sys:String>
                     Style="{StaticResource RuleToolBtn}" />
 
             <!--  DELETE RULE  -->
-            <Button Content="{md:PackIcon Minus}">
+            <Button Content="{md:PackIcon Minus}" Click="OnDeleteRule">
               <Button.Style>
                 <Style BasedOn="{StaticResource RuleToolBtn}" TargetType="Button">
                   <Style.Triggers>

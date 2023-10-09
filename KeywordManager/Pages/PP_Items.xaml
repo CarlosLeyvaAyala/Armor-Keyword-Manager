@@ -78,7 +78,8 @@
                    md:TextFieldAssist.HasClearButton="True"
                    md:TextFieldAssist.HasLeadingIcon="True"
                    md:TextFieldAssist.LeadingIcon="Search"
-                   KeyDown="OnFilterKeyDown">
+                   KeyDown="OnFilterKeyDown"
+                   ToolTip="Searches by name, esp or Editor ID (EDID)">
             <TextBox.Text>
               <Binding Mode="TwoWay"
                        Path="NameFilter"
@@ -146,8 +147,6 @@
                                    MaxWidth="350"
                                    MaxHeight="350"
                                    Source="{Binding Src, Converter={StaticResource StringToImgConverter}}" />
-                            <TextBlock Margin="5,4,4,3" Foreground="Black" />
-                            <TextBlock Margin="5,3,5,3" />
 
                             <!--  OUTFIT/ITEM NAME  -->
                             <Border Grid.Row="0"
@@ -160,6 +159,9 @@
                                 <BlurEffect Radius="15" />
                               </Border.Effect>
                             </Border>
+
+                            <TextBlock Margin="5,4,4,3" Foreground="Black" />
+                            <TextBlock Margin="5,3,5,3" />
                           </Grid>
                         </DataTemplate>
                       </ItemsControl.ItemTemplate>

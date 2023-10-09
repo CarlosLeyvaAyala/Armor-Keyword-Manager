@@ -37,6 +37,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
 
   private void OnLoaded(object sender, RoutedEventArgs e) {
     if (ctx.IsFinishedLoading) return; // Avoid repeated loading
+    ctx.UseRegexForNameFilter = tbFilterByRegex.IsChecked == true;
     ctx.IsFinishedLoading = true;
     ctx.ReloadNavAndGoToFirst();
   }

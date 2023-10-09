@@ -120,54 +120,14 @@
                       </ItemsControl.ItemsPanel>
                       <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                          <Grid>
-                            <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="*" />
-                              <ColumnDefinition Width="auto" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                              <RowDefinition Height="auto" />
-                              <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid.Resources>
-                              <Style BasedOn="{StaticResource previewImgCaption}" TargetType="TextBlock">
-                                <Setter Property="Grid.Row" Value="0" />
-                                <Setter Property="Grid.Column" Value="1" />
-                                <Setter Property="MaxWidth" Value="{Binding ActualWidth, ElementName=imgTooltip, Mode=OneWay}" />
-                                <Setter Property="FontSize" Value="10" />
-                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                                <Setter Property="Text" Value="{Binding Name}" />
-                              </Style>
-                            </Grid.Resources>
-
-                            <!--  IMAGE  -->
-                            <Image x:Name="imgTooltip"
-                                   Grid.RowSpan="2"
-                                   Grid.ColumnSpan="2"
-                                   MaxWidth="350"
-                                   MaxHeight="350"
-                                   Source="{Binding Src, Converter={StaticResource StringToImgConverter}}" />
-
-                            <!--  OUTFIT/ITEM NAME  -->
-                            <Border Grid.Row="0"
-                                    Grid.Column="1"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"
-                                    Background="Black"
-                                    Opacity="0.6">
-                              <Border.Effect>
-                                <BlurEffect Radius="15" />
-                              </Border.Effect>
-                            </Border>
-
-                            <TextBlock Margin="5,4,4,3" Foreground="Black" />
-                            <TextBlock Margin="5,3,5,3" />
-                          </Grid>
+                          <!--  IMAGES  -->
+                          <uc:ImgPreviewCaptioned DataContext="{Binding}" />
                         </DataTemplate>
                       </ItemsControl.ItemTemplate>
                     </ItemsControl>
                   </Grid>
                 </Grid.ToolTip>
+
                 <Grid.RowDefinitions>
                   <RowDefinition Height="auto" />
                   <RowDefinition Height="auto" />

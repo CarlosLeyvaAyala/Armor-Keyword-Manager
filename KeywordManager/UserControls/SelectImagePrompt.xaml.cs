@@ -27,11 +27,13 @@ public partial class SelectImagePrompt : UserControl {
 
   #region IsPromptVisible
   public static readonly DependencyProperty IsPromptVisibleProperty =
-    DependencyProperty.Register(name: "IsPromptVisible",
-                                propertyType: typeof(bool),
-                                ownerType: typeof(SelectImagePrompt),
-                                typeMetadata: new PropertyMetadata(defaultValue: true,
-                                                                   propertyChangedCallback: IsPromptVisiblePropertyChanged));
+    DependencyProperty.Register(
+      name: "IsPromptVisible",
+      propertyType: typeof(bool),
+      ownerType: typeof(SelectImagePrompt),
+      typeMetadata: new PropertyMetadata(
+        defaultValue: true,
+        propertyChangedCallback: IsPromptVisiblePropertyChanged));
 
   private static void IsPromptVisiblePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
     ((SelectImagePrompt)d).IsPromptVisiblePropertyChanged((bool)e.NewValue);

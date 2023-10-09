@@ -9,12 +9,9 @@ open DMLib.Collections
 open IO.AppSettings.Paths.Img
 open DMLib_WPF
 open GUI.Interfaces
+open GUI.PageContexts
 
 module Outfits = Data.Outfit.Database
-
-type TooltipImage(name, img) =
-    member _.Name = name
-    member _.Src = img
 
 type NavListItem(uniqueId: string, d: Raw) =
     inherit WPFBindable()

@@ -17,6 +17,7 @@
     <Compile Include="UserControls\KeywordManager\Keyword.fs" />
     <Compile Include="UserControls\BatchRename.fs" />
     <Compile Include="UserControls\FilterByTag.fs" />
+    <Compile Include="PageContexts\GuiObjects.fs" />
     <Compile Include="PageContexts\Item\ItemGuiObjects.fs" />
     <Compile Include="PageContexts\Item\Item.fs" />
     <Compile Include="PageContexts\Outfit\SpidAutocompleter.fs" />

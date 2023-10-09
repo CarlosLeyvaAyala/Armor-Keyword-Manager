@@ -313,6 +313,16 @@ type SpidTraits =
             t.leveled.asStr
             t.teammate.asStr
 
+    static member ofStr(str: string) =
+        let a = str |> split "/"
+
+        { sex = Sex.ofStr a[0]
+          unique = Unique.ofStr a[1]
+          summonable = Summonable.ofStr a[2]
+          child = Child.ofStr a[3]
+          leveled = Leveled.ofStr a[4]
+          teammate = Teammate.ofStr a[5] }
+
     member t.exported =
         if t.isExportEmpty then
             Choice2Of2 "NONE"

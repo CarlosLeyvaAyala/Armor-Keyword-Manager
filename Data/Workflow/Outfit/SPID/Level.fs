@@ -4,17 +4,18 @@ open System
 open Data.Tags.Create
 open DMLib.Combinators
 open DMLib.String
+open DMLib
 
 type ValidLevel =
-    | ValidLevel of int
+    | NowValidLevel of int
     static member minLvl = 1
 
     static member ofInt x =
-        Math.Max(ValidLevel.minLvl, x) |> ValidLevel
+        Math.Max(ValidLevel.minLvl, x) |> NowValidLevel
 
-    static member toInt(ValidLevel x) = x
+    static member toInt(NowValidLevel x) = x
     member t.value = ValidLevel.toInt t
-    member t.asStr = let (ValidLevel x) = t in x.ToString()
+    member t.asStr = let (NowValidLevel x) = t in x.ToString()
 
 type AttributeLevel =
     { min: ValidLevel
@@ -24,8 +25,8 @@ type AttributeLevel =
         match t.min, t.max with
         | min, None when min.value > 1 -> Choice1Of2 min.asStr
         | min, None -> Choice2Of2 min.asStr
-        | (ValidLevel min), Some (ValidLevel max) when max < min -> Choice1Of2 $"{max}/{min}"
-        | (ValidLevel min), Some (ValidLevel max) -> Choice1Of2 $"{min}/{max}"
+        | (NowValidLevel min), Some (NowValidLevel max) when max < min -> Choice1Of2 $"{max}/{min}"
+        | (NowValidLevel min), Some (NowValidLevel max) -> Choice1Of2 $"{min}/{max}"
 
 type AttributeType =
     | ActorLevel
@@ -211,6 +212,33 @@ type SpidLevel =
         match t.exported with
         | Choice2Of2 _ -> [||]
         | Choice1Of2 _ -> getTags t
+
+    member t.asStr =
+        (t.level.min.value,
+         t.level.max
+         |> Option.map (fun m -> m.value)
+         |> Option.defaultValue (SpidLevel.invalidMax),
+         t.skill.asRaw)
+        |||> sprintf "%d/%d/%d"
+
+    static member ofStr(str: string) =
+        let a =
+            str
+            |> split "/"
+            |> Array.map (function
+                | IsInt32 x -> x
+                | _ -> failwith $"Rule level has an invalid value in \"{str}\"")
+
+
+        let lvl =
+            { min = ValidLevel.ofInt a[0]
+              max =
+                match a[1] with
+                | Equals SpidLevel.invalidMax -> None
+                | x -> Some <| ValidLevel.ofInt x }
+
+        { skill = AttributeType.ofRaw a[2]
+          level = lvl }
 
 and SpidLevelRaw =
     { sk: int

@@ -85,6 +85,12 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
     if (e.Key == Key.Enter) GUI.ListBox.FocusFromFilter(lstNav);
   }
 
+  private void OnCopy(object sender, ExecutedRoutedEventArgs e) {
+    if (DMLib_WPF.Controls.ContextMenu.GetCaller<DataGrid>(sender) != null || dgRules.IsFocused) ctx.CopyRule();
+  }
+
+  private void OnCanCopy(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.CanCopyRule();
+
   //private void OnAutocompleteTbKeyDown(object sender, KeyEventArgs e) {
   //  if (e.Key != Key.Return || sender is not TextBox tb || tb.SelectedText == null) return;
   //  tb.CaretIndex = tb.Text.Length;

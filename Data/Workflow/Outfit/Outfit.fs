@@ -297,6 +297,9 @@ module Database =
                     (uid |> toSpidUId, v.exported)
                     ||> sprintf "Outfit = %s|%s" })
 
+    let getRuleAsStr uId ruleIndex =
+        db[UniqueId uId].spidRules[ruleIndex].asStr
+
     open Data.Tags
 
     Manager.addCommonTags (fun () -> toArrayOfRaw () |> Manager.getTagsAsMap)

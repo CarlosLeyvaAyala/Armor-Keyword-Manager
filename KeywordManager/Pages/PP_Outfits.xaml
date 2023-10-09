@@ -56,6 +56,9 @@ It can not be exported to SPID.</sys:String>
   </UserControl.DataContext>
 
   <UserControl.CommandBindings>
+    <CommandBinding CanExecute="OnCanCopy"
+                    Command="ApplicationCommands.Copy"
+                    Executed="OnCopy" />
     <CommandBinding CanExecute="OnCanDel"
                     Command="c:OutfitCmds.Del"
                     Executed="OnDel" />
@@ -377,6 +380,12 @@ It can not be exported to SPID.</sys:String>
                 </Style.Triggers>
               </Style>
             </DataGrid.RowStyle>
+
+            <DataGrid.ContextMenu>
+              <ContextMenu>
+                <MenuItem Command="ApplicationCommands.Copy" />
+              </ContextMenu>
+            </DataGrid.ContextMenu>
           </DataGrid>
 
           <!--  RULE TOOBAR  -->

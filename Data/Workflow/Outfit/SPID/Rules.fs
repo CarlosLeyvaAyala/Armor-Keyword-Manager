@@ -97,6 +97,14 @@ type SpidRule =
     static member getDisplay(t: SpidRule) = t.display
     member t.isBlank = t = SpidRule.blank
 
+    member t.asStr =
+        [ t.strings.value
+          t.forms.value
+          t.level.asStr
+          t.traits.asStr
+          t.chance.asRaw.ToString() ]
+        |> List.fold (smartFold "|") ""
+
 and SpidRuleRaw =
     { strings: string
       forms: string

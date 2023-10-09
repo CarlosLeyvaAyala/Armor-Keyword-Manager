@@ -208,4 +208,9 @@ type OutfitPageCtx() as t =
             t.RulesContext.RuleIndex <- v
             nameof t.RuleIndex |> t.OnPropertyChanged
 
-    member _.NewRule() = DB.addRule t.UId
+    member t.NewRule() = DB.addRule t.UId
+    member t.CanCopyRule() = t.RulesNav.SelectedIndex >= 0
+
+    member t.CopyRule() =
+        DB.getRuleAsStr t.UId t.RuleIndex
+        |> TextCopy.ClipboardService.SetText

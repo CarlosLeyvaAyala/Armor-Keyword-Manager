@@ -1,4 +1,7 @@
-﻿#r "nuget: TextCopy"
+﻿open Data.SPID.Level
+
+
+#r "nuget: TextCopy"
 #r "nuget: FsToolkit.ErrorHandling"
 #r "nuget: FSharpx.Collections"
 #r "nuget: FreeImage.Standard, 4.3.8"
@@ -928,17 +931,33 @@ let outfits = Outfits.toArrayOfRaw ()
 //TextCopy.ClipboardService.GetText()
 //|> createRawDecls
 
-//////////////////////////////////
-let word = "jord"
-let f = containsIC word
-
 Outfits.toArrayOfRaw ()
-|> Array.Parallel.filter (
-    snd
-    >> (fun t ->
-        f t.name
-        || f t.edid
-        || t.spidRules
-           |> Array.Parallel.filter (fun r -> f r.strings || f r.forms)
-           |> Array.length > 0)
-)
+|> Array.Parallel.choose (fun (id, v) ->
+    match v.spidRules.Length > 0 with
+    | true -> Some id
+    | false -> None)
+
+let db = Outfits.testDb ()
+
+let rule = db[UniqueId "[COCO] Mulan.esp|8a2"].spidRules[0]
+
+[ rule.strings.value
+  rule.forms.value
+  rule.level.asStr
+  rule.traits.asStr
+  rule.chance.asRaw.ToString() ]
+|> List.fold (smartFold "|") ""
+
+//member t.asStr =
+//    sprintf
+//        "%s/%s/%s/%s/%s/%s"
+//        t.sex.asStr
+//        t.unique.asStr
+//        t.summonable.asStr
+//        t.child.asStr
+//        t.leveled.asStr
+//        t.teammate.asStr
+
+let str = rule.traits.asStr
+let a = str |> split "/"
+Traits.Sex.ofStr a[0]

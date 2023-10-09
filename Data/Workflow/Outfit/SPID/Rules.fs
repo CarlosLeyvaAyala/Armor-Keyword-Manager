@@ -103,7 +103,16 @@ type SpidRule =
           t.level.asStr
           t.traits.asStr
           t.chance.asRaw.ToString() ]
-        |> List.fold (smartFold "|") ""
+        |> List.fold (dumbFold "|") ""
+
+    static member ofStr(str: string) =
+        let a = str |> split "|"
+
+        { strings = SpidFilter.ofStr a[0]
+          forms = SpidFilter.ofStr a[1]
+          level = Level.SpidLevel.ofStr a[2]
+          traits = Traits.SpidTraits.ofStr a[3]
+          chance = SpidChance.ofStr a[4] }
 
 and SpidRuleRaw =
     { strings: string

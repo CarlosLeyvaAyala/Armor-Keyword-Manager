@@ -1,7 +1,4 @@
-﻿open Data.SPID.Level
-
-
-#r "nuget: TextCopy"
+﻿#r "nuget: TextCopy"
 #r "nuget: FsToolkit.ErrorHandling"
 #r "nuget: FSharpx.Collections"
 #r "nuget: FreeImage.Standard, 4.3.8"
@@ -17,6 +14,7 @@
 #load "..\..\..\DMLib-FSharp\Map.fs"
 #load "..\..\..\DMLib-FSharp\Dictionary.fs"
 #load "..\..\..\DMLib-FSharp\Collections.fs"
+#load "..\..\..\DMLib-FSharp\Objects.fs"
 #load "..\..\..\DMLib-FSharp\Files.fs"
 #load "..\..\..\DMLib-FSharp\IO\IO.Path.fs"
 #load "..\..\..\DMLib-FSharp\IO\File.fs"
@@ -961,3 +959,13 @@ let rule = db[UniqueId "[COCO] Mulan.esp|8a2"].spidRules[0]
 let str = rule.traits.asStr
 let a = str |> split "/"
 Traits.Sex.ofStr a[0]
+
+rule.asStr
+
+try
+    SpidRule.ofStr "|_SRE_EncClassVampDawnHeavyMelee|1/0/-1|F/N/N/N/N/N|50|"
+    |> ignore
+
+    true
+with
+| _ -> false

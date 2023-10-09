@@ -85,21 +85,9 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
     if (e.Key == Key.Enter) GUI.ListBox.FocusFromFilter(lstNav);
   }
 
-  private void OnCopy(object sender, ExecutedRoutedEventArgs e) {
-    if (DMLib_WPF.Controls.ContextMenu.GetCaller<DataGrid>(sender) != null || dgRules.IsFocused) ctx.CopyRule();
-  }
+  private void OnCopyRule(object sender, ExecutedRoutedEventArgs e) => ctx.CopyRule();
+  private void OnCanCopyRule(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.CanCopyRule();
 
-  private void OnCanCopy(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.CanCopyRule();
-
-  //private void OnAutocompleteTbKeyDown(object sender, KeyEventArgs e) {
-  //  if (e.Key != Key.Return || sender is not TextBox tb || tb.SelectedText == null) return;
-  //  tb.CaretIndex = tb.Text.Length;
-  //}
-
-  //private void BtnStringsFilterClick(object sender, RoutedEventArgs e) => MainWindow.ExecuteSelectStringDlg(new SelectStringDlgParams() {
-  //  Values = ctx.SpidStringSelect.Select(v => new DisplayStrings(v.Item1, v.Item1, centerRightDetail: v.Item2)).ToList(),
-  //  OnOk = lst => {
-  //    Debug.WriteLine(lst[0]);
-  //  }
-  //});
+  private void OnCanPasteRule(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.CanPasteRule();
+  private void OnPasteRule(object sender, ExecutedRoutedEventArgs e) => ctx.PasteRule();
 }

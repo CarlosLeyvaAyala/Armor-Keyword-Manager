@@ -56,9 +56,14 @@ It can not be exported to SPID.</sys:String>
   </UserControl.DataContext>
 
   <UserControl.CommandBindings>
-    <CommandBinding CanExecute="OnCanCopy"
-                    Command="ApplicationCommands.Copy"
-                    Executed="OnCopy" />
+    <CommandBinding CanExecute="OnCanCopyRule"
+                    Command="c:OutfitCmds.CopyRule"
+                    Executed="OnCopyRule" />
+
+    <CommandBinding CanExecute="OnCanPasteRule"
+                    Command="c:OutfitCmds.PasteRule"
+                    Executed="OnPasteRule" />
+
     <CommandBinding CanExecute="OnCanDel"
                     Command="c:OutfitCmds.Del"
                     Executed="OnDel" />
@@ -241,7 +246,7 @@ It can not be exported to SPID.</sys:String>
               Header="SPID rules"
               IsEnabled="{Binding CanSpidRulesBeActive}"
               Style="{StaticResource MaterialDesignCardGroupBox}">
-      <Grid Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
+      <Grid>
         <Grid.RowDefinitions>
           <RowDefinition Height="*" />
           <RowDefinition Height="{StaticResource GridSepVerticalNarrow}" />
@@ -250,7 +255,6 @@ It can not be exported to SPID.</sys:String>
 
         <!--  UNBOUND OUTFIT WARNING  -->
         <Grid Grid.RowSpan="7"
-              Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.8}"
               VerticalAlignment="Center"
               Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
 
@@ -271,7 +275,7 @@ It can not be exported to SPID.</sys:String>
         </Grid>
 
         <!--  RULE LIST  -->
-        <Grid>
+        <Grid Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
           <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition Width="auto" />
@@ -383,7 +387,8 @@ It can not be exported to SPID.</sys:String>
 
             <DataGrid.ContextMenu>
               <ContextMenu>
-                <MenuItem Command="ApplicationCommands.Copy" />
+                <MenuItem Command="c:OutfitCmds.CopyRule" />
+                <MenuItem Command="c:OutfitCmds.PasteRule" />
               </ContextMenu>
             </DataGrid.ContextMenu>
           </DataGrid>

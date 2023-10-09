@@ -288,13 +288,14 @@ module Database =
     /// Gets the data that will be displayed in the navigator
     let getRuleDisplays uId =
         let uid = UniqueId uId
+        let v = db[uid]
 
-        db[uid].spidRules
+        v.spidRules
         |> List.map SpidRule.getDisplay
-        |> List.map (fun v ->
-            { v with
+        |> List.map (fun r ->
+            { r with
                 exported =
-                    (uid |> toSpidUId, v.exported)
+                    (v.edid.Value, r.exported)
                     ||> sprintf "Outfit = %s|%s" })
 
     let getRuleAsStr uId ruleIndex =

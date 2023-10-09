@@ -18,6 +18,7 @@ open GUI.PageContexts.Outfit
 open Data.Outfit
 open DMLib.Objects
 open DMLib.Combinators
+open Data.SPID
 
 module DB = Data.Outfit.Database
 module Paths = IO.AppSettings.Paths.Img.Outfit
@@ -214,3 +215,22 @@ type OutfitPageCtx() as t =
     member t.CopyRule() =
         DB.getRuleAsStr t.UId t.RuleIndex
         |> TextCopy.ClipboardService.SetText
+
+    member t.CanPasteRule() =
+        try
+            let clip = TextCopy.ClipboardService.GetText()
+            clip |> SpidRule.ofStr |> ignore
+
+            let cantContain chr = clip |> Not(contains chr)
+            cantContain "\n" && cantContain "\""
+        with
+        | _ -> false
+
+    member t.PasteRule() =
+        DB.addRule t.UId
+        let idx = (DB.find t.UId).spidRules.Length - 1
+
+        TextCopy.ClipboardService.GetText()
+        |> SpidRule.ofStr
+        |> SpidRule.toRaw
+        |> DB.updateRule t.UId idx

@@ -14,8 +14,8 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
 
   public PP_Outfits() {
     InitializeComponent();
-    ctx.RegexBtn.Rule = regexRule;
-    ctx.RegexBtn.RuleTarget = edtFilter;
+    ctx.NameFilter.Rule = regexRule;
+    ctx.NameFilter.RuleTarget = edtFilter;
   }
 
   public void NavLoadAndGoTo(string uid) => ctx.ReloadNavAndGoTo(uid);
@@ -41,7 +41,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
 
   private void OnLoaded(object sender, RoutedEventArgs e) {
     if (ctx.IsFinishedLoading) return; // Avoid repeated loading
-    ctx.RegexBtn.IsActive = tbFilterByRegex.IsChecked == true;
+    ctx.NameFilter.UseRegex = tbFilterByRegex.IsChecked == true;
     ctx.IsFinishedLoading = true;
     ctx.ReloadNavAndGoToFirst();
   }
@@ -83,7 +83,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
     MainWindow.ExecuteAcceptCancelDlg(new() { Hint = "New name", Text = ctx.SelectedItem.Name, OnOk = ctx.Rename });
 
   private void OnFilterNameByRegexClick(object sender, RoutedEventArgs e) =>
-  ctx.RegexBtn.IsActive = tbFilterByRegex.IsChecked == true;
+  ctx.NameFilter.UseRegex = tbFilterByRegex.IsChecked == true;
 
   private void OnFilterKeyDown(object sender, KeyEventArgs e) {
     if (e.Key == Key.Enter) GUI.ListBox.FocusFromFilter(lstNav);

@@ -29,8 +29,6 @@ type OutfitPageCtx() as t =
     inherit PageNavigationContext()
 
     let mutable filter = FilterTagEventArgs.Empty
-    let mutable nameFilter = ""
-    let mutable useRegexForNameFilter = false
     let mutable nav: NavListItem array = [||]
 
     do
@@ -58,29 +56,16 @@ type OutfitPageCtx() as t =
             filter <- v
             t.OnPropertyChanged()
 
-    member t.NameFilter
-        with get () = nameFilter
-        and set v =
-            nameFilter <- v
-            t.OnPropertyChanged()
+    member val NameFilter = NameFilter(fun () -> t.OnPropertyChanged())
 
-    member t.UseRegexForNameFilter
-        with get () = useRegexForNameFilter
-        and set v =
-            useRegexForNameFilter <- v
-
-            if Not isNullOrEmpty nameFilter then
-                t.OnPropertyChanged()
-
-    member private _.appyFilter(a: NavListItem array) =
+    member private t.appyFilter(a: NavListItem array) =
         // TODO: Filter by distribution
         a
-        |> Filter.words nameFilter useRegexForNameFilter
+        |> Filter.words t.NameFilter.Text t.NameFilter.UseRegex
         |> Filter.tags filter.TagMode filter.Tags
         |> Filter.pics filter.PicMode
 
     member val RulesContext = SpidRuleCxt()
-    member val RegexBtn = RegexFilterButton(fun v -> t.UseRegexForNameFilter <- v)
 
     ///////////////////////////////////////////////
     // PageNavigationContext implementation

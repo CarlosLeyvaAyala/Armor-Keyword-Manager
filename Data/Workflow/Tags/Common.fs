@@ -27,6 +27,9 @@ module internal Create =
     /// Creates an automatic tag name for an outfit.
     let outfit a = createAutoTag (sprintf "outfit[%s]" a)
 
+    /// Creates an automatic tag name for an outfit.
+    let armor a = createAutoTag (sprintf "armor[%s]" a)
+
 /// Shared functions for editing tags.
 module internal Edit =
     open CommonTypes

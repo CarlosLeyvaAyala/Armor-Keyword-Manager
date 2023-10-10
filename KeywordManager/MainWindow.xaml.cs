@@ -55,14 +55,7 @@ public partial class MainWindow : Window {
       ImportedSpidStatus("keyword");
     };
 
-    ctx.FileWatchers.Items.GUIAction = fn => {
-      ppItems.ctx.ReloadNavAndGoToFirst();
-
-      // Needs to reload to clear warnings in the nav and maybe missing items in the selected outfit
-      ReloadOutfitsNavAndGoToCurrent();
-
-      ImportedSpidStatus("item");
-    };
+    ctx.FileWatchers.Items.GUIAction = _ => ImportedSpidStatus("item");
 
     ctx.FileWatchers.Outfits.GUIAction = _ => {
       ppOutfits.NavLoadAndGoToCurrent();
@@ -107,9 +100,6 @@ public partial class MainWindow : Window {
     Items, Outfits
   }
   public void GoToTab(TabId tab) => tbcMain.SelectedIndex = (int)tab;
-  public void ReloadSelectedOutfit() => ppOutfits.ReloadSelectedItem();
   public void ReloadOutfitsNavAndGoTo(string uid) => ppOutfits.NavLoadAndGoTo(uid);
-  public void ReloadOutfitsNavAndGoToCurrent() => ppOutfits.NavLoadAndGoToCurrent();
-
   public void OnOutfitImgWasSet(string outfitId) => ppItems.OnOutfitImgWasSet(outfitId);
 }

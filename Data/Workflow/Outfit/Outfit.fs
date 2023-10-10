@@ -231,6 +231,7 @@ module Database =
     let getRule uId ruleIndex =
         (find uId).spidRules |> Array.item ruleIndex
 
+    // TODO: Check if actually needed
     let private setAutoTags changeRules uId =
         let oldRules =
             db[UniqueId uId].autoTags

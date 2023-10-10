@@ -96,6 +96,11 @@ type FilterTagItem(name: string, tagType: TagSource) =
         | AutoOutfit -> true
         | _ -> false with get, set
 
+    member val IsAutoItem =
+        match tagType with
+        | AutoItem -> true
+        | _ -> false with get, set
+
     static member ofStringList list =
         list
         |> Seq.map FilterTagItem
@@ -135,6 +140,9 @@ type FilterByTagCtx() as t =
                 |> toObservableCollection
 
             t.OnPropertyChanged())
+
+        Data.Items.Database.OnAutoTagsChanged
+        |> Event.add (fun () -> nameof t.Tags |> t.OnPropertyChanged)
 
     member val TagMode = FilterTagMode.And with get, set
     member val PicMode = FilterPicMode.Either with get, set

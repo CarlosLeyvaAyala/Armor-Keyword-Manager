@@ -188,6 +188,9 @@
                     <DataTrigger Binding="{Binding IsAutoOutfit}" Value="true">
                       <Setter Property="Foreground" Value="LightCoral" />
                     </DataTrigger>
+                    <DataTrigger Binding="{Binding IsAutoItem}" Value="true">
+                      <Setter Property="Foreground" Value="LightCoral" />
+                    </DataTrigger>
                   </Style.Triggers>
                 </Style>
               </CheckBox.Style>

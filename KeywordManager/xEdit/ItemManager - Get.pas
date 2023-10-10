@@ -1,8 +1,10 @@
 unit SIM_Get;
 {
-  Hotkey: Ctrl+K
+    Hotkey: Ctrl+K
+    
+    Exports any kind of data the Skyrim Item Manager app needs.
 
-  Gets editor IDs separated by comma for adding to a KID list.
+    Script version: 1.0.0
 }
 interface
 
@@ -92,12 +94,15 @@ end;
 procedure AddItem(e: IInterface);
 var
     ed, f, n, kidLine, s: string;
+    at: Integer;
 begin
     ed := EditorID(e);
     f := RecordToStr(e);
     s := Signature(e);
+    if s = 'ARMO' then at := GetElementNativeValues(WinningOverride(e), 'BOD2\Armor Type')
+    else at := -1;
     n := DisplayName(e);
-    kidLine := Format('%s|%s|%s|%s', [ed, f, s, n]);
+    kidLine := Format('%s|%s|%s|%d|%s', [ed, f, s, at, n]);
     AddMessage(kidLine);
     items.Add(kidLine);
 end;

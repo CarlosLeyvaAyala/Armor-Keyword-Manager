@@ -5,17 +5,20 @@ open IO.AppSettingsTypes
 open IO
 open GUI.PageContexts
 
+module TagManager = Data.Tags.Manager
+
 type AppCtx() =
     inherit ApplicationContext()
 
     let addReservedTags () =
-        Data.Tags.Manager.addReservedTags Data.SPID.SpidRule.allAutoTags Data.Tags.AutoOutfit
+        TagManager.addReservedTags Data.SPID.SpidRule.allAutoTags Data.Tags.AutoOutfit
+        TagManager.addReservedTags Data.Items.ArmorType.allAutoTags Data.Tags.AutoItem
 
     do
         addReservedTags ()
 
         PropietaryFile.onFileOpen
-        |> Event.add Data.Tags.Manager.rebuildCache
+        |> Event.add TagManager.rebuildCache
 
         // onAppPathChanged
         AppSettings.Paths.onAppPathChanged

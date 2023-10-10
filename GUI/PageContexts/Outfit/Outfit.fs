@@ -22,6 +22,7 @@ open Data.SPID
 
 module DB = Data.Outfit.Database
 module Paths = IO.AppSettings.Paths.Img.Outfit
+module Items = Data.Items.Database
 
 /// Context for working with the outfits page
 [<Sealed>]
@@ -49,6 +50,10 @@ type OutfitPageCtx() as t =
         |> Event.add (fun (_, idx) ->
             t.ReloadNavAndGoToCurrent()
             t.RulesNav.SelectedIndex <- idx)
+
+        // Needs to reload to clear warnings in the nav and maybe missing items in the selected outfit
+        Items.OnItemsAdded
+        |> Event.add t.ReloadNavAndGoToCurrent
 
     member t.Filter
         with get () = filter

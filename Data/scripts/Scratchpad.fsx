@@ -1,7 +1,4 @@
-﻿open IO
-
-
-#r "nuget: TextCopy"
+﻿#r "nuget: TextCopy"
 #r "nuget: FsToolkit.ErrorHandling"
 #r "nuget: FSharpx.Collections"
 #r "nuget: FreeImage.Standard, 4.3.8"
@@ -76,6 +73,7 @@ open TextCopy
 open Data.Outfit
 open Data.SPID
 open Data.Tags
+open CommonTypes
 
 let loadDecls =
     getScriptLoadDeclarations
@@ -87,6 +85,9 @@ loadDecls @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\Data\"
 
 fsi.AddPrinter(fun (r: NonEmptyString) -> r.ToString())
 fsi.AddPrinter(fun (r: UniqueId) -> r.ToString())
+fsi.AddPrinter(fun (r: CanvasPoint) -> r.ToString())
+fsi.AddPrinter(fun (r: RecordId) -> r.ToString())
+fsi.AddPrinter(fun (r: EDID) -> r.ToString())
 
 let loadKeywords () =
     IO.Keywords.File.Open @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\KeywordManager\Data\Keywords.json"
@@ -932,24 +933,4 @@ let outfits = Outfits.toArrayOfRaw ()
 //TextCopy.ClipboardService.GetText()
 //|> createRawDecls
 
-Outfits.toArrayOfRaw ()
-|> Array.Parallel.choose (fun (id, v) ->
-    match v.spidRules.Length > 0 with
-    | true -> Some id
-    | false -> None)
-
-let db = Outfits.testDb ()
-
-let d = Outfits.find "[Christine] High Priestess Bikini.esp|847"
-d.img <> ""
-
-d.pieces
-|> List.choose (fun id ->
-    match (Items.find id).img with
-    | IsEmptyStr -> None
-    | img ->
-        Some
-        <| IO.AppSettings.Paths.Img.Item.expandImg id img)
-|> List.toArray
-|> Array.shuffle
-|> Array.first
+// ================================

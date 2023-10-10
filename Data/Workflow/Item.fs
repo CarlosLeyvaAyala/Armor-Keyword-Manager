@@ -280,14 +280,14 @@ module Database =
 
     let importMany lines =
         lines
-        |> Seq.map import
-        |> Seq.choose (function
+        |> Array.map import
+        |> Array.choose (function
             | ItWasNotAnArmor
             | TypeWasTheSameAsBefore -> None
             | TypeWasAdded
             | TypeWasUpdated -> Some()) // Check if item types were updated
         |> fun sq ->
-            if Not Seq.isEmpty sq then
+            if Not Array.isEmpty sq then
                 autoTagsChangeEvt.Trigger()
 
         itemsAddedEvt.Trigger()

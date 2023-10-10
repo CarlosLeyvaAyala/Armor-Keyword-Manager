@@ -51,10 +51,6 @@ type OutfitPageCtx() as t =
             t.ReloadNavAndGoToCurrent()
             t.RulesNav.SelectedIndex <- idx)
 
-        // Needs to reload to clear warnings in the nav and maybe missing items in the selected outfit
-        Items.OnItemsAdded
-        |> Event.add t.ReloadNavAndGoToCurrent
-
     member t.Filter
         with get () = filter
         and set v =

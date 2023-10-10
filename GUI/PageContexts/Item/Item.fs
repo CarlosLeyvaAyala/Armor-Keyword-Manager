@@ -25,10 +25,6 @@ type ItemsPageCtx() as t =
     let mutable filter = FilterTagEventArgs.Empty
     let mutable nav: NavListItem array = [||]
 
-    do
-        DB.OnItemsAdded
-        |> Event.add (t.ReloadNavAndGoToFirst)
-
     member t.Filter
         with get () = filter
         and set v =

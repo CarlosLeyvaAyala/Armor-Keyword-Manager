@@ -934,3 +934,6 @@ let outfits = Outfits.toArrayOfRaw ()
 //|> createRawDecls
 
 // ================================
+Items.toArrayOfRaw ()
+|> Array.Parallel.filter (snd >> (fun v -> v.autoTags.Length > 0))
+|> Array.map (snd >> fun v -> v.name, v.autoTags)

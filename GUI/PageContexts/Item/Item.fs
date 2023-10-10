@@ -11,7 +11,6 @@ open System
 open GUI.UserControls
 open FsToolkit.ErrorHandling
 open GUI.Filtering
-open DMLib.Combinators
 open GUI.PageContexts.Items
 
 module DB = Data.Items.Database

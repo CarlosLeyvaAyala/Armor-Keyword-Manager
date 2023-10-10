@@ -93,7 +93,7 @@ It can not be exported to SPID.</sys:String>
                         Click="OnFilterNameByRegexClick"
                         Content="{md:PackIcon Kind=Regex}"
                         DockPanel.Dock="Right"
-                        IsChecked="{Binding Source={StaticResource appSettings}, Path=Default.itemFilterNameByRegex}"
+                        IsChecked="{Binding Source={StaticResource appSettings}, Path=Default.outfitFilterNameByRegex}"
                         Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}"
                         ToolTip="Use regular expression" />
 

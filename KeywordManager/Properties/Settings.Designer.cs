@@ -94,5 +94,17 @@ namespace KeywordManager.Properties {
                 this["batchRename_lastTab"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool outfitFilterNameByRegex {
+            get {
+                return ((bool)(this["outfitFilterNameByRegex"]));
+            }
+            set {
+                this["outfitFilterNameByRegex"] = value;
+            }
+        }
     }
 }

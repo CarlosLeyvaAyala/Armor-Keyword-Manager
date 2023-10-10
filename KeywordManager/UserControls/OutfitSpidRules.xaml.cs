@@ -53,7 +53,7 @@ public partial class OutfitSpidRules : UserControl {
       Debug.WriteLine(lst[0]);
     },
     RegexButton_Show = true,
-    RegexButton_Checked = Properties.Settings.Default.itemFilterNameByRegex,
+    RegexButton_Checked = Properties.Settings.Default.outfitFilterNameByRegex,
   });
 
 }

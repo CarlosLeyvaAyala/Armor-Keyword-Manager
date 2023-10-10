@@ -152,4 +152,11 @@ public partial class MainWindow : Window {
       fileName: suggestedName);
   }
   #endregion
+
+  #region Scripts
+  static void OpenNexus(int modId) => DMLib.Link.openInBrowser($"https://www.nexusmods.com/skyrimspecialedition/mods/{modId}");
+  private void OnGetScriptCreateOutfits(object sender, RoutedEventArgs e) => OpenNexus(87909);
+  private void OnGetScriptFindArmorType(object sender, RoutedEventArgs e) => OpenNexus(102260);
+  private void OnGetScriptFindOutfits(object sender, RoutedEventArgs e) => OpenNexus(102256);
+  #endregion
 }

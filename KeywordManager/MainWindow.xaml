@@ -116,6 +116,24 @@
                         DockPanel.Dock="Top"
                         Mode="PrimaryMid">
             <Menu>
+              <!--<Menu.Resources>
+                <Style x:Key="scriptUpdate"
+                       BasedOn="{StaticResource MaterialDesignMenuItem}"
+                       TargetType="MenuItem">
+                  <Style.Resources>
+                    <Style TargetType="StackPanel">
+                      <Setter Property="Orientation" Value="Horizontal" />
+                    </Style>
+                    <Style TargetType="md:PackIcon">
+                      <Setter Property="Margin" Value="3,-2,0,0" />
+                      <Setter Property="VerticalAlignment" Value="Top" />
+                      <Setter Property="Kind" Value="AlertCircle" />
+                      <Setter Property="Visibility" Value="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    </Style>
+                  </Style.Resources>
+                </Style>
+              </Menu.Resources>-->
+
               <MenuItem Header="_File">
                 <MenuItem Command="c:AppCmds.New" Header="_New" />
                 <MenuItem Command="c:AppCmds.Open" Header="_Open" />
@@ -170,6 +188,20 @@
                   <MenuItem Header="Replace Keywords" ToolTip="All keywords will be replaced" />
                   <MenuItem Header="Merge Keywords" ToolTip="Will add those keywords to existing ones" />
                 </MenuItem>
+              </MenuItem>
+              <MenuItem Header="Scri_pts">
+                <MenuItem Header="_Install main script" Tag="{Binding ScriptHasUpdates}" />
+                <!--<MenuItem.Header>
+                    <StackPanel>
+                      <TextBlock Text="_Install main script" />
+                      <md:PackIcon Foreground="{StaticResource PrimaryHueMidBrush}" />
+                    </StackPanel>
+                  </MenuItem.Header>
+                </MenuItem>-->
+                <Separator />
+                <MenuItem Click="OnGetScriptCreateOutfits" Header="Create _outfits" />
+                <MenuItem Click="OnGetScriptFindArmorType" Header="Find _armor type" />
+                <MenuItem Click="OnGetScriptFindOutfits" Header="_Find outfits" />
               </MenuItem>
               <MenuItem Header="_Help">
                 <MenuItem Header="_Help topics" />

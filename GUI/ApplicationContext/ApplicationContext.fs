@@ -28,3 +28,5 @@ type AppCtx() =
             SpidAutocompletion.init ())
 
     member val FileWatchers = FileWatchers()
+    // TODO: Get from reading the script
+    member val ScriptHasUpdates = true

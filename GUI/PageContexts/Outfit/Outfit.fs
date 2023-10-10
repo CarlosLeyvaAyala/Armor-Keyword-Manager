@@ -80,6 +80,7 @@ type OutfitPageCtx() as t =
         |> Filter.pics filter.PicMode
 
     member val RulesContext = SpidRuleCxt()
+    member val RegexBtn = RegexFilterButton(fun v -> t.UseRegexForNameFilter <- v)
 
     ///////////////////////////////////////////////
     // PageNavigationContext implementation

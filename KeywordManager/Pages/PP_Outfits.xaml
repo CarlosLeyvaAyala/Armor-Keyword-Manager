@@ -115,7 +115,9 @@ It can not be exported to SPID.</sys:String>
                        Path="NameFilter"
                        UpdateSourceTrigger="PropertyChanged">
                 <Binding.ValidationRules>
-                  <v:RegexRule xmlns:v="clr-namespace:DMLib_WPF.Validators;assembly=DMLib-Fs-WPF" ValidatesOnTargetUpdated="True" />
+                  <v:RegexRule xmlns:v="clr-namespace:DMLib_WPF.Validators;assembly=DMLib-Fs-WPF"
+                               x:Name="regexRule"
+                               ValidatesOnTargetUpdated="True" />
                 </Binding.ValidationRules>
               </Binding>
             </TextBox.Text>

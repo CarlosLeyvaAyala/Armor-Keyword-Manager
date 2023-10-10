@@ -13,7 +13,11 @@ namespace KeywordManager.Pages;
 public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag, IWorkspacePage {
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
 
-  public PP_Items() => InitializeComponent();
+  public PP_Items() {
+    InitializeComponent();
+    ctx.NameFilter.Rule = regexRule;
+    ctx.NameFilter.RuleTarget = edtFilter;
+  }
   public void SetActivePage() => ctx.Activate();
 
   #region Interface: IFilterableByTag and filtering functions
@@ -27,7 +31,7 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag,
   public FilterTagEventArgs OldFilter => ctx.Filter;
   public void ApplyTagFilter(FilterTagEventArgs e) => ctx.Filter = e;
   private void OnFilterNameByRegexClick(object sender, RoutedEventArgs e) =>
-    ctx.UseRegexForNameFilter = tbFilterByRegex.IsChecked == true;
+    ctx.NameFilter.UseRegex = tbFilterByRegex.IsChecked == true;
   #endregion
 
   #region Interface: IFileDisplayable
@@ -40,7 +44,7 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag,
 
   private void OnLoaded(object sender, RoutedEventArgs e) {
     if (ctx.IsFinishedLoading) return; // Avoid repeated loading
-    ctx.UseRegexForNameFilter = tbFilterByRegex.IsChecked == true;
+    ctx.NameFilter.UseRegex = tbFilterByRegex.IsChecked == true;
     ctx.IsFinishedLoading = true;
     ctx.ReloadNavAndGoToFirst();
   }

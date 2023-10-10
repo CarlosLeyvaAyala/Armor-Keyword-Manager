@@ -20,12 +20,10 @@ module Outfits = Data.Outfit.Database
 
 /// Context for working with the outfits page
 [<Sealed>]
-type ItemsPageCtx() =
+type ItemsPageCtx() as t =
     inherit PageNavigationContext()
 
     let mutable filter = FilterTagEventArgs.Empty
-    let mutable nameFilter = ""
-    let mutable useRegexForNameFilter = false
     let mutable nav: NavListItem array = [||]
 
     member t.Filter
@@ -34,23 +32,11 @@ type ItemsPageCtx() =
             filter <- v
             t.OnPropertyChanged()
 
-    member t.NameFilter
-        with get () = nameFilter
-        and set v =
-            nameFilter <- v
-            t.OnPropertyChanged()
-
-    member t.UseRegexForNameFilter
-        with get () = useRegexForNameFilter
-        and set v =
-            useRegexForNameFilter <- v
-
-            if Not isNullOrEmpty nameFilter then
-                t.OnPropertyChanged()
+    member val NameFilter = NameFilter(fun () -> t.OnPropertyChanged())
 
     member private _.applyFilter(a: NavListItem array) =
         a
-        |> Filter.words nameFilter useRegexForNameFilter
+        |> Filter.words t.NameFilter.Text t.NameFilter.UseRegex
         |> Filter.tags filter.TagMode filter.Tags
         |> Filter.pics filter.PicMode
         |> fun a ->

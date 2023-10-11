@@ -69,7 +69,7 @@ let classFromClipboard defaultName =
       | _ -> defaultName
     + "."
 
-let bindings, declarations = "OutfitCmds" |> classFromClipboard |> genBindings
+let bindings, declarations = "AppCmds" |> classFromClipboard |> genBindings
 
 bindings |> TextCopy.ClipboardService.SetText
 declarations |> TextCopy.ClipboardService.SetText

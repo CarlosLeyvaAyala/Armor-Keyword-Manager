@@ -39,7 +39,9 @@ type KeywordManagerCtx() =
     ///////////////////////////////////////////////
     // PageNavigationContext implementation
 
-    override _.RebuildNav() = nav <- DB.toArrayOfRaw ()
+    override t.RebuildNav() =
+        nav <- DB.toArrayOfRaw ()
+        nameof t.HasKeywords |> t.OnPropertyChanged
 
     member _.Nav =
         nav
@@ -132,3 +134,5 @@ type KeywordManagerCtx() =
         t.DeleteSelected (fun () ->
             t.NavSelectedItems |> Seq.iter deleteKeyword
             saveJsonDB ())
+
+    member _.HasKeywords = nav |> Array.isEmpty |> not

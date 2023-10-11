@@ -18,6 +18,7 @@
 #load "..\..\..\DMLib-FSharp\Files.fs"
 #load "..\..\..\DMLib-FSharp\IO\IO.Path.fs"
 #load "..\..\..\DMLib-FSharp\IO\File.fs"
+#load "..\..\..\DMLib-FSharp\IO\Directory.fs"
 #load "..\..\..\DMLib-FSharp\Json.fs"
 #load "..\..\..\DMLib-FSharp\Misc.fs"
 #load "..\..\..\DMLib-FSharp\Types\NonEmptyString.fs"
@@ -934,58 +935,29 @@ let outfits = Outfits.toArrayOfRaw ()
 //|> createRawDecls
 
 // ================================
-open System.Threading.Tasks
+open System.IO
+open DMLib
+open DMLib.String
+open DMLib.IO
+open DMLib.IO.Path
+open System.IO.Compression
+open DMLib.Combinators
 
-let slow () =
-    let m = Random().Next(3000, 6000)
+let dataPath =
+    @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\KeywordManager\bin\Debug\net7.0-windows\Data"
 
-    for i in [ 1..10000 ] do
-        for j in [ 1..6000 ] do
-            i + j |> ignore
+let tmpD =
+    Path.GetTempPath()
+    |> combine2' "SIM.13C1EDD4B4034298A3A041762D6F4F68"
 
-    printfn "Finished %d" m
+Directory.CreateDirectory tmpD
 
-slow ()
+combine2 dataPath "Keywords.json"
+|> File.copyWithSameName tmpD
 
-let asyncWrap (f: unit -> unit) =
-    async {
-        let! _ = Task.Run(f) |> Async.AwaitTask
-        return ()
-    }
-    |> Async.StartImmediate
+let img = combine2' @"Img\Keywords"
+(img dataPath, img tmpD) ||> Directory.copy true
 
-[ asyncWrap slow
-  asyncWrap slow
-  asyncWrap slow ]
-|> List.iter id
+ZipFile.CreateFromDirectory(tmpD, @"C:\Users\Osrail\Desktop\SIM Keywords.zip", CompressionLevel.Fastest, false)
 
-let makeAsync (f: 'a -> unit) a =
-    async {
-        let! _ = Task.Run(fun () -> f a) |> Async.AwaitTask
-        return ()
-    }
-    |> Async.StartImmediate
-
-
-let evt = Event<unit>()
-let OnEvt = evt.Publish
-
-let slowCalc m =
-    for i in [ 1..10000 ] do
-        for j in [ 1..6000 ] do
-            i + j |> ignore
-
-    printfn "Finished %d" m
-
-slowCalc 90000
-//let addAsync<'T> (callback: 'T -> unit) = Event.add callback
-OnEvt
-|> Event.add (fun _ -> makeAsync slowCalc 4000)
-
-OnEvt
-|> Event.add (fun _ -> makeAsync slowCalc 90000)
-
-OnEvt
-|> Event.add (fun _ -> makeAsync slowCalc 6000)
-
-evt.Trigger()
+Directory.Delete(tmpD, true)

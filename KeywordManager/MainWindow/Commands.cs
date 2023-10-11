@@ -153,6 +153,14 @@ public partial class MainWindow : Window {
       guid: guid,
       fileName: suggestedName);
   }
+
+  private void OnCanBackupKeywords(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ppItems.keywordMgr.ctx.HasKeywords;
+  private void OnBackupKeywords(object sender, ExecutedRoutedEventArgs e) {
+    DMLib_WPF.Dialogs.File.Save(
+      "Zip files (*.zip)|*.zip",
+      AppSettings.Backup.CreateKeywods,
+      fileName: "SIM Keywords.zip");
+  }
   #endregion
 
   #region Scripts

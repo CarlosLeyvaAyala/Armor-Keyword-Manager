@@ -85,6 +85,10 @@
     <CommandBinding CanExecute="OnCanBackupSettingsGit"
                     Command="c:AppCmds.BackupSettingsGit"
                     Executed="OnBackupSettingsGit" />
+
+    <CommandBinding CanExecute="OnCanBackupKeywords"
+                    Command="c:AppCmds.BackupKeywords"
+                    Executed="OnBackupKeywords" />
   </Window.CommandBindings>
 
   <Window.Resources>
@@ -193,7 +197,9 @@
                             Header="_Restore backup"
                             ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
                   <Separator />
-                  <MenuItem Header="Backup _Keywords" ToolTip="Use this for sharing your keywords with other people" />
+                  <MenuItem Command="c:AppCmds.BackupKeywords"
+                            Header="Backup _Keywords"
+                            ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
                   <MenuItem Header="Replace Keywords" ToolTip="All keywords will be replaced" />
                   <MenuItem Header="Merge Keywords" ToolTip="Will add keywords to existing ones" />
                 </MenuItem>

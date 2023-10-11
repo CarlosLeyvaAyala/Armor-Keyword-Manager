@@ -102,6 +102,8 @@ type AppCmds private () =
     static member val BackupSettingsGit =
         basic "BackupSettingsGit" "Creates a backup for the images, keywords and SPID suggestions"
 
+    static member val BackupKeywords = basic "BackupKeywords" "Use this for sharing your keywords with other people"
+
 [<Sealed>]
 type ItemCmds private () =
     static let create = createCmd<ItemCmds>

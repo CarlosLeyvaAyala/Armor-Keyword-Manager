@@ -30,6 +30,11 @@ module Paths =
 
     let SpidFormsFile () = data () |> combine2' "spid forms.json"
 
+    [<CompiledName "TempDir">]
+    let tempDir =
+        Path.GetTempPath()
+        |> combine2' "SIM.13C1EDD4B4034298A3A041762D6F4F68"
+
     module Img =
         let filter = "Image files (*.jpg;*.png;*.jpeg)|*.jpg;*.png;*.jpeg"
 
@@ -129,3 +134,22 @@ module Backup =
 
     let Restore filename =
         ZipFile.ExtractToDirectory(filename, Paths.data (), overwriteFiles = true)
+
+    let CreateKeywods filename =
+        if filename |> File.Exists then
+            File.Delete filename
+
+        let dataPath = Paths.data ()
+        let tmpD = Paths.tempDir
+
+        Directory.CreateDirectory tmpD |> ignore
+
+        combine2 dataPath "Keywords.json"
+        |> File.copyWithSameName tmpD
+
+        let img = combine2' @"Img\Keywords"
+        (img dataPath, img tmpD) ||> Directory.copy true
+
+        ZipFile.CreateFromDirectory(tmpD, filename, CompressionLevel.Fastest, false)
+
+        Directory.Delete(tmpD, true)

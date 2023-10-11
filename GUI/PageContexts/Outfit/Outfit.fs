@@ -142,8 +142,7 @@ type OutfitPageCtx() as t =
     member t.Rename newName =
         let uid = t.UId
         t.rename uid newName
-        t.OnPropertyChanged()
-        ListBox.selectByUId t.NavControl uid
+        t.ReloadNavAndGoTo uid
 
     /// Renames many elements
     member t.BatchRename(askNames: Func<seq<BatchRename.Item>, seq<BatchRename.Item>>) =

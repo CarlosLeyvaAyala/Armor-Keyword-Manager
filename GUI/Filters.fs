@@ -94,11 +94,9 @@ module Filter =
 
         match word with
         | IsEmptyStr -> nothing a
-        | w ->
-            if useRegex then
-                filterRegex w a
-            else
-                filterSimple w a
+        | w when useRegex -> filterRegex w a
+        | w -> filterSimple w a
+
 
 //let private filterAdapter f v =
 //    match f v with

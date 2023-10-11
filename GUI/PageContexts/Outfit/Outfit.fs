@@ -48,7 +48,9 @@ type OutfitPageCtx() as t =
 
         DB.OnRuleUpdated
         |> Event.add (fun (_, idx) ->
-            t.ReloadNavAndGoToCurrent()
+            //t.ReloadNavAndGoToCurrent()
+
+            t.RefreshNavSelected()
             t.RulesNav.SelectedIndex <- idx)
 
     member t.Filter
@@ -120,17 +122,18 @@ type OutfitPageCtx() as t =
     ///////////////////////////////////////////////
     // Custom implementation
 
+    member t.RefreshNavSelected() = t.NavSelectedItem.Refresh()
+
     member t.SetImage filename =
         let setImage uId filename =
             let ext = Paths.copyImg uId filename
             Paths.Thumb.save uId filename
             DB.update uId (fun d -> { d with img = ext })
-            Paths.expandImg uId ext
 
         if Path.Exists filename && t.UId <> "" then
             let uid = t.UId // Needs to send back uid because it gets lost on reloading
-            t.NavSelectedItem.Img <- setImage t.UId filename
-            t.ReloadNavAndGoToCurrent()
+            setImage t.UId filename
+            t.RefreshNavSelected()
             uid
         else
             ""

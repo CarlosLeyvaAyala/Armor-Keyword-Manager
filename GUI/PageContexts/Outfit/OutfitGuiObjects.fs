@@ -71,36 +71,49 @@ module private Ops =
 
 type NavListItem(uId: string, d: Raw) =
     inherit WPFBindable()
-    let mutable img = expandImg uId d.img
-    let mutable name = d.name
+    let mutable u = d
+    let mutable img = ""
+    let mutable name = ""
+    let mutable randomPieceImg = Some("", "")
+
+    let init () =
+        img <- expandImg uId u.img
+        name <- u.name
+
+        randomPieceImg <-
+            u.pieces
+            |> List.choose (fun id ->
+                let item = Items.find id
+
+                match item.img with
+                | IsEmptyStr -> None
+                | img ->
+                    Some
+                    <| (sprintf "Piece: %s" item.name, ItemsPath.expandImg id img))
+            |> List.toArray
+            |> Array.shuffle
+            |> Array.first
+
+    do init ()
+
     let blankImg = expandImg "" ""
-
-    let randomPieceImg =
-        d.pieces
-        |> List.choose (fun id ->
-            let item = Items.find id
-
-            match item.img with
-            | IsEmptyStr -> None
-            | img ->
-                Some
-                <| (sprintf "Piece: %s" item.name, ItemsPath.expandImg id img))
-        |> List.toArray
-        |> Array.shuffle
-        |> Array.first
-
-    member _.IsUnbound = d.edid |> contains DB.UnboundEDID
 
     interface IHasUniqueId with
         member _.UId = uId
 
+    member t.Refresh() =
+        u <- DB.find uId
+        init ()
+        t.OnPropertyChanged()
+
     member _.UId = uId
-    member _.EDID = d.edid
+    member _.EDID = u.edid
+    member _.IsUnbound = u.edid |> contains DB.UnboundEDID
 
     member t.SearchWords f =
         f t.Name
         || f t.EDID
-        || d.spidRules
+        || u.spidRules
            |> Array.Parallel.filter (fun r -> f r.strings || f r.forms)
            |> Array.length > 0
 
@@ -133,16 +146,16 @@ type NavListItem(uId: string, d: Raw) =
         else
             Thumb.expandImg uId
 
-    member t.HasImg = d.img <> "" || t.UseRandomPieceImg
+    member t.HasImg = u.img <> "" || t.UseRandomPieceImg
     member t.HasSearchImg = t.HasImg
-    member t.Refresh() = t.OnPropertyChanged()
+    //member t.Refresh() = t.OnPropertyChanged()
     override t.ToString() = t.Name
-    member _.UseRandomPieceImg = d.img = "" && randomPieceImg.IsSome
+    member _.UseRandomPieceImg = u.img = "" && randomPieceImg.IsSome
 
     member t.DisplayImg =
         [ if t.UseRandomPieceImg then
               t.RandomPieceImg
-          elif d.img <> "" then
+          elif u.img <> "" then
               "", t.Img
           else
               "", ""
@@ -151,7 +164,7 @@ type NavListItem(uId: string, d: Raw) =
 
     /// Pieces not added to the database
     member _.MissingPieces =
-        Get.pieces d
+        Get.pieces u
         |> List.choose (fun (uid, piece) ->
             match piece with
             | Some _ -> None
@@ -160,7 +173,7 @@ type NavListItem(uId: string, d: Raw) =
     /// Does this outfit has pieces not added to the database?
     member t.HasMissingPieces = t.MissingPieces.Length > 0
 
-    member _.SearchTags = DB.allOutfitTags d
+    member _.SearchTags = DB.allOutfitTags u
 
 type ArmorPiece(uId: string, d: Data.Items.Raw option) =
     let fullname =

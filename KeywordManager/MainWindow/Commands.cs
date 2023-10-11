@@ -1,6 +1,7 @@
 ﻿using DMLib_WPF.Contexts;
 using GUI.UserControls;
 using IO;
+using KeywordManager.Dialogs;
 using System;
 using System.IO;
 using System.Windows;
@@ -158,5 +159,23 @@ public partial class MainWindow : Window {
   private void OnGetScriptCreateOutfits(object sender, RoutedEventArgs e) => OpenNexus(87909);
   private void OnGetScriptFindArmorType(object sender, RoutedEventArgs e) => OpenNexus(102260);
   private void OnGetScriptFindOutfits(object sender, RoutedEventArgs e) => OpenNexus(102256);
+  #endregion
+
+  #region App settings
+  private void OnAppSettingsClick(object sender, RoutedEventArgs e) => OpenAppSettings();
+  private void OnSetxEditPath(object sender, System.Windows.Input.MouseButtonEventArgs e) => OpenAppSettings(Tab.Paths);
+
+  void OpenAppSettings(Tab tab = Tab.Default) {
+    OpenDimDialog(() => {
+      AppSettings_Window.Execute(this,
+        v => {
+          Settings.Default.xEditPath = v.Paths.xEdit;
+          Settings.Default.mostRecentExportDir = v.Paths.Export;
+          ctx.xEditPath = v.Paths.xEdit;
+          Settings.Default.Save();
+        },
+        tab);
+    });
+  }
   #endregion
 }

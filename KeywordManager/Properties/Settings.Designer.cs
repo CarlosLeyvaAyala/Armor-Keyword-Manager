@@ -50,12 +50,12 @@ namespace KeywordManager.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string xEditDir {
+        public string xEditPath {
             get {
-                return ((string)(this["xEditDir"]));
+                return ((string)(this["xEditPath"]));
             }
             set {
-                this["xEditDir"] = value;
+                this["xEditPath"] = value;
             }
         }
         

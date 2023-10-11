@@ -8,7 +8,7 @@
     <Setting Name="mostRecentExportDir" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="xEditDir" Type="System.String" Scope="User">
+    <Setting Name="xEditPath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="lastTab" Type="System.Int32" Scope="User">

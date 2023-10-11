@@ -169,7 +169,7 @@
                 </MenuItem>
               </MenuItem>
               <MenuItem Header="_Settings">
-                <MenuItem Header="App _settings" />
+                <MenuItem Header="App _settings" Click="OnAppSettingsClick"/>
 
                 <Separator />
 
@@ -209,6 +209,7 @@
             </Menu>
           </md:ColorZone>
 
+          <!--  STATUS BAR  -->
           <StatusBar DockPanel.Dock="Bottom">
             <StatusBar.ItemsPanel>
               <ItemsPanelTemplate>
@@ -247,6 +248,7 @@
             </StatusBarItem>
           </StatusBar>
 
+          <!--  CONTENTS  -->
           <Grid>
             <!--  NO XEDIT WARNING  -->
             <Grid Visibility="{Binding xEditDirExists, Converter={StaticResource InverseBoolToVisConverter}}">
@@ -375,8 +377,6 @@
               </TabItem>
             </TabControl>
           </Grid>
-
-          <!--  CONTENTS  -->
         </DockPanel>
         <md:Snackbar x:Name="snackBar" MessageQueue="{md:MessageQueue}" />
       </Grid>

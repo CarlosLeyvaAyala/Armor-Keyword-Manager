@@ -1,10 +1,8 @@
 ﻿using GUI;
 using GUI.UserControls;
 using IO;
-using KeywordManager.Dialogs;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -44,7 +42,7 @@ public partial class MainWindow : Window {
   }
 
   void InitializeFileWatchers() {
-    ctx.xEditDir = Settings.Default.xEditDir;
+    ctx.xEditPath = Settings.Default.xEditPath;
     ctx.FileWatchers.Dispatcher = Dispatcher;
 
     ctx.FileWatchers.SpidStrings.GUIAction = _ => ImportedSpidStatus("SPID string");
@@ -109,15 +107,5 @@ public partial class MainWindow : Window {
   public void ReloadSelectedOutfit() => ppOutfits.ReloadSelectedItem();
   public void ReloadOutfitsNavAndGoTo(string uid) => ppOutfits.NavLoadAndGoTo(uid);
   public void ReloadOutfitsNavAndGoToCurrent() => ppOutfits.NavLoadAndGoToCurrent();
-
   public void OnOutfitImgWasSet(string outfitId) => ppItems.OnOutfitImgWasSet(outfitId);
-
-  private void OnSetxEditPath(object sender, System.Windows.Input.MouseButtonEventArgs e) {
-    OpenDimDialog(() => {
-      AppSettings_Window.Execute(this,
-        () => {
-          Debug.WriteLine("Save settings");
-        });
-    });
-  }
 }

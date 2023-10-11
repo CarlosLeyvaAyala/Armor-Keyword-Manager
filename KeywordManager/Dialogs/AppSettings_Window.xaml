@@ -28,10 +28,11 @@
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition />
-      <!--<RowDefinition Height="{StaticResource GridSepVertical}" />-->
       <RowDefinition Height="auto" />
     </Grid.RowDefinitions>
-    <TabControl md:ColorZoneAssist.Mode="PrimaryMid"
+
+    <TabControl x:Name="tbcMain"
+                md:ColorZoneAssist.Mode="PrimaryMid"
                 md:NavigationRailAssist.SelectionCornerRadius="5"
                 md:NavigationRailAssist.ShowSelectionBackground="True"
                 Style="{StaticResource MaterialDesignFilledUniformTabControl}"
@@ -61,14 +62,16 @@
 
           <!--  XEDIT  -->
           <TextBox md:HintAssist.Hint="xEdit path" Text="{Binding Paths.xEdit}" />
-          <Button Content="{md:PackIcon FolderOpenOutline}" />
+          <Button Click="PathxEditSetClick" Content="{md:PackIcon FolderOpenOutline}" />
 
           <!--  EXPORTING  -->
           <TextBox Grid.Row="2"
                    md:HintAssist.Hint="Exporting path"
                    Text="{Binding Paths.Export}"
                    ToolTip="Files will be exported here" />
-          <Button Grid.Row="2" Content="{md:PackIcon FolderOpenOutline}" />
+          <Button Grid.Row="2"
+                  Click="PathExportingClick"
+                  Content="{md:PackIcon FolderOpenOutline}" />
         </Grid>
       </TabItem>
     </TabControl>

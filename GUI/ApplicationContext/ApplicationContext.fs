@@ -5,6 +5,8 @@ open IO.AppSettingsTypes
 open IO
 open GUI.PageContexts
 open System.IO
+open DMLib.IO.Path
+open DMLib.IO
 
 module TagManager = Data.Tags.Manager
 
@@ -31,17 +33,24 @@ type AppCtx() =
             Keywords.File.Open(AppSettings.Paths.KeywordsFile())
             SpidAutocompletion.init ())
 
+    let mutable _xEditPath = ""
+
     member val FileWatchers = FileWatchers()
     // TODO: Get from reading the script
     member val ScriptHasUpdates = true
 
-    member t.xEditDir
-        with get () = t.FileWatchers.path
+    member t.xEditPath
+        with get () = _xEditPath
         and set v =
-            t.FileWatchers.path <- v
+            _xEditPath <- v
 
-            [ nameof t.xEditDir
+            t.FileWatchers.path <-
+                match v with
+                | FileExists fn -> fn |> getDir |> combine2' "Edit Scripts"
+                | _ -> ""
+
+            [ nameof t.xEditPath
               nameof t.xEditDirExists ]
             |> t.OnPropertyChanged
 
-    member t.xEditDirExists = t.xEditDir |> Path.Exists
+    member t.xEditDirExists = t.xEditPath |> Path.Exists

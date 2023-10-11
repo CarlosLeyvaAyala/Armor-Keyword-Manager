@@ -176,6 +176,9 @@
               </MenuItem>
               <MenuItem Header="_Settings">
                 <MenuItem Click="OnAppSettingsClick" Header="App _settings" />
+                <MenuItem Click="OpenDataDirClick"
+                          Header="Open data dir"
+                          Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                 <Separator />
 

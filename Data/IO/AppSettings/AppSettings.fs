@@ -21,6 +21,7 @@ module Paths =
         dir |> ApplicationPath |> appPathChangeEvt.Trigger
 
     let internal data () = combine2 app "Data"
+    let DataDir () = data ()
     let KeywordsFile () = data () |> combine2' "Keywords.json"
 
     let SpidStringsFile () =

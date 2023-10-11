@@ -108,4 +108,5 @@ public partial class MainWindow : Window {
   public void ReloadOutfitsNavAndGoTo(string uid) => ppOutfits.NavLoadAndGoTo(uid);
   public void ReloadOutfitsNavAndGoToCurrent() => ppOutfits.NavLoadAndGoToCurrent();
   public void OnOutfitImgWasSet(string outfitId) => ppItems.OnOutfitImgWasSet(outfitId);
+  private void OpenDataDirClick(object sender, RoutedEventArgs e) => DMLib.IO.File.Execute(AppSettings.Paths.DataDir());
 }

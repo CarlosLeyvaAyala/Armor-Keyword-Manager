@@ -1,5 +1,6 @@
 ﻿module IO.AppSettings // It's a module so it can be used in C# as a fully qualified name
 
+open DMLib.IO
 open DMLib.IO.Path
 open DMLib.String
 open DMLib.Combinators
@@ -36,13 +37,17 @@ module Paths =
             uId |> replace "|" "___" |> replace "." "__"
 
         let private expand imagePath uId ext =
+            let blank = combine2 (imagePath ()) "_.png"
+
             match ext with
-            | IsEmptyStr -> combine2 (imagePath ()) "_.png"
+            | IsEmptyStr -> blank
             | _ ->
-                uId
-                |> uIdToFileName
-                |> changeExt ext
-                |> combine2 (imagePath ())
+                match
+                    uId |> uIdToFileName |> changeExt ext
+                    |> combine2 (imagePath ())
+                    with
+                | FileExists f -> f
+                | _ -> blank
 
         let private getDestFile imageDirPath uId sourceFileName =
             sourceFileName

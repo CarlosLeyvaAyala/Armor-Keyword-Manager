@@ -10,6 +10,7 @@ open DMLib.String
 open System
 open Data.Tags
 open DMLib.TupleCommon
+open DMLib.Combinators
 
 type CList<'a> = Generic.List<'a>
 
@@ -128,10 +129,11 @@ type FilterByTagCtx() as t =
 
         tags |> Seq.iter (fun v -> v.IsVisible <- vis v)
 
-    let reloadTags _ = nameof t.Tags |> t.OnPropertyChanged
+    let reloadTags _ = GUI.Workspace.refreshPageTags ()
 
     do
         GUI.Workspace.onChangePageTags
+        |> Event.filter (Not Array.isEmpty)
         |> Event.add (fun tags -> pageTags <- tags |> Array.Parallel.map dupFst |> Map.ofArray)
 
         Data.Tags.Manager.onTagsChanged

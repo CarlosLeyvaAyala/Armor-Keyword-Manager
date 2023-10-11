@@ -1,6 +1,7 @@
 ﻿namespace GUI
 
 type AppWorkspacePage =
+    | Unknown
     | Items
     | Outfits
     | WaedEnchantments
@@ -13,10 +14,11 @@ type IWorkspacePage =
 module Workspace =
     module Items = Data.Items.Database
     module Outfits = Data.Outfit.Database
+    let mutable private currentPage = Unknown
 
     let private pageTagsChangeEvent = Event<string array>()
 
-    let changePage page =
+    let private sendPageTags page =
         match page with
         | Items ->
             Items.toArrayOfRaw ()
@@ -27,6 +29,13 @@ module Workspace =
         | WaedEnchantments -> failwith "Not implemented"
         | WaedBuilds -> failwith "Not implemented"
         | Skimpify -> failwith "Not implemented"
+        | Unknown -> [||]
         |> pageTagsChangeEvent.Trigger
+
+    let refreshPageTags () = sendPageTags currentPage
+
+    let changePage page =
+        currentPage <- page
+        refreshPageTags ()
 
     let onChangePageTags = pageTagsChangeEvent.Publish

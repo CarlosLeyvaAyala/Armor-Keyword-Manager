@@ -114,6 +114,9 @@ type SpidRule =
           traits = Traits.SpidTraits.ofStr a[3]
           chance = SpidChance.ofStr a[4] }
 
+    static member getTags t =
+        t.level.tags |> Array.append t.traits.tags
+
 and SpidRuleRaw =
     { strings: string
       forms: string

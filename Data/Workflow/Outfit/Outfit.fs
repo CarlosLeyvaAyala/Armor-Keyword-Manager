@@ -218,6 +218,8 @@ module Database =
     let OnRuleDeleted = ruleDeletedEvt.Publish
     let private ruleUpdatedEvt = Event<string * int>()
     let OnRuleUpdated = ruleUpdatedEvt.Publish
+    let private autoTagsChangeEvt = Event<_>()
+    let OnAutoTagsChanged = autoTagsChangeEvt.Publish
 
     let addRule uId =
         update uId (fun v ->
@@ -231,37 +233,30 @@ module Database =
     let getRule uId ruleIndex =
         (find uId).spidRules |> Array.item ruleIndex
 
-    // TODO: Check if actually needed
-    let private setAutoTags changeRules uId =
-        let oldRules =
-            db[UniqueId uId].autoTags
-            |> List.map (fun v -> v.toString ())
+    let private changeAutoTags update tag (v: Raw) =
+        { v with autoTags = update tag v.autoTags }
+
+    let addAutoTag = changeAutoTags List.addWord
+    let delAutoTag = changeAutoTags List.delWord
+
+    let private setRuleAutoTags uId changeRules =
+        let oldAutoTags = (find uId).autoTags
 
         changeRules ()
 
-        let newRules =
-            db[UniqueId uId].spidRules
-            |> List.map (fun sel ->
-                sel.level.tags
-                |> Array.append sel.traits.tags
-                |> Array.toList)
+        let v = find uId
+        let noRuleAutotags = v.autoTags |> List.except SpidRule.allAutoTags
+
+        let newAutoTags =
+            v.spidRules
+            |> Array.toList
+            |> List.map (SpidRule.ofRaw >> SpidRule.getTags >> Array.toList)
             |> List.collect id
-            |> List.distinct
+            |> List.append noRuleAutotags
 
-        let diff = newRules |> List.except oldRules
-
-        let changeAutoTags transform tag (v: Raw) =
-            { v with autoTags = v.autoTags |> transform tag }
-
-        let editTag dbEdit (tag: string) = update uId (changeAutoTags dbEdit tag)
-
-        match diff.Length with
-        | GreaterThan oldRules.Length -> diff |> List.iter (editTag Data.Tags.Edit.add)
-        | LesserThan oldRules.Length ->
-            oldRules
-            |> List.except newRules
-            |> List.iter (editTag Data.Tags.Edit.delete)
-        | _ -> ()
+        if oldAutoTags <> newAutoTags then
+            update uId (fun nv -> { nv with autoTags = newAutoTags })
+            autoTagsChangeEvt.Trigger uId
 
     let updateRule uId ruleIndex rule =
         let doUpdate () =
@@ -269,14 +264,14 @@ module Database =
                 v.spidRules[ ruleIndex ] <- rule
                 v)
 
-        setAutoTags doUpdate uId
+        setRuleAutoTags uId doUpdate
         ruleUpdatedEvt.Trigger(uId, ruleIndex)
 
     let deleteRule uId ruleIndex =
         let doDelete () =
             update uId (fun v -> { v with spidRules = v.spidRules |> Array.removeAt ruleIndex })
 
-        setAutoTags doDelete uId
+        setRuleAutoTags uId doDelete
         ruleDeletedEvt.Trigger(uId, db[UniqueId uId].spidRules.Length)
 
     let getRuleExportStr uId ruleIndex =

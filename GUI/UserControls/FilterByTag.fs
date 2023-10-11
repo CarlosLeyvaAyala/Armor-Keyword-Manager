@@ -128,6 +128,8 @@ type FilterByTagCtx() as t =
 
         tags |> Seq.iter (fun v -> v.IsVisible <- vis v)
 
+    let reloadTags _ = nameof t.Tags |> t.OnPropertyChanged
+
     do
         GUI.Workspace.onChangePageTags
         |> Event.add (fun tags -> pageTags <- tags |> Array.Parallel.map dupFst |> Map.ofArray)
@@ -142,7 +144,10 @@ type FilterByTagCtx() as t =
             t.OnPropertyChanged())
 
         Data.Items.Database.OnAutoTagsChanged
-        |> Event.add (fun () -> nameof t.Tags |> t.OnPropertyChanged)
+        |> Event.add (reloadTags)
+
+        Data.Outfit.Database.OnAutoTagsChanged
+        |> Event.add (reloadTags)
 
     member val TagMode = FilterTagMode.And with get, set
     member val PicMode = FilterPicMode.Either with get, set

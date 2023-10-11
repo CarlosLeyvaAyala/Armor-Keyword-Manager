@@ -934,6 +934,47 @@ let outfits = Outfits.toArrayOfRaw ()
 //|> createRawDecls
 
 // ================================
-Items.toArrayOfRaw ()
-|> Array.Parallel.filter (snd >> (fun v -> v.autoTags.Length > 0))
-|> Array.map (snd >> fun v -> v.name, v.autoTags)
+open Data.Outfit
+open Data.Outfit.Database
+
+toArrayOfRaw ()
+|> Array.Parallel.choose (fun (uid, v) ->
+    match v.autoTags with
+    | [] -> None
+    | at -> Some <| (uid, v.name, at))
+
+SpidRule.allAutoTags
+let mutable db = testDb ()
+
+let uId = "[COCO] Mulan.esp|8a2"
+
+let setRuleAutoTags uId changeRules =
+    let oldAutoTags = (find uId).autoTags
+
+    changeRules ()
+
+    let v = find uId
+    let noRuleAutotags = v.autoTags |> List.except SpidRule.allAutoTags
+
+    let newAutoTags =
+        v.spidRules
+        |> Array.toList
+        |> List.map (SpidRule.ofRaw >> SpidRule.getTags >> Array.toList)
+        |> List.collect id
+        |> List.append noRuleAutotags
+
+    if oldAutoTags <> newAutoTags then
+        printfn "***UPDATE"
+
+let updateRule uId ruleIndex rule =
+    let doUpdate () =
+        update uId (fun v ->
+            v.spidRules[ ruleIndex ] <- rule
+            v)
+
+    setRuleAutoTags uId doUpdate
+
+let ttt = find uId
+ttt.autoTags
+addRule uId
+updateRule uId 1 { SpidRuleRaw.blank with level = { Level.SpidLevelRaw.blank with sk = Level.Block.asRaw } }

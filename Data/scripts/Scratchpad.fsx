@@ -934,47 +934,58 @@ let outfits = Outfits.toArrayOfRaw ()
 //|> createRawDecls
 
 // ================================
-open Data.Outfit
-open Data.Outfit.Database
+open System.Threading.Tasks
 
-toArrayOfRaw ()
-|> Array.Parallel.choose (fun (uid, v) ->
-    match v.autoTags with
-    | [] -> None
-    | at -> Some <| (uid, v.name, at))
+let slow () =
+    let m = Random().Next(3000, 6000)
 
-SpidRule.allAutoTags
-let mutable db = testDb ()
+    for i in [ 1..10000 ] do
+        for j in [ 1..6000 ] do
+            i + j |> ignore
 
-let uId = "[COCO] Mulan.esp|8a2"
+    printfn "Finished %d" m
 
-let setRuleAutoTags uId changeRules =
-    let oldAutoTags = (find uId).autoTags
+slow ()
 
-    changeRules ()
+let asyncWrap (f: unit -> unit) =
+    async {
+        let! _ = Task.Run(f) |> Async.AwaitTask
+        return ()
+    }
+    |> Async.StartImmediate
 
-    let v = find uId
-    let noRuleAutotags = v.autoTags |> List.except SpidRule.allAutoTags
+[ asyncWrap slow
+  asyncWrap slow
+  asyncWrap slow ]
+|> List.iter id
 
-    let newAutoTags =
-        v.spidRules
-        |> Array.toList
-        |> List.map (SpidRule.ofRaw >> SpidRule.getTags >> Array.toList)
-        |> List.collect id
-        |> List.append noRuleAutotags
+let makeAsync (f: 'a -> unit) a =
+    async {
+        let! _ = Task.Run(fun () -> f a) |> Async.AwaitTask
+        return ()
+    }
+    |> Async.StartImmediate
 
-    if oldAutoTags <> newAutoTags then
-        printfn "***UPDATE"
 
-let updateRule uId ruleIndex rule =
-    let doUpdate () =
-        update uId (fun v ->
-            v.spidRules[ ruleIndex ] <- rule
-            v)
+let evt = Event<unit>()
+let OnEvt = evt.Publish
 
-    setRuleAutoTags uId doUpdate
+let slowCalc m =
+    for i in [ 1..10000 ] do
+        for j in [ 1..6000 ] do
+            i + j |> ignore
 
-let ttt = find uId
-ttt.autoTags
-addRule uId
-updateRule uId 1 { SpidRuleRaw.blank with level = { Level.SpidLevelRaw.blank with sk = Level.Block.asRaw } }
+    printfn "Finished %d" m
+
+slowCalc 90000
+//let addAsync<'T> (callback: 'T -> unit) = Event.add callback
+OnEvt
+|> Event.add (fun _ -> makeAsync slowCalc 4000)
+
+OnEvt
+|> Event.add (fun _ -> makeAsync slowCalc 90000)
+
+OnEvt
+|> Event.add (fun _ -> makeAsync slowCalc 6000)
+
+evt.Trigger()

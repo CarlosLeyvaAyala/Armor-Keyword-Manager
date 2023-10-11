@@ -145,7 +145,7 @@ type FilterByTagCtx() as t =
 
             t.OnPropertyChanged())
 
-        Data.Items.Database.OnAutoTagsChanged
+        Data.Items.Database.OnItemsAdded
         |> Event.add (reloadTags)
 
         Data.Outfit.Database.OnAutoTagsChanged

@@ -33,8 +33,8 @@ and RawWaedEnchantment = { formId: string; level: int }
 
 /// What happened after importing an armor and tried to set its armor auto tag
 type ArmorTypeOnImport =
-    | TypeWasAdded
-    | TypeWasUpdated
+    | TypeWasAdded of string
+    | TypeWasUpdated of string
     | TypeWasTheSameAsBefore
     | ItWasNotAnArmor
 
@@ -240,11 +240,11 @@ module Database =
         match oldType with
         | [] ->
             update uId addType
-            TypeWasAdded
+            TypeWasAdded uId
         | o :: _ when o <> newType ->
             update uId (delAutoTag o)
             update uId addType
-            TypeWasUpdated
+            TypeWasUpdated uId
         | _ -> TypeWasTheSameAsBefore
 
     let import line =
@@ -274,8 +274,8 @@ module Database =
         | _ -> failwith "Never should've come here"
 
     let private autoTagsChangeEvt = Event<_>()
-    let OnAutoTagsChanged = autoTagsChangeEvt.Publish
     let private itemsAddedEvt = Event<_>()
+    let OnAutoTagsChanged = autoTagsChangeEvt.Publish
     let OnItemsAdded = itemsAddedEvt.Publish
 
     let importMany lines =
@@ -284,11 +284,11 @@ module Database =
         |> Array.choose (function
             | ItWasNotAnArmor
             | TypeWasTheSameAsBefore -> None
-            | TypeWasAdded
-            | TypeWasUpdated -> Some()) // Check if item types were updated
-        |> fun sq ->
-            if Not Array.isEmpty sq then
-                autoTagsChangeEvt.Trigger()
+            | TypeWasAdded uId -> Some uId
+            | TypeWasUpdated uId -> Some uId) // Check if item types were updated
+        |> fun a ->
+            if Not Array.isEmpty a then
+                autoTagsChangeEvt.Trigger a // TODO: Send changed tags uIds so they can be updated by navs
 
         itemsAddedEvt.Trigger()
 

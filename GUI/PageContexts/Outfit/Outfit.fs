@@ -48,10 +48,18 @@ type OutfitPageCtx() as t =
 
         DB.OnRuleUpdated
         |> Event.add (fun (_, idx) ->
-            //t.ReloadNavAndGoToCurrent()
-
             t.RefreshNavSelected()
             t.RulesNav.SelectedIndex <- idx)
+
+        Items.OnAutoTagsChanged
+        |> Event.add (fun a ->
+            let pieces = a |> Set.ofArray
+
+            nav
+            |> Array.Parallel.filter (fun v -> v.HasPieces pieces)
+            |> Array.Parallel.iter NavListItem.Refresh
+
+            nameof t.Nav |> t.OnPropertyChanged)
 
     member t.Filter
         with get () = filter
@@ -62,7 +70,6 @@ type OutfitPageCtx() as t =
     member val NameFilter = NameFilter(fun () -> t.OnPropertyChanged())
 
     member private t.appyFilter(a: NavListItem array) =
-        // TODO: Filter by distribution
         a
         |> Filter.words t.NameFilter.Text t.NameFilter.UseRegex
         |> Filter.tags filter.TagMode filter.Tags

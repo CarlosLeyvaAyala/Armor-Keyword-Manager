@@ -69,19 +69,19 @@ module private Ops =
         |> Array.append shortNames // Add elements with no common radix
         |> Map.ofArray
 
-type NavListItem(uId: string, d: Raw) =
+type NavListItem(uId: string, v: Raw) =
     inherit WPFBindable()
-    let mutable u = d
+    let mutable d = v
     let mutable img = ""
     let mutable name = ""
     let mutable randomPieceImg = Some("", "")
 
     let init () =
-        img <- expandImg uId u.img
-        name <- u.name
+        img <- expandImg uId d.img
+        name <- d.name
 
         randomPieceImg <-
-            u.pieces
+            d.pieces
             |> List.choose (fun id ->
                 let item = Items.find id
 
@@ -102,18 +102,22 @@ type NavListItem(uId: string, d: Raw) =
         member _.UId = uId
 
     member t.Refresh() =
-        u <- DB.find uId
+        d <- DB.find uId
         init ()
         t.OnPropertyChanged()
 
+    static member Refresh(t: NavListItem) = t.Refresh()
+
     member _.UId = uId
-    member _.EDID = u.edid
-    member _.IsUnbound = u.edid |> contains DB.UnboundEDID
+    override t.ToString() = t.Name
+    member _.EDID = d.edid
+    member _.IsUnbound = d.edid |> contains DB.UnboundEDID
+    member _.SearchTags = DB.allOutfitTags d
 
     member t.SearchWords f =
         f t.Name
         || f t.EDID
-        || u.spidRules
+        || d.spidRules
            |> Array.Parallel.filter (fun r -> f r.strings || f r.forms)
            |> Array.length > 0
 
@@ -146,16 +150,14 @@ type NavListItem(uId: string, d: Raw) =
         else
             Thumb.expandImg uId
 
-    member t.HasImg = u.img <> "" || t.UseRandomPieceImg
+    member t.HasImg = d.img <> "" || t.UseRandomPieceImg
     member t.HasSearchImg = t.HasImg
-    //member t.Refresh() = t.OnPropertyChanged()
-    override t.ToString() = t.Name
-    member _.UseRandomPieceImg = u.img = "" && randomPieceImg.IsSome
+    member _.UseRandomPieceImg = d.img = "" && randomPieceImg.IsSome
 
     member t.DisplayImg =
         [ if t.UseRandomPieceImg then
               t.RandomPieceImg
-          elif u.img <> "" then
+          elif d.img <> "" then
               "", t.Img
           else
               "", ""
@@ -164,7 +166,7 @@ type NavListItem(uId: string, d: Raw) =
 
     /// Pieces not added to the database
     member _.MissingPieces =
-        Get.pieces u
+        Get.pieces d
         |> List.choose (fun (uid, piece) ->
             match piece with
             | Some _ -> None
@@ -172,8 +174,13 @@ type NavListItem(uId: string, d: Raw) =
 
     /// Does this outfit has pieces not added to the database?
     member t.HasMissingPieces = t.MissingPieces.Length > 0
+    member _.PieceSearch = d.pieces |> Set.ofList
 
-    member _.SearchTags = DB.allOutfitTags u
+    member t.HasPieces pieces =
+        pieces
+        |> Set.intersect t.PieceSearch
+        |> Set.isEmpty
+        |> not
 
 type ArmorPiece(uId: string, d: Data.Items.Raw option) =
     let fullname =

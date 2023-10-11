@@ -81,6 +81,10 @@
     <CommandBinding CanExecute="OnCanBackupSettings"
                     Command="c:AppCmds.BackupSettings"
                     Executed="OnBackupSettings" />
+
+    <CommandBinding CanExecute="OnCanBackupSettingsGit"
+                    Command="c:AppCmds.BackupSettingsGit"
+                    Executed="OnBackupSettingsGit" />
   </Window.CommandBindings>
 
   <Window.Resources>
@@ -162,31 +166,33 @@
                 <MenuItem Command="c:AppCmds.Filter"
                           Header="_Filter"
                           ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-                <Separator />
-                <MenuItem Header="Missing _keywords">
+                <!--  TODO: Enable when implemented  -->
+                <Separator Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <!--  TODO: Enable when implemented  -->
+                <MenuItem Header="Missing _keywords" Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}">
                   <MenuItem Header="_Add to app" />
                   <MenuItem Header="_Delete from file" />
                 </MenuItem>
               </MenuItem>
               <MenuItem Header="_Settings">
-                <MenuItem Header="App _settings" Click="OnAppSettingsClick"/>
+                <MenuItem Click="OnAppSettingsClick" Header="App _settings" />
 
                 <Separator />
 
                 <MenuItem Header="_Backup">
-                  <MenuItem Command="c:AppCmds.BackupSettings"
+                  <MenuItem Command="c:AppCmds.BackupSettingsGit"
                             Header="Create _backup"
                             ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-                  <MenuItem Click="OnGitBackupClick"
-                            Header="Create backup for _Github"
-                            Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                  <MenuItem Command="c:AppCmds.BackupSettings"
+                            Header="Create _named backup"
+                            ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
                   <MenuItem Command="c:AppCmds.RestoreSettings"
                             Header="_Restore backup"
                             ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
                   <Separator />
-                  <MenuItem Header="Backup _Keywords" />
+                  <MenuItem Header="Backup _Keywords" ToolTip="Use this for sharing your keywords with other people" />
                   <MenuItem Header="Replace Keywords" ToolTip="All keywords will be replaced" />
-                  <MenuItem Header="Merge Keywords" ToolTip="Will add those keywords to existing ones" />
+                  <MenuItem Header="Merge Keywords" ToolTip="Will add keywords to existing ones" />
                 </MenuItem>
               </MenuItem>
               <MenuItem Header="Scri_pts">

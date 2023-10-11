@@ -143,7 +143,8 @@ public partial class MainWindow : Window {
 
   private void OnCanBackupSettings(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnBackupSettings(object sender, ExecutedRoutedEventArgs e) => CreateBackup(AppSettings.Backup.SuggestedName(), "e63aa357-ce5c-424d-a175-b2592aac7af3");
-  private void OnGitBackupClick(object sender, RoutedEventArgs e) => CreateBackup("SIM Backup", "E60CE530-7FA4-4B2C-8896-02B1F37F62B8");
+  private void OnCanBackupSettingsGit(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
+  private void OnBackupSettingsGit(object sender, ExecutedRoutedEventArgs e) => CreateBackup("SIM Backup", "E60CE530-7FA4-4B2C-8896-02B1F37F62B8");
 
   static void CreateBackup(string suggestedName, string guid) {
     DMLib_WPF.Dialogs.File.Save(
@@ -163,7 +164,7 @@ public partial class MainWindow : Window {
 
   #region App settings
   private void OnAppSettingsClick(object sender, RoutedEventArgs e) => OpenAppSettings();
-  private void OnSetxEditPath(object sender, System.Windows.Input.MouseButtonEventArgs e) => OpenAppSettings(Tab.Paths);
+  private void OnSetxEditPath(object sender, MouseButtonEventArgs e) => OpenAppSettings(Tab.Paths);
 
   void OpenAppSettings(Tab tab = Tab.Default) {
     OpenDimDialog(() => {
@@ -172,6 +173,7 @@ public partial class MainWindow : Window {
           Settings.Default.xEditPath = v.Paths.xEdit;
           Settings.Default.mostRecentExportDir = v.Paths.Export;
           ctx.xEditPath = v.Paths.xEdit;
+          // TODO: Copy script to xEdit path
           Settings.Default.Save();
         },
         tab);

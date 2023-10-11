@@ -96,8 +96,11 @@ type AppCmds private () =
     static member val FileJsonExport = basic "FileJsonExport" "Exports file to json"
     static member val FileJsonImport = basic "FileJsonImport" "Imports file from json"
 
-    static member val RestoreSettings = basic "RestoreSettings" "Restorses a previously saved backup"
-    static member val BackupSettings = basic "BackupSettings" "Creates a backup for the images and keywords in this app"
+    static member val RestoreSettings = basic "RestoreSettings" "Restores a previously saved backup"
+    static member val BackupSettings = basic "BackupSettings" "Creates an automatically named backup"
+
+    static member val BackupSettingsGit =
+        basic "BackupSettingsGit" "Creates a backup for the images, keywords and SPID suggestions"
 
 [<Sealed>]
 type ItemCmds private () =

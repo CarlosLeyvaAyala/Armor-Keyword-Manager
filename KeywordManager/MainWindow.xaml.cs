@@ -12,6 +12,7 @@ namespace KeywordManager;
 
 public partial class MainWindow : Window {
   public FilterTagEventArgs FilterByTagParameters => filterByTag.SelectedParameters;
+  public void FilterClearTags() => filterByTag.ClearTags();
 
   private readonly List<object> pages;
 

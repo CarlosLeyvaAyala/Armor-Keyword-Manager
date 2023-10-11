@@ -54,4 +54,12 @@
     <Setter Property="Text" Value="{Binding Name}" />
   </Style>
 
+  <Style x:Key="clearTagsInName"
+         BasedOn="{StaticResource MaterialDesignFlatSecondaryButton}"
+         TargetType="Button">
+    <Setter Property="ToolTip" Value="{Binding NameFilter.SelectedTagsTooltip}" />
+    <Setter Property="Visibility" Value="{Binding NameFilter.HasTags, Converter={StaticResource BooleanToVisibilityConverter}}" />
+    <Setter Property="Grid.Column" Value="2" />
+  </Style>
+
 </ResourceDictionary>

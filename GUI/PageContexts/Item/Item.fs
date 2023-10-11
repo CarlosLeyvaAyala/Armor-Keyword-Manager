@@ -25,13 +25,14 @@ type ItemsPageCtx() as t =
     let mutable filter = FilterTagEventArgs.Empty
     let mutable nav: NavListItem array = [||]
 
+    member val NameFilter = NameFilter(fun () -> t.OnPropertyChanged())
+
     member t.Filter
         with get () = filter
         and set v =
             filter <- v
+            t.NameFilter.SelectedTags <- v.Tags |> Seq.toList
             t.OnPropertyChanged()
-
-    member val NameFilter = NameFilter(fun () -> t.OnPropertyChanged())
 
     member private _.applyFilter(a: NavListItem array) =
         a

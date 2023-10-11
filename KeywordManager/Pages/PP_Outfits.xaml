@@ -87,15 +87,12 @@ It can not be exported to SPID.</sys:String>
               Style="{StaticResource MaterialDesignCardGroupBox}">
       <DockPanel>
         <!--  FILTER  -->
-        <DockPanel DockPanel.Dock="Top">
-          <!--  USE REGEX  -->
-          <ToggleButton x:Name="tbFilterByRegex"
-                        Click="OnFilterNameByRegexClick"
-                        Content="{md:PackIcon Kind=Regex}"
-                        DockPanel.Dock="Right"
-                        IsChecked="{Binding Source={StaticResource appSettings}, Path=Default.outfitFilterNameByRegex}"
-                        Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}"
-                        ToolTip="Use regular expression" />
+        <Grid DockPanel.Dock="Top">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+          </Grid.ColumnDefinitions>
 
           <!--  FILTER TEXTBOX  -->
           <Label Content="_N"
@@ -122,7 +119,21 @@ It can not be exported to SPID.</sys:String>
               </Binding>
             </TextBox.Text>
           </TextBox>
-        </DockPanel>
+
+          <!--  USE REGEX  -->
+          <ToggleButton x:Name="tbFilterByRegex"
+                        Grid.Column="1"
+                        Click="OnFilterNameByRegexClick"
+                        Content="{md:PackIcon Kind=Regex}"
+                        IsChecked="{Binding Source={StaticResource appSettings}, Path=Default.outfitFilterNameByRegex}"
+                        Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}"
+                        ToolTip="Use regular expression" />
+
+          <!--  CLEAR TAGS  -->
+          <Button Click="OnClearTags"
+                  Content="{md:PackIcon Kind=TagOff}"
+                  Style="{StaticResource clearTagsInName}" />
+        </Grid>
 
         <!--  NAV  -->
         <ListBox x:Name="lstNav"

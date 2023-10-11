@@ -21,6 +21,7 @@ type NameFilter(updateProperties) =
 
     let mutable text = ""
     let mutable useRegex = false
+    let mutable selectedTags: string list = []
 
     member val Rule = RegexRule() with get, set
     member val RuleTarget: TextBox = null with get, set
@@ -47,3 +48,16 @@ type NameFilter(updateProperties) =
 
             if Not isNullOrEmpty text then
                 updateProperties ()
+
+    member t.SelectedTags
+        with get () = selectedTags
+        and set v =
+            selectedTags <- v |> List.map trim |> List.sortWith compareICase
+
+            [ nameof t.SelectedTags
+              nameof t.SelectedTagsTooltip
+              nameof t.HasTags ]
+            |> t.OnPropertyChanged
+
+    member _.HasTags = selectedTags |> Not List.isEmpty
+    member _.SelectedTagsTooltip = selectedTags |> List.fold smartPrettyComma ""

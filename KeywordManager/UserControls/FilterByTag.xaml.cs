@@ -10,6 +10,10 @@ public partial class FilterByTag : UserControl {
 
   public void RestoreFilter(FilterTagEventArgs e) => ctx.SetArguments(e);
   public void SetFilterFlags(FilterFlags f) => ctx.FilterFlags = f;
+  public void ClearTags() {
+    ctx.SelectNone();
+    OnDoFilter();
+  }
 
   #region Private internal events
   private void OnSelectNone(object sender, RoutedEventArgs e) {

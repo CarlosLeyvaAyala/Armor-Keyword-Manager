@@ -61,13 +61,14 @@ type OutfitPageCtx() as t =
 
             nameof t.Nav |> t.OnPropertyChanged)
 
+    member val NameFilter = NameFilter(fun () -> t.OnPropertyChanged())
+
     member t.Filter
         with get () = filter
         and set v =
             filter <- v
+            t.NameFilter.SelectedTags <- v.Tags |> Seq.toList
             t.OnPropertyChanged()
-
-    member val NameFilter = NameFilter(fun () -> t.OnPropertyChanged())
 
     member private t.appyFilter(a: NavListItem array) =
         a

@@ -32,6 +32,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
   public FilterTagEventArgs OldFilter => ctx.Filter;
 
   public void ApplyTagFilter(FilterTagEventArgs e) => ctx.Filter = e;
+  private void OnClearTags(object sender, RoutedEventArgs e) => Owner.FilterClearTags();
   #endregion
 
   #region File interface

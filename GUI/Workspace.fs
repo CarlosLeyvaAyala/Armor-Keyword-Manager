@@ -17,6 +17,7 @@ module Workspace =
     let mutable private currentPage = Unknown
 
     let private pageTagsChangeEvent = Event<string array>()
+    let private pageChangeEvent = Event<AppWorkspacePage>()
 
     let private sendPageTags page =
         match page with
@@ -36,6 +37,8 @@ module Workspace =
 
     let changePage page =
         currentPage <- page
+        pageChangeEvent.Trigger page
         refreshPageTags ()
 
     let onChangePageTags = pageTagsChangeEvent.Publish
+    let onPageChanged = pageChangeEvent.Publish

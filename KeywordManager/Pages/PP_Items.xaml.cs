@@ -32,6 +32,7 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag,
   public void ApplyTagFilter(FilterTagEventArgs e) => ctx.Filter = e;
   private void OnFilterNameByRegexClick(object sender, RoutedEventArgs e) =>
     ctx.NameFilter.UseRegex = tbFilterByRegex.IsChecked == true;
+  private void OnClearTags(object sender, RoutedEventArgs e) => Owner.FilterClearTags();
   #endregion
 
   #region Interface: IFileDisplayable

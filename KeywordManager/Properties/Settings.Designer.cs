@@ -49,7 +49,7 @@ namespace KeywordManager.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("F:\\Skyrim SE\\Tools\\SSEEdit 4_x\\Edit Scripts")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string xEditDir {
             get {
                 return ((string)(this["xEditDir"]));

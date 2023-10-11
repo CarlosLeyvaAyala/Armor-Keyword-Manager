@@ -1,6 +1,7 @@
 ﻿using GUI;
 using GUI.UserControls;
 using IO;
+using KeywordManager.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -43,7 +44,7 @@ public partial class MainWindow : Window {
   }
 
   void InitializeFileWatchers() {
-    ctx.FileWatchers.Path = Settings.Default.xEditDir;
+    ctx.xEditDir = Settings.Default.xEditDir;
     ctx.FileWatchers.Dispatcher = Dispatcher;
 
     ctx.FileWatchers.SpidStrings.GUIAction = _ => ImportedSpidStatus("SPID string");
@@ -95,9 +96,6 @@ public partial class MainWindow : Window {
   private void OnChangeTab(object sender, SelectionChangedEventArgs e) =>
     WhenIsLoaded(() => {
       if (tbcMain.SelectedIndex == oldTab) return;
-      Debug.WriteLine("============================================");
-      Debug.WriteLine("Tab was changed");
-      Debug.WriteLine("============================================");
       Settings.Default.lastTab = tbcMain.SelectedIndex;
       Settings.Default.Save();
       oldTab = tbcMain.SelectedIndex;
@@ -113,4 +111,13 @@ public partial class MainWindow : Window {
   public void ReloadOutfitsNavAndGoToCurrent() => ppOutfits.NavLoadAndGoToCurrent();
 
   public void OnOutfitImgWasSet(string outfitId) => ppItems.OnOutfitImgWasSet(outfitId);
+
+  private void OnSetxEditPath(object sender, System.Windows.Input.MouseButtonEventArgs e) {
+    OpenDimDialog(() => {
+      AppSettings_Window.Execute(this,
+        () => {
+          Debug.WriteLine("Save settings");
+        });
+    });
+  }
 }

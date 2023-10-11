@@ -24,6 +24,7 @@
     <Compile Include="PageContexts\Outfit\SpidRuleContext.fs" />
     <Compile Include="PageContexts\Outfit\OutfitGuiObjects.fs" />
     <Compile Include="PageContexts\Outfit\Outfit.fs" />
+    <Compile Include="DialogContexts\AppSettings.fs" />
     <Compile Include="Validators\SPID.fs" />
     <Compile Include="Validators\Keywords.fs" />
     <Compile Include="ApplicationContext\FileWatchers.fs" />

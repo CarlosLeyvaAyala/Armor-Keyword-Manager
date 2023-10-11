@@ -4,6 +4,7 @@ open DMLib_WPF.Contexts
 open IO.AppSettingsTypes
 open IO
 open GUI.PageContexts
+open System.IO
 
 module TagManager = Data.Tags.Manager
 
@@ -33,3 +34,14 @@ type AppCtx() =
     member val FileWatchers = FileWatchers()
     // TODO: Get from reading the script
     member val ScriptHasUpdates = true
+
+    member t.xEditDir
+        with get () = t.FileWatchers.path
+        and set v =
+            t.FileWatchers.path <- v
+
+            [ nameof t.xEditDir
+              nameof t.xEditDirExists ]
+            |> t.OnPropertyChanged
+
+    member t.xEditDirExists = t.xEditDir |> Path.Exists

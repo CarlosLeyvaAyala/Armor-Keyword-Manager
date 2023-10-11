@@ -247,70 +247,103 @@
             </StatusBarItem>
           </StatusBar>
 
-          <!--  CONTENTS  -->
-          <TabControl x:Name="tbcMain"
-                      Margin="0"
-                      HorizontalContentAlignment="Center"
-                      md:ColorZoneAssist.Mode="PrimaryLight"
-                      md:NavigationRailAssist.SelectionCornerRadius="0 20 20 0"
-                      md:NavigationRailAssist.ShowSelectionBackground="True"
-                      SelectionChanged="OnChangeTab"
-                      SnapsToDevicePixels="True"
-                      Style="{StaticResource MaterialDesignNavigationRailTabControl}"
-                      TabStripPlacement="Left">
-            <TabControl.Resources>
-              <Thickness x:Key="MgTabContent">30,0,20,20</Thickness>
-            </TabControl.Resources>
-            <!--  ITEMS  -->
-            <TabItem>
-              <TabItem.Header>
-                <StackPanel Width="auto" Height="auto">
-                  <md:PackIcon Kind="Sword" Style="{StaticResource piNav}" />
-                  <TextBlock Style="{StaticResource txtNav}" Text="Items" />
-                </StackPanel>
-              </TabItem.Header>
-              <pp:PP_Items x:Name="ppItems" Margin="{StaticResource MgTabContent}" />
-            </TabItem>
-
-            <!--  OUTFITS  -->
-            <TabItem>
-              <TabItem.Header>
-                <StackPanel Width="auto" Height="auto">
-                  <md:PackIcon Kind="TshirtV" Style="{StaticResource piNav}" />
-                  <TextBlock Style="{StaticResource txtNav}" Text="Outfits" />
-                </StackPanel>
-              </TabItem.Header>
-              <pp:PP_Outfits x:Name="ppOutfits" Margin="{StaticResource MgTabContent}" />
-            </TabItem>
-
-            <!--  ENCHANTMENTS  -->
-            <TabItem>
-              <TabItem.Header>
-                <StackPanel Width="auto" Height="auto">
-                  <md:PackIcon Kind="MagicStaff" Style="{StaticResource piNav}" />
-                  <TextBlock Style="{StaticResource txtNav}" Text="Enchantments" />
-                </StackPanel>
-              </TabItem.Header>
-              <Grid>
-                <TextBlock Margin="0,-20,0,0"
-                           HorizontalAlignment="Center"
+          <Grid>
+            <!--  NO XEDIT WARNING  -->
+            <Grid Visibility="{Binding xEditDirExists, Converter={StaticResource InverseBoolToVisConverter}}">
+              <md:PackIcon x:Name="icWarning"
+                           Width="{Binding Height, RelativeSource={RelativeSource Self}}"
+                           Height="{Binding ActualHeight, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.9}"
+                           HorizontalAlignment="Stretch"
                            VerticalAlignment="Center"
-                           FontSize="100"
-                           FontWeight="Bold"
-                           Text="Soon&#8482;" />
-              </Grid>
-              <!--<pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />-->
-            </TabItem>
+                           Foreground="{StaticResource ColorWarning}"
+                           Kind="Warning"
+                           Opacity="0.15" />
 
-            <!--  BUILDS  -->
-            <TabItem>
-              <TabItem.Header>
-                <StackPanel Width="auto" Height="auto">
-                  <md:PackIcon Kind="ShieldAccount" Style="{StaticResource piNav}" />
-                  <TextBlock Style="{StaticResource txtNav}" Text="Builds" />
-                </StackPanel>
-              </TabItem.Header>
-              <!--<Grid>
+              <StackPanel Width="{Binding ActualWidth, ElementName=icWarning, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=1.2}"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center">
+                <TextBlock Opacity="1"
+                           Style="{StaticResource MaterialDesignHeadline4TextBlock}"
+                           Text="xEdit is required for this app to run.&#x0a;&#x0a;If (once) you have already installed it, set its path"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap" />
+                <TextBlock Margin="{StaticResource MgTopXXWide}"
+                           Cursor="Hand"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource PrimaryHueMidBrush}"
+                           MouseLeftButtonDown="OnSetxEditPath"
+                           Style="{StaticResource MaterialDesignHeadline3TextBlock}"
+                           Text="HERE"
+                           TextAlignment="Center"
+                           TextDecorations="Underline" />
+              </StackPanel>
+            </Grid>
+
+            <!--  ACTUAL CONTENTS  -->
+            <TabControl x:Name="tbcMain"
+                        Margin="0"
+                        HorizontalContentAlignment="Center"
+                        md:ColorZoneAssist.Mode="PrimaryLight"
+                        md:NavigationRailAssist.SelectionCornerRadius="0 20 20 0"
+                        md:NavigationRailAssist.ShowSelectionBackground="True"
+                        SelectionChanged="OnChangeTab"
+                        SnapsToDevicePixels="True"
+                        Style="{StaticResource MaterialDesignNavigationRailTabControl}"
+                        TabStripPlacement="Left"
+                        Visibility="{Binding xEditDirExists, Converter={StaticResource BooleanToVisibilityConverter}}">
+              <TabControl.Resources>
+                <Thickness x:Key="MgTabContent">30,0,20,20</Thickness>
+              </TabControl.Resources>
+              <!--  ITEMS  -->
+              <TabItem>
+                <TabItem.Header>
+                  <StackPanel Width="auto" Height="auto">
+                    <md:PackIcon Kind="Sword" Style="{StaticResource piNav}" />
+                    <TextBlock Style="{StaticResource txtNav}" Text="Items" />
+                  </StackPanel>
+                </TabItem.Header>
+                <pp:PP_Items x:Name="ppItems" Margin="{StaticResource MgTabContent}" />
+              </TabItem>
+
+              <!--  OUTFITS  -->
+              <TabItem>
+                <TabItem.Header>
+                  <StackPanel Width="auto" Height="auto">
+                    <md:PackIcon Kind="TshirtV" Style="{StaticResource piNav}" />
+                    <TextBlock Style="{StaticResource txtNav}" Text="Outfits" />
+                  </StackPanel>
+                </TabItem.Header>
+                <pp:PP_Outfits x:Name="ppOutfits" Margin="{StaticResource MgTabContent}" />
+              </TabItem>
+
+              <!--  ENCHANTMENTS  -->
+              <TabItem>
+                <TabItem.Header>
+                  <StackPanel Width="auto" Height="auto">
+                    <md:PackIcon Kind="MagicStaff" Style="{StaticResource piNav}" />
+                    <TextBlock Style="{StaticResource txtNav}" Text="Enchantments" />
+                  </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                  <TextBlock Margin="0,-20,0,0"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             FontSize="100"
+                             FontWeight="Bold"
+                             Text="Soon&#8482;" />
+                </Grid>
+                <!--<pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />-->
+              </TabItem>
+
+              <!--  BUILDS  -->
+              <TabItem>
+                <TabItem.Header>
+                  <StackPanel Width="auto" Height="auto">
+                    <md:PackIcon Kind="ShieldAccount" Style="{StaticResource piNav}" />
+                    <TextBlock Style="{StaticResource txtNav}" Text="Builds" />
+                  </StackPanel>
+                </TabItem.Header>
+                <!--<Grid>
                 <TextBlock
                   Margin="0,-20,0,0"
                   HorizontalAlignment="Center"
@@ -319,28 +352,31 @@
                   FontWeight="Bold"
                   Text="Soon&#8482;" />
               </Grid>-->
-              <pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />
-            </TabItem>
+                <pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />
+              </TabItem>
 
-            <!--  ENCHANTMENTS  -->
-            <TabItem>
-              <TabItem.Header>
-                <StackPanel Width="auto" Height="auto">
-                  <md:PackIcon Kind="Lingerie" Style="{StaticResource piNav}" />
-                  <TextBlock Style="{StaticResource txtNav}" Text="Skimpy" />
-                </StackPanel>
-              </TabItem.Header>
-              <Grid>
-                <TextBlock Margin="0,-20,0,0"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           FontSize="100"
-                           FontWeight="Bold"
-                           Text="Soon&#8482;" />
-              </Grid>
-              <!--<pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />-->
-            </TabItem>
-          </TabControl>
+              <!--  ENCHANTMENTS  -->
+              <TabItem>
+                <TabItem.Header>
+                  <StackPanel Width="auto" Height="auto">
+                    <md:PackIcon Kind="Lingerie" Style="{StaticResource piNav}" />
+                    <TextBlock Style="{StaticResource txtNav}" Text="Skimpy" />
+                  </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                  <TextBlock Margin="0,-20,0,0"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             FontSize="100"
+                             FontWeight="Bold"
+                             Text="Soon&#8482;" />
+                </Grid>
+                <!--<pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />-->
+              </TabItem>
+            </TabControl>
+          </Grid>
+
+          <!--  CONTENTS  -->
         </DockPanel>
         <md:Snackbar x:Name="snackBar" MessageQueue="{md:MessageQueue}" />
       </Grid>

@@ -20,7 +20,7 @@ type KeywordSelectEventArgs(routedEvent, source, keywords) =
 
 /// Context for working with the keywords page
 [<Sealed>]
-type KeywordManagerCtx() =
+type KeywordManagerCtx() as t =
     inherit PageNavigationContext()
     let mutable nav: (string * Raw) array = [||]
 
@@ -29,6 +29,13 @@ type KeywordManagerCtx() =
         |> IO.Keywords.File.Save
 
     let mutable filter = ""
+
+    do
+        IO.Keywords.File.OnFileOpened
+        |> Event.add (fun _ ->
+            t.ExecuteInGUI (fun () ->
+                if t.IsFinishedLoading then
+                    t.ReloadNavAndGoToFirst()))
 
     member t.Filter
         with get () = filter

@@ -7,6 +7,10 @@ open GUI.PageContexts
 open System.IO
 open DMLib.IO.Path
 open DMLib.IO
+open DMLib.String
+open DMLib.Combinators
+open System.Windows.Threading
+open System
 
 module TagManager = Data.Tags.Manager
 
@@ -17,10 +21,13 @@ type AppCtx() =
         TagManager.addReservedTags Data.SPID.SpidRule.allAutoTags Data.Tags.AutoOutfit
         TagManager.addReservedTags Data.Items.ArmorType.allAutoTags Data.Tags.AutoItem
 
+    let loadKeywords () =
+        Keywords.File.Open(AppSettings.Paths.KeywordsFile())
+
     do
         addReservedTags ()
 
-        PropietaryFile.onFileOpen
+        PropietaryFile.OnFileOpen
         |> Event.add TagManager.rebuildCache
 
         // onAppPathChanged
@@ -34,6 +41,7 @@ type AppCtx() =
             SpidAutocompletion.init ())
 
     let mutable _xEditPath = ""
+    let mutable bgWorkCaption = ""
 
     member val FileWatchers = FileWatchers()
     // TODO: Get from reading the script
@@ -54,3 +62,15 @@ type AppCtx() =
             |> t.OnPropertyChanged
 
     member t.xEditDirExists = t.xEditPath |> Path.Exists
+    member _.ReloadKeywords() = loadKeywords ()
+
+    member t.BackgroundWorkCaption
+        with get () = bgWorkCaption
+        and set v =
+            bgWorkCaption <- v
+
+            [ nameof t.BackgroundWorkCaption
+              nameof t.IsWorkingInBackground ]
+            |> t.OnPropertyChanged
+
+    member _.IsWorkingInBackground = Not isNullOrEmpty bgWorkCaption

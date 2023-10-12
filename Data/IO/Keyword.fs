@@ -31,6 +31,9 @@ module File =
     let private ofJson (d: JsonMap) =
         IO.Common.ofJson JsonData.toRaw DB.upsert d
 
+    let private fileOpenedEvt = Event<string>()
+    let OnFileOpened = fileOpenedEvt.Publish
+
     /// Opens keyword database from json file
     let Open filename =
         filename
@@ -38,6 +41,8 @@ module File =
         |> Map.toArray
         |> Array.Parallel.map (fun (k, v) -> k, JsonData.toRaw v)
         |> DB.ofRaw
+
+        fileOpenedEvt.Trigger filename
 
     /// Saves keyword database to json file
     let Save filename =

@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:System="clr-namespace:System;assembly=System.Runtime"
         xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
+        xmlns:cm="clr-namespace:System.ComponentModel;assembly=System"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:diag="clr-namespace:System.Diagnostics;assembly=mscorlib"
         xmlns:local="clr-namespace:KeywordManager"
@@ -98,303 +99,339 @@
                  ButtonCancelStyle="{StaticResource MaterialDesignFlatButton}"
                  ButtonOkStyle="{StaticResource MaterialDesignFlatAccentButton}"
                  TextBoxStyle="{StaticResource MaterialDesignFloatingHintTextBox}" />
+
+    <cm:BackgroundWorker x:Key="backgroundWorker"
+                         DoWork="BgwDoWork"
+                         RunWorkerCompleted="BgwRunWorkerCompleted"
+                         WorkerReportsProgress="False"
+                         WorkerSupportsCancellation="False" />
   </Window.Resources>
 
-  <md:DrawerHost x:Name="dhMain"
-                 IsTopDrawerOpen="False"
-                 OpenMode="Default"
-                 TopDrawerCornerRadius="0 0 20 20">
+  <Grid>
+    <md:DrawerHost x:Name="dhMain"
+                   IsTopDrawerOpen="False"
+                   OpenMode="Default"
+                   TopDrawerCornerRadius="0 0 20 20">
 
-    <!--  TAG FILTER  -->
-    <md:DrawerHost.TopDrawerContent>
-      <uc:FilterByTag x:Name="filterByTag"
-                      MaxHeight="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type md:DrawerHost}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.7}"
-                      FilterTags="OnFilterByTag" />
-    </md:DrawerHost.TopDrawerContent>
+      <!--  TAG FILTER  -->
+      <md:DrawerHost.TopDrawerContent>
+        <uc:FilterByTag x:Name="filterByTag"
+                        MaxHeight="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type md:DrawerHost}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.7}"
+                        FilterTags="OnFilterByTag" />
+      </md:DrawerHost.TopDrawerContent>
 
-    <md:DialogHost CloseOnClickAway="True"
-                   Identifier="MainDlgHost"
-                   OverlayBackground="{DynamicResource PrimaryHueDarkBrush}"
-                   Placement="MousePoint">
-      <Grid>
-        <DockPanel>
-          <!--  MENU  -->
-          <md:ColorZone Margin="0,0,0,15"
-                        md:ElevationAssist.Elevation="Dp2"
-                        DockPanel.Dock="Top"
-                        Mode="PrimaryMid">
-            <Menu>
-              <!--<Menu.Resources>
-                <Style x:Key="scriptUpdate"
-                       BasedOn="{StaticResource MaterialDesignMenuItem}"
-                       TargetType="MenuItem">
-                  <Style.Resources>
-                    <Style TargetType="StackPanel">
-                      <Setter Property="Orientation" Value="Horizontal" />
-                    </Style>
-                    <Style TargetType="md:PackIcon">
-                      <Setter Property="Margin" Value="3,-2,0,0" />
-                      <Setter Property="VerticalAlignment" Value="Top" />
-                      <Setter Property="Kind" Value="AlertCircle" />
-                      <Setter Property="Visibility" Value="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                    </Style>
-                  </Style.Resources>
-                </Style>
-              </Menu.Resources>-->
+      <md:DialogHost CloseOnClickAway="True"
+                     Identifier="MainDlgHost"
+                     OverlayBackground="{DynamicResource PrimaryHueDarkBrush}"
+                     Placement="MousePoint">
+        <Grid>
+          <DockPanel>
+            <!--  MENU  -->
+            <md:ColorZone Margin="0,0,0,15"
+                          md:ElevationAssist.Elevation="Dp2"
+                          DockPanel.Dock="Top"
+                          Mode="PrimaryMid">
+              <Menu>
+                <!--<Menu.Resources>
+                  <Style x:Key="scriptUpdate"
+                         BasedOn="{StaticResource MaterialDesignMenuItem}"
+                         TargetType="MenuItem">
+                    <Style.Resources>
+                      <Style TargetType="StackPanel">
+                        <Setter Property="Orientation" Value="Horizontal" />
+                      </Style>
+                      <Style TargetType="md:PackIcon">
+                        <Setter Property="Margin" Value="3,-2,0,0" />
+                        <Setter Property="VerticalAlignment" Value="Top" />
+                        <Setter Property="Kind" Value="AlertCircle" />
+                        <Setter Property="Visibility" Value="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                      </Style>
+                    </Style.Resources>
+                  </Style>
+                </Menu.Resources>-->
 
-              <MenuItem Header="_File">
-                <MenuItem Command="c:AppCmds.New" Header="_New" />
-                <MenuItem Command="c:AppCmds.Open" Header="_Open" />
-                <MenuItem Command="c:AppCmds.Save" Header="_Save" />
-                <MenuItem Command="c:AppCmds.SaveAs" Header="_Save as..." />
-                <Separator />
-                <MenuItem Header="_Export">
-                  <MenuItem Command="c:AppCmds.FileJsonExport"
-                            Header="_Json"
-                            ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-                </MenuItem>
-                <MenuItem Header="_Import">
-                  <MenuItem Command="c:AppCmds.FileJsonImport"
-                            Header="_Json"
-                            ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-                </MenuItem>
-                <Separator />
-                <MenuItem Command="c:AppCmds.Export"
-                          Header="_Generate"
-                          ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-                <MenuItem Command="c:AppCmds.ExportAs"
-                          Header="Generate _at..."
-                          ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-              </MenuItem>
-              <MenuItem Header="_Data">
-                <MenuItem Command="c:AppCmds.Filter"
-                          Header="_Filter"
-                          ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-                <!--  TODO: Enable when implemented  -->
-                <Separator Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <!--  TODO: Enable when implemented  -->
-                <MenuItem Header="Missing _keywords" Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}">
-                  <MenuItem Header="_Add to app" />
-                  <MenuItem Header="_Delete from file" />
-                </MenuItem>
-              </MenuItem>
-              <MenuItem Header="_Settings">
-                <MenuItem Click="OnAppSettingsClick" Header="App _settings" />
-                <MenuItem Click="OpenDataDirClick"
-                          Header="Open data dir"
-                          Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                <Separator />
-
-                <MenuItem Header="_Backup">
-                  <MenuItem Command="c:AppCmds.BackupSettingsGit"
-                            Header="Create _backup"
-                            ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-                  <MenuItem Command="c:AppCmds.BackupSettings"
-                            Header="Create _named backup"
-                            ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-                  <MenuItem Command="c:AppCmds.RestoreSettings"
-                            Header="_Restore backup"
-                            ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                <MenuItem Header="_File">
+                  <MenuItem Command="c:AppCmds.New" Header="_New" />
+                  <MenuItem Command="c:AppCmds.Open" Header="_Open" />
+                  <MenuItem Command="c:AppCmds.Save" Header="_Save" />
+                  <MenuItem Command="c:AppCmds.SaveAs" Header="_Save as..." />
                   <Separator />
-                  <MenuItem Command="c:AppCmds.BackupKeywords"
-                            Header="Backup _Keywords"
+                  <MenuItem Header="_Export">
+                    <MenuItem Command="c:AppCmds.FileJsonExport"
+                              Header="_Json"
+                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                  </MenuItem>
+                  <MenuItem Header="_Import">
+                    <MenuItem Command="c:AppCmds.FileJsonImport"
+                              Header="_Json"
+                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                  </MenuItem>
+                  <Separator />
+                  <MenuItem Command="c:AppCmds.Export"
+                            Header="_Generate"
                             ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-                  <MenuItem Header="Replace Keywords" ToolTip="All keywords will be replaced" />
-                  <MenuItem Header="Merge Keywords" ToolTip="Will add keywords to existing ones" />
+                  <MenuItem Command="c:AppCmds.ExportAs"
+                            Header="Generate _at..."
+                            ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
                 </MenuItem>
-              </MenuItem>
-              <MenuItem Header="Scri_pts">
-                <MenuItem Header="_Install main script" Tag="{Binding ScriptHasUpdates}" />
-                <!--<MenuItem.Header>
-                    <StackPanel>
-                      <TextBlock Text="_Install main script" />
-                      <md:PackIcon Foreground="{StaticResource PrimaryHueMidBrush}" />
+                <MenuItem Header="_Data">
+                  <MenuItem Command="c:AppCmds.Filter"
+                            Header="_Filter"
+                            ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                  <!--  TODO: Enable when implemented  -->
+                  <Separator Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                  <!--  TODO: Enable when implemented  -->
+                  <MenuItem Header="Missing _keywords" Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <MenuItem Header="_Add to app" />
+                    <MenuItem Header="_Delete from file" />
+                  </MenuItem>
+                </MenuItem>
+                <MenuItem Header="_Settings">
+                  <MenuItem Click="OnAppSettingsClick" Header="App _settings" />
+                  <MenuItem Click="OpenDataDirClick"
+                            Header="Open data dir"
+                            Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                  <Separator />
+
+                  <MenuItem Header="_Backup">
+                    <MenuItem Command="c:AppCmds.BackupSettingsGit"
+                              Header="Create _backup"
+                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                    <MenuItem Command="c:AppCmds.BackupSettings"
+                              Header="Create _named backup"
+                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                    <MenuItem Command="c:AppCmds.RestoreSettings"
+                              Header="_Restore backup"
+                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                    <Separator />
+                    <MenuItem Command="c:AppCmds.BackupKeywords"
+                              Header="Backup _Keywords"
+                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                    <MenuItem Header="Replace Keywords" ToolTip="All keywords will be replaced" />
+                    <MenuItem Header="Merge Keywords" ToolTip="Will add keywords to existing ones" />
+                  </MenuItem>
+                </MenuItem>
+                <MenuItem Header="Scri_pts">
+                  <MenuItem Header="_Install main script" Tag="{Binding ScriptHasUpdates}" />
+                  <!--<MenuItem.Header>
+                      <StackPanel>
+                        <TextBlock Text="_Install main script" />
+                        <md:PackIcon Foreground="{StaticResource PrimaryHueMidBrush}" />
+                      </StackPanel>
+                    </MenuItem.Header>
+                  </MenuItem>-->
+                  <Separator />
+                  <MenuItem Click="OnGetScriptCreateOutfits" Header="Create _outfits" />
+                  <MenuItem Click="OnGetScriptFindArmorType" Header="Find _armor type" />
+                  <MenuItem Click="OnGetScriptFindOutfits" Header="_Find outfits" />
+                </MenuItem>
+                <MenuItem Header="_Help">
+                  <MenuItem Header="_Help topics" />
+                </MenuItem>
+              </Menu>
+            </md:ColorZone>
+
+            <!--  STATUS BAR  -->
+            <StatusBar DockPanel.Dock="Bottom">
+              <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="auto" />
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                  </Grid>
+                </ItemsPanelTemplate>
+              </StatusBar.ItemsPanel>
+
+              <StatusBarItem>
+                <TextBlock x:Name="txtStatusTime" />
+              </StatusBarItem>
+
+              <Separator Grid.Column="1">
+                <Separator.Style>
+                  <Style TargetType="Separator">
+                    <Setter Property="Margin" Value="5,0" />
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Text, ElementName=txtStatusTime}" Value="">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Setter Property="Margin" Value="0" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </Separator.Style>
+              </Separator>
+
+              <StatusBarItem Grid.Column="2">
+                <TextBlock x:Name="txtStatus"
+                           Margin="0"
+                           Text="" />
+              </StatusBarItem>
+            </StatusBar>
+
+            <!--  CONTENTS  -->
+            <Grid>
+              <!--  NO XEDIT WARNING  -->
+              <Grid Visibility="{Binding xEditDirExists, Converter={StaticResource InverseBoolToVisConverter}}">
+                <md:PackIcon x:Name="icWarning"
+                             Width="{Binding Height, RelativeSource={RelativeSource Self}}"
+                             Height="{Binding ActualHeight, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.9}"
+                             HorizontalAlignment="Stretch"
+                             VerticalAlignment="Center"
+                             Foreground="{StaticResource ColorWarning}"
+                             Kind="Warning"
+                             Opacity="0.15" />
+
+                <StackPanel Width="{Binding ActualWidth, ElementName=icWarning, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=1.2}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                  <TextBlock Opacity="1"
+                             Style="{StaticResource MaterialDesignHeadline4TextBlock}"
+                             Text="xEdit is required for this app to run.&#x0a;&#x0a;If (once) you have already installed it, set its path"
+                             TextAlignment="Center"
+                             TextWrapping="Wrap" />
+                  <TextBlock Margin="{StaticResource MgTopXXWide}"
+                             Cursor="Hand"
+                             FontWeight="Bold"
+                             Foreground="{StaticResource PrimaryHueMidBrush}"
+                             MouseLeftButtonDown="OnSetxEditPath"
+                             Style="{StaticResource MaterialDesignHeadline3TextBlock}"
+                             Text="HERE"
+                             TextAlignment="Center"
+                             TextDecorations="Underline" />
+                </StackPanel>
+              </Grid>
+
+              <!--  ACTUAL CONTENTS  -->
+              <TabControl x:Name="tbcMain"
+                          Margin="0"
+                          HorizontalContentAlignment="Center"
+                          md:ColorZoneAssist.Mode="PrimaryLight"
+                          md:NavigationRailAssist.SelectionCornerRadius="0 20 20 0"
+                          md:NavigationRailAssist.ShowSelectionBackground="True"
+                          SelectionChanged="OnChangeTab"
+                          SnapsToDevicePixels="True"
+                          Style="{StaticResource MaterialDesignNavigationRailTabControl}"
+                          TabStripPlacement="Left"
+                          Visibility="{Binding xEditDirExists, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TabControl.Resources>
+                  <Thickness x:Key="MgTabContent">30,0,20,20</Thickness>
+                </TabControl.Resources>
+                <!--  ITEMS  -->
+                <TabItem>
+                  <TabItem.Header>
+                    <StackPanel Width="auto" Height="auto">
+                      <md:PackIcon Kind="Sword" Style="{StaticResource piNav}" />
+                      <TextBlock Style="{StaticResource txtNav}" Text="Items" />
                     </StackPanel>
-                  </MenuItem.Header>
-                </MenuItem>-->
-                <Separator />
-                <MenuItem Click="OnGetScriptCreateOutfits" Header="Create _outfits" />
-                <MenuItem Click="OnGetScriptFindArmorType" Header="Find _armor type" />
-                <MenuItem Click="OnGetScriptFindOutfits" Header="_Find outfits" />
-              </MenuItem>
-              <MenuItem Header="_Help">
-                <MenuItem Header="_Help topics" />
-              </MenuItem>
-            </Menu>
-          </md:ColorZone>
+                  </TabItem.Header>
+                  <pp:PP_Items x:Name="ppItems" Margin="{StaticResource MgTabContent}" />
+                </TabItem>
 
-          <!--  STATUS BAR  -->
-          <StatusBar DockPanel.Dock="Bottom">
-            <StatusBar.ItemsPanel>
-              <ItemsPanelTemplate>
-                <Grid>
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                  </Grid.ColumnDefinitions>
-                </Grid>
-              </ItemsPanelTemplate>
-            </StatusBar.ItemsPanel>
+                <!--  OUTFITS  -->
+                <TabItem>
+                  <TabItem.Header>
+                    <StackPanel Width="auto" Height="auto">
+                      <md:PackIcon Kind="TshirtV" Style="{StaticResource piNav}" />
+                      <TextBlock Style="{StaticResource txtNav}" Text="Outfits" />
+                    </StackPanel>
+                  </TabItem.Header>
+                  <pp:PP_Outfits x:Name="ppOutfits" Margin="{StaticResource MgTabContent}" />
+                </TabItem>
 
-            <StatusBarItem>
-              <TextBlock x:Name="txtStatusTime" />
-            </StatusBarItem>
+                <!--  ENCHANTMENTS  -->
+                <TabItem>
+                  <TabItem.Header>
+                    <StackPanel Width="auto" Height="auto">
+                      <md:PackIcon Kind="MagicStaff" Style="{StaticResource piNav}" />
+                      <TextBlock Style="{StaticResource txtNav}" Text="Enchantments" />
+                    </StackPanel>
+                  </TabItem.Header>
+                  <Grid>
+                    <TextBlock Margin="0,-20,0,0"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="100"
+                               FontWeight="Bold"
+                               Text="Soon&#8482;" />
+                  </Grid>
+                  <!--<pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />-->
+                </TabItem>
 
-            <Separator Grid.Column="1">
-              <Separator.Style>
-                <Style TargetType="Separator">
-                  <Setter Property="Margin" Value="5,0" />
-                  <Style.Triggers>
-                    <DataTrigger Binding="{Binding Text, ElementName=txtStatusTime}" Value="">
-                      <Setter Property="Visibility" Value="Collapsed" />
-                      <Setter Property="Margin" Value="0" />
-                    </DataTrigger>
-                  </Style.Triggers>
-                </Style>
-              </Separator.Style>
-            </Separator>
+                <!--  BUILDS  -->
+                <TabItem>
+                  <TabItem.Header>
+                    <StackPanel Width="auto" Height="auto">
+                      <md:PackIcon Kind="ShieldAccount" Style="{StaticResource piNav}" />
+                      <TextBlock Style="{StaticResource txtNav}" Text="Builds" />
+                    </StackPanel>
+                  </TabItem.Header>
+                  <!--<Grid>
+                  <TextBlock
+                    Margin="0,-20,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="100"
+                    FontWeight="Bold"
+                    Text="Soon&#8482;" />
+                </Grid>-->
+                  <pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />
+                </TabItem>
 
-            <StatusBarItem Grid.Column="2">
-              <TextBlock x:Name="txtStatus"
-                         Margin="0"
-                         Text="" />
-            </StatusBarItem>
-          </StatusBar>
-
-          <!--  CONTENTS  -->
-          <Grid>
-            <!--  NO XEDIT WARNING  -->
-            <Grid Visibility="{Binding xEditDirExists, Converter={StaticResource InverseBoolToVisConverter}}">
-              <md:PackIcon x:Name="icWarning"
-                           Width="{Binding Height, RelativeSource={RelativeSource Self}}"
-                           Height="{Binding ActualHeight, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.9}"
-                           HorizontalAlignment="Stretch"
-                           VerticalAlignment="Center"
-                           Foreground="{StaticResource ColorWarning}"
-                           Kind="Warning"
-                           Opacity="0.15" />
-
-              <StackPanel Width="{Binding ActualWidth, ElementName=icWarning, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=1.2}"
-                          HorizontalAlignment="Center"
-                          VerticalAlignment="Center">
-                <TextBlock Opacity="1"
-                           Style="{StaticResource MaterialDesignHeadline4TextBlock}"
-                           Text="xEdit is required for this app to run.&#x0a;&#x0a;If (once) you have already installed it, set its path"
-                           TextAlignment="Center"
-                           TextWrapping="Wrap" />
-                <TextBlock Margin="{StaticResource MgTopXXWide}"
-                           Cursor="Hand"
-                           FontWeight="Bold"
-                           Foreground="{StaticResource PrimaryHueMidBrush}"
-                           MouseLeftButtonDown="OnSetxEditPath"
-                           Style="{StaticResource MaterialDesignHeadline3TextBlock}"
-                           Text="HERE"
-                           TextAlignment="Center"
-                           TextDecorations="Underline" />
-              </StackPanel>
+                <!--  ENCHANTMENTS  -->
+                <TabItem>
+                  <TabItem.Header>
+                    <StackPanel Width="auto" Height="auto">
+                      <md:PackIcon Kind="Lingerie" Style="{StaticResource piNav}" />
+                      <TextBlock Style="{StaticResource txtNav}" Text="Skimpy" />
+                    </StackPanel>
+                  </TabItem.Header>
+                  <Grid>
+                    <TextBlock Margin="0,-20,0,0"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="100"
+                               FontWeight="Bold"
+                               Text="Soon&#8482;" />
+                  </Grid>
+                  <!--<pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />-->
+                </TabItem>
+              </TabControl>
             </Grid>
+          </DockPanel>
+          <md:Snackbar x:Name="snackBar" MessageQueue="{md:MessageQueue}" />
+        </Grid>
+      </md:DialogHost>
+    </md:DrawerHost>
 
-            <!--  ACTUAL CONTENTS  -->
-            <TabControl x:Name="tbcMain"
-                        Margin="0"
-                        HorizontalContentAlignment="Center"
-                        md:ColorZoneAssist.Mode="PrimaryLight"
-                        md:NavigationRailAssist.SelectionCornerRadius="0 20 20 0"
-                        md:NavigationRailAssist.ShowSelectionBackground="True"
-                        SelectionChanged="OnChangeTab"
-                        SnapsToDevicePixels="True"
-                        Style="{StaticResource MaterialDesignNavigationRailTabControl}"
-                        TabStripPlacement="Left"
-                        Visibility="{Binding xEditDirExists, Converter={StaticResource BooleanToVisibilityConverter}}">
-              <TabControl.Resources>
-                <Thickness x:Key="MgTabContent">30,0,20,20</Thickness>
-              </TabControl.Resources>
-              <!--  ITEMS  -->
-              <TabItem>
-                <TabItem.Header>
-                  <StackPanel Width="auto" Height="auto">
-                    <md:PackIcon Kind="Sword" Style="{StaticResource piNav}" />
-                    <TextBlock Style="{StaticResource txtNav}" Text="Items" />
-                  </StackPanel>
-                </TabItem.Header>
-                <pp:PP_Items x:Name="ppItems" Margin="{StaticResource MgTabContent}" />
-              </TabItem>
-
-              <!--  OUTFITS  -->
-              <TabItem>
-                <TabItem.Header>
-                  <StackPanel Width="auto" Height="auto">
-                    <md:PackIcon Kind="TshirtV" Style="{StaticResource piNav}" />
-                    <TextBlock Style="{StaticResource txtNav}" Text="Outfits" />
-                  </StackPanel>
-                </TabItem.Header>
-                <pp:PP_Outfits x:Name="ppOutfits" Margin="{StaticResource MgTabContent}" />
-              </TabItem>
-
-              <!--  ENCHANTMENTS  -->
-              <TabItem>
-                <TabItem.Header>
-                  <StackPanel Width="auto" Height="auto">
-                    <md:PackIcon Kind="MagicStaff" Style="{StaticResource piNav}" />
-                    <TextBlock Style="{StaticResource txtNav}" Text="Enchantments" />
-                  </StackPanel>
-                </TabItem.Header>
-                <Grid>
-                  <TextBlock Margin="0,-20,0,0"
-                             HorizontalAlignment="Center"
-                             VerticalAlignment="Center"
-                             FontSize="100"
-                             FontWeight="Bold"
-                             Text="Soon&#8482;" />
-                </Grid>
-                <!--<pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />-->
-              </TabItem>
-
-              <!--  BUILDS  -->
-              <TabItem>
-                <TabItem.Header>
-                  <StackPanel Width="auto" Height="auto">
-                    <md:PackIcon Kind="ShieldAccount" Style="{StaticResource piNav}" />
-                    <TextBlock Style="{StaticResource txtNav}" Text="Builds" />
-                  </StackPanel>
-                </TabItem.Header>
-                <!--<Grid>
-                <TextBlock
-                  Margin="0,-20,0,0"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center"
-                  FontSize="100"
-                  FontWeight="Bold"
-                  Text="Soon&#8482;" />
-              </Grid>-->
-                <pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />
-              </TabItem>
-
-              <!--  ENCHANTMENTS  -->
-              <TabItem>
-                <TabItem.Header>
-                  <StackPanel Width="auto" Height="auto">
-                    <md:PackIcon Kind="Lingerie" Style="{StaticResource piNav}" />
-                    <TextBlock Style="{StaticResource txtNav}" Text="Skimpy" />
-                  </StackPanel>
-                </TabItem.Header>
-                <Grid>
-                  <TextBlock Margin="0,-20,0,0"
-                             HorizontalAlignment="Center"
-                             VerticalAlignment="Center"
-                             FontSize="100"
-                             FontWeight="Bold"
-                             Text="Soon&#8482;" />
-                </Grid>
-                <!--<pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />-->
-              </TabItem>
-            </TabControl>
-          </Grid>
-        </DockPanel>
-        <md:Snackbar x:Name="snackBar" MessageQueue="{md:MessageQueue}" />
-      </Grid>
-    </md:DialogHost>
-  </md:DrawerHost>
+    <!--<Grid x:Name="grdBgWork" Visibility="Collapsed">-->
+    <Grid Visibility="{Binding IsWorkingInBackground, Converter={StaticResource BooleanToVisibilityConverter}}">
+      <Rectangle Fill="Black" Opacity="0.85" />
+      <Border Width="400"
+              Height="200"
+              Background="{StaticResource MaterialDesignLightBackground}"
+              CornerRadius="5">
+        <Grid Margin="{StaticResource MgGrpContent}">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+          </Grid.RowDefinitions>
+          <ProgressBar Width="40"
+                       Height="40"
+                       Margin="{StaticResource MgTopWide}"
+                       IsIndeterminate="True"
+                       Style="{StaticResource MaterialDesignCircularProgressBar}" />
+          <TextBlock Grid.Row="1"
+                     VerticalAlignment="Center"
+                     Style="{StaticResource MaterialDesignHeadline4TextBlock}"
+                     Text="{Binding BackgroundWorkCaption, FallbackValue=Operation in progress...}"
+                     TextAlignment="Center"
+                     TextWrapping="Wrap" />
+        </Grid>
+      </Border>
+      <!--  <TextBlock  -->
+    </Grid>
+  </Grid>
 </Window>

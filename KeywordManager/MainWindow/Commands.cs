@@ -15,14 +15,12 @@ public partial class MainWindow : Window {
   private void OpenFile(string path) {
     PropietaryFile.Open(path);
     WorkingFile = path;
-    ForEachPage<IFileDisplayable>(pp => pp.OnFileOpen(path));
   }
 
   private void OnCanNew(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
   private void OnNew(object sender, ExecutedRoutedEventArgs e) {
     WorkingFile = "";
     PropietaryFile.New();
-    ForEachPage<IFileDisplayable>(pp => pp.OnNewFile());
   }
 
   private void OnCanOpen(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = true;
@@ -137,7 +135,16 @@ public partial class MainWindow : Window {
   private void OnRestoreSettings(object sender, ExecutedRoutedEventArgs e) {
     DMLib_WPF.Dialogs.File.Open(
       "Zip files (*.zip)|*.zip",
-      AppSettings.Backup.Restore, //TODO: Update images
+      fn => {
+        ExecuteInBackground(
+          () => {
+            AppSettings.Backup.Restore(fn);
+            OpenFile(WorkingFile);
+            ctx.ReloadKeywords();
+          },
+          () => DMLib_WPF.Dialogs.MessageBox.Asterisk(this, "Backup was successfully restored", "Success"),
+      "Restoring settings");
+      },
       guid: "e63aa357-ce5c-424d-a175-b2592aac7af3");
   }
 

@@ -166,7 +166,12 @@ module Database =
         | None -> d
         |> upsert uId
 
-    let importMany lines = lines |> Seq.iter import
+    let private outfitsAddedEvt = Event<_>()
+    let OnOutfitsAdded = outfitsAddedEvt.Publish
+
+    let importMany lines =
+        lines |> Seq.iter import
+        outfitsAddedEvt.Trigger()
 
     /// Gets which outfits contain some piece and have images.
     ///

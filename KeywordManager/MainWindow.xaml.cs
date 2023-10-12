@@ -55,20 +55,8 @@ public partial class MainWindow : Window {
       ImportedSpidStatus("keyword");
     };
 
-    ctx.FileWatchers.Items.GUIAction = fn => {
-      // Reloading is done from here because it's faster
-      ppItems.ctx.ReloadNavAndGoToFirst();
-
-      // Needs to reload to clear warnings in the nav and maybe missing items in the selected outfit
-      ReloadOutfitsNavAndGoToCurrent();
-
-      ImportedSpidStatus("item");
-    };
-
-    ctx.FileWatchers.Outfits.GUIAction = _ => {
-      ppOutfits.NavLoadAndGoToCurrent();
-      ImportedSpidStatus("outfit");
-    };
+    ctx.FileWatchers.Items.GUIAction = _ => ImportedSpidStatus("item");
+    ctx.FileWatchers.Outfits.GUIAction = _ => ImportedSpidStatus("outfit");
   }
 
   void ForEachPage<T>(Action<T> DoSomething) {

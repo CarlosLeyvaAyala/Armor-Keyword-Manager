@@ -8,7 +8,10 @@ using System.Windows.Input;
 namespace KeywordManager.UserControls;
 
 public partial class KeywordManagerUC : UserControl {
-  public KeywordManagerUC() => InitializeComponent();
+  public KeywordManagerUC() {
+    InitializeComponent();
+    ctx.GuiDispatcher = Dispatcher;
+  }
 
   #region Internal events
   private void OnLoaded(object sender, RoutedEventArgs e) {
@@ -105,8 +108,4 @@ public partial class KeywordManagerUC : UserControl {
 
   void DoSendKeywordChanged() => RaiseEvent(new RoutedEventArgs(KeywordChangeEvent, this));
   #endregion
-
-  void KeywordsFileChanged(string filename) {
-    MessageBox.Show(filename);
-  }
 }

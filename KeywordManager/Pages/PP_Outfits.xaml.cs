@@ -16,6 +16,7 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
     InitializeComponent();
     ctx.NameFilter.Rule = regexRule;
     ctx.NameFilter.RuleTarget = edtFilter;
+    ctx.GuiDispatcher = Dispatcher;
   }
 
   public void NavLoadAndGoTo(string uid) => ctx.ReloadNavAndGoTo(uid);

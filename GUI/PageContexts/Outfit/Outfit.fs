@@ -61,6 +61,12 @@ type OutfitPageCtx() as t =
 
             nameof t.Nav |> t.OnPropertyChanged)
 
+        let reloadOnAdded _ =
+            t.ExecuteInGUI t.ReloadNavAndGoToCurrent
+
+        Items.OnItemsAdded |> Event.add reloadOnAdded
+        DB.OnOutfitsAdded |> Event.add reloadOnAdded
+
     member val NameFilter = NameFilter(fun () -> t.OnPropertyChanged())
 
     member t.Filter

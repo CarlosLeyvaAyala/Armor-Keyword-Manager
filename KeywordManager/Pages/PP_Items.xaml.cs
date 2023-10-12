@@ -17,6 +17,7 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag,
     InitializeComponent();
     ctx.NameFilter.Rule = regexRule;
     ctx.NameFilter.RuleTarget = edtFilter;
+    ctx.GuiDispatcher = Dispatcher;
   }
   public void SetActivePage() => ctx.Activate();
 

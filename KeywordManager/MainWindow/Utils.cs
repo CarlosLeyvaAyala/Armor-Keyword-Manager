@@ -1,33 +1,12 @@
 ﻿using DM_WpfControls;
 using DMLib_WPF.Contexts;
 using System;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace KeywordManager;
 
 public partial class MainWindow : Window {
-  #region BackgroundWorker
-  Action? backgroundWorkerDoSomething = null;
-  Action? backgroundWorkerOnFinish = null;
-
-  BackgroundWorker BgWorker => (BackgroundWorker)FindResource("backgroundWorker");
-
-  private void BgwDoWork(object sender, DoWorkEventArgs e) => backgroundWorkerDoSomething?.Invoke();
-
-  void ExecuteInBackground(Action DoSomething, Action OnFinish, string caption) {
-    ctx.BackgroundWorkCaption = caption;
-    backgroundWorkerDoSomething = DoSomething;
-    backgroundWorkerOnFinish = OnFinish;
-    BgWorker.RunWorkerAsync();
-  }
-  private void BgwRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-    ctx.BackgroundWorkCaption = "";
-    backgroundWorkerOnFinish?.Invoke();
-  }
-  #endregion
-
   public static MainWindow? Instance => GetWindow(App.Current.MainWindow) as MainWindow;
 
   public void InfoBox(string text, string title) => MessageBox.Show(this, text, title, MessageBoxButton.OK, MessageBoxImage.Information);

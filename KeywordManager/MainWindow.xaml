@@ -99,12 +99,6 @@
                  ButtonCancelStyle="{StaticResource MaterialDesignFlatButton}"
                  ButtonOkStyle="{StaticResource MaterialDesignFlatAccentButton}"
                  TextBoxStyle="{StaticResource MaterialDesignFloatingHintTextBox}" />
-
-    <cm:BackgroundWorker x:Key="backgroundWorker"
-                         DoWork="BgwDoWork"
-                         RunWorkerCompleted="BgwRunWorkerCompleted"
-                         WorkerReportsProgress="False"
-                         WorkerSupportsCancellation="False" />
   </Window.Resources>
 
   <Grid>

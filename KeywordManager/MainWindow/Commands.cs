@@ -136,14 +136,21 @@ public partial class MainWindow : Window {
     DMLib_WPF.Dialogs.File.Open(
       "Zip files (*.zip)|*.zip",
       fn => {
-        ExecuteInBackground(
+        bgWork.Execute(
+            "Restoring settings",
           () => {
             AppSettings.Backup.Restore(fn);
             OpenFile(WorkingFile);
             ctx.ReloadKeywords();
           },
           () => DMLib_WPF.Dialogs.MessageBox.Asterisk(this, "Backup was successfully restored", "Success"),
-      "Restoring settings");
+          (e) => {
+            DMLib_WPF.Dialogs.MessageBox.Exception(this, $@"{e.Message}
+
+A window will be opened so you can close this app and manually extract your backup to that folder.");
+            DMLib.IO.File.Execute(AppSettings.Paths.DataDir());
+          }
+      );
       },
       guid: "e63aa357-ce5c-424d-a175-b2592aac7af3");
   }

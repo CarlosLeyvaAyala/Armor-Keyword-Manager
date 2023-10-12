@@ -11,6 +11,7 @@ using Settings = KeywordManager.Properties.Settings;
 namespace KeywordManager;
 
 public partial class MainWindow : Window {
+  readonly BgWork bgWork;
   public FilterTagEventArgs FilterByTagParameters => filterByTag.SelectedParameters;
   public void FilterClearTags() => filterByTag.ClearTags();
 
@@ -37,6 +38,7 @@ public partial class MainWindow : Window {
   public MainWindow() {
     InitializeComponent();
 
+    bgWork = new(ctx);
     InitializeFileWatchers();
     AppSettings.Paths.SetApp(Directory.GetCurrentDirectory());
     pages = new() { filterByTag, ppItems, ppOutfits };

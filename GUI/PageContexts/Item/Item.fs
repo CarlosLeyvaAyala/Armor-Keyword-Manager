@@ -26,8 +26,17 @@ type ItemsPageCtx() as t =
     let mutable nav: NavListItem array = [||]
 
     do
-        DB.OnItemsAdded
-        |> Event.add (fun () -> t.ExecuteInGUI t.ReloadNavAndGoToFirst)
+        let reloadAndGoTo1st _ = t.ExecuteInGUI t.ReloadNavAndGoToFirst
+
+        // Database changed events
+        DB.OnItemsAdded |> Event.add reloadAndGoTo1st
+
+        // File open events
+        IO.PropietaryFile.OnFileOpen
+        |> Event.add reloadAndGoTo1st
+
+        IO.PropietaryFile.OnNewFile
+        |> Event.add reloadAndGoTo1st
 
     member val NameFilter = NameFilter(fun () -> t.OnPropertyChanged())
 

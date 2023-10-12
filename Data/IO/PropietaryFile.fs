@@ -55,9 +55,7 @@ let New () =
     // is clear before the events react to it.
     Data.Items.Database.clear ()
     Data.Outfit.Database.clear ()
-
     fileNewEvent.Trigger()
-    fileOpenEvent.Trigger()
 
 let Open filename =
     filename
@@ -98,5 +96,5 @@ let Generate workingFile dir =
 ////////////////////////////////////////////////////////////////
 // Events
 ////////////////////////////////////////////////////////////////
-let onFileOpen = fileOpenEvent.Publish
-let onNewFile = fileNewEvent.Publish
+let OnFileOpen = fileOpenEvent.Publish
+let OnNewFile = fileNewEvent.Publish

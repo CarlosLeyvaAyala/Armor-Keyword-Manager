@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace KeywordManager.Pages;
 
-public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTag, IWorkspacePage {
+public partial class PP_Outfits : UserControl, IFilterableByTag, IWorkspacePage {
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
 
   public PP_Outfits() {
@@ -34,11 +34,6 @@ public partial class PP_Outfits : UserControl, IFileDisplayable, IFilterableByTa
 
   public void ApplyTagFilter(FilterTagEventArgs e) => ctx.Filter = e;
   private void OnClearTags(object sender, RoutedEventArgs e) => Owner.FilterClearTags();
-  #endregion
-
-  #region File interface
-  public void OnFileOpen(string _) => ctx.ReloadNavAndGoToFirst();
-  public void OnNewFile() => ctx.ReloadNavAndGoToFirst();
   #endregion
 
   private void OnLoaded(object sender, RoutedEventArgs e) {

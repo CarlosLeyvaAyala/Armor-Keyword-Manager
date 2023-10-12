@@ -33,6 +33,7 @@ type OutfitPageCtx() as t =
     let mutable nav: NavListItem array = [||]
 
     do
+        // Rule events
         DB.OnRuleAdded
         |> Event.add (fun _ ->
             nameof t.RulesList |> t.OnPropertyChanged
@@ -51,6 +52,7 @@ type OutfitPageCtx() as t =
             t.RefreshNavSelected()
             t.RulesNav.SelectedIndex <- idx)
 
+        // Database changed events
         Items.OnAutoTagsChanged
         |> Event.add (fun a ->
             let pieces = a |> Set.ofArray
@@ -66,6 +68,15 @@ type OutfitPageCtx() as t =
 
         Items.OnItemsAdded |> Event.add reloadOnAdded
         DB.OnOutfitsAdded |> Event.add reloadOnAdded
+
+        // File open events
+        let reloadAndGoTo1st _ = t.ExecuteInGUI t.ReloadNavAndGoToFirst
+
+        IO.PropietaryFile.OnFileOpen
+        |> Event.add reloadAndGoTo1st
+
+        IO.PropietaryFile.OnNewFile
+        |> Event.add reloadAndGoTo1st
 
     member val NameFilter = NameFilter(fun () -> t.OnPropertyChanged())
 

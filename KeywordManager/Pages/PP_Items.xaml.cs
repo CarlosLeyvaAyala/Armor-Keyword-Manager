@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace KeywordManager.Pages;
 
-public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag, IWorkspacePage {
+public partial class PP_Items : UserControl, IFilterableByTag, IWorkspacePage {
   MainWindow Owner => (MainWindow)Window.GetWindow(this);
 
   public PP_Items() {
@@ -34,11 +34,6 @@ public partial class PP_Items : UserControl, IFileDisplayable, IFilterableByTag,
   private void OnFilterNameByRegexClick(object sender, RoutedEventArgs e) =>
     ctx.NameFilter.UseRegex = tbFilterByRegex.IsChecked == true;
   private void OnClearTags(object sender, RoutedEventArgs e) => Owner.FilterClearTags();
-  #endregion
-
-  #region Interface: IFileDisplayable
-  public void OnFileOpen(string _) => ctx.ReloadNavAndGoToFirst();
-  public void OnNewFile() => ctx.ReloadNavAndGoToFirst();
   #endregion
 
   #region UI

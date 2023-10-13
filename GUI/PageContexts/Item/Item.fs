@@ -23,6 +23,7 @@ type ItemsPageCtx() as t =
     inherit PageNavigationContext()
 
     let mutable filter = FilterTagEventArgs.Empty
+    let mutable filterChangesPending = false
     let mutable nav: NavListItem array = [||]
 
     do
@@ -37,6 +38,17 @@ type ItemsPageCtx() as t =
 
         IO.PropietaryFile.OnNewFile
         |> Event.add reloadAndGoTo1st
+
+        // Filtering events
+        Workspace.Filter.OnFilterPaneOpened
+        |> Event.choose (fun page ->
+            match page with
+            | Items -> Some()
+            | _ -> None)
+        |> Event.add (fun () ->
+            if filterChangesPending then
+                filterChangesPending <- false
+                t.ExecuteInGUI t.ReloadNavAndGoToCurrent)
 
     member val NameFilter = NameFilter(fun () -> t.OnPropertyChanged())
 
@@ -69,7 +81,7 @@ type ItemsPageCtx() as t =
     // PageNavigationContext implementation
 
     override _.Activate() =
-        GUI.Workspace.changePage GUI.AppWorkspacePage.Items
+        GUI.Workspace.Page.change GUI.AppWorkspacePage.Items
 
     override _.RebuildNav() =
         nav <-
@@ -160,19 +172,21 @@ type ItemsPageCtx() as t =
             Option.ofPair (pieces.Contains v'.UId, v'))
         |> Array.iter (fun v -> v.Refresh())
 
+    member private t.refreshSelected() =
+        t.NavSelectedItems
+        |> Array.ofSeq
+        |> Array.iter (fun v -> v.Refresh())
+
     member private t.iterSelected f =
         t.NavSelectedItems |> Seq.iter (fun i -> f i)
-        t.ReloadSelectedItem()
+        filterChangesPending <- true
+        t.SelectCurrentItem()
 
-    member t.AddKeywords keywords =
-        t.iterSelected (fun i ->
-            keywords
-            |> Array.iter (fun k -> DB.addKeyword i.UId k))
+    member private t.changeKeywords change keywords =
+        t.iterSelected (fun i -> keywords |> Array.iter (fun k -> change i.UId k))
 
-    member t.DeleteKeywords keywords =
-        t.iterSelected (fun i ->
-            keywords
-            |> Array.iter (fun k -> DB.delKeyword i.UId k))
+    member t.AddKeywords keywords = t.changeKeywords DB.addKeyword keywords
+    member t.DeleteKeywords keywords = t.changeKeywords DB.delKeyword keywords
 
     member private t.changeTags change tag =
         t.iterSelected (fun i -> change i.UId tag)

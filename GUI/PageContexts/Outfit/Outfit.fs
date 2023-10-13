@@ -105,7 +105,7 @@ type OutfitPageCtx() as t =
             |> Array.Parallel.sortBy (fun v -> v.Name.ToLower())
 
     override t.Activate() =
-        GUI.Workspace.changePage GUI.AppWorkspacePage.Outfits
+        GUI.Workspace.Page.change GUI.AppWorkspacePage.Outfits
 
     member t.Nav = nav |> t.appyFilter |> toObservableCollection
 

@@ -129,10 +129,10 @@ type FilterByTagCtx() as t =
 
         tags |> Seq.iter (fun v -> v.IsVisible <- vis v)
 
-    let reloadTags _ = GUI.Workspace.refreshPageTags ()
+    let reloadTags _ = GUI.Workspace.Page.refreshTags ()
 
     do
-        GUI.Workspace.onChangePageTags
+        GUI.Workspace.Page.onChangeTags
         |> Event.filter (Not Array.isEmpty)
         |> Event.add (fun tags -> pageTags <- tags |> Array.Parallel.map dupFst |> Map.ofArray)
 

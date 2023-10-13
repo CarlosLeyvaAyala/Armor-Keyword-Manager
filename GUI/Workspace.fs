@@ -12,33 +12,43 @@ type IWorkspacePage =
     abstract member SetActivePage: unit -> unit
 
 module Workspace =
-    module Items = Data.Items.Database
-    module Outfits = Data.Outfit.Database
-    let mutable private currentPage = Unknown
+    module internal Page =
+        module Items = Data.Items.Database
+        module Outfits = Data.Outfit.Database
+        let mutable internal currentPage = Unknown
 
-    let private pageTagsChangeEvent = Event<string array>()
-    let private pageChangeEvent = Event<AppWorkspacePage>()
+        let private pageTagsChangeEvent = Event<string array>()
+        let private pageChangeEvent = Event<AppWorkspacePage>()
 
-    let private sendPageTags page =
-        match page with
-        | Items ->
-            Items.toArrayOfRaw ()
-            |> Data.Tags.Get.allTags Items.allItemTags
-        | Outfits ->
-            Outfits.toArrayOfRaw ()
-            |> Data.Tags.Get.allTags Outfits.allOutfitTags
-        | WaedEnchantments -> failwith "Not implemented"
-        | WaedBuilds -> failwith "Not implemented"
-        | Skimpify -> failwith "Not implemented"
-        | Unknown -> [||]
-        |> pageTagsChangeEvent.Trigger
+        let private sendPageTags page =
+            match page with
+            | Items ->
+                Items.toArrayOfRaw ()
+                |> Data.Tags.Get.allTags Items.allItemTags
+            | Outfits ->
+                Outfits.toArrayOfRaw ()
+                |> Data.Tags.Get.allTags Outfits.allOutfitTags
+            | WaedEnchantments -> failwith "Not implemented"
+            | WaedBuilds -> failwith "Not implemented"
+            | Skimpify -> failwith "Not implemented"
+            | Unknown -> [||]
+            |> pageTagsChangeEvent.Trigger
 
-    let refreshPageTags () = sendPageTags currentPage
+        /// Resets the visibility on the tags that can be shown on a page
+        let refreshTags () = sendPageTags currentPage
 
-    let changePage page =
-        currentPage <- page
-        pageChangeEvent.Trigger page
-        refreshPageTags ()
+        let change page =
+            currentPage <- page
+            pageChangeEvent.Trigger page
+            refreshTags ()
 
-    let onChangePageTags = pageTagsChangeEvent.Publish
-    let onPageChanged = pageChangeEvent.Publish
+        let onChangeTags = pageTagsChangeEvent.Publish
+        /// Called when the page was changed
+        let onChanged = pageChangeEvent.Publish
+
+    module Filter =
+        let private filterPaneOpenEvt = Event<_>()
+        let internal OnFilterPaneOpened = filterPaneOpenEvt.Publish
+
+        let DrawerWasOpened () =
+            filterPaneOpenEvt.Trigger Page.currentPage

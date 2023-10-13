@@ -90,6 +90,10 @@
     <CommandBinding CanExecute="OnCanBackupKeywords"
                     Command="c:AppCmds.BackupKeywords"
                     Executed="OnBackupKeywords" />
+
+    <CommandBinding CanExecute="OnCanStatsEspsWithNoOutfits"
+                    Command="c:AppCmds.StatsEspsWithNoOutfits"
+                    Executed="OnStatsEspsWithNoOutfits" />
   </Window.CommandBindings>
 
   <Window.Resources>
@@ -172,12 +176,20 @@
                   <MenuItem Command="c:AppCmds.Filter"
                             Header="_Filter"
                             ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+
                   <!--  TODO: Enable when implemented  -->
                   <Separator Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}" />
                   <!--  TODO: Enable when implemented  -->
                   <MenuItem Header="Missing _keywords" Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <MenuItem Header="_Add to app" />
                     <MenuItem Header="_Delete from file" />
+                  </MenuItem>
+
+                  <Separator />
+                  <MenuItem Header="_Stats">
+                    <MenuItem Command="c:AppCmds.StatsEspsWithNoOutfits"
+                              Header="Plugins with no _outfits"
+                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
                   </MenuItem>
                 </MenuItem>
                 <MenuItem Header="_Settings">
@@ -401,7 +413,7 @@
     </md:DrawerHost>
 
     <!--<Grid x:Name="grdBgWork" Visibility="Collapsed">-->
-    <Grid Visibility="{Binding IsWorkingInBackground, Converter={StaticResource BooleanToVisibilityConverter}}">
+    <Grid Visibility="{Binding IsWorkingInBackground, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}">
       <Rectangle Fill="Black" Opacity="0.85" />
       <Border Width="400"
               Height="200"

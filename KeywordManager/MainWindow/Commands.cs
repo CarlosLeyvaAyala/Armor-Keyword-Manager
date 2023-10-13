@@ -203,4 +203,13 @@ A window will be opened so you can close this app and manually extract your back
     });
   }
   #endregion
+
+  #region Stats
+  private void OnCanStatsEspsWithNoOutfits(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = !ctx.Data.CanGetEspWithNoOutfits;
+  private void OnStatsEspsWithNoOutfits(object sender, ExecutedRoutedEventArgs e) {
+    TextCopy.ClipboardService.SetText(ctx.Data.EspWithNoOutfits);
+    ShowToast("Data was copied to clipboard", 2, SoundEffect.Hint);
+  }
+
+  #endregion
 }

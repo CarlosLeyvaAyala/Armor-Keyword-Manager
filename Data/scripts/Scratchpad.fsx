@@ -935,29 +935,15 @@ let outfits = Outfits.toArrayOfRaw ()
 //|> createRawDecls
 
 // ================================
-open System.IO
-open DMLib
-open DMLib.String
-open DMLib.IO
-open DMLib.IO.Path
-open System.IO.Compression
-open DMLib.Combinators
+let getEsp a =
+    a
+    |> Array.Parallel.map (fst >> Types.Skyrim.UniqueId.Split >> fst)
+    |> Array.distinct
 
-let dataPath =
-    @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\KeywordManager\bin\Debug\net7.0-windows\Data"
+Items.toArrayOfRaw ()
+|> getEsp
+|> Array.except (Outfits.toArrayOfRaw () |> getEsp)
+|> Array.Parallel.sortWith compareICase
+|> Array.fold smartNl ""
 
-let tmpD =
-    Path.GetTempPath()
-    |> combine2' "SIM.13C1EDD4B4034298A3A041762D6F4F68"
-
-Directory.CreateDirectory tmpD
-
-combine2 dataPath "Keywords.json"
-|> File.copyWithSameName tmpD
-
-let img = combine2' @"Img\Keywords"
-(img dataPath, img tmpD) ||> Directory.copy true
-
-ZipFile.CreateFromDirectory(tmpD, @"C:\Users\Osrail\Desktop\SIM Keywords.zip", CompressionLevel.Fastest, false)
-
-Directory.Delete(tmpD, true)
+Items.testDb().IsEmpty

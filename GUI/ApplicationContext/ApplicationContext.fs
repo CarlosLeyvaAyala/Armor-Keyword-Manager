@@ -9,11 +9,11 @@ open DMLib.IO.Path
 open DMLib.IO
 open DMLib.String
 open DMLib.Combinators
-open System.Windows.Threading
 open System
 
 module TagManager = Data.Tags.Manager
 
+[<Sealed>]
 type AppCtx() =
     inherit ApplicationContext()
 
@@ -74,3 +74,4 @@ type AppCtx() =
             |> t.OnPropertyChanged
 
     member _.IsWorkingInBackground = Not isNullOrEmpty bgWorkCaption
+    member val Data = AppCtxData()

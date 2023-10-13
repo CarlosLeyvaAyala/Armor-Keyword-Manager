@@ -1,3 +1,6 @@
+open System.Security.Cryptography
+
+
 // Usage:
 // * Copy whole F# static command definition.
 // * Set static class namespace.
@@ -50,6 +53,13 @@ let genBindings staticClass =
 
         sprintf (Printf.StringFormat<string -> string -> string>(d)) s s
 
+    let toMenus cmd =
+        $"""
+<MenuItem Command="{staticClass}{cmd}"
+    Header="{cmd}"
+    ToolTip="{{Binding RelativeSource={{RelativeSource Self}}, Path=Command.Text}}" />
+"""
+
     let fold acc s = acc + s
     let c = getCommands ()
 
@@ -60,7 +70,8 @@ let genBindings staticClass =
         |> List.fold fold ""
 
     let d = c |> List.map toDecls |> List.fold fold ""
-    b, d
+    let m = c |> List.map toMenus |> List.fold fold ""
+    b, d, m
 
 let classFromClipboard defaultName =
     "c:"
@@ -69,10 +80,12 @@ let classFromClipboard defaultName =
       | _ -> defaultName
     + "."
 
-let bindings, declarations = "AppCmds" |> classFromClipboard |> genBindings
+let bindings, declarations, menus = "AppCmds" |> classFromClipboard |> genBindings
 
 bindings |> TextCopy.ClipboardService.SetText
 declarations |> TextCopy.ClipboardService.SetText
+menus |> TextCopy.ClipboardService.SetText
 
 bindings
 declarations
+menus

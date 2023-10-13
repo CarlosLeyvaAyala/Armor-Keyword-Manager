@@ -104,6 +104,11 @@ type AppCmds private () =
 
     static member val BackupKeywords = basic "BackupKeywords" "Use this for sharing your keywords with other people"
 
+    static member val StatsEspsWithNoOutfits =
+        basic
+            "StatsEspsWithNoOutfits"
+            "Copies to clipboard plugins registered in this database that have no known outfits"
+
 [<Sealed>]
 type ItemCmds private () =
     static let create = createCmd<ItemCmds>

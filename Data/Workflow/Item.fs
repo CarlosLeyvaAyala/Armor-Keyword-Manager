@@ -195,6 +195,7 @@ module Database =
     let testDb () = db
     let clear () = db <- Map.empty
     let toArray () = db |> Map.toArray
+    let isEmpty () = db.IsEmpty
 
     let toArrayOfRaw () =
         toArray ()

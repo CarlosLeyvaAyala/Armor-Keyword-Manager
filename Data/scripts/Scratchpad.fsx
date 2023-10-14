@@ -47,6 +47,9 @@
 #load "..\Workflow\Outfit\SPID\Chance.fs"
 #load "..\Workflow\Outfit\SPID\Rules.fs"
 #load "..\Workflow\Outfit\Outfit.fs"
+#load "..\Workflow\WAED\Types\Raw.fs"
+#load "..\Workflow\WAED\Types\Sandboxed.fs"
+#load "..\Workflow\WAED\Types\Augments.fs"
 #load "..\IO\AppSettings\AppSettingsTypes.fs"
 #load "..\IO\AppSettings\AppSettings.fs"
 #load "..\IO\Common.fs"
@@ -60,13 +63,13 @@
 
 open System
 open System.IO
+open System.Text.RegularExpressions
 open DMLib.Collections
 open DMLib
 open DMLib.Combinators
 open DMLib.MathL
 open DMLib.String
 open DMLib.IO.Path
-open System.Text.RegularExpressions
 open DMLib.Types
 open DMLib.Types.Skyrim
 open FSharpx.Collections
@@ -75,6 +78,7 @@ open Data.Outfit
 open Data.SPID
 open Data.Tags
 open CommonTypes
+open Data.WAED
 
 let loadDecls =
     getScriptLoadDeclarations
@@ -721,191 +725,6 @@ let outfits = Outfits.toArrayOfRaw ()
 //|> Array.fold foldNl ""
 //|> TextCopy.ClipboardService.SetText
 
-/////////////////////////////////////////////////////
-//type PositiveNumber(value: float) =
-//    static let validate v =
-//        if v < 0.0 then
-//            failwith $"({v}) is not a positive number"
-//        else
-//            v
-
-//    let v = validate value
-
-//    override _.ToString() = sprintf "PositiveNumber %f" v
-//    member h.ToInt() = int v
-//    member h.ToFloat() = float v
-//    static member OfInt(v: int) = v |> int |> PositiveNumber
-//    static member OfFloat(v: float) = v |> PositiveNumber
-//    static member ToInt(v: PositiveNumber) = v.ToInt()
-//    static member ToFloat(v: PositiveNumber) = v.ToFloat()
-
-
-////type AreaPoint =
-////    { min: PositiveNumber
-////      max: PositiveNumber }
-
-////    member r.toRaw() : AreaPointRaw =
-////        { min = r.min.ToInt()
-////          max = r.max.ToInt() }
-
-////    static member toRaw(r: AreaPoint) = r.toRaw ()
-
-////    static member ofRaw(r: AreaPointRaw) =
-////        { min = r.min |> PositiveNumber.OfInt
-////          max = r.max |> PositiveNumber.OfInt }
-
-////and AreaPointRaw = { min: int; max: int }
-
-
-////type DurationPoint =
-////    { min: PositiveNumber
-////      max: PositiveNumber }
-
-////    member r.toRaw() : DurationPointRaw =
-////        { min = r.min.ToInt()
-////          max = r.max.ToInt() }
-
-////    static member toRaw(r: DurationPoint) = r.toRaw ()
-
-////    static member ofRaw(r: DurationPointRaw) =
-////        { min = r.min |> PositiveNumber.OfInt
-////          max = r.max |> PositiveNumber.OfInt }
-
-////and DurationPointRaw = { min: int; max: int }
-
-
-////type MagnitudePoint =
-////    { min: PositiveNumber
-////      max: PositiveNumber }
-
-////    member r.toRaw() : MagnitudePointRaw =
-////        { min = r.min.ToFloat()
-////          max = r.max.ToFloat() }
-
-////    static member toRaw(r: MagnitudePoint) = r.toRaw ()
-
-////    static member ofRaw(r: MagnitudePointRaw) =
-////        { min = r.min |> PositiveNumber
-////          max = r.max |> PositiveNumber }
-
-////and MagnitudePointRaw = { min: float; max: float }
-
-////type MagicEffectDisplayData =
-////    { uid: UniqueId
-////      edid: EDID
-////      name: string }
-
-//type MagicEffectProgress =
-//    { area: PositiveNumber array
-//      duration: PositiveNumber array
-//      magnitude: PositiveNumber array }
-
-//    member r.toRaw() : MagicEffectProgressRaw =
-//        { area = r.area |> Array.map PositiveNumber.ToInt
-//          duration = r.duration |> Array.map PositiveNumber.ToInt
-//          magnitude = r.magnitude |> Array.map PositiveNumber.ToFloat }
-
-//    static member toRaw(r: MagicEffectProgress) = r.toRaw ()
-
-//    static member ofRaw(r: MagicEffectProgressRaw) : MagicEffectProgress =
-//        { area = r.area |> Array.map PositiveNumber.OfInt
-//          duration = r.duration |> Array.map PositiveNumber.OfInt
-//          magnitude = r.magnitude |> Array.map PositiveNumber.OfFloat }
-
-//and MagicEffectProgressRaw =
-//    { area: int array
-//      duration: int array
-//      magnitude: float array }
-
-//    static member init area duration magnitude : MagicEffectProgressRaw =
-//        { area = [| area |]
-//          duration = [| duration |]
-//          magnitude = [| magnitude |] }
-
-
-//type MagicEffect =
-//    { uid: UniqueId
-//      edid: EDID
-//      name: string
-//      progress: MagicEffectProgress }
-
-//    member r.toRaw() : MagicEffectRaw =
-//        { uid = r.uid.Value
-//          edid = r.edid.Value
-//          name = r.name
-//          progress = r.progress.toRaw () }
-
-//    static member toRaw(r: MagicEffect) = r.toRaw ()
-
-//    static member ofRaw(r: MagicEffectRaw) : MagicEffect =
-//        { uid = r.uid |> UniqueId
-//          edid = r.edid |> EDID
-//          name = r.name
-//          progress = r.progress |> MagicEffectProgress.ofRaw }
-
-//and MagicEffectRaw =
-//    { uid: string
-//      edid: string
-//      name: string
-//      progress: MagicEffectProgressRaw }
-
-//    static member ofxEdit(s: string) : MagicEffectRaw =
-//        let a = s.Split(";;")
-//        let i = Int32.Parse
-//        let f = Double.Parse
-
-//        { uid = a[0]
-//          edid = a[1]
-//          name = a[2]
-//          progress = MagicEffectProgressRaw.init (i a[3]) (i a[4]) (f a[5]) }
-
-
-//type ObjectEffect =
-//    { uid: UniqueId
-//      edid: EDID
-//      name: string
-//      effects: MagicEffect list }
-
-//    member r.toRaw() : ObjectEffectRaw =
-//        { uid = r.uid.Value
-//          edid = r.edid.Value
-//          name = r.name
-//          effects = r.effects |> List.map MagicEffect.toRaw }
-
-//    static member toRaw(r: ObjectEffect) = r.toRaw ()
-
-//    static member ofRaw(r: ObjectEffectRaw) : ObjectEffect =
-//        { uid = r.uid |> UniqueId
-//          edid = r.edid |> EDID
-//          name = r.name
-//          effects = r.effects |> List.map MagicEffect.ofRaw }
-
-//and ObjectEffectRaw =
-//    { uid: string
-//      edid: string
-//      name: string
-//      effects: MagicEffectRaw list }
-
-//    static member ofxEdit(s: string) : ObjectEffectRaw =
-//        let d = s.Split(";;;")
-
-//        { uid = d[0]
-//          edid = d[1]
-//          name = d[2]
-//          effects =
-//            d
-//            |> Array.skip 3
-//            |> Array.map MagicEffectRaw.ofxEdit
-//            |> List.ofArray }
-
-
-//// "ObjFx Id;;;ObjFx Edid;;;ObjFx Name;;;MagicFx 1;;;MagicFx 2;;;MagicFx n"
-//// "Id;;edid;;name;;area;;duration;;magnitude"
-
-//TextCopy.ClipboardService.GetText()
-//|> ObjectEffectRaw.ofxEdit
-//|> ObjectEffect.ofRaw
-
 //////////////////////////////////
 //let createRawDecls xxx =
 //    let tName = Regex(@"type (\w+) =").Match(xxx).Groups[1].Value
@@ -935,15 +754,30 @@ let outfits = Outfits.toArrayOfRaw ()
 //|> createRawDecls
 
 // ================================
-let getEsp a =
-    a
-    |> Array.Parallel.map (fst >> Types.Skyrim.UniqueId.Split >> fst)
-    |> Array.distinct
 
-Items.toArrayOfRaw ()
-|> getEsp
-|> Array.except (Outfits.toArrayOfRaw () |> getEsp)
-|> Array.Parallel.sortWith compareICase
-|> Array.fold smartNl ""
+#load "..\Workflow\WAED\Types\Raw.fs"
+#load "..\Workflow\WAED\Types\Sandboxed.fs"
+#load "..\Workflow\WAED\Types\Augments.fs"
 
-Items.testDb().IsEmpty
+open System
+open System.IO
+open System.Text.RegularExpressions
+open DMLib.Collections
+open DMLib
+open DMLib.Combinators
+open DMLib.MathL
+open DMLib.String
+open DMLib.IO.Path
+open DMLib.Types
+open DMLib.Types.Skyrim
+open Data.WAED
+
+////"Id;;edid;;name;;area;;duration;;magnitude"
+////"ObjFx Id;;;ObjFx Edid;;;ObjFx Name;;;MagicFx 1;;;MagicFx 2;;;MagicFx n"
+
+//TextCopy.ClipboardService.GetText()
+//|> ObjectEffectRaw.ofxEdit
+//|> ObjectEffect.ofRaw
+
+let tt = EffectProgression.ofRaw { min = 15; max = 40 }
+tt.asRaw

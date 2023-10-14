@@ -166,7 +166,7 @@ It can not be exported to SPID.</sys:String>
                   <Image.Style>
                     <Style BasedOn="{StaticResource preview}" TargetType="Image">
                       <!--  HAS THUMBNAIL  -->
-                      <Setter Property="Source" Value="{Binding Thumb, IsAsync=true, Mode=OneWay, Converter={StaticResource StringToImgConverter}}" />
+                      <Setter Property="Source" Value="{Binding Thumb, Mode=OneWay, Converter={StaticResource StringToImgConverter}}" />
                       <Style.Triggers>
                         <DataTrigger Binding="{Binding HasImg}" Value="false">
                           <!--  MISSING IMAGE  -->
@@ -176,8 +176,8 @@ It can not be exported to SPID.</sys:String>
                     </Style>
                   </Image.Style>
 
+                  <!--  FULL SIZE IMAGE  -->
                   <Image.ToolTip>
-                    <!--<TextBlock Text="aoeueou" />-->
                     <ItemsControl ItemsSource="{Binding DisplayImg, IsAsync=True}">
                       <ItemsControl.ItemTemplate>
                         <DataTemplate>

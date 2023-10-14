@@ -160,6 +160,7 @@
             <TextBox x:Name="edtStringsFilter"
                      Grid.Column="1"
                      md:HintAssist.Hint="Strings filter"
+                     LostFocus="OnApplyChanges"
                      Text="{Binding Strings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      ToolTip="{StaticResource tooltipStrings}" />
             <Button Grid.Column="2"
@@ -200,6 +201,7 @@
             <TextBox x:Name="edtFormsFilter"
                      Grid.Column="1"
                      md:HintAssist.Hint="Forms filter"
+                     LostFocus="OnApplyChanges"
                      ToolTip="{StaticResource tooltipForms}">
               <TextBox.Text>
                 <Binding Mode="TwoWay"
@@ -236,17 +238,20 @@
                 </Style.Triggers>
               </Style>
             </StackPanel.Style>
-            <uw:IconRadioButton GroupName="Sex1"
+            <uw:IconRadioButton Click="OnCalculateAndApplyClick"
+                                GroupName="Sex1"
                                 IconKind="HumanMaleFemale"
                                 IconPosition="Left"
                                 IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Both}}"
                                 Text="Both" />
-            <uw:IconRadioButton GroupName="Sex1"
+            <uw:IconRadioButton Click="OnCalculateAndApplyClick"
+                                GroupName="Sex1"
                                 IconKind="HumanFemale"
                                 IconPosition="Left"
                                 IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Female}}"
                                 Text="Female" />
-            <uw:IconRadioButton GroupName="Sex1"
+            <uw:IconRadioButton Click="OnCalculateAndApplyClick"
+                                GroupName="Sex1"
                                 IconKind="HumanMale"
                                 IconPosition="Left"
                                 IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Male}}"
@@ -279,6 +284,7 @@
                        Text="100" />
             <Slider x:Name="slChance"
                     Margin="10,0"
+                    LostFocus="OnApplyChanges"
                     Maximum="100"
                     Minimum="1"
                     Style="{StaticResource MaterialDesignDiscreteHorizontalSlider}"
@@ -334,17 +340,20 @@
           <StackPanel Margin="{StaticResource MgTopXXXWide}"
                       HorizontalAlignment="Center"
                       Orientation="Horizontal">
-            <uw:IconRadioButton GroupName="Sex2"
+            <uw:IconRadioButton Click="OnCalculateAndApplyClick"
+                                GroupName="Sex2"
                                 IconKind="HumanMaleFemale"
                                 IconPosition="Left"
                                 IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Both}}"
                                 Text="Both" />
-            <uw:IconRadioButton GroupName="Sex2"
+            <uw:IconRadioButton Click="OnCalculateAndApplyClick"
+                                GroupName="Sex2"
                                 IconKind="HumanFemale"
                                 IconPosition="Left"
                                 IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Female}}"
                                 Text="Female" />
-            <uw:IconRadioButton GroupName="Sex2"
+            <uw:IconRadioButton Click="OnCalculateAndApplyClick"
+                                GroupName="Sex2"
                                 IconKind="HumanMale"
                                 IconPosition="Left"
                                 IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Male}}"
@@ -411,18 +420,18 @@
               </Style>
             </Grid.Style>
 
-            <ToggleButton Click="OnTraitClick" DataContext="{Binding Unique}" />
+            <ToggleButton Click="OnCalculateAndApplyClick" DataContext="{Binding Unique}" />
             <ToggleButton Grid.Column="1"
-                          Click="OnTraitClick"
+                          Click="OnCalculateAndApplyClick"
                           DataContext="{Binding Summonable}" />
             <ToggleButton Grid.Column="2"
-                          Click="OnTraitClick"
+                          Click="OnCalculateAndApplyClick"
                           DataContext="{Binding Child}" />
             <ToggleButton Grid.Column="3"
-                          Click="OnTraitClick"
+                          Click="OnCalculateAndApplyClick"
                           DataContext="{Binding Leveled}" />
             <ToggleButton Grid.Column="4"
-                          Click="OnTraitClick"
+                          Click="OnCalculateAndApplyClick"
                           DataContext="{Binding Teammate}" />
           </Grid>
         </StackPanel>

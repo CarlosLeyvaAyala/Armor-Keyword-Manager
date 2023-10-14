@@ -246,3 +246,7 @@ type SpidRuleCxt() as t =
             t.OnPropertyChanged()
 
     member _.ApplyChanges() = DB.updateRule t.UniqueId ruleIdx rule
+
+    member t.CalculateAndApply() =
+        t.CalculateRule()
+        t.ApplyChanges()

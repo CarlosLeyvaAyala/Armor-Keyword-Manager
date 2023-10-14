@@ -38,7 +38,7 @@ public partial class OutfitSpidRules : UserControl {
     Autocomplete.SetStringComparison(edtFormsFilter, StringComparison.CurrentCultureIgnoreCase);
   }
 
-  private void OnTraitClick(object sender, RoutedEventArgs e) => Ctx.CalculateRule();
+  private void OnCalculateAndApplyClick(object sender, RoutedEventArgs e) => Ctx.CalculateAndApply();
   private void OnApplyChanges(object sender, RoutedEventArgs e) => Ctx.ApplyChanges();
 
   private void BtnStringsFilterClick(object sender, RoutedEventArgs e) =>

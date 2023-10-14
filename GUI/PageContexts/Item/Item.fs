@@ -23,7 +23,6 @@ type ItemsPageCtx() as t =
     inherit PageNavigationContext()
 
     let mutable filter = FilterTagEventArgs.Empty
-    let mutable filterChangesPending = false
     let mutable nav: NavListItem array = [||]
 
     do
@@ -38,17 +37,6 @@ type ItemsPageCtx() as t =
 
         IO.PropietaryFile.OnNewFile
         |> Event.add reloadAndGoTo1st
-
-        // Filtering events
-        Workspace.Filter.OnFilterPaneOpened
-        |> Event.choose (fun page ->
-            match page with
-            | Items -> Some()
-            | _ -> None)
-        |> Event.add (fun () ->
-            if filterChangesPending then
-                filterChangesPending <- false
-                t.ExecuteInGUI t.ReloadNavAndGoToCurrent)
 
     member val NameFilter = NameFilter(fun () -> t.OnPropertyChanged())
 
@@ -178,8 +166,11 @@ type ItemsPageCtx() as t =
         |> Array.iter (fun v -> v.Refresh())
 
     member private t.iterSelected f =
-        t.NavSelectedItems |> Seq.iter (fun i -> f i)
-        filterChangesPending <- true
+        t.NavSelectedItems
+        |> Seq.iter (fun i ->
+            f i
+            i.Refresh())
+
         t.SelectCurrentItem()
 
     member private t.changeKeywords change keywords =

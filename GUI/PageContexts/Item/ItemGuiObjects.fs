@@ -30,7 +30,6 @@ type NavListItem(uniqueId: string, d: Raw) =
             r
 
     let mutable u = d
-
     let mutable outfitsImg = getImgOutfits ()
 
     member _.Name = u.name
@@ -38,7 +37,7 @@ type NavListItem(uniqueId: string, d: Raw) =
     member _.EDID = u.edid
     member _.UniqueId = uniqueId
     member _.UId = uniqueId
-    member t.SearchWords f = f t.Name || f t.Esp || f t.EDID
+    member _.SearchWords f = f u.name || f u.esp || f u.edid
 
     interface IHasUniqueId with
         member _.UId = uniqueId
@@ -49,8 +48,8 @@ type NavListItem(uniqueId: string, d: Raw) =
     member _.HasImage = u.img <> ""
     member _.HasTags = u.tags.Length > 0
     member _.HasKeywords = u.keywords.Length > 0
-    member _.Tags = d |> DB.allItemTags
-    member _.SearchTags = d |> DB.allItemTags
+    member _.Tags = u |> DB.allItemTags
+    member _.SearchTags = u |> DB.allItemTags
 
     override this.ToString() = this.Name
 

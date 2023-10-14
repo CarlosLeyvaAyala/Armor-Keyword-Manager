@@ -82,9 +82,8 @@ type NavListItem(uId: string, v: Raw) =
 
         randomPieceImg <-
             d.pieces
-            |> List.choose (fun id ->
-                let item = Items.find id
-
+            |> List.choose (fun id -> Items.tryFind id |> Option.map (fun v -> id, v))
+            |> List.choose (fun (id, item) ->
                 match item.img with
                 | IsEmptyStr -> None
                 | img ->

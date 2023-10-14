@@ -37,7 +37,8 @@ public partial class PP_Items : UserControl, IFilterableByTag, IWorkspacePage {
   #endregion
 
   #region UI
-  private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) => ctx.SelectCurrentItem();
+  private void LstNavItems_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
+    Owner.DisplaySelected(lstNavItems, ctx.SelectCurrentItem);
 
   private void OnLoaded(object sender, RoutedEventArgs e) {
     if (ctx.IsFinishedLoading) return; // Avoid repeated loading

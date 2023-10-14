@@ -60,7 +60,8 @@ public partial class PP_Outfits : UserControl, IFilterableByTag, IWorkspacePage 
     if (!string.IsNullOrEmpty(r)) Owner.OnOutfitImgWasSet(r);
   }
 
-  private void OnNavSelectionChanged(object sender, SelectionChangedEventArgs e) => ctx.SelectCurrentItem();
+  private void OnNavSelectionChanged(object sender, SelectionChangedEventArgs e) =>
+    Owner.DisplaySelected(lstNav, ctx.SelectCurrentItem);
 
   private void OnCanDel(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = lstNav.SelectedIndex > -1;
   private void OnDel(object sender, ExecutedRoutedEventArgs e) => ctx.DeleteSelected(Owner);

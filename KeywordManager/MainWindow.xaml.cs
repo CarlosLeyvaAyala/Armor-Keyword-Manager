@@ -85,6 +85,7 @@ public partial class MainWindow : Window {
   private void OnChangeTab(object sender, SelectionChangedEventArgs e) =>
     WhenIsLoaded(() => {
       if (tbcMain.SelectedIndex == oldTab) return;
+      SetStatusBar("", false);
       Settings.Default.lastTab = tbcMain.SelectedIndex;
       Settings.Default.Save();
       oldTab = tbcMain.SelectedIndex;

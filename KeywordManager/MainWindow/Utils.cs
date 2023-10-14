@@ -20,6 +20,15 @@ public partial class MainWindow : Window {
     txtStatus.Text = text;
     txtStatusTime.Text = useTime ? DateTime.Now.ToString("HH:mm:ss") : "";
   }
+  public void DisplaySelected(ListBox lst) {
+    var n = lst.SelectedItems.Count;
+    if (n < 2) SetStatusBar("", false);
+    else SetStatusBar($"{n} items selected", false);
+  }
+  public void DisplaySelected(ListBox lst, Action DoSomething) {
+    DisplaySelected(lst);
+    DoSomething();
+  }
 
   public static void LstSelectFirst(ListBox lst) => lst.SelectedIndex = lst.Items.Count > 0 ? 0 : -1;
   void WhenIsLoaded(Action DoSomething) {

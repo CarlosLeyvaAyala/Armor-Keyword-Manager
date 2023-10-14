@@ -25,6 +25,8 @@ public partial class OutfitSpidRules : UserControl {
     ListCollectionView lcv = new(Ctx.SkillItems);
     lcv.GroupDescriptions.Add(new PropertyGroupDescription("Category"));
     cbSkills.ItemsSource = lcv;
+
+    Ctx.IsFullyLoaded = true;
   }
 
   void SetStringsSuggestions(string[] a) {
@@ -38,7 +40,7 @@ public partial class OutfitSpidRules : UserControl {
     Autocomplete.SetStringComparison(edtFormsFilter, StringComparison.CurrentCultureIgnoreCase);
   }
 
-  private void OnCalculateAndApplyClick(object sender, RoutedEventArgs e) => Ctx.CalculateAndApply();
+  private void OnCalculateAndApply(object sender, RoutedEventArgs e) => Ctx.CalculateAndApply();
   private void OnApplyChanges(object sender, RoutedEventArgs e) => Ctx.ApplyChanges();
 
   private void BtnStringsFilterClick(object sender, RoutedEventArgs e) =>
@@ -56,5 +58,4 @@ public partial class OutfitSpidRules : UserControl {
     RegexButton_Show = true,
     RegexButton_Checked = Properties.Settings.Default.outfitFilterNameByRegex,
   });
-
 }

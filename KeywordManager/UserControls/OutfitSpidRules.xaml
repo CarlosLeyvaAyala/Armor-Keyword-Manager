@@ -238,19 +238,19 @@
                 </Style.Triggers>
               </Style>
             </StackPanel.Style>
-            <uw:IconRadioButton Click="OnCalculateAndApplyClick"
+            <uw:IconRadioButton Click="OnCalculateAndApply"
                                 GroupName="Sex1"
                                 IconKind="HumanMaleFemale"
                                 IconPosition="Left"
                                 IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Both}}"
                                 Text="Both" />
-            <uw:IconRadioButton Click="OnCalculateAndApplyClick"
+            <uw:IconRadioButton Click="OnCalculateAndApply"
                                 GroupName="Sex1"
                                 IconKind="HumanFemale"
                                 IconPosition="Left"
                                 IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Female}}"
                                 Text="Female" />
-            <uw:IconRadioButton Click="OnCalculateAndApplyClick"
+            <uw:IconRadioButton Click="OnCalculateAndApply"
                                 GroupName="Sex1"
                                 IconKind="HumanMale"
                                 IconPosition="Left"
@@ -308,10 +308,13 @@
               <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <TextBox md:HintAssist.Hint="Min level" Text="{Binding MinLvl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox md:HintAssist.Hint="Min level"
+                     LostFocus="OnApplyChanges"
+                     Text="{Binding MinLvl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <TextBox Grid.Column="2"
                      md:HintAssist.Hint="Max level"
+                     LostFocus="OnApplyChanges"
                      Text="{Binding MaxLvl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <ComboBox x:Name="cbSkills"
@@ -340,19 +343,19 @@
           <StackPanel Margin="{StaticResource MgTopXXXWide}"
                       HorizontalAlignment="Center"
                       Orientation="Horizontal">
-            <uw:IconRadioButton Click="OnCalculateAndApplyClick"
+            <uw:IconRadioButton Click="OnCalculateAndApply"
                                 GroupName="Sex2"
                                 IconKind="HumanMaleFemale"
                                 IconPosition="Left"
                                 IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Both}}"
                                 Text="Both" />
-            <uw:IconRadioButton Click="OnCalculateAndApplyClick"
+            <uw:IconRadioButton Click="OnCalculateAndApply"
                                 GroupName="Sex2"
                                 IconKind="HumanFemale"
                                 IconPosition="Left"
                                 IsChecked="{Binding Path=Sex, Mode=TwoWay, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static t:SexTrait.Female}}"
                                 Text="Female" />
-            <uw:IconRadioButton Click="OnCalculateAndApplyClick"
+            <uw:IconRadioButton Click="OnCalculateAndApply"
                                 GroupName="Sex2"
                                 IconKind="HumanMale"
                                 IconPosition="Left"
@@ -420,18 +423,18 @@
               </Style>
             </Grid.Style>
 
-            <ToggleButton Click="OnCalculateAndApplyClick" DataContext="{Binding Unique}" />
+            <ToggleButton Click="OnCalculateAndApply" DataContext="{Binding Unique}" />
             <ToggleButton Grid.Column="1"
-                          Click="OnCalculateAndApplyClick"
+                          Click="OnCalculateAndApply"
                           DataContext="{Binding Summonable}" />
             <ToggleButton Grid.Column="2"
-                          Click="OnCalculateAndApplyClick"
+                          Click="OnCalculateAndApply"
                           DataContext="{Binding Child}" />
             <ToggleButton Grid.Column="3"
-                          Click="OnCalculateAndApplyClick"
+                          Click="OnCalculateAndApply"
                           DataContext="{Binding Leveled}" />
             <ToggleButton Grid.Column="4"
-                          Click="OnCalculateAndApplyClick"
+                          Click="OnCalculateAndApply"
                           DataContext="{Binding Teammate}" />
           </Grid>
         </StackPanel>

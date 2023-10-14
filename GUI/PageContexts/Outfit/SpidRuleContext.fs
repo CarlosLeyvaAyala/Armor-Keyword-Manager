@@ -246,7 +246,9 @@ type SpidRuleCxt() as t =
             t.OnPropertyChanged()
 
     member _.ApplyChanges() = DB.updateRule t.UniqueId ruleIdx rule
+    member val IsFullyLoaded = false with get, set
 
     member t.CalculateAndApply() =
-        t.CalculateRule()
-        t.ApplyChanges()
+        if t.IsFullyLoaded && ruleIdx > -1 then
+            t.CalculateRule()
+            t.ApplyChanges()

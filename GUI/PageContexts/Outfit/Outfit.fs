@@ -50,6 +50,7 @@ type OutfitPageCtx() as t =
         DB.OnRuleUpdated
         |> Event.add (fun (_, idx) ->
             t.RefreshNavSelected()
+            nameof t.RulesList |> t.OnPropertyChanged
             t.RulesNav.SelectedIndex <- idx)
 
         // Database changed events

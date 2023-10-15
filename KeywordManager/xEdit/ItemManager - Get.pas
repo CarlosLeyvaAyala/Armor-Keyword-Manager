@@ -326,10 +326,9 @@ var
 begin
     s := Signature(e);
     if ((s = 'ARMO') or (s = 'WEAP') or (s = 'AMMO')) then AddItem(e)
-    else if s= 'MGEF' then AddMessage('Only Object Effects (ENCH) are allowed to be exported.')
-    else if s= 'ENCH' then AddObjectFx(e) 
     else if s= 'OTFT' then AddOutfit(e)
     else if s= 'KYWD' then AddKeyword(e)
+    // SPID
     else if s= 'NPC_' then AddSpidNPC(e)
     else if s= 'RACE' then AddSpidRace(e)
     else if s= 'CLAS' then AddSpidForm(e, 'Class')
@@ -338,7 +337,10 @@ begin
     else if s= 'VTYP' then AddSpidForm(e, 'Voice type')
     else if s= 'LCTN' then AddSpidForm(e, 'Location')
     else if s= 'FLST' then AddSpidFormList(e)
-    else if s= 'ACHR' then AddSpidCellNPC(e);
+    else if s= 'ACHR' then AddSpidCellNPC(e)
+    // WAED
+    else if s= 'MGEF' then AddMessage('Only Object Effects (ENCH) are allowed to be exported.')
+    else if s= 'ENCH' then AddObjectFx(e);
 end;
 
 procedure SaveFile(const contents: TStringList; filename: string);

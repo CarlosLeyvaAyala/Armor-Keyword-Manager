@@ -49,7 +49,6 @@
 #load "..\Workflow\Outfit\Outfit.fs"
 #load "..\Workflow\WAED\Types\Raw.fs"
 #load "..\Workflow\WAED\Types\Sandboxed.fs"
-#load "..\Workflow\WAED\Types\Augments.fs"
 #load "..\IO\AppSettings\AppSettingsTypes.fs"
 #load "..\IO\AppSettings\AppSettings.fs"
 #load "..\IO\Common.fs"
@@ -93,6 +92,7 @@ fsi.AddPrinter(fun (r: UniqueId) -> r.ToString())
 fsi.AddPrinter(fun (r: CanvasPoint) -> r.ToString())
 fsi.AddPrinter(fun (r: RecordId) -> r.ToString())
 fsi.AddPrinter(fun (r: EDID) -> r.ToString())
+fsi.AddPrinter(fun (r: PositiveNumber) -> r.ToString())
 
 let loadKeywords () =
     IO.Keywords.File.Open @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\KeywordManager\Data\Keywords.json"
@@ -757,7 +757,6 @@ let outfits = Outfits.toArrayOfRaw ()
 
 #load "..\Workflow\WAED\Types\Raw.fs"
 #load "..\Workflow\WAED\Types\Sandboxed.fs"
-#load "..\Workflow\WAED\Types\Augments.fs"
 
 open System
 open System.IO
@@ -779,5 +778,18 @@ open Data.WAED
 //|> ObjectEffectRaw.ofxEdit
 //|> ObjectEffect.ofRaw
 
-let tt = EffectProgression.ofRaw { min = 15; max = 40 }
-tt.asRaw
+
+//module MagicEffects =
+let mutable db: MagicEffects = Map.empty
+
+let insert uId v =
+    let uid = UniqueId uId
+
+    match db |> Map.tryFind uid with
+    | Some _ -> () // Do nothing. Avoid overwriting user data.
+    | None -> db <- (uid, MagicEffect.ofRaw v, db) |||> Map.add
+
+MagicEffectRaw.ofxEdit "Skyrim.esm|10962E|EnchRobesFortifyAlterationConstantSelf|Fortify Alteration|10|0|15"
+||> insert
+
+db

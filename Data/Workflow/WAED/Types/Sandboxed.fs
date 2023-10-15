@@ -35,11 +35,11 @@ type Effect =
       magnitude: EffectProgression }
 
 type ObjectEffect =
-    { id: UniqueId
-      edid: EDID
+    { edid: EDID
       name: FULL
       effects: Effect array }
 
+type ObjectEffectDb = Map<UniqueId, ObjectEffect>
 
 //████████╗██╗   ██╗██████╗ ███████╗
 //╚══██╔══╝╚██╗ ██╔╝██╔══██╗██╔════╝
@@ -108,16 +108,14 @@ type Effect with
 
 type ObjectEffect with
     member r.asRaw: ObjectEffectRaw =
-        { id = r.id.Value
-          edid = r.edid.Value
+        { edid = r.edid.Value
           name = r.name
           effects = r.effects |> Array.map Effect.toRaw }
 
     static member toRaw(t: ObjectEffect) = t.asRaw
 
     static member ofRaw(r: ObjectEffectRaw) : ObjectEffect =
-        { id = UniqueId r.id
-          edid = EDID r.edid
+        { edid = EDID r.edid
           name = r.name
           effects = r.effects |> Array.map Effect.ofRaw }
 

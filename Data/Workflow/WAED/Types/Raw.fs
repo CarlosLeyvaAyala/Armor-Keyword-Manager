@@ -15,8 +15,7 @@ type EffectRaw =
       magnitude: EffectProgressionRaw }
 
 type ObjectEffectRaw =
-    { id: string
-      edid: string
+    { edid: string
       name: string
       effects: EffectRaw array }
 
@@ -100,8 +99,12 @@ module xEdit =
         let a' = a |> Array.filter (Not isMgFx)
         let i (idx: OIdx) = a'[int idx]
 
-        { ObjectEffectRaw.id = $"{i OIdx.Esp}|{i OIdx.FormId}"
-          edid = i OIdx.EDID
-          name = i OIdx.FULL
-          effects = effects },
-        Array.zip uids mgef
+        {| objFxId = $"{i OIdx.Esp}|{i OIdx.FormId}"
+           objFx =
+            { ObjectEffectRaw.edid = i OIdx.EDID
+              name = i OIdx.FULL
+              effects = effects }
+           magicEffects = Array.zip uids mgef |}
+//$"{i OIdx.Esp}|{i OIdx.FormId}",
+//{ ObjectEffectRaw.edid = i OIdx.EDID;           name = i OIdx.FULL;           effects = effects },
+//Array.zip uids mgef

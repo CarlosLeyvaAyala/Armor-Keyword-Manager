@@ -28,6 +28,7 @@
     <Compile Include="IO\Keyword.fs" />
     <Compile Include="IO\Item.fs" />
     <Compile Include="IO\Outfit.fs" />
+    <Compile Include="IO\WAED.fs" />
     <Compile Include="IO\PropietaryFile.fs" />
     <None Include="scripts\Scratchpad.fsx" />
     <None Include="scripts\Ini to Json.fsx" />

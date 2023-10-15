@@ -105,6 +105,3 @@ module xEdit =
               name = i OIdx.FULL
               effects = effects }
            magicEffects = Array.zip uids mgef |}
-//$"{i OIdx.Esp}|{i OIdx.FormId}",
-//{ ObjectEffectRaw.edid = i OIdx.EDID;           name = i OIdx.FULL;           effects = effects },
-//Array.zip uids mgef

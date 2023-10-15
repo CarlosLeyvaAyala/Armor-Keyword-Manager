@@ -41,6 +41,7 @@ type ObjectEffect =
 
 type ObjectEffectDb = Map<UniqueId, ObjectEffect>
 
+
 //████████╗██╗   ██╗██████╗ ███████╗
 //╚══██╔══╝╚██╗ ██╔╝██╔══██╗██╔════╝
 //   ██║    ╚████╔╝ ██████╔╝█████╗

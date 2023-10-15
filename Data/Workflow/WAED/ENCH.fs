@@ -3,6 +3,9 @@
 open DMLib.Types.Skyrim
 open DMLib
 
+let private addEvt = Event<_>()
+let OnAdded = addEvt.Publish
+
 let mutable db: ObjectEffectDb = Map.empty
 
 let tryFind uId =
@@ -23,7 +26,7 @@ let private preserveOldEffects oldFx newFx =
         | None -> v
         | Some old -> old)
 
-let insert uId (v: ObjectEffectRaw) =
+let upsert uId (v: ObjectEffectRaw) =
     let id = UniqueId uId
 
     let value =
@@ -33,8 +36,9 @@ let insert uId (v: ObjectEffectRaw) =
         |> ObjectEffect.ofRaw
 
     db <- db |> Map.add id value
+    addEvt.Trigger()
 
 let ofxEdit s =
     let r = xEdit.parse s
     MGEF_Db.upsert r.magicEffects
-    insert r.objFxId r.objFx
+    upsert r.objFxId r.objFx

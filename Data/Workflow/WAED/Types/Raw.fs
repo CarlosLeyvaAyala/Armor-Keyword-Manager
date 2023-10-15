@@ -1,8 +1,7 @@
 ﻿namespace Data.WAED
 
 type MGEFRaw =
-    { id: string
-      name: string
+    { name: string
       edid: string
       description: string }
 
@@ -41,6 +40,8 @@ module xEdit =
     open DMLib.String
     open DMLib.Combinators
 
+    type private MgefId = string
+
     /// Position of the expected data in the xEdit string
     type private Idx =
         | Esp = 0
@@ -53,7 +54,7 @@ module xEdit =
         | Magnitude = 7
 
     /// Breaks a string with the form "esp|formID|edid|name|description|area|duration|magnitude"
-    let private parseEffect s : MGEFRaw * EffectRaw =
+    let private parseEffect s : MgefId * MGEFRaw * EffectRaw =
         let intOrFail =
             function
             | IsInt32 x -> x
@@ -71,8 +72,8 @@ module xEdit =
 
         let uid = $"{i Idx.Esp}|{i Idx.FormId}"
 
-        { id = uid
-          edid = i Idx.Edid
+        uid,
+        { edid = i Idx.Edid
           name = i Idx.Name
           description = i Idx.Description },
         { mgef = uid
@@ -90,11 +91,11 @@ module xEdit =
         let a = s |> split "||"
         let isMgFx = contains "|"
 
-        let (mgef, effects) =
+        let (uids, mgef, effects) =
             a
             |> Array.filter isMgFx
             |> Array.map parseEffect
-            |> Array.unzip
+            |> Array.unzip3
 
         let a' = a |> Array.filter (Not isMgFx)
         let i (idx: OIdx) = a'[int idx]
@@ -103,4 +104,4 @@ module xEdit =
           edid = i OIdx.EDID
           name = i OIdx.FULL
           effects = effects },
-        mgef
+        Array.zip uids mgef

@@ -7,10 +7,11 @@ type DNAM = string
 
 /// Magic effect record that will be used as a separate database
 type MGEF =
-    { id: UniqueId
-      name: FULL
+    { name: FULL
       edid: EDID
       description: DNAM }
+
+type MgefDatabase = Map<UniqueId, MGEF>
 
 type PositiveNumber(value) =
     static let validate =
@@ -21,7 +22,7 @@ type PositiveNumber(value) =
     let v = validate value
 
     member _.value = v
-    override _.ToString() = sprintf "PositiveNumber %f" v
+    override _.ToString() = sprintf "PositiveNumber %.1f" v
 
 type EffectProgression =
     { min: PositiveNumber
@@ -57,16 +58,14 @@ type ObjectEffect =
 
 type MGEF with
     member r.asRaw: MGEFRaw =
-        { id = r.id.Value
-          name = r.name
+        { name = r.name
           edid = r.edid.Value
           description = r.description }
 
     static member toRaw(t: MGEF) = t.asRaw
 
     static member ofRaw(r: MGEFRaw) : MGEF =
-        { id = UniqueId r.id
-          name = r.name
+        { name = r.name
           edid = EDID r.edid
           description = r.description }
 
@@ -121,3 +120,9 @@ type ObjectEffect with
           edid = EDID r.edid
           name = r.name
           effects = r.effects |> Array.map Effect.ofRaw }
+
+#if INTERACTIVE
+[<AutoOpen>]
+module Meh_A6B4A4313F9E4ED8B62A4EA3BFAAB3D4 =
+    fsi.AddPrinter(fun (r: PositiveNumber) -> r.ToString())
+#endif

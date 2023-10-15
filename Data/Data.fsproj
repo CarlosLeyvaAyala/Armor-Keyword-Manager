@@ -20,6 +20,7 @@
     <Compile Include="Workflow\Outfit\Outfit.fs" />
     <Compile Include="Workflow\WAED\Types\Raw.fs" />
     <Compile Include="Workflow\WAED\Types\Sandboxed.fs" />
+    <Compile Include="Workflow\WAED\MGEF.fs" />
     <Compile Include="IO\AppSettings\AppSettingsTypes.fs" />
     <Compile Include="IO\AppSettings\AppSettings.fs" />
     <Compile Include="IO\Common.fs" />

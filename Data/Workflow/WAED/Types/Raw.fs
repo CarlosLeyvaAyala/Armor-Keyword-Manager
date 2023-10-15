@@ -1,25 +1,25 @@
 ﻿namespace Data.WAED
 
+type MGEFRaw =
+    { id: string
+      name: string
+      edid: string
+      description: string }
+
 type EffectProgressionInt = { min: int; max: int }
 type EffectProgressionRaw = { min: float; max: float }
 
-type EFIDRaw =
-    { uid: string
-      edid: string
-      name: string }
-
-type MagicEffectRaw =
-    { edid: string
-      name: string
+type EffectRaw =
+    { mgef: string
       area: EffectProgressionInt
       duration: EffectProgressionInt
       magnitude: EffectProgressionRaw }
 
 type ObjectEffectRaw =
-    { uid: string
+    { id: string
       edid: string
       name: string
-      effects: MagicEffectRaw list }
+      effects: EffectRaw array }
 
 
 //████████╗██╗   ██╗██████╗ ███████╗
@@ -36,29 +36,71 @@ type ObjectEffectRaw =
 //███████╗██╔╝ ██╗   ██║   ███████╗██║ ╚████║███████║██║╚██████╔╝██║ ╚████║███████║
 //╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═══╝╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
 
-open DMLib.String
+[<RequireQualifiedAccess>]
+module xEdit =
+    open DMLib.String
+    open DMLib.Combinators
 
-type MagicEffectRaw with
-    /// Breaks a string with the form "esp|formID|edid|name|area|duration|magnitude"
-    static member ofxEdit s =
+    /// Position of the expected data in the xEdit string
+    type private Idx =
+        | Esp = 0
+        | FormId = 1
+        | Edid = 2
+        | Name = 3
+        | Description = 4
+        | Area = 5
+        | Duration = 6
+        | Magnitude = 7
 
+    /// Breaks a string with the form "esp|formID|edid|name|description|area|duration|magnitude"
+    let private parseEffect s : MGEFRaw * EffectRaw =
         let intOrFail =
             function
             | IsInt32 x -> x
             | v -> failwith $"({v}) is not a valid integer value"
 
         let a = s |> split "|"
-        let area = intOrFail a[4]
-        let duration = intOrFail a[5]
+        let i idx = a[int idx]
+        let area = intOrFail <| i Idx.Area
+        let duration = intOrFail <| i Idx.Duration
 
         let magnitude =
-            match a[6] with
+            match i Idx.Magnitude with
             | IsDouble x -> x
             | v -> failwith $"({v}) is not a valid numeric value"
 
-        $"{a[0]}|{a[1]}",
-        { MagicEffectRaw.edid = a[2]
-          name = a[3]
+        let uid = $"{i Idx.Esp}|{i Idx.FormId}"
+
+        { id = uid
+          edid = i Idx.Edid
+          name = i Idx.Name
+          description = i Idx.Description },
+        { mgef = uid
           area = { min = area; max = area }
           duration = { min = duration; max = duration }
           magnitude = { min = magnitude; max = magnitude } }
+
+    type private OIdx =
+        | Esp = 0
+        | FormId = 1
+        | EDID = 2
+        | FULL = 3
+
+    let parse s =
+        let a = s |> split "||"
+        let isMgFx = contains "|"
+
+        let (mgef, effects) =
+            a
+            |> Array.filter isMgFx
+            |> Array.map parseEffect
+            |> Array.unzip
+
+        let a' = a |> Array.filter (Not isMgFx)
+        let i (idx: OIdx) = a'[int idx]
+
+        { ObjectEffectRaw.id = $"{i OIdx.Esp}|{i OIdx.FormId}"
+          edid = i OIdx.EDID
+          name = i OIdx.FULL
+          effects = effects },
+        mgef

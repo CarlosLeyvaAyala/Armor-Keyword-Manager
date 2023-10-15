@@ -67,7 +67,7 @@ begin
   Result := KeywordIndex(e, edid) <> -1;
 end;
 
-function RecordToStr(e: IInterface): string;
+function FormIdToStr(e: IInterface): string;
 begin
   e := MasterOrSelf(e);
   Result := Format('%s|%s', [
@@ -97,7 +97,7 @@ var
     at: Integer;
 begin
     ed := EditorID(e);
-    f := RecordToStr(e);
+    f := FormIdToStr(e);
     s := Signature(e);
     if s = 'ARMO' then at := GetElementNativeValues(WinningOverride(e), 'BOD2\Armor Type')
     else at := -1;
@@ -125,7 +125,7 @@ begin
         for i := 0 to ElementCount(items) - 1 do begin
             li := ElementByIndex(items, i);
             piece := LinksTo(li);
-            lst.add(RecordToStr(piece));
+            lst.add(FormIdToStr(piece));
         end;
         Result := lst.commaText;
     finally
@@ -141,7 +141,7 @@ var
     ed, f, kidLine: string;
 begin
     ed := EditorID(e);
-    f := RecordToStr(e);
+    f := FormIdToStr(e);
     kidLine := Format('%s|%s|OTFT|%s', [ed, f, GetOutfitItems(e)]);
     AddMessage(kidLine);
     outfits.Add(kidLine);
@@ -274,6 +274,49 @@ begin
 end;
 
 ///////////////////////////////////////////////////////////////////////
+// WAED
+///////////////////////////////////////////////////////////////////////
+function GetMagicFX_EFID(e: IInterface): string;
+var
+    uid, full, dnam, edid: string;
+begin
+    uid := FormIdToStr(e);
+    edid := EditorID(e);
+    full := GetElementEditValues(e, 'FULL');
+    dnam := GetElementEditValues(e, 'DNAM');
+    Result := Format('%s|%s|%s|%s', [uid, edid, full, dnam]);
+end;
+
+procedure AddObjectFx(e: IInterface);
+var
+    i, n: Integer;
+    fxs, fx, ench: IInterface;
+    uid, full, edid, efid, a, d ,m, Result: string;
+begin
+    Result := '';
+    
+    uid := StringReplace(FormIdToStr(e), '|', '||', [rfReplaceAll, rfIgnoreCase]);
+    edid := EditorID(e);
+    full := GetElementEditValues(e, 'FULL');
+    Result := Format('%s||%s||%s', [uid, edid, full]);
+
+    fxs := ElementByPath(e, 'Effects');
+    n := ElementCount(fxs);
+    for i := 0 to n - 1 do begin
+        fx := ElementByIndex(fxs, i);
+        ench := LinksTo(ElementByPath(fx, 'EFID'));
+        efid := GetMagicFX_EFID(ench);
+        
+        a := GetElementEditValues(fx, 'EFIT\Area');
+        d := GetElementEditValues(fx, 'EFIT\Duration');
+        m := GetElementEditValues(fx, 'EFIT\Magnitude');
+
+        Result := Format('%s||%s|%s|%s|%s', [Result, efid, a, d, m]);
+    end;
+    AddMessage(Result); // FIX: Add to file
+end;
+
+///////////////////////////////////////////////////////////////////////
 // Base processing
 ///////////////////////////////////////////////////////////////////////
 
@@ -283,6 +326,8 @@ var
 begin
     s := Signature(e);
     if ((s = 'ARMO') or (s = 'WEAP') or (s = 'AMMO')) then AddItem(e)
+    else if s= 'MGEF' then AddMessage('Only Object Effects (ENCH) are allowed to be exported.')
+    else if s= 'ENCH' then AddObjectFx(e) 
     else if s= 'OTFT' then AddOutfit(e)
     else if s= 'KYWD' then AddKeyword(e)
     else if s= 'NPC_' then AddSpidNPC(e)

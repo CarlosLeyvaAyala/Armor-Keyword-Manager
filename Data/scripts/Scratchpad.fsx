@@ -771,25 +771,7 @@ open DMLib.Types
 open DMLib.Types.Skyrim
 open Data.WAED
 
-////"Id;;edid;;name;;area;;duration;;magnitude"
-////"ObjFx Id;;;ObjFx Edid;;;ObjFx Name;;;MagicFx 1;;;MagicFx 2;;;MagicFx n"
-
-//TextCopy.ClipboardService.GetText()
-//|> ObjectEffectRaw.ofxEdit
-//|> ObjectEffect.ofRaw
-
-
-//module MagicEffects =
-let mutable db: MagicEffects = Map.empty
-
-let insert uId v =
-    let uid = UniqueId uId
-
-    match db |> Map.tryFind uid with
-    | Some _ -> () // Do nothing. Avoid overwriting user data.
-    | None -> db <- (uid, MagicEffect.ofRaw v, db) |||> Map.add
-
-MagicEffectRaw.ofxEdit "Skyrim.esm|10962E|EnchRobesFortifyAlterationConstantSelf|Fortify Alteration|10|0|15"
-||> insert
-
-db
+let (objFx, mgef) = 
+    xEdit.parse
+        "WAED Enchantments - Summermyst.esp||94f||DM_Ench_ConjurationFortitude_Distraction_03||Conjuration Fortitude||Summermyst - Enchantments of Skyrim.esp|512aa|SUM_Armor_Res_Effect_ExtendConjuration|Amplify Conjuration|Conjuration spells and effects last <mag>% longer.|0|0|25.000000||Skyrim.esm|109630|EnchRobesFortifyMagickaRateConstantSelf|Regenerate Magicka|Magicka regenerates <mag>% faster.|0|0|50.000000||Skyrim.esm|b7a35|EnchResistMagicConstantSelf|Resist Magic|Grants <mag>% resistance to all magic.|0|0|10.000000||WAED Enchantments.esp|808|DM_EnchFx_PerkDistraction_03|Distraction battle|You distract all people on the battefield. Same sex gets 5% more damage. Opposite sex gets 20% and 10% higher chance of getting a critical hit.|0|0|0.000000"
+    //|> Tuple.mapFst ObjectEffect.ofRaw

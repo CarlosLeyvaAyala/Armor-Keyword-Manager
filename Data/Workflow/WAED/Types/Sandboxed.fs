@@ -3,6 +3,14 @@
 open DMLib.Types.Skyrim
 
 type FULL = string
+type DNAM = string
+
+/// Magic effect record that will be used as a separate database
+type MGEF =
+    { id: UniqueId
+      name: FULL
+      edid: EDID
+      description: DNAM }
 
 type PositiveNumber(value) =
     static let validate =
@@ -19,20 +27,17 @@ type EffectProgression =
     { min: PositiveNumber
       max: PositiveNumber }
 
-type MagicEffect =
-    { edid: EDID
-      name: FULL
+type Effect =
+    { mgef: UniqueId
       area: EffectProgression
       duration: EffectProgression
       magnitude: EffectProgression }
 
-type MagicEffects = Map<UniqueId, MagicEffect>
-
 type ObjectEffect =
-    { uid: UniqueId
+    { id: UniqueId
       edid: EDID
       name: FULL
-      effects: MagicEffect list }
+      effects: Effect array }
 
 
 //████████╗██╗   ██╗██████╗ ███████╗
@@ -49,6 +54,21 @@ type ObjectEffect =
 //███████╗██╔╝ ██╗   ██║   ███████╗██║ ╚████║███████║██║╚██████╔╝██║ ╚████║███████║
 //╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═══╝╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
 
+
+type MGEF with
+    member r.asRaw: MGEFRaw =
+        { id = r.id.Value
+          name = r.name
+          edid = r.edid.Value
+          description = r.description }
+
+    static member toRaw(t: MGEF) = t.asRaw
+
+    static member ofRaw(r: MGEFRaw) : MGEF =
+        { id = UniqueId r.id
+          name = r.name
+          edid = EDID r.edid
+          description = r.description }
 
 type PositiveNumber with
     member t.asRaw = t.value
@@ -72,20 +92,32 @@ type EffectProgression with
         { min = r.min |> PositiveNumber.ofRaw
           max = r.max |> PositiveNumber.ofRaw }
 
-
-type MagicEffect with
-    member r.asRaw: MagicEffectRaw =
-        { edid = r.edid.Value
-          name = r.name
+type Effect with
+    member r.asRaw: EffectRaw =
+        { mgef = r.mgef.Value
           area = r.area.asInt
           duration = r.duration.asInt
           magnitude = r.magnitude.asFloat }
 
-    static member ofRaw(r: MagicEffectRaw) =
-        { edid = EDID r.edid
-          name = r.name
+    static member ofRaw(r: EffectRaw) =
+        { mgef = UniqueId r.mgef
           area = r.area |> EffectProgression.ofInt
           duration = r.duration |> EffectProgression.ofInt
           magnitude = r.magnitude |> EffectProgression.ofRaw }
 
-    static member toRaw(r: MagicEffect) = r.asRaw
+    static member toRaw(r: Effect) = r.asRaw
+
+type ObjectEffect with
+    member r.asRaw: ObjectEffectRaw =
+        { id = r.id.Value
+          edid = r.edid.Value
+          name = r.name
+          effects = r.effects |> Array.map Effect.toRaw }
+
+    static member toRaw(t: ObjectEffect) = t.asRaw
+
+    static member ofRaw(r: ObjectEffectRaw) : ObjectEffect =
+        { id = UniqueId r.id
+          edid = EDID r.edid
+          name = r.name
+          effects = r.effects |> Array.map Effect.ofRaw }

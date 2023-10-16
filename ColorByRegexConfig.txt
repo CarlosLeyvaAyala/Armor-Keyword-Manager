@@ -6,7 +6,7 @@
 ^.*\\DMLib-Fs-WPF\\.*\.fs$
 ^.*\\DMLib-FSharp\\.*\.fs$
 ^.*\\UserControls\\.*\.fs$
-^.*\\PageContexts\\.*\.fs$
+^.*\\\w+Contexts\\.*\.fs$
 ^.*\\UI\\.*\.fs$
 ^.*\\IO\\.*\.fs$
 ^.*\\Workflow\\.*\.fs$

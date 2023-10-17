@@ -355,15 +355,7 @@
                       <TextBlock Style="{StaticResource txtNav}" Text="Enchantments" />
                     </StackPanel>
                   </TabItem.Header>
-                  <Grid>
-                    <TextBlock Margin="0,-20,0,0"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               FontSize="100"
-                               FontWeight="Bold"
-                               Text="Soon&#8482;" />
-                  </Grid>
-                  <!--<pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />-->
+                  <pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />
                 </TabItem>
 
                 <!--  BUILDS  -->
@@ -374,19 +366,11 @@
                       <TextBlock Style="{StaticResource txtNav}" Text="Builds" />
                     </StackPanel>
                   </TabItem.Header>
-                  <!--<Grid>
-                  <TextBlock
-                    Margin="0,-20,0,0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontSize="100"
-                    FontWeight="Bold"
-                    Text="Soon&#8482;" />
-                </Grid>-->
-                  <pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />
+                  <!--<pp:PP__Soon />-->
+                  <pp:PP_Builds Margin="{StaticResource MgTabContent}" />
                 </TabItem>
 
-                <!--  ENCHANTMENTS  -->
+                <!--  SKIMPY  -->
                 <TabItem>
                   <TabItem.Header>
                     <StackPanel Width="auto" Height="auto">
@@ -394,15 +378,7 @@
                       <TextBlock Style="{StaticResource txtNav}" Text="Skimpy" />
                     </StackPanel>
                   </TabItem.Header>
-                  <Grid>
-                    <TextBlock Margin="0,-20,0,0"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               FontSize="100"
-                               FontWeight="Bold"
-                               Text="Soon&#8482;" />
-                  </Grid>
-                  <!--<pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />-->
+                  <pp:PP__Soon />
                 </TabItem>
               </TabControl>
             </Grid>

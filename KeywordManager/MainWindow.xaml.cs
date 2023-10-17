@@ -59,6 +59,7 @@ public partial class MainWindow : Window {
 
     ctx.FileWatchers.Items.GUIAction = _ => ImportedSpidStatus("item");
     ctx.FileWatchers.Outfits.GUIAction = _ => ImportedSpidStatus("outfit");
+    ctx.FileWatchers.WAED.GUIAction = _ => ImportedSpidStatus("enchantment");
   }
 
   void ForEachPage<T>(Action<T> DoSomething) {

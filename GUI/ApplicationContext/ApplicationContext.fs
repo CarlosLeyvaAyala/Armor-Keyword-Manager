@@ -30,6 +30,12 @@ type AppCtx() =
         PropietaryFile.OnFileOpen
         |> Event.add TagManager.rebuildCache
 
+        Data.WAED.ENCH_Db.OnxEditImported
+        |> Event.add IO.WAED.File.saveMgef
+
+        Data.WAED.ENCH_Db.OnxEditImported
+        |> Event.add IO.WAED.File.saveEnch
+
         // onAppPathChanged
         AppSettings.Paths.onAppPathChanged
         |> Event.choose (fun e ->

@@ -4,7 +4,10 @@ open DMLib.Types.Skyrim
 open DMLib
 
 let private addEvt = Event<_>()
+let private importxEditEvt = Event<_>()
+
 let OnAdded = addEvt.Publish
+let OnxEditImported = importxEditEvt.Publish
 
 let mutable db: ObjectEffectDb = Map.empty
 
@@ -38,7 +41,16 @@ let upsert uId (v: ObjectEffectRaw) =
     db <- db |> Map.add id value
     addEvt.Trigger()
 
-let ofxEdit s =
-    let r = xEdit.parse s
-    MGEF_Db.upsert r.magicEffects
-    upsert r.objFxId r.objFx
+let ofxEdit a =
+    let importLine s =
+        let r = xEdit.parse s
+        MGEF_Db.upsert r.magicEffects
+        upsert r.objFxId r.objFx
+
+    a |> Array.iter importLine
+    importxEditEvt.Trigger()
+
+let toArrayOfRaw () =
+    db
+    |> Map.toArray
+    |> Array.Parallel.map (fun (id, v) -> id.Value, v.asRaw)

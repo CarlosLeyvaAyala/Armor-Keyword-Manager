@@ -24,6 +24,8 @@ module Paths =
     let internal data () = combine2 app "Data"
     let DataDir () = data ()
     let KeywordsFile () = data () |> combine2' "Keywords.json"
+    let MagicEffectsFile () = data () |> combine2' "MGEF.json"
+    let ObjectEffectsFile () = data () |> combine2' "ENCH.json"
 
     let SpidStringsFile () =
         data () |> combine2' "spid strings.json"

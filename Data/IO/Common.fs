@@ -9,3 +9,5 @@ let ofJson toRaw upsert (d: Map<'a, 'b>) =
     |> Map.toArray
     |> Array.Parallel.map (fun (k, v) -> k, toRaw v)
     |> Array.iter (fun (k, v) -> upsert k v)
+
+type JsonUIdDB<'a> = Map<string, 'a>

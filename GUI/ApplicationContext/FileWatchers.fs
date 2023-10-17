@@ -22,6 +22,7 @@ type FileWatchers() as t =
 
     let items = FileChangeWatcher("*.items", t.tryRead IO.Items.Import.xEdit)
     let outfits = FileChangeWatcher("*.outfits", t.tryRead IO.Outfit.Import.xEdit)
+    let waed = FileChangeWatcher("*.waed", t.tryRead IO.WAED.File.importxEdit)
 
     let spidStrings =
         FileChangeWatcher("*.spidstrs", t.tryRead SpidAutocompletion.strings.ImportxEdit)
@@ -35,9 +36,11 @@ type FileWatchers() as t =
         t.add outfits
         t.add spidStrings
         t.add spidForms
+        t.add waed
 
     member _.Items = items
     member _.Outfits = outfits
     member _.Keywords = keywords
     member _.SpidStrings = spidStrings
     member _.SpidForms = spidForms
+    member _.WAED = waed

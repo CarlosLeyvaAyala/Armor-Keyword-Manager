@@ -13,7 +13,7 @@ uses xEditApi;
 implementation
 
 var
-    items, outfits, keywords, spidStrings, spidForms: TStringList;
+    items, outfits, keywords, spidStrings, spidForms, waed: TStringList;
 
 procedure CreateObjects;
 begin
@@ -22,6 +22,7 @@ begin
     keywords := TStringList.Create;
     spidStrings := TStringList.Create;
     spidForms := TStringList.Create;
+    waed := TStringList.Create;
 end;
 
 procedure FreeObjects;
@@ -31,6 +32,7 @@ begin
     keywords.Free;
     spidStrings.Free;
     spidForms.Free;
+    waed.Free;
 end;
 
 function IsESL(f: IInterface): Boolean;
@@ -291,14 +293,14 @@ procedure AddObjectFx(e: IInterface);
 var
     i, n: Integer;
     fxs, fx, ench: IInterface;
-    uid, full, edid, efid, a, d ,m, Result: string;
+    uid, full, edid, efid, a, d ,m, r: string;
 begin
-    Result := '';
+    r := '';
     
     uid := StringReplace(FormIdToStr(e), '|', '||', [rfReplaceAll, rfIgnoreCase]);
     edid := EditorID(e);
     full := GetElementEditValues(e, 'FULL');
-    Result := Format('%s||%s||%s', [uid, edid, full]);
+    r := Format('%s||%s||%s', [uid, edid, full]);
 
     fxs := ElementByPath(e, 'Effects');
     n := ElementCount(fxs);
@@ -311,9 +313,11 @@ begin
         d := GetElementEditValues(fx, 'EFIT\Duration');
         m := GetElementEditValues(fx, 'EFIT\Magnitude');
 
-        Result := Format('%s||%s|%s|%s|%s', [Result, efid, a, d, m]);
+        r := Format('%s||%s|%s|%s|%s', [r, efid, a, d, m]);
     end;
-    AddMessage(Result); // FIX: Add to file
+
+    AddMessage(r); 
+    waed.Add(r);
 end;
 
 ///////////////////////////////////////////////////////////////////////
@@ -357,6 +361,7 @@ begin
     SaveFile(keywords, '___.keywords');
     SaveFile(spidStrings, '___.spidstrs');
     SaveFile(spidForms, '___.spidfrms');
+    SaveFile(waed, '___.waed');
     FreeObjects;
 end;
 

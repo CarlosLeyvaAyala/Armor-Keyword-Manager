@@ -44,7 +44,7 @@ let upsert uId (v: ObjectEffectRaw) =
 let ofxEdit a =
     let importLine s =
         let r = xEdit.parse s
-        MGEF_Db.upsert r.magicEffects
+        MGEF_Db.upsertArray r.magicEffects
         upsert r.objFxId r.objFx
 
     a |> Array.iter importLine

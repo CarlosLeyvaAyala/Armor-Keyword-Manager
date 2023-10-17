@@ -12,10 +12,13 @@ let toArrayOfRaw () =
     |> Map.toArray
     |> Array.Parallel.map (fun (id, v) -> id.Value, v.asRaw)
 
-let upsert mgef =
+let upsertArray mgef =
     db <-
         mgef
         |> Array.map (fun (id, v) -> UniqueId id, MGEF.ofRaw v)
         |> Array.fold (fun (acc: MgefDatabase) (id, v) -> acc |> Map.add id v) db
 
     addEvt.Trigger()
+
+let upsert uId v =
+    db <- Map.add <||| (UniqueId uId, MGEF.ofRaw v, db)

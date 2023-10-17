@@ -1,4 +1,5 @@
-﻿module IO.WAED.File
+﻿[<RequireQualifiedAccess>]
+module IO.WAED.File
 
 open System.IO
 open IO.WAED
@@ -9,6 +10,9 @@ open IO.AppSettings
 
 module MGEF = Data.WAED.MGEF_Db
 module ENCH = Data.WAED.ENCH_Db
+
+let private openEnchEvt = Event<_>()
+let OnEnchOpened = openEnchEvt.Publish
 
 let private saveRawArrayToJson toArray toJson getFilename =
     toArray ()
@@ -21,6 +25,13 @@ let saveMgef () =
 
 let saveEnch () =
     saveRawArrayToJson ENCH.toArrayOfRaw ObjectEffectJson.ofRaw Paths.ObjectEffectsFile
+
+let openMgef filename =
+    IO.Common.openGlobalJson MGEFJson.toRaw MGEF.upsert filename
+
+let openEnch filename =
+    IO.Common.openGlobalJson ObjectEffectJson.toRaw ENCH.upsert filename
+    openEnchEvt.Trigger()
 
 let importxEdit filename =
     File.ReadAllLines filename

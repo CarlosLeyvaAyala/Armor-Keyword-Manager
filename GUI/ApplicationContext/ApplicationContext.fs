@@ -21,8 +21,10 @@ type AppCtx() =
         TagManager.addReservedTags Data.SPID.SpidRule.allAutoTags Data.Tags.AutoOutfit
         TagManager.addReservedTags Data.Items.ArmorType.allAutoTags Data.Tags.AutoItem
 
+    let loadGlobalJson openFile dataPath = dataPath () |> openFile
+
     let loadKeywords () =
-        Keywords.File.Open(AppSettings.Paths.KeywordsFile())
+        loadGlobalJson Keywords.File.Open AppSettings.Paths.KeywordsFile
 
     do
         addReservedTags ()
@@ -43,7 +45,9 @@ type AppCtx() =
             | ApplicationPath _ -> Some()
             | DummyOption -> None)
         |> Event.add (fun _ ->
-            Keywords.File.Open(AppSettings.Paths.KeywordsFile())
+            loadKeywords ()
+            loadGlobalJson WAED.File.openMgef AppSettings.Paths.MagicEffectsFile
+            loadGlobalJson WAED.File.openEnch AppSettings.Paths.ObjectEffectsFile
             SpidAutocompletion.init ())
 
     let mutable _xEditPath = ""

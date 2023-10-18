@@ -127,5 +127,8 @@ public partial class PP_Items : UserControl, IFilterableByTag, IWorkspacePage {
 
   private void OnCanNamesAndUIdToClipboard(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.HasItemsSelected;
   private void OnNamesAndUIdToClipboard(object sender, ExecutedRoutedEventArgs e) => TextCopy.ClipboardService.SetText(ctx.SelectedItemNamesAndUIds);
+
+  private void OnCanUIdsToClipboard(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.HasItemsSelected;
+  private void OnUIdsToClipboard(object sender, ExecutedRoutedEventArgs e) => TextCopy.ClipboardService.SetText(ctx.SelectedItemUIds);
   #endregion
 }

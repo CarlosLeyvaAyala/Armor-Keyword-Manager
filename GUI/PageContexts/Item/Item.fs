@@ -93,10 +93,15 @@ type ItemsPageCtx() as t =
     override t.SelectCurrentItem() =
         base.SelectCurrentItem()
 
-        [ nameof t.UId
+        [ nameof t.IsNavSingleSelected
+          nameof t.IsNavMultipleSelected
+          nameof t.UId
           nameof t.ItemType
           nameof t.AreAllSelectedArmors ]
         |> t.OnPropertyChanged
+
+    member t.IsNavSingleSelected = t.NavControl.SelectedItems.Count = 1
+    member t.IsNavMultipleSelected = t.NavControl.SelectedItems.Count > 1
 
     member t.NavSelectedItems =
         [| for i in t.NavControl.SelectedItems -> i |]
@@ -127,6 +132,11 @@ type ItemsPageCtx() as t =
     member t.SelectedItemNames =
         t.NavSelectedItems
         |> Seq.map (fun i -> i.Name)
+        |> Seq.fold smartNl ""
+
+    member t.SelectedItemUIds =
+        t.NavSelectedItems
+        |> Seq.map (fun i -> i.UId)
         |> Seq.fold smartNl ""
 
     member t.SelectedItemNamesAndUIds =

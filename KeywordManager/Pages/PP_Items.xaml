@@ -37,6 +37,10 @@
                     Command="c:ItemCmds.NamesToClipboard"
                     Executed="OnNamesToClipboard" />
 
+    <CommandBinding CanExecute="OnCanUIdsToClipboard"
+                    Command="c:ItemCmds.UIdsToClipboard"
+                    Executed="OnUIdsToClipboard" />
+
     <CommandBinding CanExecute="OnCanNamesAndUIdToClipboard"
                     Command="c:ItemCmds.NamesAndUIdToClipboard"
                     Executed="OnNamesAndUIdToClipboard" />
@@ -210,10 +214,47 @@
             <ContextMenu>
               <MenuItem Command="c:ItemCmds.SetImage" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
               <Separator />
+
               <MenuItem Command="c:ItemCmds.CreateUnboundOutfit" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-              <MenuItem Header="_Copy to clipboard">
-                <MenuItem Command="c:ItemCmds.NamesToClipboard" Header="_Names" />
-                <MenuItem Command="c:ItemCmds.NamesAndUIdToClipboard" Header="Names _and Unique IDs" />
+              <Separator />
+
+              <MenuItem Command="c:ItemCmds.NamesToClipboard">
+                <MenuItem.Style>
+                  <Style BasedOn="{StaticResource MaterialDesignMenuItem}" TargetType="MenuItem">
+                    <Setter Property="Header" Value="Copy _name" />
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding IsNavMultipleSelected}" Value="true">
+                        <Setter Property="Header" Value="Copy _names" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </MenuItem.Style>
+              </MenuItem>
+
+              <MenuItem Command="c:ItemCmds.UIdsToClipboard">
+                <MenuItem.Style>
+                  <Style BasedOn="{StaticResource MaterialDesignMenuItem}" TargetType="MenuItem">
+                    <Setter Property="Header" Value="Copy _Unique ID" />
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding IsNavMultipleSelected}" Value="true">
+                        <Setter Property="Header" Value="Copy _Unique IDs" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </MenuItem.Style>
+              </MenuItem>
+
+              <MenuItem Command="c:ItemCmds.NamesAndUIdToClipboard">
+                <MenuItem.Style>
+                  <Style BasedOn="{StaticResource MaterialDesignMenuItem}" TargetType="MenuItem">
+                    <Setter Property="Header" Value="Copy name _and Unique ID" />
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding IsNavMultipleSelected}" Value="true">
+                        <Setter Property="Header" Value="Copy names _and Unique IDs" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </MenuItem.Style>
               </MenuItem>
             </ContextMenu>
           </ListBox.ContextMenu>

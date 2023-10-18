@@ -126,6 +126,7 @@ type ItemCmds private () =
     static member val CreateUnboundOutfit = basic "CreateUnboundOutfit" "Create new outfit"
     static member val SetImage = basic "SetImage" "Set image"
     static member val NamesToClipboard = basic "NamesToClipboard" "Copy name(s) to clipboard"
+    static member val UIdsToClipboard = basic "UIdsToClipboard" "Copy Unique Id(s) to clipboard"
 
     static member val NamesAndUIdToClipboard =
         basic "NamesAndUIdToClipboard" "Copy name(s) and Unique Id(s) to clipboard"

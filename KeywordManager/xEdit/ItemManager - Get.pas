@@ -156,7 +156,7 @@ procedure AddKeyword(e: IInterface);
 var 
     output: string;
 begin
-    output := EditorID(e);
+    output := Format('%s|%s', [EditorID(e), GetFileName(GetFile(e))]);
     AddMessage(output);
     keywords.Add(output);
 end;

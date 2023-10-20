@@ -5,16 +5,22 @@ module DB = Data.Keywords.Database
 type JsonData =
     { image: string
       description: string
+      source: string
       color: int }
 
     static member toRaw(r: JsonData) : Data.Keywords.Raw =
         { color = r.color
           description = r.description
+          source =
+            match r.source with
+            | DMLib.String.IsEmptyStr -> "Skyrim.esm"
+            | s -> s
           image = r.image }
 
     static member ofRaw(r: Data.Keywords.Raw) =
         { color = r.color
           description = r.description
+          source = r.source
           image = r.image }
 
 type JsonMap = Map<string, JsonData>
@@ -28,8 +34,8 @@ module File =
         DB.toArrayOfRaw ()
         |> IO.Common.toJson JsonData.ofRaw
 
-    let private ofJson (d: JsonMap) =
-        IO.Common.ofJson JsonData.toRaw DB.upsert d
+    //let private ofJson (d: JsonMap) =
+    //    IO.Common.ofJson JsonData.toRaw DB.upsert d
 
     let private fileOpenedEvt = Event<string>()
     let OnFileOpened = fileOpenedEvt.Publish

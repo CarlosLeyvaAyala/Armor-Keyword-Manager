@@ -116,13 +116,23 @@ type KeywordManagerCtx() as t =
 
     /// Adds a manually written keyword.
     member t.AddHandWrittenKeyword keyword =
-        DB.upsert keyword DB.blankKeyword
+        DB.upsert keyword { DB.blankKeyword with source = "Skyrim.esm" }
         saveJsonDB ()
         t.ReloadNavAndGoTo keyword
 
     member t.AddKeywords filename =
+        let apply2 f t = t ||> f
+
         IO.File.ReadAllLines filename
-        |> Array.iter (fun s -> upsert s DB.blankKeyword)
+        |> Array.map (fun s ->
+            let a = split "|" s
+            let key = a[0]
+            let source = a[1]
+
+            match tryFind key with
+            | Some oldVal -> key, { oldVal.raw with source = source }
+            | None -> key, { DB.blankKeyword with source = source })
+        |> Array.iter (apply2 upsert)
 
         saveJsonDB ()
         t.ReloadNavAndGoToFirst()

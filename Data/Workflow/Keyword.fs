@@ -3,6 +3,7 @@
 open CommonTypes
 open DMLib
 open DMLib.String
+open DMLib.Types.Skyrim
 
 type Keyword =
     | Keyword of string
@@ -15,17 +16,20 @@ type Data =
     { image: Image
       description: string
       originalName: string
+      source: EspFileName
       color: int }
 
     static member ofRaw(r: Raw) : Data =
         { image = r.image |> Image.ofString
           description = r.description
           originalName = "Added from map"
+          source = EspFileName r.source
           color = r.color }
 
     static member toRaw(r: Data) : Raw =
         { image = r.image.Value
           description = r.description
+          source = r.source.Value
           color = r.color }
 
     member t.toRaw() = Data.toRaw t
@@ -34,6 +38,7 @@ type Data =
 and Raw =
     { image: string
       description: string
+      source: string
       color: int }
 
 type KeywordMap = Map<Keyword, Data>
@@ -56,6 +61,7 @@ module Database =
     let blankKeyword =
         { image = ""
           description = ""
+          source = "Skyrim.esm"
           color = DefaultColor }
 
     let mutable private keywords: KeywordMap = Map.empty

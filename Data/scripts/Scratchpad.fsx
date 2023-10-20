@@ -94,7 +94,8 @@ fsi.AddPrinter(fun (r: RecordId) -> r.ToString())
 fsi.AddPrinter(fun (r: EDID) -> r.ToString())
 
 let loadKeywords () =
-    IO.Keywords.File.Open @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\KeywordManager\Data\Keywords.json"
+    IO.Keywords.File.Open
+        @"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\KeywordManager\bin\Debug\net7.0-windows\Data\Keywords.json"
 
 loadKeywords ()
 Manager.addReservedTags Data.SPID.SpidRule.allAutoTags AutoOutfit
@@ -753,21 +754,75 @@ let outfits = Outfits.toArrayOfRaw ()
 //|> createRawDecls
 
 // ================================
+open Data.Items
 
-#load "..\Workflow\WAED\Types\Raw.fs"
-#load "..\Workflow\WAED\Types\Sandboxed.fs"
-#load "..\Workflow\WAED\MGEF.fs"
-#load "..\Workflow\WAED\ENCH.fs"
+module ItemType =
+    let toxEdit =
+        function
+        | ItemType.Armor -> "ARMO"
+        | ItemType.Weapon -> "WEAP"
+        | ItemType.Ammo -> "AMMO"
+        | signature -> failwith $"\"{signature}\" items are not recognized by this program."
 
-open System
-open System.IO
-open System.Text.RegularExpressions
-open DMLib.Collections
-open DMLib
-open DMLib.Combinators
-open DMLib.MathL
-open DMLib.String
-open DMLib.IO.Path
-open DMLib.Types
-open DMLib.Types.Skyrim
-open Data.WAED
+let keywords =
+    Data.Keywords.Database.toArrayOfRaw ()
+    |> Array.Parallel.map (fun (k, v) -> toLower k, v.source)
+    |> Map.ofArray
+
+let selected =
+    Items.toArrayOfRaw ()
+    |> Array.Parallel.filter (fun (_, v) -> v.esp |> containsIC "red nose")
+
+let data =
+    selected
+    |> Array.Parallel.choose (
+        snd
+        >> fun v ->
+            match v.keywords with
+            | [] -> None
+            | ks ->
+                Some
+                    {| esp = v.esp
+                       decl =
+                        v.esp
+                        |> regexReplace @"\W" ""
+                        |> regexReplace "^\d+" ""
+                       edid = v.edid
+                       itemType = v.itemType |> enum<ItemType> |> ItemType.toxEdit
+                       keywords = // Convert keywords to tuple
+                        ks
+                        |> List.choose (fun k ->
+                            keywords
+                            |> Map.tryFind (k |> toLower)
+                            |> Option.map (setFst k)) |}
+    )
+
+let decls =
+    data
+    |> Array.map (fun v -> v.decl)
+    |> Array.distinct
+    |> Array.fold smartPrettyComma ""
+
+let initPlugins =
+    data
+    |> Array.map (fun v -> sprintf "    %s := FileByName('%s');" v.decl v.esp)
+    |> Array.distinct
+    |> Array.fold smartNl ""
+
+let itemKeywords =
+    data
+    |> Array.map (fun v ->
+        [ sprintf "    item := MainRecordByEditorID(GroupBySignature(%s, '%s'), '%s');" v.decl v.itemType v.edid ]
+        @ (v.keywords
+           |> List.map (fun (k, esp) -> sprintf "    AddKeyword(item, '%s', '%s');" k esp))
+        |> List.fold smartNl "")
+    |> Array.fold (smartFold "\n\n") ""
+
+
+@"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\KeywordManager\xEdit\SetKeywordsT.pas"
+|> File.ReadAllText
+|> replace "<declarations>" decls
+|> replace "<initPlugins>" initPlugins
+|> replace "<addKeywords>" itemKeywords
+|> setFst "F:\Skyrim SE\Tools\SSEEdit 4_x\Edit Scripts\ItemManager - Set Keywords.pas"
+|> File.WriteAllText

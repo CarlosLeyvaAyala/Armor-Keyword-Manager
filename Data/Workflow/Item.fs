@@ -71,6 +71,13 @@ module ItemType =
         | "AMMO" -> ItemType.Ammo
         | signature -> failwith $"\"{signature}\" items are not recognized by this program."
 
+    let toxEdit =
+        function
+        | ItemType.Armor -> "ARMO"
+        | ItemType.Weapon -> "WEAP"
+        | ItemType.Ammo -> "AMMO"
+        | signature -> failwith $"\"{signature}\" items are not recognized by this program."
+
 /// Armor type as coming from xEdit
 type ArmorType =
     | ThisIsNoArmor = -1

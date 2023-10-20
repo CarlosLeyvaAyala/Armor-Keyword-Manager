@@ -45,10 +45,14 @@ var
     key, k, esp, f: IInterface;
     i: Integer;
 begin
+    if KeywordIndex(e, edid) <> -1 then Exit; // Keyword already added
+
     esp := FileByName(fileName);
 
-    //   Keyword already added or esp not exists
-    if (KeywordIndex(e, edid) <> -1) or (not Assigned(esp)) then Exit;
+    if not Assigned(esp) then begin 
+        AddMessage(Format('Can not add keyword "%s" because "%s" does not exist.', [edid, fileName]));
+        Exit;
+    end;
 
     AddMasterIfMissing(GetFile(e), GetFileName(esp));
 
@@ -57,7 +61,9 @@ begin
         // Add new keyword
         k := ElementAssign(ElementByPath(e, 'KWDA'), HighInteger, nil, false);
         SetEditValue(k, Name(key));
-    end;
+    end
+    else 
+        AddMessage(Format('Keyword "%s" was not found in "%s".', [edid, fileName]));
 end;
 
 function Initialize: Integer;

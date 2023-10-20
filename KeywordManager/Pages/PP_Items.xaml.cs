@@ -3,6 +3,7 @@ using GUI.UserControls;
 using IO;
 using KeywordManager.UserControls;
 using System;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -130,5 +131,14 @@ public partial class PP_Items : UserControl, IFilterableByTag, IWorkspacePage {
 
   private void OnCanUIdsToClipboard(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.HasItemsSelected;
   private void OnUIdsToClipboard(object sender, ExecutedRoutedEventArgs e) => TextCopy.ClipboardService.SetText(ctx.SelectedItemUIds);
+
+  private void OnCanGenxEditKeywords(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = Path.Exists(Properties.Settings.Default.xEditPath);
+  private void OnGenxEditKeywords(object sender, ExecutedRoutedEventArgs e) {
+    ctx.ExportKeywordScript();
+    DMLib_WPF.Dialogs.MessageBox.Asterisk(
+      Owner,
+      "Now you can run the script \"ItemManager - Set Keywords\" from xEdit to add the keywords directly to the esp file.",
+      "Script successfully created");
+  }
   #endregion
 }

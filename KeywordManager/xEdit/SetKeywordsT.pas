@@ -68,7 +68,7 @@ end;
 
 function Initialize: Integer;
 var 
-    item: IInterface; // Static
+    item: IInterface;
     <declarations>: IInterface;
 begin
 <initPlugins>

@@ -44,6 +44,10 @@
     <CommandBinding CanExecute="OnCanNamesAndUIdToClipboard"
                     Command="c:ItemCmds.NamesAndUIdToClipboard"
                     Executed="OnNamesAndUIdToClipboard" />
+
+    <CommandBinding CanExecute="OnCanGenxEditKeywords"
+                    Command="c:ItemCmds.GenxEditKeywords"
+                    Executed="OnGenxEditKeywords" />
   </UserControl.CommandBindings>
 
   <Grid x:Name="cntMain">
@@ -256,6 +260,12 @@
                   </Style>
                 </MenuItem.Style>
               </MenuItem>
+
+              <Separator />
+
+              <MenuItem Command="c:ItemCmds.GenxEditKeywords"
+                        Header="Generate xEdit script for keywords"
+                        ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
             </ContextMenu>
           </ListBox.ContextMenu>
         </ListBox>

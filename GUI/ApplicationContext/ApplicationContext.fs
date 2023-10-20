@@ -62,10 +62,13 @@ type AppCtx() =
         and set v =
             _xEditPath <- v
 
-            t.FileWatchers.path <-
+            let path =
                 match v with
                 | FileExists fn -> fn |> getDir |> combine2' "Edit Scripts"
                 | _ -> ""
+
+            t.FileWatchers.path <- path
+            IO.AppSettings.Paths.SetEditScripts path
 
             [ nameof t.xEditPath
               nameof t.xEditDirExists ]

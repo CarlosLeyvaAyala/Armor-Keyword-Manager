@@ -12,6 +12,9 @@ open GUI.UserControls
 open FsToolkit.ErrorHandling
 open GUI.Filtering
 open GUI.PageContexts.Items
+open System.IO
+open DMLib.IO.Path
+open IO.AppSettings
 
 module DB = Data.Items.Database
 module Img = IO.AppSettings.Paths.Img.Item
@@ -201,3 +204,68 @@ type ItemsPageCtx() as t =
             let ext = Img.copyImg i.UId filename
             DB.update i.UId (fun d -> { d with img = ext })
             i.Refresh())
+
+    member t.ExportKeywordScript() =
+        let keywords =
+            Data.Keywords.Database.toArrayOfRaw ()
+            |> Array.Parallel.map (fun (k, v) -> toLower k, v.source)
+            |> Map.ofArray
+
+        let selected =
+            t.NavSelectedItems
+            |> Seq.map (fun v -> v.UId |> DB.find)
+            |> Seq.toArray
+
+        let data =
+            selected
+            |> Array.Parallel.choose (fun v ->
+                match v.keywords with
+                | [] -> None
+                | ks ->
+                    Some
+                        {| esp = v.esp
+                           decl =
+                            v.esp
+                            |> regexReplace @"\W" ""
+                            |> regexReplace "^\d+" ""
+                           edid = v.edid
+                           itemType = v.itemType |> enum<ItemType> |> ItemType.toxEdit
+                           keywords = // Convert keywords to tuple
+                            ks
+                            |> List.choose (fun k ->
+                                keywords
+                                |> Map.tryFind (k |> toLower)
+                                |> Option.map (setFst k)) |})
+
+        let decls =
+            data
+            |> Array.map (fun v -> v.decl)
+            |> Array.distinct
+            |> Array.fold smartPrettyComma ""
+
+        let initPlugins =
+            data
+            |> Array.map (fun v -> sprintf "    %s := FileByName('%s');" v.decl v.esp)
+            |> Array.distinct
+            |> Array.fold smartNl ""
+
+        let itemKeywords =
+            data
+            |> Array.map (fun v ->
+                [ sprintf "    item := MainRecordByEditorID(GroupBySignature(%s, '%s'), '%s');" v.decl v.itemType v.edid ]
+                @ (v.keywords
+                   |> List.map (fun (k, esp) -> sprintf "    AddKeyword(item, '%s', '%s');" k esp))
+                |> List.fold smartNl "")
+            |> Array.fold (smartFold "\n\n") ""
+
+        (Paths.xEditScriptsDir ()
+         |> combine2' "SetKeywordsT.pas")
+        |> File.ReadAllText
+        |> replace "<declarations>" decls
+        |> replace "<initPlugins>" initPlugins
+        |> replace "<addKeywords>" itemKeywords
+        |> setFst (
+            Paths.editScriptsDir ()
+            |> combine2' "ItemManager - Set Keywords.pas"
+        )
+        |> File.WriteAllText

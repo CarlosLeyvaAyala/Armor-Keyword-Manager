@@ -123,6 +123,7 @@ type ItemCmds private () =
                 modifiers = ModifierKeys.None } ] }
         |> create
 
+    static member val GenxEditKeywords = basic "GenxEditKeywords" "Create an xEdit script to add keywords to selected items"
     static member val CreateUnboundOutfit = basic "CreateUnboundOutfit" "Create new outfit"
     static member val SetImage = basic "SetImage" "Set image"
     static member val NamesToClipboard = basic "NamesToClipboard" "Copy name(s) to clipboard"

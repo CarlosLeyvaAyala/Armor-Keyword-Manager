@@ -12,6 +12,8 @@ open FreeImageAPI
 [<RequireQualifiedAccess>]
 module Paths =
     let mutable private app = ""
+    /// x:\xEdit\Edit Scripts
+    let mutable private editScripts = ""
     let private appPathChangeEvt = Event<PathChangeEventArgs>()
 
     /// This event should be called only once: when the app starts.
@@ -20,6 +22,13 @@ module Paths =
     let SetApp dir =
         app <- dir
         dir |> ApplicationPath |> appPathChangeEvt.Trigger
+
+    let SetEditScripts dir = editScripts <- dir
+
+    /// Application folder
+    let xEditScriptsDir () = combine2 app "xEdit"
+    /// x:\xEdit\Edit Scripts
+    let editScriptsDir () = editScripts
 
     let internal data () = combine2 app "Data"
     let DataDir () = data ()

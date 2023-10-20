@@ -1,28 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace KeywordManager.Pages
-{
-    /// <summary>
-    /// Interaction logic for PP_Enchantments.xaml
-    /// </summary>
-    public partial class PP_Enchantments : UserControl
-    {
-        public PP_Enchantments()
-        {
-            InitializeComponent();
-        }
-    }
+namespace KeywordManager.Pages;
+
+public partial class PP_Enchantments : UserControl {
+  public PP_Enchantments() => InitializeComponent();
+
+  private void OnFilterNameByRegexClick(object sender, RoutedEventArgs e) {
+
+  }
+
+  private void OnFilterKeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
+
+  }
+
+  private void OnClearTags(object sender, RoutedEventArgs e) {
+
+  }
 }

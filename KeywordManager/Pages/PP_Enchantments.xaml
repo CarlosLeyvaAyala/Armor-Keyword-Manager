@@ -20,16 +20,61 @@
 
     <!--  NAVIGATOR  -->
     <GroupBox Header="Enchantments" Style="{StaticResource MaterialDesignCardGroupBox}">
-      <Grid>
-        <Grid.RowDefinitions>
-          <RowDefinition Height="auto" />
-          <RowDefinition Height="{StaticResource GridSepVertical}" />
-          <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+      <DockPanel>
+        <!--  FILTER  -->
+        <Grid DockPanel.Dock="Top">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+          </Grid.ColumnDefinitions>
+
+          <!--  FILTER TEXTBOX  -->
+          <Label Content="_N"
+                 DockPanel.Dock="Top"
+                 Style="{StaticResource lblInvis}"
+                 Target="{x:Reference edtFilter}" />
+          <TextBox x:Name="edtFilter"
+                   Margin="{DynamicResource MgGrpContent}"
+                   md:HintAssist.Hint="Search..."
+                   md:TextFieldAssist.HasClearButton="True"
+                   md:TextFieldAssist.HasLeadingIcon="True"
+                   md:TextFieldAssist.LeadingIcon="Search"
+                   KeyDown="OnFilterKeyDown"
+                   ToolTip="Searches by name, esp or Editor ID (EDID)">
+            <!--<TextBox.Text>
+              <Binding Mode="TwoWay"
+                       Path="NameFilter.Text"
+                       UpdateSourceTrigger="PropertyChanged">
+                <Binding.ValidationRules>
+                  <v:RegexRule xmlns:v="clr-namespace:DMLib_WPF.Validators;assembly=DMLib-Fs-WPF"
+                               x:Name="regexRule"
+                               ValidatesOnTargetUpdated="True" />
+                </Binding.ValidationRules>
+              </Binding>
+            </TextBox.Text>-->
+          </TextBox>
+
+          <!--  USE REGEX  -->
+          <ToggleButton x:Name="tbFilterByRegex"
+                        Grid.Column="1"
+                        Click="OnFilterNameByRegexClick"
+                        Content="{md:PackIcon Kind=Regex}"
+                        IsChecked="{Binding Source={StaticResource appSettings}, Path=Default.itemFilterNameByRegex}"
+                        Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}"
+                        ToolTip="Use regular expression" />
+
+          <!--  CLEAR TAGS  -->
+          <Button Click="OnClearTags"
+                  Content="{md:PackIcon Kind=TagOff}"
+                  Style="{StaticResource clearTagsInName}" />
+        </Grid>
 
         <!--  NAV  -->
-        <ListBox Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=20}" />
-      </Grid>
+        <ListBox Grid.Row="2"
+                 Margin="{DynamicResource MarginStd}"
+                 d:ItemsSource="{d:SampleData ItemCount=20}" />
+      </DockPanel>
     </GroupBox>
 
     <!--  PROGRESSION  -->
@@ -52,8 +97,8 @@
               <Setter Property="HorizontalAlignment" Value="Stretch" />
               <Setter Property="VerticalAlignment" Value="Top" />
               <Setter Property="Margin" Value="0,-5,0,5" />
-
             </Style>
+
             <Style BasedOn="{StaticResource MaterialDesignGroupBox}" TargetType="GroupBox">
               <Setter Property="md:ColorZoneAssist.Mode" Value="PrimaryLight" />
               <Setter Property="BorderThickness" Value="0" />
@@ -118,7 +163,9 @@
                   BorderThickness="0"
                   Header="Progression method">
           <StackPanel>
-            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+            <StackPanel Margin="{StaticResource MgTopNarrow}"
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal">
               <uw:IconRadioButton GroupName="ProgressType"
                                   IconKind="HumanHandsup"
                                   Text="LEVEL" />

@@ -771,17 +771,3 @@ open DMLib.IO.Path
 open DMLib.Types
 open DMLib.Types.Skyrim
 open Data.WAED
-
-
-[ "WAED Enchantments - Summermyst.esp||94f||DM_Ench_ConjurationFortitude_Distraction_03||Conjuration Fortitude||Summermyst - Enchantments of Skyrim.esp|512aa|SUM_Armor_Res_Effect_ExtendConjuration|Amplify Conjuration|Conjuration spells and effects last <mag>% longer.|0|0|25.000000||Skyrim.esm|109630|EnchRobesFortifyMagickaRateConstantSelf|Regenerate Magicka|Magicka regenerates <mag>% faster.|0|0|50.000000||Skyrim.esm|b7a35|EnchResistMagicConstantSelf|Resist Magic|Grants <mag>% resistance to all magic.|0|0|10.000000||WAED Enchantments.esp|808|DM_EnchFx_PerkDistraction_03|Distraction battle|You distract all people on the battefield. Same sex gets 5% more damage. Opposite sex gets 20% and 10% higher chance of getting a critical hit.|0|0|0.000000"
-  "WAED Enchantments.esp||829||DM_Ench_FortifyBlock_Distraction_02||Fortify Block||Skyrim.esm|7a0f3|EnchFortifyBlockConstantSelf|Fortify Blocking|Block <mag>% more damage with your shield.|0|0|15.000000||WAED Enchantments.esp|807|DM_EnchFx_PerkDistraction_02|Distraction battle|You distract all people on the battefield. Same sex gets 5% more damage. Opposite sex gets 20%.|0|0|0.000000"
-  "WAED Enchantments.esp||851||DM_Ench_FortifyIllusion_Distraction_02||Fortify Illusion||Skyrim.esm|7a0fa|EnchFortifyIllusionConstantSelf|Fortify Illusion|Illusion spells cost <mag>% less to cast.|0|0|12.000000||WAED Enchantments.esp|807|DM_EnchFx_PerkDistraction_02|Distraction battle|You distract all people on the battefield. Same sex gets 5% more damage. Opposite sex gets 20%.|0|0|0.000000"
-  "WAED Enchantments - Summermyst.esp||95d||DM_Ench_ReactiveDefender_Distraction_01||Reactive Defender||Summermyst - Enchantments of Skyrim.esp|51383|SUM_Armor_Des_Effect_Nova|Nova|When you fall below <25>% Health, <mag>% chance to release an explosion.|0|0|15.000000||Summermyst - Enchantments of Skyrim.esp|1b2172|SUM_Armor_Alt_Effect_Quake|Quake|When you block an attack, <mag>% chance to stagger nearby enemies.|0|0|5.000000||WAED Enchantments.esp|802|DM_EnchFx_PerkDistraction_01|Distraction battle|You distract the opposite sex and deal 10% more damage to them.|0|0|0.000000"
-  "WAED Enchantments.esp||87d||DM_Ench_FortifySneak_Modified||Fortify Sneak Modifed||Skyrim.esm|7a103|EnchFortifySneakConstantSelf|Fortify Sneak|Sneaking is <mag>% better.|0|0|15.000000||WAED Enchantments.esp|807|DM_EnchFx_PerkDistraction_02|Distraction battle|You distract all people on the battefield. Same sex gets 5% more damage. Opposite sex gets 20%.|0|0|0.000000" ]
-|> List.iter ENCH_Db.ofxEdit
-
-MGEF_Db.toArrayOfRaw ()
-|> Array.map (snd >> fun v -> v.name)
-|> Array.sort
-
-ENCH_Db.db

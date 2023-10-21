@@ -109,57 +109,6 @@ let outfits = Outfits.toArrayOfRaw ()
 
 /////////////////////////////////////////////////////
 
-
-
-/////////////////////////////////////////////////////
-//open Data.Outfit
-//open Common
-
-//let armorPiece = "[Christine] Ida Elf Archer.esp|813"
-////let armorPiece = "[NINI] Gotha Rensa.esp|805"
-//let ap = armorPiece |> UniqueId |> ArmorPiece
-
-//Outfits.testDb ()
-//|> Map.choose (fun _ v ->
-//    v.pieces
-//    |> List.tryFind (fun p -> ap = p)
-//    |> Option.map (fun _ ->
-//        match v.img with
-//        | EmptyImage -> None
-//        | _ -> Some v.img)
-//    |> Option.flatten)
-//|> Map.toArray
-//|> Array.map (fun (uId, img) -> uId.Value, img.Value)
-
-//let getOutfit (outfit: Data) k o =
-//    o
-//    |> Option.map (fun _ ->
-//        match outfit.img with
-//        | EmptyImage -> None
-//        | _ -> Some(k, outfit.img))
-//    |> Option.flatten
-
-//Outfits.testDb ()
-//|> Map.toArray
-//|> Array.Parallel.choose (fun (k, v) -> v.pieces |> List.tryFind (fun p -> ap = p))
-
-
-//open System.Text.RegularExpressions
-//let rx = new Regex("(.*)Dm Oft(.*)")
-
-//[ "Dm Oft Atanis"
-//  "Dm Oft Bifrost No Cape No Pauldrons"
-//  "Dm Oft Black Hyacinth"
-//  "Dm Oft Ancient Oasis"
-//  "Dm Oft Atanis"
-//  "Dm Oft Bifrost No Cape No Pauldrons"
-//  "Dm Oft Black Hyacinth"
-//  "Dm Oft Ancient Oasis"
-//  "Dm Oft Atanis" ]
-//|> List.map (fun s -> rx.Replace(s, "$1$2"))
-
-/////////////////////////////////////////////////////
-
 ///// Equiment name options
 //type EquipmentName =
 //    | SameName // Don't export because the TS interface is optional
@@ -755,74 +704,38 @@ let outfits = Outfits.toArrayOfRaw ()
 
 // ================================
 open Data.Items
-
-module ItemType =
-    let toxEdit =
-        function
-        | ItemType.Armor -> "ARMO"
-        | ItemType.Weapon -> "WEAP"
-        | ItemType.Ammo -> "AMMO"
-        | signature -> failwith $"\"{signature}\" items are not recognized by this program."
-
-let keywords =
-    Data.Keywords.Database.toArrayOfRaw ()
-    |> Array.Parallel.map (fun (k, v) -> toLower k, v.source)
-    |> Map.ofArray
+open Data.Items.Database
 
 let selected =
-    Items.toArrayOfRaw ()
-    |> Array.Parallel.filter (fun (_, v) -> v.esp |> containsIC "red nose")
+    toArrayOfRaw ()
+    |> Array.Parallel.map fst
+    |> Array.Parallel.filter (fun v -> v |> contains "Blood Raven")
+    |> Array.shuffle
+    |> Array.take 3
 
-let data =
-    selected
-    |> Array.Parallel.choose (
-        snd
-        >> fun v ->
-            match v.keywords with
-            | [] -> None
-            | ks ->
-                Some
-                    {| esp = v.esp
-                       decl =
-                        v.esp
-                        |> regexReplace @"\W" ""
-                        |> regexReplace "^\d+" ""
-                       edid = v.edid
-                       itemType = v.itemType |> enum<ItemType> |> ItemType.toxEdit
-                       keywords = // Convert keywords to tuple
-                        ks
-                        |> List.choose (fun k ->
-                            keywords
-                            |> Map.tryFind (k |> toLower)
-                            |> Option.map (setFst k)) |}
-    )
+module DB = Data.Items.Database
 
-let decls =
-    data
-    |> Array.map (fun v -> v.decl)
-    |> Array.distinct
-    |> Array.fold smartPrettyComma ""
+type RepeatedInfo =
+    | EveryoneHasIt
+    | SomeItemsHaveIt
 
-let initPlugins =
-    data
-    |> Array.map (fun v -> sprintf "    %s := FileByName('%s');" v.decl v.esp)
-    |> Array.distinct
-    |> Array.fold smartNl ""
+    static member getRepeatedTable dataArrayLen dataArray =
+        dataArray
+        |> Array.groupBy id
+        |> Array.Parallel.map (fun (k, a) ->
+            k,
+            match a.Length with
+            | Equals dataArrayLen -> EveryoneHasIt
+            | _ -> SomeItemsHaveIt)
 
-let itemKeywords =
-    data
-    |> Array.map (fun v ->
-        [ sprintf "    item := MainRecordByEditorID(GroupBySignature(%s, '%s'), '%s');" v.decl v.itemType v.edid ]
-        @ (v.keywords
-           |> List.map (fun (k, esp) -> sprintf "    AddKeyword(item, '%s', '%s');" k esp))
-        |> List.fold smartNl "")
-    |> Array.fold (smartFold "\n\n") ""
+let dA = selected |> Array.Parallel.map DB.find
 
+let getDataForRepeatedTable getData =
+    dA
+    |> Array.Parallel.map getData
+    |> Array.collect id
+    |> RepeatedInfo.getRepeatedTable dA.Length
 
-@"C:\Users\Osrail\Documents\GitHub\Armor-Keyword-Manager\KeywordManager\xEdit\SetKeywordsT.pas"
-|> File.ReadAllText
-|> replace "<declarations>" decls
-|> replace "<initPlugins>" initPlugins
-|> replace "<addKeywords>" itemKeywords
-|> setFst "F:\Skyrim SE\Tools\SSEEdit 4_x\Edit Scripts\ItemManager - Set Keywords.pas"
-|> File.WriteAllText
+getDataForRepeatedTable (fun v -> v.tags |> List.toArray)
+
+getDataForRepeatedTable (fun v -> v.keywords |> List.toArray)

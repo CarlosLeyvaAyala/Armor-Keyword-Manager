@@ -400,6 +400,16 @@
                              Foreground="{Binding Color, Converter={StaticResource IntToKeywordColor}}"
                              Text="{Binding Name}"
                              ToolTipService.InitialShowDelay="100">
+                    <TextBlock.Style>
+                      <Style BasedOn="{StaticResource MaterialDesignTextBlock}" TargetType="TextBlock">
+                        <Style.Triggers>
+                          <DataTrigger Binding="{Binding EveryOneHasIt}" Value="False">
+                            <Setter Property="Opacity" Value="0.5" />
+                            <Setter Property="FontStyle" Value="Italic" />
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </TextBlock.Style>
                     <TextBlock.ToolTip>
                       <StackPanel Orientation="Horizontal">
                         <Image Grid.Column="0"

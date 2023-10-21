@@ -10,6 +10,8 @@ open IO.AppSettings.Paths.Img
 open DMLib_WPF
 open GUI.Interfaces
 open GUI.PageContexts
+open CommonTypes
+open FsToolkit.ErrorHandling
 
 module Outfits = Data.Outfit.Database
 
@@ -90,7 +92,7 @@ module private SelItemTagsEvents =
             | ManuallyAdded -> Some name
             | _ -> None)
 
-type NavSelectedItem(uniqueId: string) =
+type NavSelectedItem(uniqueId: string, multiSelected: (string array) option) =
     let d =
         if uniqueId = "" then
             Raw.empty
@@ -99,8 +101,27 @@ type NavSelectedItem(uniqueId: string) =
             | Some v -> v
             | None -> Raw.empty
 
+    let dA =
+        multiSelected
+        |> Option.map (Array.Parallel.map DB.find)
+
+    let getDataForRepeatedTable getData =
+        option {
+            let! da = dA
+
+            return
+                da
+                |> Array.Parallel.map getData
+                |> Array.collect id
+                |> RepeatedInfo.getRepeatedTable da.Length
+                |> Array.toList
+        }
+
     member _.Keywords =
-        d.keywords
+        let single = d.keywords |> List.map (setSnd EveryoneHasIt)
+
+        getDataForRepeatedTable (fun v -> v.keywords |> List.toArray)
+        |> Option.defaultValue single
         |> List.map GUI.PageContexts.Keywords.NavListItem
         |> GUI.PageContexts.Keywords.NavListItem.sortByColor
         |> toCList

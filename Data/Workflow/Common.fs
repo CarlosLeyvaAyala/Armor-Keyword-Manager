@@ -55,3 +55,21 @@ module List =
     /// Deletes some word from a string list.
     let delWord word list =
         list |> List.filter (fun a -> not (a = word))
+
+type RepeatedInfo =
+    | EveryoneHasIt
+    | SomeItemsHaveIt
+
+    static member getRepeatedTable expectedCount dataArray =
+        dataArray
+        |> Array.groupBy id
+        |> Array.Parallel.map (fun (k, a) ->
+            k,
+            match a.Length with
+            | Equals expectedCount -> EveryoneHasIt
+            | _ -> SomeItemsHaveIt)
+
+    member t.toSortingInfo =
+        match t with
+        | EveryoneHasIt -> 0
+        | SomeItemsHaveIt -> 1

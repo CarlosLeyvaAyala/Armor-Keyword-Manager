@@ -111,7 +111,18 @@ type ItemsPageCtx() as t =
         |> Seq.cast<NavListItem>
 
     member t.NavSelectedItem = t.NavControl.SelectedItem :?> NavListItem
-    member t.SelectedItem = NavSelectedItem(t.UId)
+
+    member t.SelectedItem =
+        NavSelectedItem(
+            t.UId,
+            if t.IsNavMultipleSelected then
+                t.NavSelectedItems
+                |> Seq.toArray
+                |> Array.Parallel.map (fun v -> v.UniqueId)
+                |> Some
+            else
+                None
+        )
 
     // ===================================================
     // Custom implementation

@@ -22,6 +22,21 @@ public partial class KeywordManagerUC : UserControl {
 
   private void OnLstDoubleClick(object sender, MouseButtonEventArgs e) => DoSendSelected();
 
+  private void OnChangeCommentClick(object sender, RoutedEventArgs e) {
+    MainWindow.ExecuteStringQuery(new() {
+      Hint = "Keyword description",
+      Text = ctx.NavSelectedItem.Description,
+      OnOk =
+        k => {
+          ctx.SetDescription(k);
+          DoSendKeywordChanged();
+        },
+      Multiline = true,
+      FontSize = 14,
+      TextBoxWidth = 400,
+    });
+  }
+
   private void OnChangePicClick(object sender, RoutedEventArgs e) {
     ctx.SetImage();
     DoSendKeywordChanged();
@@ -33,7 +48,7 @@ public partial class KeywordManagerUC : UserControl {
   }
 
   private void OnNewKeywordClick(object sender, RoutedEventArgs e) =>
-    MainWindow.ExecuteAcceptCancelDlg(new() {
+    MainWindow.ExecuteStringQuery(new() {
       Hint = "Keyword name",
       OnOk =
         k => {

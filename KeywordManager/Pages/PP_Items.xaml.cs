@@ -100,7 +100,7 @@ public partial class PP_Items : UserControl, IFilterableByTag, IWorkspacePage {
   private void OnCanCreateUnboundOutfit(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.AreAllSelectedArmors;
 
   private void OnCreateUnboundOutfit(object sender, ExecutedRoutedEventArgs e) =>
-    MainWindow.ExecuteAcceptCancelDlg(new() {
+    MainWindow.ExecuteStringQuery(new() {
       Hint = "Outfit name",
       OnOk =
         name => {

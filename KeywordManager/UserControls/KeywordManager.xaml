@@ -96,8 +96,6 @@
               <Setter Property="FontSize" Value="25" />
             </Style>
           </ContextMenu.Resources>
-          <MenuItem Click="OnChangePicClick" Header="Change _picture" />
-          <Separator />
           <MenuItem Header="Keyword _color">
             <MenuItem Background="{DynamicResource ColorKeywordRed}"
                       Click="OnSetKeywordColor"
@@ -128,6 +126,9 @@
                       Style="{StaticResource MenuItemColor}"
                       Tag="Color selected by F#" />
           </MenuItem>
+          <Separator />
+          <MenuItem Click="OnChangeCommentClick" Header="Change _description" />
+          <MenuItem Click="OnChangePicClick" Header="Change _picture" />
           <Separator />
           <MenuItem Click="OnDeleteKeywordClick"
                     Command="c:KeywordCmds.Del"

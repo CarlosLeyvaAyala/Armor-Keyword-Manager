@@ -51,7 +51,7 @@ public partial class MainWindow : Window {
 
   public static void ExecuteDimDialog(Action Open) => Instance?.OpenDimDialog(Open);
 
-  public static void ExecuteAcceptCancelDlg(QueryDlgParams p) {
+  public static void ExecuteStringQuery(QueryDlgParams p) {
     Instance?.Dim();
     (Instance?.FindResource("queryDlg") as QueryDlg)?.Show(p);
     Instance?.UnDim();

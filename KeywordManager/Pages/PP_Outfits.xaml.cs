@@ -78,7 +78,7 @@ public partial class PP_Outfits : UserControl, IFilterableByTag, IWorkspacePage 
     );
 
   private void OnRename(object sender, RoutedEventArgs e) =>
-    MainWindow.ExecuteAcceptCancelDlg(new() { Hint = "New name", Text = ctx.SelectedItem.Name, OnOk = ctx.Rename });
+    MainWindow.ExecuteStringQuery(new() { Hint = "New name", Text = ctx.SelectedItem.Name, OnOk = ctx.Rename });
 
   private void OnFilterNameByRegexClick(object sender, RoutedEventArgs e) =>
   ctx.NameFilter.UseRegex = tbFilterByRegex.IsChecked == true;

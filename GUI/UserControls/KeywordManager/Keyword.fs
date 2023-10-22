@@ -117,6 +117,10 @@ type KeywordManagerCtx() as t =
     member t.SetColor color =
         t.setValue (fun v -> { v with color = color })
 
+    /// Set description to selected keywords
+    member t.SetDescription description =
+        t.setValue (fun v -> { v with description = description })
+
     /// Adds a manually written keyword.
     member t.AddHandWrittenKeyword keyword =
         DB.upsert keyword DB.blankKeyword

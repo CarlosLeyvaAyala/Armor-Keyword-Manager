@@ -63,7 +63,8 @@ public partial class PP_Items : UserControl, IFilterableByTag, IWorkspacePage {
   #endregion
 
   #region Data manipulation
-  private void OnKeywordsSet(object sender, RoutedEventArgs e) => ctx.AddKeywords((e as KeywordSelectEventArgs)?.Keywords);
+  private void OnKeywordsSet(object _, RoutedEventArgs e) => ctx.AddKeywords((e as KeywordSelectEventArgs)?.Keywords);
+  private void OnKeywordDoubleClick(object _, MouseButtonEventArgs e) => ctx.AddKeywords(new string[] { lstItemKeywords.SelectedItem.ToString() ?? "" });
 
   void DeleteKeywords() {
     var k = lstItemKeywords.SelectedItems

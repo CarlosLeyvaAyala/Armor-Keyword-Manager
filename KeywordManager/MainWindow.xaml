@@ -355,7 +355,8 @@
                       <TextBlock Style="{StaticResource txtNav}" Text="Enchantments" />
                     </StackPanel>
                   </TabItem.Header>
-                  <pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />
+                  <pp:PP__Soon />
+                  <!--<pp:PP_Enchantments Margin="{StaticResource MgTabContent}" />-->
                 </TabItem>
 
                 <!--  BUILDS  -->
@@ -366,8 +367,8 @@
                       <TextBlock Style="{StaticResource txtNav}" Text="Builds" />
                     </StackPanel>
                   </TabItem.Header>
-                  <!--<pp:PP__Soon />-->
-                  <pp:PP_Builds Margin="{StaticResource MgTabContent}" />
+                  <pp:PP__Soon />
+                  <!--<pp:PP_Builds Margin="{StaticResource MgTabContent}" />-->
                 </TabItem>
 
                 <!--  SKIMPY  -->

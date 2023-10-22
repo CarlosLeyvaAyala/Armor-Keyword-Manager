@@ -50,7 +50,9 @@ type Comment = string
 module List =
     /// Adds a word to a string list if it doesn't exist already.
     let addWord word list =
-        list |> List.insertDistinctAt 0 word |> List.sort
+        match word with
+        | IsEmptyStr -> list
+        | w -> list |> List.insertDistinctAt 0 w |> List.sort
 
     /// Deletes some word from a string list.
     let delWord word list =

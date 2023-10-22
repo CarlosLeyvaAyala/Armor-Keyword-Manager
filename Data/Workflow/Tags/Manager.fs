@@ -110,7 +110,7 @@ let rebuildCache () =
 let onTagsChanged = tagsChangedEvent.Publish
 
 // Catch when the keyword database is updated
-Data.Keywords.Database.onKeywordsChanged
+Data.Keywords.Database.OnKeywordsChanged
 |> Event.choose (fun v ->
     match v with
     | Data.Keywords.Added a

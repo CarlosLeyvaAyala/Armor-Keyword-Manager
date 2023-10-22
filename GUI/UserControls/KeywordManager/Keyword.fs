@@ -139,17 +139,22 @@ type KeywordManagerCtx() as t =
 
     /// Deletes selected items.
     member t.DeleteSelected() =
-        let items = Data.Items.Database.toArrayOfRaw ()
+        t.DeleteSelected (fun () ->
+            let items = Data.Items.Database.toArrayOfRaw ()
 
-        let deleteKeyword (i: NavListItem) =
-            let k = i.Name
-            DB.delete k
+            let keys =
+                t.NavSelectedItems
+                |> Seq.map (fun i -> i.Name)
+                |> Seq.toArray
+
+            DB.delete keys
 
             items
-            |> Array.Parallel.iter (fun (uid, _) -> Data.Items.Database.delKeyword uid k)
+            |> Array.Parallel.iter (
+                fst
+                >> fun uid -> Data.Items.Database.delKeywords uid keys
+            )
 
-        t.DeleteSelected (fun () ->
-            t.NavSelectedItems |> Seq.iter deleteKeyword
             saveJsonDB ())
 
     member _.HasKeywords = nav |> Array.isEmpty |> not

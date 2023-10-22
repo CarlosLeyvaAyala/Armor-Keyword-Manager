@@ -53,7 +53,7 @@ module Database =
     let private keywordsChangedEvent = new Event<KeywordsChanged>()
 
     /// Event triggered when keywords have changed.
-    let onKeywordsChanged = keywordsChangedEvent.Publish
+    let OnKeywordsChanged = keywordsChangedEvent.Publish
 
     [<Literal>]
     let DefaultColor = 100000
@@ -118,6 +118,8 @@ module Database =
 
         Edited [| key |] |> keywordsChangedEvent.Trigger
 
-    let delete key =
-        keywords <- keywords |> Map.remove (Keyword.ofString key)
-        Deleted [| key |] |> keywordsChangedEvent.Trigger
+    let delete keys =
+        keys
+        |> Array.iter (fun key -> keywords <- keywords |> Map.remove (Keyword.ofString key))
+
+        Deleted keys |> keywordsChangedEvent.Trigger

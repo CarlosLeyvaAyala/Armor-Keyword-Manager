@@ -312,6 +312,9 @@ module Database =
     let delKeyword id keyword =
         update id (changeKeywords List.delWord keyword)
 
+    let delKeywords id keywords =
+        update id (fun v -> { v with keywords = v.keywords |> List.except keywords })
+
     open Data.Tags
 
     let addTag id tag = update id (changeTags Edit.add tag)

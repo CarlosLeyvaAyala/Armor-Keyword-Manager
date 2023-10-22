@@ -119,7 +119,7 @@ type KeywordManagerCtx() as t =
 
     /// Adds a manually written keyword.
     member t.AddHandWrittenKeyword keyword =
-        DB.upsert keyword { DB.blankKeyword with source = DB.UnboundEsp }
+        DB.upsert keyword DB.blankKeyword
         saveJsonDB ()
         t.ReloadNavAndGoTo keyword
 

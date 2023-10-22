@@ -64,7 +64,7 @@ module Database =
     let blankKeyword =
         { image = ""
           description = ""
-          source = "Skyrim.esm"
+          source = UnboundEsp
           color = DefaultColor }
 
     let mutable private keywords: KeywordMap = Map.empty

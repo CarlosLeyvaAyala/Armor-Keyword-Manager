@@ -171,7 +171,7 @@ type KeywordCmds private () =
     // This is a hack, because it is not easy to enable it only when the popup menu is opened
     static member val Del =
         { name = "Del"
-          text = "_Delete keyword"
+          text = "Delete keyword"
           gestures =
             [ { keyDisplay = "Delete"
                 key = Key.None

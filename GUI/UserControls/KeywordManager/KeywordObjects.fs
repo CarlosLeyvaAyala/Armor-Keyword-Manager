@@ -55,6 +55,8 @@ type NavListItem(key: string, r: Raw, repeated: RepeatedInfo) =
             description <- v
             t.OnPropertyChanged("Description")
 
+    member t.ActualDescription = description
+
     override t.ToString() = t.Name
 
     static member sortByColor(a: seq<NavListItem>) =

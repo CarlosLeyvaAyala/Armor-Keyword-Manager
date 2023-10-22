@@ -25,7 +25,7 @@ public partial class KeywordManagerUC : UserControl {
   private void OnChangeCommentClick(object sender, RoutedEventArgs e) {
     MainWindow.ExecuteStringQuery(new() {
       Hint = "Keyword description",
-      Text = ctx.NavSelectedItem.Description,
+      Text = ctx.NavSelectedItem.ActualDescription,
       OnOk =
         k => {
           ctx.SetDescription(k);

@@ -439,6 +439,7 @@
                             MaxHeight="150"
                             IsDeletable="True"
                             ItemsSource="{Binding SelectedItem.Tags}"
+                            TagClick="OnTagClick"
                             TagDeleteClick="OnDeleteTag" />
 
               <Label Content="_T"

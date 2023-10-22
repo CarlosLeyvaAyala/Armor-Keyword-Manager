@@ -5,6 +5,7 @@ module DB = Data.Items.Database
 
 open Data.Items
 open DMLib
+open DMLib.String
 open DMLib.Collections
 open IO.AppSettings.Paths.Img
 open DMLib_WPF
@@ -12,6 +13,7 @@ open GUI.Interfaces
 open GUI.PageContexts
 open CommonTypes
 open FsToolkit.ErrorHandling
+open GUI.UserControls
 
 module Outfits = Data.Outfit.Database
 
@@ -117,6 +119,16 @@ type NavSelectedItem(uniqueId: string, multiSelected: (string array) option) =
                 |> Array.toList
         }
 
+    let displayedTags =
+        getDataForRepeatedTable (fun v -> v.tags |> List.toArray)
+        |> Option.defaultValue (d.tags |> List.map (setSnd EveryoneHasIt))
+        |> fun a ->
+            query {
+                for (t, r) in a do
+                    sortBy (r.toSortingInfo)
+                    thenBy (t.ToLower())
+            }
+
     member _.Keywords =
         let single = d.keywords |> List.map (setSnd EveryoneHasIt)
 
@@ -126,11 +138,11 @@ type NavSelectedItem(uniqueId: string, multiSelected: (string array) option) =
         |> GUI.PageContexts.Keywords.NavListItem.sortByColor
         |> toCList
 
-    member t.Tags = d.tags |> List.sort |> toCList
+    member _.Tags = displayedTags |> Seq.map TagViewerItem |> toCList
 
     /// Gets all tags still not added to this item.
     member _.MissingTags =
-        let existing = d.tags |> Set.ofList
+        let existing = displayedTags |> Seq.map fst |> Set.ofSeq
         let all = allTags () |> Set.ofArray
 
         Set.difference all existing

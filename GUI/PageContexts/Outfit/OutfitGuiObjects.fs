@@ -12,6 +12,7 @@ open DMLib_WPF
 open DMLib.Combinators
 open System
 open GUI.PageContexts
+open GUI.UserControls
 
 module DB = Data.Outfit.Database
 module Items = Data.Items.Database
@@ -210,6 +211,7 @@ type NavSelectedItem(uId: string) =
     member _.ItemsTags =
         DB.itemsTags outfit
         |> List.sortWith compareICase
+        |> List.map TagViewerItem
         |> toCList
 
     member t.Name

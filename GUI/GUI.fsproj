@@ -16,6 +16,7 @@
     <Compile Include="UserControls\KeywordManager\KeywordObjects.fs" />
     <Compile Include="UserControls\KeywordManager\Keyword.fs" />
     <Compile Include="UserControls\BatchRename.fs" />
+    <Compile Include="UserControls\TagViewer.fs" />
     <Compile Include="UserControls\FilterByTag.fs" />
     <Compile Include="PageContexts\GuiObjects.fs" />
     <Compile Include="PageContexts\Item\ItemGuiObjects.fs" />

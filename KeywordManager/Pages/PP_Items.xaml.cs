@@ -93,6 +93,7 @@ public partial class PP_Items : UserControl, IFilterableByTag, IWorkspacePage {
     cbItemTags.Text = "";
   }
 
+  private void OnTagClick(object sender, RoutedEventArgs e) => ctx.AddTag(((ClickTagEventArgs)e).Tag);
   private void OnDeleteTag(object sender, RoutedEventArgs e) => ctx.DeleteTag(((ClickTagEventArgs)e).Tag);
 
   private void OnCanCreateUnboundOutfit(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ctx.AreAllSelectedArmors;

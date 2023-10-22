@@ -10,6 +10,10 @@ open CommonTypes
 
 module DB = Data.Keywords.Database
 
+////////////////////////////////////////////////////////////////////////////////
+//                              NAVIGATOR OBJECT                              //
+////////////////////////////////////////////////////////////////////////////////
+
 type NavListItem(key: string, r: Raw, repeated: RepeatedInfo) =
     inherit WPFBindable()
     let mutable img = r.image

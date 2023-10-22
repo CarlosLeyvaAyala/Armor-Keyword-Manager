@@ -25,7 +25,18 @@
             <md:Chip Click="ChipClick"
                      Content="{Binding}"
                      DeleteClick="DeleteButtonOnClick"
-                     IsDeletable="{Binding IsDeletable, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+                     IsDeletable="{Binding IsDeletable, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+              <md:Chip.Style>
+                <Style TargetType="md:Chip">
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding EveryOneHasIt}" Value="False">
+                      <Setter Property="FontStyle" Value="Italic" />
+                      <Setter Property="Opacity" Value="0.5" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </md:Chip.Style>
+            </md:Chip>
           </Grid>
         </DataTemplate>
       </ItemsControl.ItemTemplate>

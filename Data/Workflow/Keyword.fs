@@ -56,6 +56,9 @@ module Database =
     let OnKeywordsChanged = keywordsChangedEvent.Publish
 
     [<Literal>]
+    let UnboundEsp = "__DMUnboundItemManagerKeyword__.esm"
+
+    [<Literal>]
     let DefaultColor = 100000
 
     let blankKeyword =

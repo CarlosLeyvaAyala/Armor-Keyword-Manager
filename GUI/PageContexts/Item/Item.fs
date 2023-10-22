@@ -219,7 +219,10 @@ type ItemsPageCtx() as t =
     member t.ExportKeywordScript() =
         let keywords =
             Data.Keywords.Database.toArrayOfRaw ()
-            |> Array.Parallel.map (fun (k, v) -> toLower k, v.source)
+            |> Array.Parallel.choose (fun (k, v) ->
+                match v.source with
+                | Data.Keywords.Database.UnboundEsp -> None
+                | esp -> Some(toLower k, esp))
             |> Map.ofArray
 
         let selected =

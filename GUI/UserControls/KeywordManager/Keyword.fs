@@ -104,22 +104,26 @@ type KeywordManagerCtx() as t =
             "AD38DF40-B7E2-4390-A163-B51F0E47D837"
         )
 
-    /// Set keywords color
-    member t.SetColor color =
+    member private t.setValue transform =
         t.NavSelectedItems
         |> Seq.iter (fun item ->
             let k = item.Name
-            DB.edit k (fun v -> { v with color = color }))
+            DB.edit k (fun v -> transform v))
 
         saveJsonDB ()
         t.ReloadNavAndGoToCurrent()
 
+    /// Set keywords color
+    member t.SetColor color =
+        t.setValue (fun v -> { v with color = color })
+
     /// Adds a manually written keyword.
     member t.AddHandWrittenKeyword keyword =
-        DB.upsert keyword { DB.blankKeyword with source = "Skyrim.esm" }
+        DB.upsert keyword { DB.blankKeyword with source = DB.UnboundEsp }
         saveJsonDB ()
         t.ReloadNavAndGoTo keyword
 
+    /// Add keywords from file
     member t.AddKeywords filename =
         let apply2 f t = t ||> f
 

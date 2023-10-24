@@ -154,6 +154,24 @@
                   <MenuItem Command="c:AppCmds.Save" Header="_Save" />
                   <MenuItem Command="c:AppCmds.SaveAs" Header="_Save as..." />
                   <Separator />
+                  <MenuItem Header="_Backup">
+                    <MenuItem Command="c:AppCmds.BackupSettingsGit"
+                              Header="Create _backup"
+                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                    <MenuItem Command="c:AppCmds.BackupSettings"
+                              Header="Create _named backup"
+                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                    <MenuItem Command="c:AppCmds.RestoreSettings"
+                              Header="_Restore backup"
+                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                    <Separator />
+                    <MenuItem Command="c:AppCmds.BackupKeywords"
+                              Header="Backup _Keywords"
+                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                    <MenuItem Header="Replace Keywords" ToolTip="All keywords will be replaced" />
+                    <MenuItem Header="Merge Keywords" ToolTip="Will add keywords to existing ones" />
+                  </MenuItem>
+                  <Separator />
                   <MenuItem Header="_Export">
                     <MenuItem Command="c:AppCmds.FileJsonExport"
                               Header="_Json"
@@ -197,26 +215,6 @@
                   <MenuItem Click="OpenDataDirClick"
                             Header="Open data dir"
                             Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                  <Separator />
-
-                  <MenuItem Header="_Backup">
-                    <MenuItem Command="c:AppCmds.BackupSettingsGit"
-                              Header="Create _backup"
-                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-                    <MenuItem Command="c:AppCmds.BackupSettings"
-                              Header="Create _named backup"
-                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-                    <MenuItem Command="c:AppCmds.RestoreSettings"
-                              Header="_Restore backup"
-                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-                    <Separator />
-                    <MenuItem Command="c:AppCmds.BackupKeywords"
-                              Header="Backup _Keywords"
-                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-                    <MenuItem Header="Replace Keywords" ToolTip="All keywords will be replaced" />
-                    <MenuItem Header="Merge Keywords" ToolTip="Will add keywords to existing ones" />
-                  </MenuItem>
                 </MenuItem>
                 <MenuItem Header="Scri_pts">
                   <MenuItem Header="_Install main script" Tag="{Binding ScriptHasUpdates}" />

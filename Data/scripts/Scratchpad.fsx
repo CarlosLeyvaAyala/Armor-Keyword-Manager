@@ -8,8 +8,8 @@
 #load "..\..\..\DMLib-FSharp\MathL.fs"
 #load "..\..\..\DMLib-FSharp\Result.fs"
 #load "..\..\..\DMLib-FSharp\Tuples.fs"
-#load "..\..\..\DMLib-FSharp\String.fs"
 #load "..\..\..\DMLib-FSharp\Array.fs"
+#load "..\..\..\DMLib-FSharp\String.fs"
 #load "..\..\..\DMLib-FSharp\List.fs"
 #load "..\..\..\DMLib-FSharp\Map.fs"
 #load "..\..\..\DMLib-FSharp\Dictionary.fs"
@@ -703,39 +703,24 @@ let outfits = Outfits.toArrayOfRaw ()
 //|> createRawDecls
 
 // ================================
-open Data.Items
-open Data.Items.Database
+open DMLib.String
+open DMLib
+open System
+open FSharpx.Collections
 
-let selected =
-    toArrayOfRaw ()
-    |> Array.Parallel.map fst
-    |> Array.Parallel.filter (fun v -> v |> contains "Blood Raven")
-    |> Array.shuffle
-    |> Array.take 3
+let r () =
+    (Random().Next(2, 4), 0)
+    ||> Array.create
+    |> Array.map (fun _ -> Random().Next(10).ToString())
+    |> Array.fold (smartFold ".") ""
 
-module DB = Data.Items.Database
+for _ in [ 1..10 ] do
+    let older = r ()
+    let newer = r ()
+    printfn "Older: %s" older
+    printfn "Newer: %s" newer
 
-type RepeatedInfo =
-    | EveryoneHasIt
-    | SomeItemsHaveIt
+    getHighestVersion newer older
+    |> printfn "Highest: %s"
 
-    static member getRepeatedTable dataArrayLen dataArray =
-        dataArray
-        |> Array.groupBy id
-        |> Array.Parallel.map (fun (k, a) ->
-            k,
-            match a.Length with
-            | Equals dataArrayLen -> EveryoneHasIt
-            | _ -> SomeItemsHaveIt)
-
-let dA = selected |> Array.Parallel.map DB.find
-
-let getDataForRepeatedTable getData =
-    dA
-    |> Array.Parallel.map getData
-    |> Array.collect id
-    |> RepeatedInfo.getRepeatedTable dA.Length
-
-getDataForRepeatedTable (fun v -> v.tags |> List.toArray)
-
-getDataForRepeatedTable (fun v -> v.keywords |> List.toArray)
+    printfn "--------------"

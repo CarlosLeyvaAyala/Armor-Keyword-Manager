@@ -96,11 +96,28 @@ type AppCmds private () =
     static member val FileJsonExport = basic "FileJsonExport" "Exports file to json"
     static member val FileJsonImport = basic "FileJsonImport" "Imports file from json"
 
-    static member val RestoreSettings = basic "RestoreSettings" "Restores a previously saved backup"
     static member val BackupSettings = basic "BackupSettings" "Creates an automatically named backup"
 
+    static member val RestoreSettings =
+        { name = "RestoreSettings"
+          text = "Restores a previously saved backup"
+          gestures =
+            [ { keyDisplay = "Ctrl+R"
+                key = Key.R
+                modifiers = ModifierKeys.Control }
+              { keyDisplay = "Shift+Ctrl+B"
+                key = Key.B
+                modifiers = ModifierKeys.Control ||| ModifierKeys.Shift } ] }
+        |> create
+
     static member val BackupSettingsGit =
-        basic "BackupSettingsGit" "Creates a backup for the images, keywords and SPID suggestions"
+        { name = "BackupSettingsGit"
+          text = "Creates a backup for the images, keywords and SPID suggestions"
+          gestures =
+            [ { keyDisplay = "Ctrl+B"
+                key = Key.B
+                modifiers = ModifierKeys.Control } ] }
+        |> create
 
     static member val BackupKeywords = basic "BackupKeywords" "Use this for sharing your keywords with other people"
 
@@ -123,7 +140,9 @@ type ItemCmds private () =
                 modifiers = ModifierKeys.None } ] }
         |> create
 
-    static member val GenxEditKeywords = basic "GenxEditKeywords" "Create an xEdit script to add keywords to selected items"
+    static member val GenxEditKeywords =
+        basic "GenxEditKeywords" "Create an xEdit script to add keywords to selected items"
+
     static member val CreateUnboundOutfit = basic "CreateUnboundOutfit" "Create new outfit"
     static member val SetImage = basic "SetImage" "Set image"
     static member val NamesToClipboard = basic "NamesToClipboard" "Copy name(s) to clipboard"

@@ -30,6 +30,7 @@
     <Compile Include="Validators\Keywords.fs" />
     <Compile Include="ApplicationContext\FileWatchers.fs" />
     <Compile Include="ApplicationContext\Data.fs" />
+    <Compile Include="ApplicationContext\xEditScripts.fs" />
     <Compile Include="ApplicationContext\ApplicationContext.fs" />
   </ItemGroup>
 

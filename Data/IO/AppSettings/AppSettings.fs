@@ -17,7 +17,7 @@ module Paths =
     let private appPathChangeEvt = Event<PathChangeEventArgs>()
 
     /// This event should be called only once: when the app starts.
-    let onAppPathChanged = appPathChangeEvt.Publish
+    let OnAppPathChanged = appPathChangeEvt.Publish
 
     let SetApp dir =
         app <- dir

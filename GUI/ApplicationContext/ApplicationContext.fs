@@ -38,8 +38,8 @@ type AppCtx() =
         Data.WAED.ENCH_Db.OnxEditImported
         |> Event.add IO.WAED.File.saveEnch
 
-        // onAppPathChanged
-        AppSettings.Paths.onAppPathChanged
+        // OnAppPathChanged
+        AppSettings.Paths.OnAppPathChanged
         |> Event.choose (fun e ->
             match e with
             | ApplicationPath _ -> Some()
@@ -54,8 +54,6 @@ type AppCtx() =
     let mutable bgWorkCaption = ""
 
     member val FileWatchers = FileWatchers()
-    // TODO: Get from reading the script
-    member val ScriptHasUpdates = true
 
     member t.xEditPath
         with get () = _xEditPath
@@ -69,6 +67,7 @@ type AppCtx() =
 
             t.FileWatchers.path <- path
             IO.AppSettings.Paths.SetEditScripts path
+            xEditScripts.updateScripts t.OwnerWindow path
 
             [ nameof t.xEditPath
               nameof t.xEditDirExists ]

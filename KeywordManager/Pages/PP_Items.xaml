@@ -385,8 +385,8 @@
             <ListBox x:Name="lstItemKeywords"
                      MinHeight="30"
                      d:ItemsSource="{d:SampleData ItemCount=5}"
-                     MouseDoubleClick="OnKeywordDoubleClick"
                      ItemsSource="{Binding SelectedItem.Keywords}"
+                     MouseDoubleClick="OnKeywordDoubleClick"
                      SelectionMode="Extended">
               <ListBox.ContextMenu>
                 <ContextMenu>

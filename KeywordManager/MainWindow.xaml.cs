@@ -39,8 +39,8 @@ public partial class MainWindow : Window {
     InitializeComponent();
 
     bgWork = new(ctx);
-    InitializeFileWatchers();
     AppSettings.Paths.SetApp(Directory.GetCurrentDirectory());
+    InitializeFileWatchers();
     pages = new() { filterByTag, ppItems, ppOutfits };
   }
 

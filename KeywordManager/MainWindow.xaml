@@ -217,15 +217,6 @@
                             Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </MenuItem>
                 <MenuItem Header="Scri_pts">
-                  <MenuItem Header="_Install main script" Tag="{Binding ScriptHasUpdates}" />
-                  <!--<MenuItem.Header>
-                      <StackPanel>
-                        <TextBlock Text="_Install main script" />
-                        <md:PackIcon Foreground="{StaticResource PrimaryHueMidBrush}" />
-                      </StackPanel>
-                    </MenuItem.Header>
-                  </MenuItem>-->
-                  <Separator />
                   <MenuItem Click="OnGetScriptCreateOutfits" Header="Create _outfits" />
                   <MenuItem Click="OnGetScriptFindArmorType" Header="Find _armor type" />
                   <MenuItem Click="OnGetScriptFindOutfits" Header="_Find outfits" />

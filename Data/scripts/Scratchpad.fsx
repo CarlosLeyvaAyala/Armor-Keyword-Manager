@@ -1,4 +1,7 @@
-﻿#r "nuget: TextCopy"
+﻿open DMLib.IO.File
+
+
+#r "nuget: TextCopy"
 #r "nuget: FsToolkit.ErrorHandling"
 #r "nuget: FSharpx.Collections"
 #r "nuget: FreeImage.Standard, 4.3.8"
@@ -674,53 +677,3 @@ let outfits = Outfits.toArrayOfRaw ()
 //|> Array.fold foldNl ""
 //|> TextCopy.ClipboardService.SetText
 
-//////////////////////////////////
-//let createRawDecls xxx =
-//    let tName = Regex(@"type (\w+) =").Match(xxx).Groups[1].Value
-
-//    let decls =
-//        Regex(@"(?s)type \w+ =(.*)").Match(xxx).Groups[1]
-//            .Value
-
-//    let assingments =
-//        Regex("(?s){(.*)}")
-//            .Match(xxx)
-//            .Groups[ 1 ]
-//            .Value.Split("\n")
-//        |> Array.map (fun s -> s |> trim |> split ": " |> swap Array.get 0)
-//        |> Array.map (fun varName -> $"{varName} = r.{varName}")
-//        |> Array.fold (fun acc s -> acc + s + "; ") ""
-//        |> fun s -> "{ " + s + "}"
-
-//    [ $"    member r.toRaw(): {tName}Raw = {assingments}"
-//      $"    static member toRaw(r: {tName}) = r.toRaw ()"
-//      $"    static member ofRaw(r: {tName}Raw) : {tName} = {assingments}"
-//      $"and {tName}Raw = {decls}" ]
-//    |> List.fold smartNl ""
-//    |> TextCopy.ClipboardService.SetText
-
-//TextCopy.ClipboardService.GetText()
-//|> createRawDecls
-
-// ================================
-open DMLib.String
-open DMLib
-open System
-open FSharpx.Collections
-
-let r () =
-    (Random().Next(2, 4), 0)
-    ||> Array.create
-    |> Array.map (fun _ -> Random().Next(10).ToString())
-    |> Array.fold (smartFold ".") ""
-
-for _ in [ 1..10 ] do
-    let older = r ()
-    let newer = r ()
-    printfn "Older: %s" older
-    printfn "Newer: %s" newer
-
-    getHighestVersion newer older
-    |> printfn "Highest: %s"
-
-    printfn "--------------"

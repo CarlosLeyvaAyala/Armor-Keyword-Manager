@@ -1,10 +1,8 @@
 unit SIM_SetKeywords;
 {
-    Hotkey: Ctrl+Shift+K
+    Hotkey: Ctrl+Alt+K
     
     Auto-generated script for applying keywords from the app.
-
-    Script version: 1.0.0
 }
 interface
 

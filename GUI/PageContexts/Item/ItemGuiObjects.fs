@@ -47,6 +47,9 @@ type NavListItem(uniqueId: string, d: Raw) =
         member _.UId = uniqueId
 
     member _.IsArmor = u.itemType = int ItemType.Armor
+    member _.IsHeavyArmor = ArmorType.isHeavyArmor u.autoTags
+    member _.IsLightArmor = ArmorType.isLightArmor u.autoTags
+    member _.IsClothing = ArmorType.isClothing u.autoTags
     member _.IsWeapon = u.itemType = int ItemType.Weapon
     member _.IsAmmo = u.itemType = int ItemType.Ammo
     member _.HasImage = u.img <> ""

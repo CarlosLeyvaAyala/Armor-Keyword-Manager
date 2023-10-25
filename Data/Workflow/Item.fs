@@ -104,6 +104,16 @@ module ArmorType =
         [| int ArmorType.LightArmor .. int ArmorType.Clothing |]
         |> Array.map (enum<ArmorType> >> getAutoTag)
 
+    let private hasAutoTag (at: ArmorType) (tags: string list) =
+        tags
+        |> List.filter (contains <| getAutoTag at)
+        |> List.length
+        |> fun i -> i > 0
+
+    let isHeavyArmor = hasAutoTag ArmorType.HeavyArmor
+    let isLightArmor = hasAutoTag ArmorType.LightArmor
+    let isClothing = hasAutoTag ArmorType.Clothing
+
 type LineImportParsed =
     { edid: string
       esp: string

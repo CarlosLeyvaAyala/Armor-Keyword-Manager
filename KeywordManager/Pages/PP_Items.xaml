@@ -166,9 +166,34 @@
                     </Style>
                   </StackPanel.Resources>
 
-                  <Image Height="14"
-                         Margin="0,0,5,0"
-                         Source="{StaticResource svgArmorActive}" />
+                  <Image>
+                    <Image.Style>
+                      <Style TargetType="Image">
+                        <Setter Property="Height" Value="14" />
+
+                        <Style.Triggers>
+                          <DataTrigger Binding="{Binding IsHeavyArmor, IsAsync=True}" Value="True">
+                            <Setter Property="Margin" Value="0,0,5,1" />
+                            <Setter Property="Source" Value="{StaticResource svgHvArmor}" />
+                          </DataTrigger>
+                          <DataTrigger Binding="{Binding IsLightArmor, IsAsync=True}" Value="True">
+                            <Setter Property="Margin" Value="0,0,5,1" />
+                            <Setter Property="Source" Value="{StaticResource svgLtArmor}" />
+                          </DataTrigger>
+                          <DataTrigger Binding="{Binding IsClothing, IsAsync=True}" Value="True">
+                            <Setter Property="Margin" Value="0,0,5,1" />
+                            <Setter Property="Source" Value="{StaticResource svgClothing}" />
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </Image.Style>
+                  </Image>
+                  <md:PackIcon Foreground="{StaticResource clbRbActive}"
+                               Kind="SwordCross"
+                               Visibility="{Binding IsWeapon, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                  <md:PackIcon Foreground="{StaticResource clbRbActive}"
+                               Kind="BowArrow"
+                               Visibility="{Binding IsAmmo, Converter={StaticResource BooleanToVisibilityConverter}}" />
                   <md:PackIcon Foreground="{StaticResource clbRbActive}"
                                Kind="Image"
                                Visibility="{Binding HasImage, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -380,6 +405,7 @@
             <ListBox x:Name="lstItemKeywords"
                      MinHeight="30"
                      MaxHeight="300"
+                     VerticalAlignment="Top"
                      d:ItemsSource="{d:SampleData ItemCount=5}"
                      ItemsSource="{Binding SelectedItem.Keywords}"
                      MouseDoubleClick="OnKeywordDoubleClick"

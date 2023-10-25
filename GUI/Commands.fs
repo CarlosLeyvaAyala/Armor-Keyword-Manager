@@ -96,7 +96,14 @@ type AppCmds private () =
     static member val FileJsonExport = basic "FileJsonExport" "Exports file to json"
     static member val FileJsonImport = basic "FileJsonImport" "Imports file from json"
 
-    static member val BackupSettings = basic "BackupSettings" "Creates an automatically named backup"
+    static member val BackupSettings =
+        { name = "BackupSettings"
+          text = "Creates an automatically named backup"
+          gestures =
+            [ { keyDisplay = "Alt+Ctrl+B"
+                key = Key.B
+                modifiers = ModifierKeys.Control ||| ModifierKeys.Alt } ] }
+        |> create
 
     static member val RestoreSettings =
         { name = "RestoreSettings"

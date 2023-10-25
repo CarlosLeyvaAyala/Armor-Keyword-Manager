@@ -154,17 +154,21 @@
                   <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="auto" />
                   <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="10" />
+                  <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal">
+                <StackPanel Grid.ColumnSpan="3" Orientation="Horizontal">
                   <StackPanel.Resources>
                     <Style TargetType="md:PackIcon">
                       <Setter Property="Margin" Value="0,0,5,0" />
                     </Style>
                   </StackPanel.Resources>
 
+                  <Image Height="14"
+                         Margin="0,0,5,0"
+                         Source="{StaticResource svgArmorActive}" />
                   <md:PackIcon Foreground="{StaticResource clbRbActive}"
                                Kind="Image"
                                Visibility="{Binding HasImage, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -202,11 +206,12 @@
                            Grid.Column="0"
                            VerticalAlignment="Bottom"
                            Style="{StaticResource NavTxtD2}"
-                           Text="{Binding Esp}" />
+                           Text="{Binding Esp}"
+                           TextTrimming="CharacterEllipsis" />
 
                 <!--  EDID  -->
                 <TextBlock Grid.Row="1"
-                           Grid.Column="1"
+                           Grid.Column="2"
                            HorizontalAlignment="Right"
                            VerticalAlignment="Bottom"
                            Style="{StaticResource NavTxtD1}"
@@ -289,27 +294,17 @@
       <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <Grid>
           <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="{StaticResource GridSepVerticalNarrow}" />
-            <RowDefinition Height="2*" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="{StaticResource GridSepVerticalNarrow}" />
             <RowDefinition Height="auto" />
           </Grid.RowDefinitions>
 
           <!--  ITEM TYPE  -->
-          <ComboBox Margin="{StaticResource MarginStd}"
-                    VerticalAlignment="Top"
-                    SelectedIndex="0"
-                    Visibility="Collapsed">
-            <ComboBoxItem Content="Armor" />
-            <ComboBoxItem Content="﻿Weapon" />
-            <ComboBoxItem Content="Ammo" />
-          </ComboBox>
-
-          <StackPanel x:Name="pnlItemType"
+          <!--<StackPanel x:Name="pnlItemType"
                       Margin="4"
                       HorizontalAlignment="Center"
-                      Orientation="Horizontal">
+                      Orientation="Horizontal"
+                      Visibility="Collapsed">
             <StackPanel.Resources>
               <Style x:Key="activeImg" TargetType="Image">
                 <Setter Property="Width" Value="20" />
@@ -374,16 +369,17 @@
                 <TextBlock Grid.Row="2" Text="Ammo" />
               </Grid>
             </RadioButton>
-          </StackPanel>
+          </StackPanel>-->
 
           <!--  ITEM KEYWORDS  -->
-          <GroupBox Grid.Row="2"
+          <GroupBox Grid.Row="0"
                     md:ColorZoneAssist.Mode="PrimaryLight"
                     BorderThickness="0"
                     Header="Keywords"
                     KeyDown="LstItemKeywords_KeyDown">
             <ListBox x:Name="lstItemKeywords"
                      MinHeight="30"
+                     MaxHeight="300"
                      d:ItemsSource="{d:SampleData ItemCount=5}"
                      ItemsSource="{Binding SelectedItem.Keywords}"
                      MouseDoubleClick="OnKeywordDoubleClick"
@@ -431,7 +427,7 @@
           </GroupBox>
 
           <!--  TAGS  -->
-          <GroupBox Grid.Row="4"
+          <GroupBox Grid.Row="2"
                     md:ColorZoneAssist.Mode="PrimaryLight"
                     BorderThickness="0"
                     Header="Tags">

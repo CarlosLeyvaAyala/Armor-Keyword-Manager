@@ -676,4 +676,3 @@ let outfits = Outfits.toArrayOfRaw ()
 //|> Array.duplicates
 //|> Array.fold foldNl ""
 //|> TextCopy.ClipboardService.SetText
-

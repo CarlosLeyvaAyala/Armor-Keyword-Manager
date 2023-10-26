@@ -257,11 +257,10 @@ It can not be exported to SPID.</sys:String>
             <ContextMenu>
               <MenuItem Click="OnRename"
                         Header="_Rename"
-                        IsEnabled="{Binding IsNavSingleSelected}" />
+                        Visibility="{Binding IsNavSingleSelected, Converter={StaticResource BooleanToVisibilityConverter}}" />
               <MenuItem Click="OnBatchRename"
                         Header="Batch _rename"
-                        IsEnabled="{Binding IsNavMultipleSelected}" />
-              <Separator />
+                        Visibility="{Binding IsNavMultipleSelected, Converter={StaticResource BooleanToVisibilityConverter}}" />
               <MenuItem Click="OnSetImgClick" Header="Set _image" />
               <Separator />
               <MenuItem Command="c:OutfitCmds.Del" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />

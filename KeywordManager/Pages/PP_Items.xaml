@@ -166,34 +166,6 @@
                     </Style>
                   </StackPanel.Resources>
 
-                  <Image>
-                    <Image.Style>
-                      <Style TargetType="Image">
-                        <Setter Property="Height" Value="14" />
-
-                        <Style.Triggers>
-                          <DataTrigger Binding="{Binding IsHeavyArmor, IsAsync=True}" Value="True">
-                            <Setter Property="Margin" Value="0,0,5,1" />
-                            <Setter Property="Source" Value="{StaticResource svgHvArmor}" />
-                          </DataTrigger>
-                          <DataTrigger Binding="{Binding IsLightArmor, IsAsync=True}" Value="True">
-                            <Setter Property="Margin" Value="0,0,5,1" />
-                            <Setter Property="Source" Value="{StaticResource svgLtArmor}" />
-                          </DataTrigger>
-                          <DataTrigger Binding="{Binding IsClothing, IsAsync=True}" Value="True">
-                            <Setter Property="Margin" Value="0,0,5,1" />
-                            <Setter Property="Source" Value="{StaticResource svgClothing}" />
-                          </DataTrigger>
-                        </Style.Triggers>
-                      </Style>
-                    </Image.Style>
-                  </Image>
-                  <md:PackIcon Foreground="{StaticResource clbRbActive}"
-                               Kind="SwordCross"
-                               Visibility="{Binding IsWeapon, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                  <md:PackIcon Foreground="{StaticResource clbRbActive}"
-                               Kind="BowArrow"
-                               Visibility="{Binding IsAmmo, Converter={StaticResource BooleanToVisibilityConverter}}" />
                   <md:PackIcon Foreground="{StaticResource clbRbActive}"
                                Kind="Image"
                                Visibility="{Binding HasImage, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -319,6 +291,19 @@
       <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <Grid>
           <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <!--<RowDefinition>
+              <RowDefinition.Style>
+                <Style TargetType="RowDefinition">
+                  <Setter Property="Height" Value="{StaticResource GridSepVerticalNarrow}" />
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding DataContext.IsNavMultipleSelected, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:PP_Items}}}" Value="True">
+                      <Setter Property="Height" Value="0" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </RowDefinition.Style>
+            </RowDefinition>-->
             <RowDefinition Height="*" />
             <RowDefinition Height="{StaticResource GridSepVerticalNarrow}" />
             <RowDefinition Height="auto" />
@@ -396,8 +381,75 @@
             </RadioButton>
           </StackPanel>-->
 
+          <!--  READ ONLY INFO  -->
+          <Grid Margin="0,0,0,20"
+                DataContext="{Binding SelectedItem}"
+                Visibility="{Binding DataContext.IsNavSingleSelected, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:PP_Items}}}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="auto" />
+              <ColumnDefinition Width="10" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <md:PackIcon Width="40"
+                         Height="40"
+                         VerticalAlignment="Center"
+                         Cursor="Help"
+                         Foreground="{StaticResource clbRbActive}"
+                         ToolTipService.InitialShowDelay="50">
+              <md:PackIcon.Style>
+                <Style TargetType="md:PackIcon">
+                  <Setter Property="Visibility" Value="Collapsed" />
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsWeapon}" Value="True">
+                      <Setter Property="Kind" Value="SwordCross" />
+                      <Setter Property="Visibility" Value="Visible" />
+                      <Setter Property="ToolTip" Value="Weapon" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsAmmo}" Value="True">
+                      <Setter Property="Kind" Value="BowArrow" />
+                      <Setter Property="Visibility" Value="Visible" />
+                      <Setter Property="ToolTip" Value="Ammo" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </md:PackIcon.Style>
+            </md:PackIcon>
+
+            <Image ToolTipService.InitialShowDelay="50">
+              <Image.Style>
+                <Style TargetType="Image">
+                  <Setter Property="Height" Value="40" />
+                  <Setter Property="Cursor" Value="Help" />
+
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsHeavyArmor}" Value="True">
+                      <Setter Property="Margin" Value="0,0,5,1" />
+                      <Setter Property="Source" Value="{StaticResource svgHvArmor}" />
+                      <Setter Property="ToolTip" Value="Heavy Armor" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsLightArmor}" Value="True">
+                      <Setter Property="Margin" Value="0,0,5,1" />
+                      <Setter Property="Source" Value="{StaticResource svgLtArmor}" />
+                      <Setter Property="ToolTip" Value="Light Armor" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsClothing}" Value="True">
+                      <Setter Property="Margin" Value="0,0,5,1" />
+                      <Setter Property="Source" Value="{StaticResource svgClothing}" />
+                      <Setter Property="ToolTip" Value="Clothing" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </Image.Style>
+            </Image>
+
+            <TextBlock Grid.Column="2"
+                       VerticalAlignment="Center"
+                       Text="{Binding Name}"
+                       TextTrimming="CharacterEllipsis" />
+          </Grid>
+
           <!--  ITEM KEYWORDS  -->
-          <GroupBox Grid.Row="0"
+          <GroupBox Grid.Row="1"
                     md:ColorZoneAssist.Mode="PrimaryLight"
                     BorderThickness="0"
                     Header="Keywords"
@@ -453,7 +505,7 @@
           </GroupBox>
 
           <!--  TAGS  -->
-          <GroupBox Grid.Row="2"
+          <GroupBox Grid.Row="3"
                     md:ColorZoneAssist.Mode="PrimaryLight"
                     BorderThickness="0"
                     Header="Tags">

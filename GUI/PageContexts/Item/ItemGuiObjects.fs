@@ -47,9 +47,6 @@ type NavListItem(uniqueId: string, d: Raw) =
         member _.UId = uniqueId
 
     member _.IsArmor = u.itemType = int ItemType.Armor
-    member _.IsHeavyArmor = ArmorType.isHeavyArmor u.autoTags
-    member _.IsLightArmor = ArmorType.isLightArmor u.autoTags
-    member _.IsClothing = ArmorType.isClothing u.autoTags
     member _.IsWeapon = u.itemType = int ItemType.Weapon
     member _.IsAmmo = u.itemType = int ItemType.Ammo
     member _.HasImage = u.img <> ""
@@ -153,3 +150,9 @@ type NavSelectedItem(uniqueId: string, multiSelected: (string array) option) =
         |> toCList
 
     member val ItemType = d.itemType
+    member _.IsHeavyArmor = ArmorType.isHeavyArmor d.autoTags
+    member _.IsLightArmor = ArmorType.isLightArmor d.autoTags
+    member _.IsClothing = ArmorType.isClothing d.autoTags
+    member _.IsWeapon = d.itemType = int ItemType.Weapon
+    member _.IsAmmo = d.itemType = int ItemType.Ammo
+    member _.Name = d.name

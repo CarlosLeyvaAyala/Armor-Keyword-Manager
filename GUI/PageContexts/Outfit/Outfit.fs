@@ -19,6 +19,7 @@ open Data.Outfit
 open DMLib.Objects
 open DMLib.Combinators
 open Data.SPID
+open GUI.Workspace
 
 module DB = Data.Outfit.Database
 module Paths = IO.AppSettings.Paths.Img.Outfit
@@ -256,3 +257,23 @@ type OutfitPageCtx() as t =
         |> SpidRule.ofStr
         |> SpidRule.toRaw
         |> DB.updateRule t.UId idx
+
+    member t.CopyUIds() =
+        let items =
+            t.NavSelectedItems
+            |> Seq.toArray
+            |> Array.Parallel.map (fun i ->
+                i.UId
+                |> DB.getPieces
+                |> Array.ofList
+                |> Array.Parallel.choose (fun id -> Items.tryFind id |> Option.map (setFst id)))
+            |> Array.collect id
+            |> Array.Parallel.map (fun (uid, v) -> v.name.Length, v.name, uid)
+
+        let maxLen = items |> Array.maxBy fst3 |> fst3
+
+        items
+        |> Array.map (Tuple.mapFst3 <| K maxLen)
+        |> Array.map (fun v -> v |||> CopyUIds.nameAndUId)
+        |> Array.fold smartNl ""
+        |> TextCopy.ClipboardService.SetText

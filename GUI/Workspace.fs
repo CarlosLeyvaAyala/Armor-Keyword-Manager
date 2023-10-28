@@ -52,3 +52,9 @@ module Workspace =
 
         let DrawerWasOpened () =
             filterPaneOpenEvt.Trigger Page.currentPage
+
+    module internal CopyUIds =
+        let formatedUId = id
+
+        let nameAndUId namesLen name uid =
+            sprintf "%-*s     %s" namesLen name (formatedUId uid)

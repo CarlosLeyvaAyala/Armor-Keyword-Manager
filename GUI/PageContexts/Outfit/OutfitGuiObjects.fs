@@ -192,6 +192,7 @@ type ArmorPiece(uId: string, d: Data.Items.Raw option) =
     member val ShortName = fullname with get, set
     member _.IsInDB = d.IsSome
     member t.NameWasShortened = t.FullName <> t.ShortName
+    member _.UId = uId
 
 type NavSelectedItem(uId: string) =
     inherit WPFBindable()

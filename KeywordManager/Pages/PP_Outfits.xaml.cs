@@ -86,6 +86,7 @@ public partial class PP_Outfits : UserControl, IFilterableByTag, IWorkspacePage 
   private void OnFilterKeyDown(object sender, KeyEventArgs e) {
     if (e.Key == Key.Enter) GUI.ListBox.FocusFromFilter(lstNav);
   }
+  private void OnCopyUIdsClick(object sender, RoutedEventArgs e) => ctx.CopyUIds();
 
   #region Rules
   private void OnAddRule(object sender, RoutedEventArgs e) => ctx.NewRule();

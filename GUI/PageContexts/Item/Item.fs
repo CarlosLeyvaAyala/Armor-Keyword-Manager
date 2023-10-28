@@ -15,6 +15,7 @@ open GUI.PageContexts.Items
 open System.IO
 open DMLib.IO.Path
 open IO.AppSettings
+open GUI.Workspace
 
 module DB = Data.Items.Database
 module Img = IO.AppSettings.Paths.Img.Item
@@ -150,7 +151,7 @@ type ItemsPageCtx() as t =
 
     member t.SelectedItemUIds =
         t.NavSelectedItems
-        |> Seq.map (fun i -> i.UId)
+        |> Seq.map (fun i -> CopyUIds.formatedUId i.UId)
         |> Seq.fold smartNl ""
 
     member t.SelectedItemNamesAndUIds =
@@ -159,7 +160,7 @@ type ItemsPageCtx() as t =
         let namesLen = len (fun i -> i.Name.Length)
 
         t.NavSelectedItems
-        |> Seq.map (fun i -> sprintf "%-*s     %s" namesLen i.Name i.UId)
+        |> Seq.map (fun i -> CopyUIds.nameAndUId namesLen i.Name i.UId)
         |> Seq.fold smartNl ""
 
     member t.AreAllSelectedArmors =

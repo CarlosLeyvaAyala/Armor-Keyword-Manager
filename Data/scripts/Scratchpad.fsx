@@ -1,7 +1,4 @@
-﻿open DMLib.IO.File
-
-
-#r "nuget: TextCopy"
+﻿#r "nuget: TextCopy"
 #r "nuget: FsToolkit.ErrorHandling"
 #r "nuget: FSharpx.Collections"
 #r "nuget: FreeImage.Standard, 4.3.8"
@@ -676,3 +673,71 @@ let outfits = Outfits.toArrayOfRaw ()
 //|> Array.duplicates
 //|> Array.fold foldNl ""
 //|> TextCopy.ClipboardService.SetText
+
+/////////////////////////////////////////////////////
+#r "nuget: Mutagen.Bethesda, 0.44.0"
+#time "on"
+
+open Mutagen.Bethesda
+open Mutagen.Bethesda.Environments
+open Mutagen.Bethesda.Skyrim
+open Mutagen.Bethesda.Strings
+open Mutagen.Bethesda.Plugins
+
+let env = GameEnvironment.Typical.Skyrim(SkyrimRelease.SkyrimSE)
+
+let (|EnglishName|) (name: ITranslatedStringGetter) =
+    match name.TryLookup Language.English with
+    | true, n -> n
+    | _ -> "<Name not found>"
+
+let getName (npc: INpcGetter) =
+    match npc.Name with
+    | null -> "<Unnamed>"
+    | EnglishName n -> n
+
+let isNotNull =
+    function
+    | null -> false
+    | _ -> true
+
+//let inline hasName (o: 'a when 'a: (member Name: ITranslatedStringGetter)) = isNotNull o.Name
+
+env.LoadOrder.PriorityOrder.Npc().WinningContextOverrides()
+|> Seq.map _.Record
+|> Seq.filter (fun n -> n.Configuration.Flags.HasFlag NpcConfiguration.Flag.Unique)
+|> Seq.map (fun n -> getName n, n.Weight)
+|> Seq.sortBy fst
+|> Seq.iter (printfn "%A")
+
+env.LoadOrder.PriorityOrder.Armor().WinningContextOverrides()
+|> Seq.map _.Record
+|> Seq.filter (fun a -> not (a.MajorFlags.HasFlag Armor.MajorFlag.NonPlayable) && isNotNull a.Name) // Get playable armors
+|> Seq.map (fun a ->
+    let k = a.FormKey
+    let t = a.BodyTemplate
+
+    {| modName = k.ModKey.FileName.String
+       formID = k.ID.ToString("X")
+       edid = a.EditorID
+       armorType = t.ArmorType
+       slots = t.FirstPersonFlags
+       name = (|EnglishName|) a.Name |}) // Convert to useful data
+|> Seq.sortBy _.name
+|> Seq.iter (printfn "%A")
+//|> Seq.map (fun x ->
+//    match x.TryLookup Language.English with
+//    | true, n -> n
+//    | _ -> "No")
+//|> Seq.map (fun n ->
+//    let npc = n
+
+//    match npc.Record.Name.TryLookup Language.English with
+//    | true, name -> name
+//    | _ -> "No name")
+
+let ooooo: IFormLinkGetter<IOutfitTargetGetter> seq =
+    env.LoadOrder.PriorityOrder.Outfit().WinningContextOverrides()
+    |> Seq.map _.Record.Items
+    |> Seq.collect id
+//|> Seq.map _.F

@@ -79,7 +79,6 @@ type NifFile with
                 | :? BSLightingShaderProperty as o -> Some o
                 | _ -> None
 
-
             let! texSetIdx = validateIndex shader.TextureSetRef.Index
 
             let! texSet =
@@ -283,13 +282,13 @@ let renderNifToImage (width: int) (height: int) (outputPath: string) angle (mesh
         failwith "No renderable shapes found in NIF."
 
     let imageType =
-        match "test_render.jpp" with
+        match outputPath with
         | IsExtension "jpg" _
         | IsExtension "jpeg" _ -> Jpg
         | IsExtension "png" _ -> Png
-        | _ -> Png
-    //sprintf "\"%s\" can't be saved because it has an unknown extension" outputPath
-    //|> failwith
+        | _ ->
+            sprintf "\"%s\" can't be saved because it has an unknown extension" outputPath
+            |> failwith
 
     let mutable options = WindowOptions.Default
     options.Size <- Vector2D<int>(width, height)
@@ -513,6 +512,7 @@ let renderNifToImage (width: int) (height: int) (outputPath: string) angle (mesh
     gl.DeleteTexture(colorTex)
     gl.DeleteFramebuffer(fbo)
     window.Close()
+
 //////////////////////////////////////////////////////////////
 //2. Optional: Offset or Scale Individual Pieces (e.g., Weapons or Shields)
 

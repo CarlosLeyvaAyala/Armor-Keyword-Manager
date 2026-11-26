@@ -22,8 +22,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{089E688C-588
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "NifProcessor", "NifProcessor\NifProcessor.fsproj", "{DA6F36EE-3167-4F52-902E-E3E2561C4B74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NifRenderer", "NifRenderer\NifRenderer.csproj", "{9114AAB4-99AA-41A4-95F3-9C2075FDCB50}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,10 +56,6 @@ Global
 		{DA6F36EE-3167-4F52-902E-E3E2561C4B74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA6F36EE-3167-4F52-902E-E3E2561C4B74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA6F36EE-3167-4F52-902E-E3E2561C4B74}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9114AAB4-99AA-41A4-95F3-9C2075FDCB50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9114AAB4-99AA-41A4-95F3-9C2075FDCB50}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9114AAB4-99AA-41A4-95F3-9C2075FDCB50}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9114AAB4-99AA-41A4-95F3-9C2075FDCB50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

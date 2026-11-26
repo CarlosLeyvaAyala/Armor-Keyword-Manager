@@ -50,6 +50,8 @@ open SixLabors.ImageSharp
 open SixLabors.ImageSharp.PixelFormats
 open SixLabors.ImageSharp.Processing
 open DMLib.String
+open DMLib.IO.Path
+open DMLib.IO
 open FsToolkit.ErrorHandling
 
 #nowarn "9"
@@ -98,6 +100,10 @@ type MeshPart =
       UVs: Vector2 array
       Indices: uint16 array
       DiffuseTexturePath: string option }
+
+type OutputImageType =
+    | Jpg
+    | Png
 
 let vertexShaderSource =
     """
@@ -230,6 +236,8 @@ let loadDdsOrFallback (ddsPathOpt: string option) : byte[] * int * int =
         // 1x1 white fallback texture if .dds is missing or still inside a .bsa
         ([| 255uy; 0uy; 255uy; 255uy |], 1, 1)
 
+let loadDdsOrFallbackMemo = DMLib.Misc.memoize loadDdsOrFallback
+
 let compileShader (gl: GL) (shaderType: ShaderType) (source: string) : uint32 =
     let shader = gl.CreateShader(shaderType)
     gl.ShaderSource(shader, source)
@@ -270,13 +278,18 @@ let matrixToArray (m: Matrix4x4) : float32[] =
        m.M43
        m.M44 |]
 
-let renderNifToImage (width: int) (height: int) (outputPath: string) (meshes: MeshPart list) =
+let renderNifToImage (width: int) (height: int) (outputPath: string) angle (meshes: MeshPart list) =
     if List.isEmpty meshes then
         failwith "No renderable shapes found in NIF."
 
-    let isJpeg =
-        outputPath.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase)
-        || outputPath.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase)
+    let imageType =
+        match "test_render.jpp" with
+        | IsExtension "jpg" _
+        | IsExtension "jpeg" _ -> Jpg
+        | IsExtension "png" _ -> Png
+        | _ -> Png
+    //sprintf "\"%s\" can't be saved because it has an unknown extension" outputPath
+    //|> failwith
 
     let mutable options = WindowOptions.Default
     options.Size <- Vector2D<int>(width, height)
@@ -336,10 +349,9 @@ let renderNifToImage (width: int) (height: int) (outputPath: string) (meshes: Me
     gl.Enable(EnableCap.Blend)
     gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha)
 
-    if isJpeg then
-        gl.ClearColor(0.15f, 0.15f, 0.18f, 1.0f)
-    else
-        gl.ClearColor(0.0f, 0.0f, 0.0f, 0.0f)
+    match imageType with
+    | Jpg -> gl.ClearColor(0.15f, 0.15f, 0.18f, 1.0f)
+    | Png -> gl.ClearColor(0.0f, 0.0f, 0.0f, 0.0f)
 
     gl.Clear(ClearBufferMask.ColorBufferBit ||| ClearBufferMask.DepthBufferBit)
 
@@ -363,8 +375,17 @@ let renderNifToImage (width: int) (height: int) (outputPath: string) (meshes: Me
     let center = (minV + maxV) * 0.5f
     let radius = max ((maxV - minV).Length() * 0.5f) 1.0f
 
-    //let cameraPos = center + Vector3(radius * 0.6f, radius * 2.4f, radius * 0.3f) // viendo a la derecha
-    let cameraPos = center + Vector3(-radius * 0.6f, radius * 2.4f, radius * 0.3f) // viendo a la izquierda
+    let getCameraPos (center: Vector3) (radius: float32) (angleDegrees: float32) : Vector3 =
+        let distance = 2.474f * radius
+        let heightOffset = 0.3f * radius
+        let rad = angleDegrees * (MathF.PI / 180.0f)
+
+        let x = -distance * MathF.Sin(rad)
+        let y = distance * MathF.Cos(rad)
+
+        center + Vector3(x, y, heightOffset)
+
+    let cameraPos = getCameraPos center radius angle
 
     let view = Matrix4x4.CreateLookAt(cameraPos, center, Vector3.UnitZ)
 
@@ -436,7 +457,7 @@ let renderNifToImage (width: int) (height: int) (outputPath: string) (meshes: Me
         gl.EnableVertexAttribArray(2u)
 
         // Upload Diffuse Texture
-        let rgba, texW, texH = loadDdsOrFallback part.DiffuseTexturePath
+        let rgba, texW, texH = loadDdsOrFallbackMemo part.DiffuseTexturePath
         let texId = gl.GenTexture()
         gl.ActiveTexture(TextureUnit.Texture0)
         gl.BindTexture(TextureTarget.Texture2D, texId)
@@ -480,10 +501,9 @@ let renderNifToImage (width: int) (height: int) (outputPath: string) (meshes: Me
 
     outImage.Mutate(fun ctx -> ctx.Flip(FlipMode.Vertical) |> ignore)
 
-    if isJpeg then
-        outImage.SaveAsJpeg(outputPath)
-    else
-        outImage.SaveAsPng(outputPath)
+    match imageType with
+    | Jpg -> outImage.SaveAsJpeg(outputPath)
+    | Png -> outImage.SaveAsPng(outputPath)
 
     printfn "%s was saved" outputPath
 
@@ -493,8 +513,10 @@ let renderNifToImage (width: int) (height: int) (outputPath: string) (meshes: Me
     gl.DeleteTexture(colorTex)
     gl.DeleteFramebuffer(fbo)
     window.Close()
+//////////////////////////////////////////////////////////////
+//2. Optional: Offset or Scale Individual Pieces (e.g., Weapons or Shields)
 
-    //////////////////////////////////////////////////////////////
+//While armor pieces share the character's origin, weapons (ironsword.nif) or shields are modeled centered around (0, 0, 0) in their own local space. If you ever want to position a weapon or head piece manually before combining it, add a small helper to shift/rotate/scale a MeshPart list:
 let transformMeshes (matrix: Matrix4x4) (parts: MeshPart list) : MeshPart list =
     parts
     |> List.map (fun part ->
@@ -538,20 +560,26 @@ let nifPath =
     //fullSkyrimPath @"meshes\actors\character\character assets\femalebody_0.nif"
     fullSkyrimPath @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\cuirass slutty_0.nif"
 
-let outputPng = fullSkyrimPath "test_render.png"
+let meshPaths =
+    [ @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\amulet_0.nif"
+      @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\boots_0.nif"
+      @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\circlet.nif"
+      @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\cuirass slutty_0.nif"
+      @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\earrings.nif"
+      @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\gauntlets_0.nif"
+      @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\hair.nif" ]
 
-nifPath
-|> loadSkyrimNif (filterCollisionBodies physicsBodies) dataDir
-|> renderNifToImage 900 900 outputPng
+0f :: [ 14.0f..5.0f..44f ]
+|> List.iter (fun angle ->
+    let fn = sprintf "render_%02.0f_deg.png" angle |> fullSkyrimPath
 
+    meshPaths
+    |> List.map (DMLib.IO.Path.combine2 dataDir)
+    |> List.collect (loadSkyrimNif (filterCollisionBodies physicsBodies) dataDir)
+    |> renderNifToImage 900 900 fn angle)
 
-[ @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\amulet_0.nif"
-  @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\boots_0.nif"
-  @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\circlet.nif"
-  @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\cuirass slutty_0.nif"
-  @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\earrings.nif"
-  @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\gauntlets_0.nif"
-  @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\hair.nif" ]
-|> List.map (DMLib.IO.Path.combine2 dataDir)
-|> List.collect (loadSkyrimNif (filterCollisionBodies physicsBodies) dataDir)
-|> renderNifToImage 900 900 outputPng
+match @"D:\Documents\GitHub\Armor-Keyword-Manager\NifProcessor\testing resources\render_00_deg.png" with
+| IsExtension "jpg" _
+| IsExtension "jpeg" _ -> "JPEG"
+| IsExtension "png" _ -> "PNG"
+| _ -> failwith "Unknown extension"

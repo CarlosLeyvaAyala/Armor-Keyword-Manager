@@ -47,7 +47,6 @@ public class StringToImgConverter : IValueConverter {
         img.UriSource = uri;
         img.EndInit();
         return img;
-        GameEnvironment.Typical.Skyrim(Mutagen.Bethesda.Skyrim.SkyrimRelease.SkyrimSE);
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => "";

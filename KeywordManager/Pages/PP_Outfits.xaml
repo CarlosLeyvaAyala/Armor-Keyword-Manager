@@ -1,127 +1,140 @@
-﻿<UserControl x:Class="KeywordManager.Pages.PP_Outfits"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:bhv="http://cla.me/wpf/xaml/controls"
-             xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
-             xmlns:ctx="clr-namespace:GUI.PageContexts;assembly=GUI"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:guiobjs="clr-namespace:GUI.PageContexts.Outfit;assembly=GUI"
-             xmlns:local="clr-namespace:KeywordManager.Pages"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
-             xmlns:t="clr-namespace:GUI.PageContexts;assembly=GUI"
-             xmlns:uc="clr-namespace:KeywordManager.UserControls"
-             d:DesignHeight="800"
-             d:DesignWidth="1200"
-             Loaded="OnLoaded"
-             mc:Ignorable="d">
-  <UserControl.Resources>
-    <sys:Double x:Key="rowHeightPieces">120</sys:Double>
-    <sys:String x:Key="nonDistributableMessage" xml:space="preserve">This outfit does not belong to any plugin.
+﻿<UserControl
+    x:Class="KeywordManager.Pages.PP_Outfits"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:bhv="http://cla.me/wpf/xaml/controls"
+    xmlns:c="clr-namespace:GUI.Commands;assembly=GUI"
+    xmlns:ctx="clr-namespace:GUI.PageContexts;assembly=GUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:guiobjs="clr-namespace:GUI.PageContexts.Outfit;assembly=GUI"
+    xmlns:local="clr-namespace:KeywordManager.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+    xmlns:t="clr-namespace:GUI.PageContexts;assembly=GUI"
+    xmlns:uc="clr-namespace:KeywordManager.UserControls"
+    d:DesignHeight="800"
+    d:DesignWidth="1200"
+    Loaded="OnLoaded"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <sys:Double x:Key="rowHeightPieces">120</sys:Double>
+        <sys:String x:Key="nonDistributableMessage" xml:space="preserve">This outfit does not belong to any plugin.
 It can not be exported to SPID.</sys:String>
 
-    <Style x:Key="icFormIdWarning" TargetType="md:PackIcon">
-      <Setter Property="Width" Value="30" />
-      <Setter Property="Height" Value="30" />
-      <Setter Property="Margin" Value="0,0,10,0" />
-      <Setter Property="VerticalAlignment" Value="Bottom" />
-      <Setter Property="Cursor" Value="Help" />
-      <Setter Property="Foreground" Value="{StaticResource ColorWarning}" />
-      <Setter Property="Kind" Value="Warning" />
-      <Setter Property="ToolTipService.InitialShowDelay" Value="50" />
-      <Setter Property="ToolTip">
-        <Setter.Value>
-          <ToolTip>
-            <StackPanel MaxWidth="210">
-              <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" Text="SPID001" />
-              <TextBlock Margin="{StaticResource MgTopNaaarrow}"
-                         Text="FormIDs are not banned by this app, but they are still discouraged."
-                         TextWrapping="WrapWithOverflow" />
-              <TextBlock Margin="{StaticResource MgTopNarrow}"
-                         Text="Read the help file to find more about it."
-                         TextWrapping="WrapWithOverflow" />
-            </StackPanel>
-          </ToolTip>
-        </Setter.Value>
-      </Setter>
-    </Style>
-  </UserControl.Resources>
+        <Style x:Key="icFormIdWarning" TargetType="md:PackIcon">
+            <Setter Property="Width" Value="30" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Margin" Value="0,0,10,0" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+            <Setter Property="Cursor" Value="Help" />
+            <Setter Property="Foreground" Value="{StaticResource ColorWarning}" />
+            <Setter Property="Kind" Value="Warning" />
+            <Setter Property="ToolTipService.InitialShowDelay" Value="50" />
+            <Setter Property="ToolTip">
+                <Setter.Value>
+                    <ToolTip>
+                        <StackPanel MaxWidth="210">
+                            <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" Text="SPID001" />
+                            <TextBlock
+                                Margin="{StaticResource MgTopNaaarrow}"
+                                Text="FormIDs are not banned by this app, but they are still discouraged."
+                                TextWrapping="WrapWithOverflow" />
+                            <TextBlock
+                                Margin="{StaticResource MgTopNarrow}"
+                                Text="Read the help file to find more about it."
+                                TextWrapping="WrapWithOverflow" />
+                        </StackPanel>
+                    </ToolTip>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
 
-  <UserControl.DataContext>
-    <ctx:OutfitPageCtx x:Name="ctx"
-                       EnabledControlsConditions="CanEnableControls"
-                       NavControl="{x:Reference lstNav}"
-                       RulesNav="{x:Reference dgRules}" />
-  </UserControl.DataContext>
+    <UserControl.DataContext>
+        <ctx:OutfitPageCtx
+            x:Name="ctx"
+            EnabledControlsConditions="CanEnableControls"
+            NavControl="{x:Reference lstNav}"
+            RulesNav="{x:Reference dgRules}" />
+    </UserControl.DataContext>
 
-  <UserControl.CommandBindings>
-    <CommandBinding CanExecute="OnCanCopyRule"
-                    Command="c:OutfitCmds.CopyRule"
-                    Executed="OnCopyRule" />
+    <UserControl.CommandBindings>
+        <CommandBinding
+            CanExecute="OnCanCopyRule"
+            Command="c:OutfitCmds.CopyRule"
+            Executed="OnCopyRule" />
 
-    <CommandBinding CanExecute="OnCanPasteRule"
-                    Command="c:OutfitCmds.PasteRule"
-                    Executed="OnPasteRule" />
+        <CommandBinding
+            CanExecute="OnCanPasteRule"
+            Command="c:OutfitCmds.PasteRule"
+            Executed="OnPasteRule" />
 
-    <CommandBinding CanExecute="OnCanDel"
-                    Command="c:OutfitCmds.Del"
-                    Executed="OnDel" />
-  </UserControl.CommandBindings>
+        <CommandBinding
+            CanExecute="OnCanDel"
+            Command="c:OutfitCmds.Del"
+            Executed="OnDel" />
+    </UserControl.CommandBindings>
 
-  <Grid x:Name="cntMain" IsEnabled="{Binding CanItemBeSelected}">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="4*" />
-    </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="8*" />
-      <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
-      <ColumnDefinition Width="9*" />
-      <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
-      <ColumnDefinition Width="6*" />
-    </Grid.ColumnDefinitions>
+    <Grid x:Name="cntMain" IsEnabled="{Binding CanItemBeSelected}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="4*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="8*" />
+            <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
+            <ColumnDefinition Width="9*" />
+            <ColumnDefinition Width="{StaticResource GridSepHorizontalWide}" />
+            <ColumnDefinition Width="6*" />
+        </Grid.ColumnDefinitions>
 
-    <!--  NAVIGATOR  -->
-    <GroupBox Grid.RowSpan="3"
-              Header="Navigate"
-              Style="{StaticResource MaterialDesignCardGroupBox}">
-      <DockPanel>
-        <!--  FILTER  -->
-        <Grid DockPanel.Dock="Top">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-          </Grid.ColumnDefinitions>
+        <!--  NAVIGATOR  -->
+        <GroupBox
+            Grid.RowSpan="3"
+            Header="Navigate"
+            Style="{StaticResource MaterialDesignCardGroupBox}">
+            <DockPanel>
+                <!--  FILTER  -->
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
 
-          <!--  FILTER TEXTBOX  -->
-          <Label Content="_N"
-                 DockPanel.Dock="Top"
-                 Style="{StaticResource lblInvis}"
-                 Target="{x:Reference edtFilter}" />
-          <TextBox x:Name="edtFilter"
-                   Margin="{DynamicResource MgGrpContent}"
-                   md:HintAssist.Hint="Search..."
-                   md:TextFieldAssist.HasClearButton="True"
-                   md:TextFieldAssist.HasLeadingIcon="True"
-                   md:TextFieldAssist.LeadingIcon="Search"
-                   KeyDown="OnFilterKeyDown"
-                   ToolTip="Searches by name, Editor ID (EDID) or SPID rules">
-            <TextBox.Text>
-              <Binding Mode="TwoWay"
-                       Path="NameFilter.Text"
-                       UpdateSourceTrigger="PropertyChanged">
-                <Binding.ValidationRules>
-                  <v:RegexRule xmlns:v="clr-namespace:DMLib_WPF.Validators;assembly=DMLib-Fs-WPF"
-                               x:Name="regexRule"
-                               ValidatesOnTargetUpdated="True" />
-                </Binding.ValidationRules>
-              </Binding>
-            </TextBox.Text>
-          </TextBox>
+                    <!--  FILTER TEXTBOX  -->
+                    <Label
+                        Content="_N"
+                        DockPanel.Dock="Top"
+                        Style="{StaticResource lblInvis}"
+                        Target="{x:Reference edtFilter}" />
+                    <TextBox
+                        x:Name="edtFilter"
+                        Margin="{DynamicResource MgGrpContent}"
+                        md:HintAssist.Hint="Search..."
+                        md:TextFieldAssist.HasClearButton="True"
+                        md:TextFieldAssist.HasLeadingIcon="True"
+                        md:TextFieldAssist.LeadingIcon="Search"
+                        KeyDown="OnFilterKeyDown"
+                        ToolTip="Searches by name, Editor ID (EDID) or SPID rules">
+                        <TextBox.Text>
+                            <Binding
+                                Mode="TwoWay"
+                                Path="NameFilter.Text"
+                                UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <v:RegexRule
+                                        xmlns:v="clr-namespace:DMLib_WPF.Validators;assembly=DMLib-Fs-WPF"
+                                        x:Name="regexRule"
+                                        ValidatesOnTargetUpdated="True" />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
 
-          <!--  USE REGEX  -->
-          <ToggleButton x:Name="tbFilterByRegex"
+                    <!--  USE REGEX  -->
+                    <ToggleButton
+                        x:Name="tbFilterByRegex"
                         Grid.Column="1"
                         Click="OnFilterNameByRegexClick"
                         Content="{md:PackIcon Kind=Regex}"
@@ -129,67 +142,69 @@ It can not be exported to SPID.</sys:String>
                         Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}"
                         ToolTip="Use regular expression" />
 
-          <!--  CLEAR TAGS  -->
-          <Button Click="OnClearTags"
-                  Content="{md:PackIcon Kind=TagOff}"
-                  Style="{StaticResource clearTagsInName}" />
-        </Grid>
+                    <!--  CLEAR TAGS  -->
+                    <Button
+                        Click="OnClearTags"
+                        Content="{md:PackIcon Kind=TagOff}"
+                        Style="{StaticResource clearTagsInName}" />
+                </Grid>
 
-        <!--  NAV  -->
-        <ListBox x:Name="lstNav"
-                 HorizontalContentAlignment="Stretch"
-                 d:ItemsSource="{d:SampleData ItemCount=10}"
-                 ItemsSource="{Binding Nav}"
-                 KeyDown="OnLstNavKeyDown"
-                 SelectionChanged="OnNavSelectionChanged"
-                 SelectionMode="Extended">
-          <ListBox.ItemTemplate>
-            <DataTemplate>
-              <Grid d:DataContext="{d:DesignInstance Type=guiobjs:NavListItem}">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="auto" />
-                  <ColumnDefinition Width="10" />
-                  <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.Resources>
-                  <Style x:Key="preview" TargetType="Image">
-                    <Setter Property="Width" Value="{DynamicResource ImgListPreviewSize}" />
-                    <Setter Property="Height" Value="{DynamicResource ImgListPreviewSize}" />
-                    <Setter Property="ToolTipService.HorizontalOffset" Value="130" />
-                    <Setter Property="ToolTipService.InitialShowDelay" Value="50" />
-                    <Setter Property="ToolTipService.Placement" Value="Right" />
-                  </Style>
-                </Grid.Resources>
-
-                <!--  THUMBNAIL  -->
-                <Image d:DataContext="{d:DesignInstance Type=guiobjs:NavListItem}">
-                  <Image.Style>
-                    <Style BasedOn="{StaticResource preview}" TargetType="Image">
-                      <!--  HAS THUMBNAIL  -->
-                      <Setter Property="Source" Value="{Binding Thumb, Mode=OneWay, Converter={StaticResource StringToImgConverter}}" />
-                      <Style.Triggers>
-                        <DataTrigger Binding="{Binding HasImg}" Value="false">
-                          <!--  MISSING IMAGE  -->
-                          <Setter Property="Source" Value="{StaticResource svgNoImage}" />
-                        </DataTrigger>
-                      </Style.Triggers>
-                    </Style>
-                  </Image.Style>
-
-                  <!--  FULL SIZE IMAGE  -->
-                  <Image.ToolTip>
-                    <ItemsControl ItemsSource="{Binding DisplayImg, IsAsync=True}">
-                      <ItemsControl.ItemTemplate>
+                <!--  NAV  -->
+                <ListBox
+                    x:Name="lstNav"
+                    HorizontalContentAlignment="Stretch"
+                    d:ItemsSource="{d:SampleData ItemCount=10}"
+                    ItemsSource="{Binding Nav}"
+                    KeyDown="OnLstNavKeyDown"
+                    SelectionChanged="OnNavSelectionChanged"
+                    SelectionMode="Extended">
+                    <ListBox.ItemTemplate>
                         <DataTemplate>
-                          <uc:ImgPreviewCaptioned DataContext="{Binding}" MaxSize="400" />
-                        </DataTemplate>
-                      </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                  </Image.ToolTip>
-                </Image>
+                            <Grid d:DataContext="{d:DesignInstance Type=guiobjs:NavListItem}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.Resources>
+                                    <Style x:Key="preview" TargetType="Image">
+                                        <Setter Property="Width" Value="{DynamicResource ImgListPreviewSize}" />
+                                        <Setter Property="Height" Value="{DynamicResource ImgListPreviewSize}" />
+                                        <Setter Property="ToolTipService.HorizontalOffset" Value="130" />
+                                        <Setter Property="ToolTipService.InitialShowDelay" Value="50" />
+                                        <Setter Property="ToolTipService.Placement" Value="Right" />
+                                    </Style>
+                                </Grid.Resources>
 
-                <!--  MISSING IMAGE  -->
-                <!--<Image Source="{StaticResource svgNoImage}"
+                                <!--  THUMBNAIL  -->
+                                <Image d:DataContext="{d:DesignInstance Type=guiobjs:NavListItem}">
+                                    <Image.Style>
+                                        <Style BasedOn="{StaticResource preview}" TargetType="Image">
+                                            <!--  HAS THUMBNAIL  -->
+                                            <Setter Property="Source" Value="{Binding Thumb, Mode=OneWay, Converter={StaticResource StringToImgConverter}}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HasImg}" Value="false">
+                                                    <!--  MISSING IMAGE  -->
+                                                    <Setter Property="Source" Value="{StaticResource svgNoImage}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+
+                                    <!--  FULL SIZE IMAGE  -->
+                                    <Image.ToolTip>
+                                        <ItemsControl ItemsSource="{Binding DisplayImg, IsAsync=True}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <uc:ImgPreviewCaptioned DataContext="{Binding}" MaxSize="400" />
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Image.ToolTip>
+                                </Image>
+
+                                <!--  MISSING IMAGE  -->
+                                <!--<Image Source="{StaticResource svgNoImage}"
                        Style="{StaticResource preview}"
                        Visibility="{Binding HasImg, Converter={StaticResource InverseBoolToVisConverter}}">
                   <Image.ToolTip>
@@ -197,345 +212,367 @@ It can not be exported to SPID.</sys:String>
                   </Image.ToolTip>
                 </Image>-->
 
-                <!--  TEXT  -->
-                <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                  <!--  NAME  -->
-                  <TextBlock Style="{StaticResource NavTxtMain}"
-                             Text="{Binding Name, FallbackValue=Name}"
-                             ToolTip="Name will not be used outside this app"
-                             Visibility="{Binding HasMissingPieces, Converter={StaticResource InverseBoolToVisConverter}}" />
+                                <!--  TEXT  -->
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                    <!--  NAME  -->
+                                    <TextBlock
+                                        Style="{StaticResource NavTxtMain}"
+                                        Text="{Binding Name, FallbackValue=Name}"
+                                        ToolTip="Name will not be used outside this app"
+                                        Visibility="{Binding HasMissingPieces, Converter={StaticResource InverseBoolToVisConverter}}" />
 
-                  <!--  NAME WITH MISSING PIECES  -->
-                  <StackPanel Orientation="Horizontal"
-                              ToolTipService.InitialShowDelay="50"
-                              Visibility="{Binding HasMissingPieces, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <StackPanel.ToolTip>
-                      <StackPanel>
-                        <TextBlock Text="This outfit has pieces not found in this database:" />
-                        <ItemsControl Margin="15,4,0,8" ItemsSource="{Binding MissingPieces}" />
-                        <TextBlock FontWeight="Bold" Text="Get them from xEdit." />
-                      </StackPanel>
-                    </StackPanel.ToolTip>
-                    <!--  WARNING ICON  -->
-                    <md:PackIcon Foreground="{StaticResource ColorWarning}" Kind="Warning" />
+                                    <!--  NAME WITH MISSING PIECES  -->
+                                    <StackPanel
+                                        Orientation="Horizontal"
+                                        ToolTipService.InitialShowDelay="50"
+                                        Visibility="{Binding HasMissingPieces, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <StackPanel.ToolTip>
+                                            <StackPanel>
+                                                <TextBlock Text="This outfit has pieces not found in this database:" />
+                                                <ItemsControl Margin="15,4,0,8" ItemsSource="{Binding MissingPieces}" />
+                                                <TextBlock FontWeight="Bold" Text="Get them from xEdit." />
+                                            </StackPanel>
+                                        </StackPanel.ToolTip>
+                                        <!--  WARNING ICON  -->
+                                        <md:PackIcon Foreground="{StaticResource ColorWarning}" Kind="Warning" />
 
-                    <!--  NAME  -->
-                    <TextBlock Margin="5,0"
-                               FontWeight="Black"
-                               Foreground="{StaticResource ColorWarning}"
-                               Style="{StaticResource NavTxtMain}"
-                               Text="{Binding Name, FallbackValue=Missing pieces name}" />
-                  </StackPanel>
+                                        <!--  NAME  -->
+                                        <TextBlock
+                                            Margin="5,0"
+                                            FontWeight="Black"
+                                            Foreground="{StaticResource ColorWarning}"
+                                            Style="{StaticResource NavTxtMain}"
+                                            Text="{Binding Name, FallbackValue=Missing pieces name}" />
+                                    </StackPanel>
 
-                  <!--  EDID  -->
-                  <TextBlock Margin="{StaticResource MgTopNaaarrow}"
-                             Style="{StaticResource NavTxtD1}"
-                             Text="{Binding EDID, FallbackValue=EDID}"
-                             ToolTip="Editor ID (EDID)" />
+                                    <!--  EDID  -->
+                                    <TextBlock
+                                        Margin="{StaticResource MgTopNaaarrow}"
+                                        Style="{StaticResource NavTxtD1}"
+                                        Text="{Binding EDID, FallbackValue=EDID}"
+                                        ToolTip="Editor ID (EDID)" />
 
-                  <!--  ESP  -->
-                  <TextBlock Text="{Binding Esp, FallbackValue=Esp}">
-                    <TextBlock.Style>
-                      <Style BasedOn="{StaticResource NavTxtD1}" TargetType="TextBlock">
-                        <Setter Property="Margin" Value="{StaticResource MgTopNaaarrow}" />
-                        <Setter Property="ToolTip" Value="Plugin" />
-                        <Style.Triggers>
-                          <DataTrigger Binding="{Binding IsUnbound}" Value="True">
-                            <Setter Property="Foreground" Value="Red" />
-                            <Setter Property="FontWeight" Value="Bold" />
-                            <Setter Property="ToolTip" Value="{DynamicResource nonDistributableMessage}" />
-                          </DataTrigger>
-                        </Style.Triggers>
-                      </Style>
-                    </TextBlock.Style>
-                  </TextBlock>
-                </StackPanel>
-              </Grid>
-            </DataTemplate>
-          </ListBox.ItemTemplate>
-          <ListBox.ContextMenu>
-            <ContextMenu>
-              <MenuItem Click="OnRename"
-                        Header="_Rename"
-                        Visibility="{Binding IsNavSingleSelected, Converter={StaticResource BooleanToVisibilityConverter}}" />
-              <MenuItem Click="OnBatchRename"
-                        Header="Batch _rename"
-                        Visibility="{Binding IsNavMultipleSelected, Converter={StaticResource BooleanToVisibilityConverter}}" />
-              <MenuItem Click="OnSetImgClick" Header="Set _image" />
-              <MenuItem Click="OnCopyUIdsClick" Header="Copy _Unique IDs and Names" />
-              <Separator />
-              <MenuItem Command="c:OutfitCmds.Del" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
-            </ContextMenu>
-          </ListBox.ContextMenu>
-        </ListBox>
-      </DockPanel>
-    </GroupBox>
+                                    <!--  ESP  -->
+                                    <TextBlock Text="{Binding Esp, FallbackValue=Esp}">
+                                        <TextBlock.Style>
+                                            <Style BasedOn="{StaticResource NavTxtD1}" TargetType="TextBlock">
+                                                <Setter Property="Margin" Value="{StaticResource MgTopNaaarrow}" />
+                                                <Setter Property="ToolTip" Value="Plugin" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsUnbound}" Value="True">
+                                                        <Setter Property="Foreground" Value="Red" />
+                                                        <Setter Property="FontWeight" Value="Bold" />
+                                                        <Setter Property="ToolTip" Value="{DynamicResource nonDistributableMessage}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem
+                                Click="OnRename"
+                                Header="_Rename"
+                                Visibility="{Binding IsNavSingleSelected, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <MenuItem
+                                Click="OnBatchRename"
+                                Header="Batch _rename"
+                                Visibility="{Binding IsNavMultipleSelected, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <MenuItem Click="OnSetImgClick" Header="Set _image" />
+                            <MenuItem Click="OnCopyUIdsClick" Header="Copy _Unique IDs and Names" />
+                            <Separator />
+                            <MenuItem Command="c:OutfitCmds.Del" Header="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}" />
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                </ListBox>
+            </DockPanel>
+        </GroupBox>
 
-    <!--  DISTRIBUTION  -->
-    <GroupBox Grid.Column="2"
-              md:ColorZoneAssist.Mode="SecondaryMid"
-              Header="SPID rules"
-              IsEnabled="{Binding CanSpidRulesBeActive}"
-              Style="{StaticResource MaterialDesignCardGroupBox}">
-      <Grid>
-        <Grid.RowDefinitions>
-          <RowDefinition Height="*" />
-          <RowDefinition Height="{StaticResource GridSepVerticalNarrow}" />
-          <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
+        <!--  DISTRIBUTION  -->
+        <GroupBox
+            Grid.Column="2"
+            md:ColorZoneAssist.Mode="SecondaryMid"
+            Header="SPID rules"
+            IsEnabled="{Binding CanSpidRulesBeActive}"
+            Style="{StaticResource MaterialDesignCardGroupBox}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="{StaticResource GridSepVerticalNarrow}" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
 
-        <!--  UNBOUND OUTFIT WARNING  -->
-        <Grid Grid.RowSpan="7"
-              VerticalAlignment="Center"
-              Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                <!--  UNBOUND OUTFIT WARNING  -->
+                <Grid
+                    Grid.RowSpan="7"
+                    VerticalAlignment="Center"
+                    Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource InverseBoolToVisConverter}}">
 
-          <md:PackIcon Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.7}"
-                       Height="{Binding Width, RelativeSource={RelativeSource Self}}"
-                       HorizontalAlignment="Stretch"
-                       Foreground="{StaticResource ColorWarning}"
-                       Kind="Warning"
-                       Opacity="0.15" />
+                    <md:PackIcon
+                        Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Converter={StaticResource MathMultiplyConverter}, ConverterParameter=0.7}"
+                        Height="{Binding Width, RelativeSource={RelativeSource Self}}"
+                        HorizontalAlignment="Stretch"
+                        Foreground="{StaticResource ColorWarning}"
+                        Kind="Warning"
+                        Opacity="0.15" />
 
-          <TextBlock Margin="{StaticResource MgTopNormal}"
-                     VerticalAlignment="Center"
-                     Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                     Text="{DynamicResource nonDistributableMessage}"
-                     TextAlignment="Center"
-                     TextTrimming="WordEllipsis"
-                     TextWrapping="Wrap" />
-        </Grid>
+                    <TextBlock
+                        Margin="{StaticResource MgTopNormal}"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                        Text="{DynamicResource nonDistributableMessage}"
+                        TextAlignment="Center"
+                        TextTrimming="WordEllipsis"
+                        TextWrapping="Wrap" />
+                </Grid>
 
-        <!--  RULE LIST  -->
-        <Grid Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="auto" />
-          </Grid.ColumnDefinitions>
+                <!--  RULE LIST  -->
+                <Grid Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
 
-          <!--  Background="{StaticResource MaterialDesignBackground}"  -->
-          <DataGrid x:Name="dgRules"
-                    Margin="10,0,5,0"
-                    AlternatingRowBackground="Linen"
-                    AutoGenerateColumns="False"
-                    Background="{StaticResource MaterialDesignBackground}"
-                    BorderThickness="0"
-                    CanUserReorderColumns="False"
-                    CanUserResizeColumns="False"
-                    CanUserSortColumns="False"
-                    GridLinesVisibility="None"
-                    HeadersVisibility="Column"
-                    IsReadOnly="True"
-                    ItemsSource="{Binding RulesList}"
-                    SelectedIndex="{Binding RuleIndex}"
-                    SelectionMode="Single">
-            <DataGrid.Columns>
-              <!--  FILTER  -->
-              <DataGridTextColumn Width="*"
-                                  Binding="{Binding Filter}"
-                                  Header="Filter">
-                <DataGridTextColumn.ElementStyle>
-                  <Style TargetType="TextBlock">
-                    <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                    <Setter Property="Margin" Value="0,5,1,5" />
-                  </Style>
-                </DataGridTextColumn.ElementStyle>
-              </DataGridTextColumn>
+                    <!--  Background="{StaticResource MaterialDesignBackground}"  -->
+                    <DataGrid
+                        x:Name="dgRules"
+                        Margin="10,0,5,0"
+                        AlternatingRowBackground="Linen"
+                        AutoGenerateColumns="False"
+                        Background="{StaticResource MaterialDesignBackground}"
+                        BorderThickness="0"
+                        CanUserReorderColumns="False"
+                        CanUserResizeColumns="False"
+                        CanUserSortColumns="False"
+                        GridLinesVisibility="None"
+                        HeadersVisibility="Column"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding RulesList}"
+                        SelectedIndex="{Binding RuleIndex}"
+                        SelectionMode="Single">
+                        <DataGrid.Columns>
+                            <!--  FILTER  -->
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Filter}"
+                                Header="Filter">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                        <Setter Property="Margin" Value="0,5,1,5" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
 
-              <!--  LEVEL  -->
-              <DataGridTextColumn Width="75"
-                                  Binding="{Binding Level}"
-                                  Header="Level">
-                <DataGridTextColumn.ElementStyle>
-                  <Style TargetType="TextBlock">
-                    <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                    <Setter Property="Margin" Value="0,5,10,5" />
-                    <Setter Property="HorizontalAlignment" Value="Right" />
-                  </Style>
-                </DataGridTextColumn.ElementStyle>
-              </DataGridTextColumn>
+                            <!--  LEVEL  -->
+                            <DataGridTextColumn
+                                Width="75"
+                                Binding="{Binding Level}"
+                                Header="Level">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                        <Setter Property="Margin" Value="0,5,10,5" />
+                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
 
-              <!--  TRAITS  -->
-              <DataGridTextColumn MaxWidth="45"
-                                  Binding="{Binding Traits}"
-                                  Header="T">
-                <DataGridTextColumn.ElementStyle>
-                  <Style TargetType="TextBlock">
-                    <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                    <Setter Property="Margin" Value="0,5,5,5" />
-                    <Setter Property="HorizontalAlignment" Value="Right" />
-                  </Style>
-                </DataGridTextColumn.ElementStyle>
-              </DataGridTextColumn>
+                            <!--  TRAITS  -->
+                            <DataGridTextColumn
+                                MaxWidth="45"
+                                Binding="{Binding Traits}"
+                                Header="T">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                        <Setter Property="Margin" Value="0,5,5,5" />
+                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
 
-              <!--  CHANCE  -->
-              <DataGridTextColumn Width="37"
-                                  Binding="{Binding Chance, FallbackValue=100%, StringFormat={}{0}%}"
-                                  Header="">
-                <DataGridTextColumn.ElementStyle>
-                  <Style TargetType="TextBlock">
-                    <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                    <Setter Property="Margin" Value="0,5" />
-                    <Setter Property="HorizontalAlignment" Value="Right" />
-                  </Style>
-                </DataGridTextColumn.ElementStyle>
-              </DataGridTextColumn>
-            </DataGrid.Columns>
+                            <!--  CHANCE  -->
+                            <DataGridTextColumn
+                                Width="37"
+                                Binding="{Binding Chance, FallbackValue=100%, StringFormat={}{0}%}"
+                                Header="">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                        <Setter Property="Margin" Value="0,5" />
+                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
 
-            <!--  COLUMN HEADER  -->
-            <DataGrid.ColumnHeaderStyle>
-              <Style BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}" TargetType="DataGridColumnHeader">
-                <Setter Property="Margin" Value="0" />
-                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                <Setter Property="HorizontalContentAlignment" Value="Center" />
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="FontSize" Value="9" />
-                <Setter Property="FontWeight" Value="Bold" />
-                <Setter Property="Background" Value="{StaticResource MaterialDesignToolBarBackground}" />
-              </Style>
-            </DataGrid.ColumnHeaderStyle>
+                        <!--  COLUMN HEADER  -->
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}" TargetType="DataGridColumnHeader">
+                                <Setter Property="Margin" Value="0" />
+                                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="FontSize" Value="9" />
+                                <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="Background" Value="{StaticResource MaterialDesignToolBarBackground}" />
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
 
-            <DataGrid.CellStyle>
-              <Style TargetType="DataGridCell">
-                <Setter Property="BorderThickness" Value="0" />
-              </Style>
-            </DataGrid.CellStyle>
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="BorderThickness" Value="0" />
+                            </Style>
+                        </DataGrid.CellStyle>
 
-            <DataGrid.RowStyle>
-              <Style TargetType="DataGridRow">
-                <Setter Property="ToolTip" Value="{Binding Exported}" />
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="ToolTip" Value="{Binding Exported}" />
 
-                <Style.Triggers>
-                  <DataTrigger Binding="{Binding IsEmpty}" Value="true">
-                    <Setter Property="ToolTip" Value="This rule is actually empty and won't generate anything when exported." />
-                    <Setter Property="Foreground" Value="Red" />
-                    <Setter Property="FontWeight" Value="Bold" />
-                    <Setter Property="Opacity" Value="0.6" />
-                    <Setter Property="BorderThickness" Value="0" />
-                  </DataTrigger>
-                </Style.Triggers>
-              </Style>
-            </DataGrid.RowStyle>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsEmpty}" Value="true">
+                                        <Setter Property="ToolTip" Value="This rule is actually empty and won't generate anything when exported." />
+                                        <Setter Property="Foreground" Value="Red" />
+                                        <Setter Property="FontWeight" Value="Bold" />
+                                        <Setter Property="Opacity" Value="0.6" />
+                                        <Setter Property="BorderThickness" Value="0" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
 
-            <DataGrid.ContextMenu>
-              <ContextMenu>
-                <MenuItem Command="c:OutfitCmds.CopyRule" />
-                <MenuItem Command="c:OutfitCmds.PasteRule" />
-              </ContextMenu>
-            </DataGrid.ContextMenu>
-          </DataGrid>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Command="c:OutfitCmds.CopyRule" />
+                                <MenuItem Command="c:OutfitCmds.PasteRule" />
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                    </DataGrid>
 
-          <!--  RULE TOOBAR  -->
-          <StackPanel Grid.Column="1" Margin="{StaticResource MgTopNormal}">
-            <StackPanel.Resources>
-              <Style x:Key="RuleToolBtn"
-                     BasedOn="{StaticResource MaterialDesignToolButton}"
-                     TargetType="Button">
-                <Setter Property="Margin" Value="5,5" />
-                <Setter Property="Foreground" Value="{StaticResource PrimaryHueMidBrush}" />
-              </Style>
-            </StackPanel.Resources>
+                    <!--  RULE TOOBAR  -->
+                    <StackPanel Grid.Column="1" Margin="{StaticResource MgTopNormal}">
+                        <StackPanel.Resources>
+                            <Style
+                                x:Key="RuleToolBtn"
+                                BasedOn="{StaticResource MaterialDesignToolButton}"
+                                TargetType="Button">
+                                <Setter Property="Margin" Value="5,5" />
+                                <Setter Property="Foreground" Value="{StaticResource PrimaryHueMidBrush}" />
+                            </Style>
+                        </StackPanel.Resources>
 
-            <!--  ADD RULE  -->
-            <Button Click="OnAddRule"
-                    Content="{md:PackIcon Plus}"
-                    Style="{StaticResource RuleToolBtn}" />
+                        <!--  ADD RULE  -->
+                        <Button
+                            Click="OnAddRule"
+                            Content="{md:PackIcon Plus}"
+                            Style="{StaticResource RuleToolBtn}" />
 
-            <!--  DELETE RULE  -->
-            <Button Click="OnDeleteRule" Content="{md:PackIcon Minus}">
-              <Button.Style>
-                <Style BasedOn="{StaticResource RuleToolBtn}" TargetType="Button">
-                  <Style.Triggers>
-                    <DataTrigger Binding="{Binding SelectedIndex, ElementName=dgRules}" Value="-1">
-                      <Setter Property="IsEnabled" Value="False" />
-                    </DataTrigger>
-                  </Style.Triggers>
-                </Style>
-              </Button.Style>
-            </Button>
-          </StackPanel>
-        </Grid>
+                        <!--  DELETE RULE  -->
+                        <Button Click="OnDeleteRule" Content="{md:PackIcon Minus}">
+                            <Button.Style>
+                                <Style BasedOn="{StaticResource RuleToolBtn}" TargetType="Button">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedIndex, ElementName=dgRules}" Value="-1">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StackPanel>
+                </Grid>
 
-        <!--  RULE DATA  -->
-        <ScrollViewer Grid.Row="2"
-                      HorizontalScrollBarVisibility="Auto"
-                      VerticalScrollBarVisibility="Auto"
-                      Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <uc:OutfitSpidRules x:Name="spidRules" DataContext="{Binding RulesContext}">
-            <uc:OutfitSpidRules.Style>
-              <Style TargetType="uc:OutfitSpidRules">
-                <Setter Property="IsEnabled" Value="True" />
-                <Style.Triggers>
-                  <DataTrigger Binding="{Binding SelectedIndex, ElementName=dgRules}" Value="-1">
-                    <Setter Property="IsEnabled" Value="False" />
-                  </DataTrigger>
-                </Style.Triggers>
-              </Style>
-            </uc:OutfitSpidRules.Style>
-          </uc:OutfitSpidRules>
-        </ScrollViewer>
-      </Grid>
-    </GroupBox>
+                <!--  RULE DATA  -->
+                <ScrollViewer
+                    Grid.Row="2"
+                    HorizontalScrollBarVisibility="Auto"
+                    VerticalScrollBarVisibility="Auto"
+                    Visibility="{Binding SelectedItem.IsDistributable, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <uc:OutfitSpidRules x:Name="spidRules" DataContext="{Binding RulesContext}">
+                        <uc:OutfitSpidRules.Style>
+                            <Style TargetType="uc:OutfitSpidRules">
+                                <Setter Property="IsEnabled" Value="True" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedIndex, ElementName=dgRules}" Value="-1">
+                                        <Setter Property="IsEnabled" Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </uc:OutfitSpidRules.Style>
+                    </uc:OutfitSpidRules>
+                </ScrollViewer>
+            </Grid>
+        </GroupBox>
 
-    <!--  PIECES DATA  -->
-    <GroupBox Grid.Column="4"
-              md:ColorZoneAssist.Mode="PrimaryDark"
-              Header="Armor pieces data"
-              IsEnabled="{Binding HasItemsSelected}"
-              Style="{StaticResource MaterialDesignCardGroupBox}">
-      <Grid>
-        <Grid.RowDefinitions>
-          <RowDefinition Height="10*" />
-          <RowDefinition Height="{StaticResource GridSepVertical}" />
-          <RowDefinition Height="7*" />
-        </Grid.RowDefinitions>
+        <!--  PIECES DATA  -->
+        <GroupBox
+            Grid.Column="4"
+            md:ColorZoneAssist.Mode="PrimaryDark"
+            Header="Armor pieces data"
+            IsEnabled="{Binding HasItemsSelected}"
+            Style="{StaticResource MaterialDesignCardGroupBox}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10*" />
+                    <RowDefinition Height="{StaticResource GridSepVertical}" />
+                    <RowDefinition Height="7*" />
+                </Grid.RowDefinitions>
 
-        <!--  ARMOR PIECES  -->
-        <!--<GroupBox
+                <!--  ARMOR PIECES  -->
+                <!--<GroupBox
           Margin="{StaticResource MgTopNaarrow}"
           md:ColorZoneAssist.Mode="PrimaryLight"
           BorderThickness="0"
           Header="Armor pieces">
         </GroupBox>-->
-        <ListBox d:ItemsSource="{d:SampleData ItemCount=10}" ItemsSource="{Binding SelectedItem.ArmorPieces}">
-          <ListBox.ItemTemplate>
-            <DataTemplate>
-              <StackPanel d:DataContext="{d:DesignInstance guiobjs:ArmorPiece}"
-                          ToolTip="{Binding FullName}"
-                          ToolTipService.InitialShowDelay="10">
+                <ListBox d:ItemsSource="{d:SampleData ItemCount=10}" ItemsSource="{Binding SelectedItem.ArmorPieces}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel
+                                d:DataContext="{d:DesignInstance guiobjs:ArmorPiece}"
+                                ToolTip="{Binding FullName}"
+                                ToolTipService.InitialShowDelay="10">
 
-                <!--  SHORT NAME  -->
-                <TextBlock Text="{Binding ShortName, FallbackValue=Name}">
-                  <TextBlock.Style>
-                    <Style BasedOn="{StaticResource MaterialDesignTextBlock}" TargetType="TextBlock">
-                      <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsInDB}" Value="False">
-                          <Setter Property="Opacity" Value="0.5" />
-                          <Setter Property="ToolTip" Value="This item has not been added to this database" />
-                        </DataTrigger>
-                      </Style.Triggers>
-                    </Style>
-                  </TextBlock.Style>
-                </TextBlock>
+                                <!--  SHORT NAME  -->
+                                <TextBlock Text="{Binding ShortName, FallbackValue=Name}">
+                                    <TextBlock.Style>
+                                        <Style BasedOn="{StaticResource MaterialDesignTextBlock}" TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsInDB}" Value="False">
+                                                    <Setter Property="Opacity" Value="0.5" />
+                                                    <Setter Property="ToolTip" Value="This item has not been added to this database" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
 
-                <!--  LONG NAME  -->
-                <TextBlock Style="{StaticResource NavTxtD1}"
-                           Text="{Binding FullName}"
-                           Visibility="{Binding NameWasShortened, Converter={StaticResource BooleanToVisibilityConverter}}" />
-              </StackPanel>
-            </DataTemplate>
-          </ListBox.ItemTemplate>
-        </ListBox>
+                                <!--  LONG NAME  -->
+                                <TextBlock
+                                    Style="{StaticResource NavTxtD1}"
+                                    Text="{Binding FullName}"
+                                    Visibility="{Binding NameWasShortened, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
-        <!--  TAGS  -->
-        <GroupBox Grid.Row="2"
-                  md:ColorZoneAssist.Mode="PrimaryMid"
-                  BorderThickness="0"
-                  Header="Tags">
-          <uc:TagViewer x:Name="lstItemTags" ItemsSource="{Binding SelectedItem.ItemsTags}" />
-        </GroupBox>
+                <!--  TAGS  -->
+                <GroupBox
+                    Grid.Row="2"
+                    md:ColorZoneAssist.Mode="PrimaryMid"
+                    BorderThickness="0"
+                    Header="Tags">
+                    <uc:TagViewer x:Name="lstItemTags" ItemsSource="{Binding SelectedItem.ItemsTags}" />
+                </GroupBox>
 
-        <!--  IMAGE  -->
-        <!--
+                <!--  IMAGE  -->
+                <!--
         <GroupBox
           Grid.Row="2"
           Grid.ColumnSpan="3"
@@ -564,7 +601,7 @@ It can not be exported to SPID.</sys:String>
             </uc:SelectImagePrompt.Style>
           </uc:SelectImagePrompt>
         </GroupBox>-->
-      </Grid>
-    </GroupBox>
-  </Grid>
+            </Grid>
+        </GroupBox>
+    </Grid>
 </UserControl>

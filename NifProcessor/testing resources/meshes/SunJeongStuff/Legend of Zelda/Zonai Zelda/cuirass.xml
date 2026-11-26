@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="description.xsd">
+
+	<!-- ground -->
+	<per-triangle-shape name="VirtualGround">
+		<margin>0.5</margin>
+		<prenetration>10</prenetration>
+		<tag>ground</tag>
+		<can-collide-with-tag>cloth1</can-collide-with-tag>
+		<can-collide-with-tag>cloth2</can-collide-with-tag>
+	</per-triangle-shape>
+	
+	<!-- body -->
+	<bone name="NPC Belly"/>
+	<bone name="NPC L Calf [LClf]"/>
+	<bone name="NPC R Calf [RClf]"/>
+	<bone name="NPC L Clavicle [LClv]"/>
+	<bone name="NPC R Clavicle [RClv]"/>
+	<bone name="NPC L ForeArm [LLar]"/>
+	<bone name="NPC R ForeArm [RLar]"/>
+	<bone name="NPC L ForeArmTwist1 [LLt1]"/>
+	<bone name="NPC R ForeArmTwist1 [RLt1]"/>
+	<bone name="NPC L ForeArmTwist2 [LLt2]"/>
+	<bone name="NPC R ForeArmTwist2 [RLt2]"/>
+	<bone name="NPC L Hand [LHnd]"/>
+	<bone name="NPC R Hand [RHnd]"/>
+	<bone name="NPC Head [Head]"/>
+	<bone name="NPC L Breast"/>
+	<bone name="NPC R Breast"/>
+	<bone name="NPC L Breast01"/>
+	<bone name="NPC R Breast01"/>
+	<bone name="NPC L Butt"/>
+	<bone name="NPC R Butt"/>	
+	<bone name="NPC L Pussy02"/>
+	<bone name="NPC R Pussy02"/>
+	<bone name="Clitoral1"/>
+	<bone name="VaginaB1"/>
+	<bone name="NPC LB Anus2"/>
+	<bone name="NPC LT Anus2"/>
+	<bone name="NPC RB Anus2"/>
+	<bone name="NPC RT Anus2"/>
+	<bone name="NPC Pelvis [Pelv]"/>
+	<bone name="NPC Spine [Spn0]"/>	
+	<bone name="NPC Spine1 [Spn1]"/>
+	<bone name="NPC Spine2 [Spn2]"/>
+	<bone name="NPC L Thigh [LThg]"/>
+	<bone name="NPC R Thigh [RThg]"/>
+	<bone name="NPC L UpperArm [LUar]"/>
+	<bone name="NPC R UpperArm [RUar]"/>
+	<bone name="NPC L UpperArmTwist1 [LUt1]"/>
+	<bone name="NPC R UpperArmTwist1 [RUt1]"/>
+	<bone name="NPC L UpperArmTwist2 [LUt2]"/>
+	<bone name="NPC R UpperArmTwist2 [RUt2]"/>	
+	<bone name="NPC L Foot [Lft ]"/>
+	<bone name="NPC R Foot [Rft ]"/>
+	<bone name="NPC L Toe0 [LToe]"/>
+	<bone name="NPC R Toe0 [RToe]"/>
+	
+	<bone name="ZeldaDressAA00"/>
+	<bone name="ZeldaDressBB00"/>
+	<bone name="ZeldaDressCC00"/>
+	<bone name="ZeldaDressDD00"/>
+	<bone name="ZeldaDressEE00"/>
+	<bone name="ZeldaDressFF00"/>
+	<bone name="ZeldaDressGG00"/>
+	<bone name="ZeldaDressHH00"/>
+	<bone name="ZeldaUpperAA00"/>
+	<bone name="ZeldaUpperBB00"/>
+	<bone name="ZeldaUpperCC00"/>
+	
+	<per-triangle-shape name="VirtualBody">
+		<margin>0.2</margin>
+		<prenetration>1</prenetration>
+		<tag>body</tag>
+		<can-collide-with-tag>cloth1</can-collide-with-tag>
+		<can-collide-with-tag>cloth2</can-collide-with-tag>		
+		<weight-threshold bone="NPC L Clavicle [LClv]">0.5</weight-threshold>
+		<weight-threshold bone="NPC R Clavicle [RClv]">0.5</weight-threshold>
+		<weight-threshold bone="NPC L ForeArm [LLar]">0.5</weight-threshold>
+		<weight-threshold bone="NPC R ForeArm [RLar]">0.5</weight-threshold>
+		<weight-threshold bone="NPC L ForeArmTwist1 [LLt1]">0.5</weight-threshold>
+		<weight-threshold bone="NPC R ForeArmTwist1 [RLt1]">0.5</weight-threshold>
+		<weight-threshold bone="NPC L ForeArmTwist2 [LLt2]">0.5</weight-threshold>
+		<weight-threshold bone="NPC R ForeArmTwist2 [RLt2]">0.5</weight-threshold>
+		<weight-threshold bone="NPC L Hand [LHnd]">0.5</weight-threshold>
+		<weight-threshold bone="NPC R Hand [RHnd]">0.5</weight-threshold>
+		<weight-threshold bone="NPC L UpperArm [LUar]">0.5</weight-threshold>
+		<weight-threshold bone="NPC R UpperArm [RUar]">0.5</weight-threshold>
+		<weight-threshold bone="NPC L UpperArmTwist1 [LUt1]">0.5</weight-threshold>
+		<weight-threshold bone="NPC R UpperArmTwist1 [RUt1]">0.5</weight-threshold>
+		<weight-threshold bone="NPC L UpperArmTwist2 [LUt2]">0.5</weight-threshold>
+		<weight-threshold bone="NPC R UpperArmTwist2 [RUt2]">0.5</weight-threshold>
+		<weight-threshold bone="NPC L Breast">1</weight-threshold>
+		<weight-threshold bone="NPC R Breast">1</weight-threshold>
+		<weight-threshold bone="NPC L Breast01">1</weight-threshold>
+		<weight-threshold bone="NPC R Breast01">1</weight-threshold>
+		<weight-threshold bone="NPC Spine [Spn0]">0.2</weight-threshold>
+		<weight-threshold bone="NPC Spine2 [Spn2]">0.2</weight-threshold>
+		<weight-threshold bone="NPC Spine1 [Spn1]">0.2</weight-threshold>
+		<weight-threshold bone="NPC Belly">1</weight-threshold>
+		<weight-threshold bone="NPC Pelvis [Pelv]">0.2</weight-threshold>
+		<weight-threshold bone="NPC L Pussy02">1</weight-threshold>
+		<weight-threshold bone="NPC R Pussy02">1</weight-threshold>
+		<weight-threshold bone="NPC L Butt">0.2</weight-threshold>
+		<weight-threshold bone="NPC R Butt">0.2</weight-threshold>
+		<weight-threshold bone="NPC L Thigh [LThg]">0.2</weight-threshold>
+		<weight-threshold bone="NPC R Thigh [RThg]">0.2</weight-threshold>
+		<weight-threshold bone="NPC L Calf [LClf]">0.1</weight-threshold>
+		<weight-threshold bone="NPC R Calf [RClf]">0.1</weight-threshold>
+		<weight-threshold bone="NPC L Foot [Lft ]">0.1</weight-threshold>
+		<weight-threshold bone="NPC R Foot [Rft ]">0.1</weight-threshold>
+		<weight-threshold bone="NPC L Toe0 [LToe]">0.1</weight-threshold>
+		<weight-threshold bone="NPC R Toe0 [RToe]">0.1</weight-threshold>
+		<weight-threshold bone="Clitoral1">0.2</weight-threshold>
+		<weight-threshold bone="VaginaB1">0.2</weight-threshold>
+		<weight-threshold bone="NPC LB Anus2">0.1</weight-threshold>
+		<weight-threshold bone="NPC LT Anus2">0.1</weight-threshold>
+		<weight-threshold bone="NPC RB Anus2">0.1</weight-threshold>
+		<weight-threshold bone="NPC RT Anus2">0.1</weight-threshold>
+	</per-triangle-shape>
+	
+	<!--cloth-->
+	<bone-default>
+		<mass>0.03</mass>
+		<inertia x="3" y="3" z="3" />
+		<centerOfMassTransform>
+			<basis x="0" y="0" z="0" w="1" />
+			<origin x="0" y="0" z="0" />
+		</centerOfMassTransform>
+		<linearDamping>0.9</linearDamping>
+		<angularDamping>0.9</angularDamping>
+		<friction>0</friction>
+		<restitution>1</restitution>
+		<gravity-factor>1.0</gravity-factor>
+	</bone-default>
+	
+	<bone-default>
+		<margin-multiplier>0.01</margin-multiplier>
+	</bone-default>
+	<bone name="ZeldaDressAA01"/>
+	<bone name="ZeldaDressBB01"/>
+	<bone name="ZeldaDressCC01"/>
+	<bone name="ZeldaDressDD01"/>
+	<bone name="ZeldaDressEE01"/>
+	<bone name="ZeldaDressFF01"/>
+	<bone name="ZeldaDressGG01"/>
+	<bone name="ZeldaDressHH01"/>
+	<bone name="ZeldaUpperAA01"/>
+	<bone name="ZeldaUpperBB01"/>
+	<bone name="ZeldaUpperCC01"/>
+	
+	<bone name="ZeldaDressAA02"/>
+	<bone name="ZeldaDressBB02"/>
+	<bone name="ZeldaDressCC02"/>
+	<bone name="ZeldaDressDD02"/>
+	<bone name="ZeldaDressEE02"/>
+	<bone name="ZeldaDressFF02"/>
+	<bone name="ZeldaDressGG02"/>
+	<bone name="ZeldaDressHH02"/>
+	<bone name="ZeldaUpperAA02"/>
+	<bone name="ZeldaUpperBB02"/>
+	<bone name="ZeldaUpperCC02"/>
+	
+	<bone-default>
+		<mass>0.05</mass>
+		<inertia x="5" y="5" z="5" />
+		<centerOfMassTransform>
+			<basis x="0" y="0" z="0" w="1" />
+			<origin x="0" y="0" z="0" />
+		</centerOfMassTransform>
+		<linearDamping>0.6</linearDamping>
+		<angularDamping>0.6</angularDamping>
+		<friction>0</friction>
+		<restitution>0</restitution>
+		<gravity-factor>1.0</gravity-factor>
+	</bone-default>
+	<bone name="ZeldaDressAA03"/>
+	<bone name="ZeldaDressBB03"/>
+	<bone name="ZeldaDressCC03"/>
+	<bone name="ZeldaDressDD03"/>
+	<bone name="ZeldaDressEE03"/>
+	<bone name="ZeldaDressFF03"/>
+	<bone name="ZeldaDressGG03"/>
+	<bone name="ZeldaDressHH03"/>
+	<bone name="ZeldaUpperAA03"/>
+	<bone name="ZeldaUpperBB03"/>
+	<bone name="ZeldaUpperCC03"/>
+
+	<bone name="ZeldaDressAA04"/>
+	<bone name="ZeldaDressBB04"/>
+	<bone name="ZeldaDressCC04"/>
+	<bone name="ZeldaDressDD04"/>
+	<bone name="ZeldaDressEE04"/>
+	<bone name="ZeldaDressFF04"/>
+	<bone name="ZeldaDressGG04"/>
+	<bone name="ZeldaDressHH04"/>
+	<bone name="ZeldaUpperAA04"/>
+	<bone name="ZeldaUpperBB04"/>
+	<bone name="ZeldaUpperCC04"/>
+	
+	<bone-default>
+		<mass>0.06</mass>
+		<inertia x="6" y="6" z="6" />
+		<centerOfMassTransform>
+			<basis x="0" y="0" z="0" w="1" />
+			<origin x="0" y="0" z="0" />
+		</centerOfMassTransform>
+		<linearDamping>0.3</linearDamping>
+		<angularDamping>0.3</angularDamping>
+		<friction>0</friction>
+		<restitution>0</restitution>
+		<gravity-factor>1.0</gravity-factor>
+	</bone-default>
+	<bone name="ZeldaDressAA05"/>
+	<bone name="ZeldaDressBB05"/>
+	<bone name="ZeldaDressCC05"/>
+	<bone name="ZeldaDressDD05"/>
+	<bone name="ZeldaDressEE05"/>
+	<bone name="ZeldaDressFF05"/>
+	<bone name="ZeldaDressGG05"/>
+	<bone name="ZeldaDressHH05"/>
+	<bone name="ZeldaUpperAA05"/>
+	<bone name="ZeldaUpperBB05"/>
+	<bone name="ZeldaUpperCC05"/>
+
+	<bone name="ZeldaUpperAA06"/>
+	<bone name="ZeldaUpperBB06"/>
+	<bone name="ZeldaUpperCC06"/>
+	
+	<bone name="ZeldaUpperAA07"/>
+	<bone name="ZeldaUpperBB07"/>
+	<bone name="ZeldaUpperCC07"/>
+	
+	<bone name="ZeldaUpperAA08"/>
+	<bone name="ZeldaUpperBB08"/>
+	<bone name="ZeldaUpperCC08"/>
+	
+	<generic-constraint-default>
+		<frameInB>
+			<basis x="0" y="0" z="0" w="1" />
+			<origin x="0" y="0" z="0" />
+		</frameInB>
+		<useLinearReferenceFrameA>false</useLinearReferenceFrameA>
+		<linearLowerLimit x="0" y="0" z="0" />
+		<linearUpperLimit x="" y="0" z="" />
+		<angularLowerLimit x="-0.0" y="-0" z="-0.2" />
+		<angularUpperLimit x="0.2" y="0.2" z="0.2" />
+		<linearStiffness x="0" y="0" z="0" />
+		<angularStiffness x="0" y="0" z="0" />
+		<linearDamping x="0" y="0" z="0" />
+		<angularDamping x="0" y="0" z="0" />
+		<linearEquilibrium x="0" y="0" z="0" />
+		<angularEquilibrium x="0" y="0" z="0" />
+	</generic-constraint-default>
+	<constraint-group>
+		<generic-constraint bodyA="ZeldaDressAA01" bodyB="ZeldaDressAA00"/>
+		<generic-constraint bodyA="ZeldaDressAA02" bodyB="ZeldaDressAA01"/>
+		<generic-constraint bodyA="ZeldaDressAA03" bodyB="ZeldaDressAA02"/>
+		<generic-constraint bodyA="ZeldaDressAA04" bodyB="ZeldaDressAA03"/>
+		<generic-constraint bodyA="ZeldaDressAA05" bodyB="ZeldaDressAA04"/>
+	
+		<generic-constraint bodyA="ZeldaDressBB01" bodyB="ZeldaDressBB00"/>
+		<generic-constraint bodyA="ZeldaDressBB02" bodyB="ZeldaDressBB01"/>
+		<generic-constraint bodyA="ZeldaDressBB03" bodyB="ZeldaDressBB02"/>
+		<generic-constraint bodyA="ZeldaDressBB04" bodyB="ZeldaDressBB03"/>
+		<generic-constraint bodyA="ZeldaDressBB05" bodyB="ZeldaDressBB04"/>
+		
+		<generic-constraint bodyA="ZeldaDressCC01" bodyB="ZeldaDressCC00"/>
+		<generic-constraint bodyA="ZeldaDressCC02" bodyB="ZeldaDressCC01"/>
+		<generic-constraint bodyA="ZeldaDressCC03" bodyB="ZeldaDressCC02"/>
+		<generic-constraint bodyA="ZeldaDressCC04" bodyB="ZeldaDressCC03"/>
+		<generic-constraint bodyA="ZeldaDressCC05" bodyB="ZeldaDressCC04"/>
+		
+		<generic-constraint bodyA="ZeldaDressDD01" bodyB="ZeldaDressDD00"/>
+		<generic-constraint bodyA="ZeldaDressDD02" bodyB="ZeldaDressDD01"/>
+		<generic-constraint bodyA="ZeldaDressDD03" bodyB="ZeldaDressDD02"/>
+		<generic-constraint bodyA="ZeldaDressDD04" bodyB="ZeldaDressDD03"/>
+		<generic-constraint bodyA="ZeldaDressDD05" bodyB="ZeldaDressDD04"/>
+		
+		<generic-constraint bodyA="ZeldaDressEE01" bodyB="ZeldaDressEE00"/>
+		<generic-constraint bodyA="ZeldaDressEE02" bodyB="ZeldaDressEE01"/>
+		<generic-constraint bodyA="ZeldaDressEE03" bodyB="ZeldaDressEE02"/>
+		<generic-constraint bodyA="ZeldaDressEE04" bodyB="ZeldaDressEE03"/>
+		<generic-constraint bodyA="ZeldaDressEE05" bodyB="ZeldaDressEE04"/>
+		
+		<generic-constraint bodyA="ZeldaDressFF01" bodyB="ZeldaDressFF00"/>
+		<generic-constraint bodyA="ZeldaDressFF02" bodyB="ZeldaDressFF01"/>
+		<generic-constraint bodyA="ZeldaDressFF03" bodyB="ZeldaDressFF02"/>
+		<generic-constraint bodyA="ZeldaDressFF04" bodyB="ZeldaDressFF03"/>
+		<generic-constraint bodyA="ZeldaDressFF05" bodyB="ZeldaDressFF04"/>
+	
+		<generic-constraint bodyA="ZeldaDressGG01" bodyB="ZeldaDressGG00"/>
+		<generic-constraint bodyA="ZeldaDressGG02" bodyB="ZeldaDressGG01"/>
+		<generic-constraint bodyA="ZeldaDressGG03" bodyB="ZeldaDressGG02"/>
+		<generic-constraint bodyA="ZeldaDressGG04" bodyB="ZeldaDressGG03"/>
+		<generic-constraint bodyA="ZeldaDressGG05" bodyB="ZeldaDressGG04"/>
+		
+		<generic-constraint bodyA="ZeldaDressHH01" bodyB="ZeldaDressHH00"/>
+		<generic-constraint bodyA="ZeldaDressHH02" bodyB="ZeldaDressHH01"/>
+		<generic-constraint bodyA="ZeldaDressHH03" bodyB="ZeldaDressHH02"/>
+		<generic-constraint bodyA="ZeldaDressHH04" bodyB="ZeldaDressHH03"/>
+		<generic-constraint bodyA="ZeldaDressHH05" bodyB="ZeldaDressHH04"/>
+		
+		<generic-constraint bodyA="ZeldaUpperAA01" bodyB="ZeldaUpperAA00"/>
+		<generic-constraint bodyA="ZeldaUpperAA02" bodyB="ZeldaUpperAA01"/>
+		<generic-constraint bodyA="ZeldaUpperAA03" bodyB="ZeldaUpperAA02"/>
+		<generic-constraint bodyA="ZeldaUpperAA04" bodyB="ZeldaUpperAA03"/>
+		<generic-constraint bodyA="ZeldaUpperAA05" bodyB="ZeldaUpperAA04"/>
+		<generic-constraint bodyA="ZeldaUpperAA06" bodyB="ZeldaUpperAA05"/>
+		<generic-constraint bodyA="ZeldaUpperAA07" bodyB="ZeldaUpperAA06"/>
+		<generic-constraint bodyA="ZeldaUpperAA08" bodyB="ZeldaUpperAA07"/>
+	
+		<generic-constraint bodyA="ZeldaUpperBB01" bodyB="ZeldaUpperBB00"/>
+		<generic-constraint bodyA="ZeldaUpperBB02" bodyB="ZeldaUpperBB01"/>
+		<generic-constraint bodyA="ZeldaUpperBB03" bodyB="ZeldaUpperBB02"/>
+		<generic-constraint bodyA="ZeldaUpperBB04" bodyB="ZeldaUpperBB03"/>
+		<generic-constraint bodyA="ZeldaUpperBB05" bodyB="ZeldaUpperBB04"/>
+		<generic-constraint bodyA="ZeldaUpperBB06" bodyB="ZeldaUpperBB05"/>
+		<generic-constraint bodyA="ZeldaUpperBB07" bodyB="ZeldaUpperBB06"/>
+		<generic-constraint bodyA="ZeldaUpperBB08" bodyB="ZeldaUpperBB07"/>
+		
+		<generic-constraint bodyA="ZeldaUpperCC01" bodyB="ZeldaUpperCC00"/>
+		<generic-constraint bodyA="ZeldaUpperCC02" bodyB="ZeldaUpperCC01"/>
+		<generic-constraint bodyA="ZeldaUpperCC03" bodyB="ZeldaUpperCC02"/>
+		<generic-constraint bodyA="ZeldaUpperCC04" bodyB="ZeldaUpperCC03"/>
+		<generic-constraint bodyA="ZeldaUpperCC05" bodyB="ZeldaUpperCC04"/>
+		<generic-constraint bodyA="ZeldaUpperCC06" bodyB="ZeldaUpperCC05"/>
+		<generic-constraint bodyA="ZeldaUpperCC07" bodyB="ZeldaUpperCC06"/>
+		<generic-constraint bodyA="ZeldaUpperCC08" bodyB="ZeldaUpperCC07"/>
+	</constraint-group>
+	
+	<generic-constraint-default>
+		<frameInLerp>
+			<translationLerp>0</translationLerp>
+			<rotationLerp>0</rotationLerp>
+		</frameInLerp>
+		<linearLowerLimit x="-2" y="-2" z="-2"/>
+		<linearUpperLimit x="10" y="10" z="2"/>
+		<angularLowerLimit x="-9" y="-9" z="-9"/>
+		<angularUpperLimit x="9" y="9" z="9"/>
+		<linearStiffness x="0" y="0" z="0"/>
+		<angularStiffness x="0" y="0" z="0"/>
+		<linearDamping x="0" y="0" z="0" />
+		<angularDamping x="0" y="0" z="0" />
+	</generic-constraint-default>
+		<generic-constraint bodyA="ZeldaDressBB01" bodyB="ZeldaDressAA01"/>
+		<generic-constraint bodyA="ZeldaDressBB02" bodyB="ZeldaDressAA02"/>
+		<generic-constraint bodyA="ZeldaDressBB03" bodyB="ZeldaDressAA03"/>
+		<generic-constraint bodyA="ZeldaDressBB04" bodyB="ZeldaDressAA04"/>
+		<generic-constraint bodyA="ZeldaDressBB05" bodyB="ZeldaDressAA05"/>
+		
+		<generic-constraint bodyA="ZeldaDressCC01" bodyB="ZeldaDressBB01"/>
+		<generic-constraint bodyA="ZeldaDressCC02" bodyB="ZeldaDressBB02"/>
+		<generic-constraint bodyA="ZeldaDressCC03" bodyB="ZeldaDressBB03"/>
+		<generic-constraint bodyA="ZeldaDressCC04" bodyB="ZeldaDressBB04"/>
+		<generic-constraint bodyA="ZeldaDressCC05" bodyB="ZeldaDressBB05"/>
+		
+		<generic-constraint bodyA="ZeldaDressDD01" bodyB="ZeldaDressCC01"/>
+		<generic-constraint bodyA="ZeldaDressDD02" bodyB="ZeldaDressCC02"/>
+		<generic-constraint bodyA="ZeldaDressDD03" bodyB="ZeldaDressCC03"/>
+		<generic-constraint bodyA="ZeldaDressDD04" bodyB="ZeldaDressCC04"/>
+		<generic-constraint bodyA="ZeldaDressDD05" bodyB="ZeldaDressCC05"/>
+		
+		<generic-constraint bodyA="ZeldaDressEE01" bodyB="ZeldaDressDD01"/>
+		<generic-constraint bodyA="ZeldaDressEE02" bodyB="ZeldaDressDD02"/>
+		<generic-constraint bodyA="ZeldaDressEE03" bodyB="ZeldaDressDD03"/>
+		<generic-constraint bodyA="ZeldaDressEE04" bodyB="ZeldaDressDD04"/>
+		<generic-constraint bodyA="ZeldaDressEE05" bodyB="ZeldaDressDD05"/>
+		
+		<generic-constraint bodyA="ZeldaDressFF01" bodyB="ZeldaDressEE01"/>
+		<generic-constraint bodyA="ZeldaDressFF02" bodyB="ZeldaDressEE02"/>
+		<generic-constraint bodyA="ZeldaDressFF03" bodyB="ZeldaDressEE03"/>
+		<generic-constraint bodyA="ZeldaDressFF04" bodyB="ZeldaDressEE04"/>
+		<generic-constraint bodyA="ZeldaDressFF05" bodyB="ZeldaDressEE05"/>
+		
+		<generic-constraint bodyA="ZeldaDressGG01" bodyB="ZeldaDressFF01"/>
+		<generic-constraint bodyA="ZeldaDressGG02" bodyB="ZeldaDressFF02"/>
+		<generic-constraint bodyA="ZeldaDressGG03" bodyB="ZeldaDressFF03"/>
+		<generic-constraint bodyA="ZeldaDressGG04" bodyB="ZeldaDressFF04"/>
+		<generic-constraint bodyA="ZeldaDressGG05" bodyB="ZeldaDressFF05"/>
+
+		<generic-constraint bodyA="ZeldaDressHH01" bodyB="ZeldaDressGG01"/>
+		<generic-constraint bodyA="ZeldaDressHH02" bodyB="ZeldaDressGG02"/>
+		<generic-constraint bodyA="ZeldaDressHH03" bodyB="ZeldaDressGG03"/>
+		<generic-constraint bodyA="ZeldaDressHH04" bodyB="ZeldaDressGG04"/>
+		<generic-constraint bodyA="ZeldaDressHH05" bodyB="ZeldaDressGG05"/>
+		
+		<generic-constraint bodyA="ZeldaDressAA01" bodyB="ZeldaDressHH01"/>
+		<generic-constraint bodyA="ZeldaDressAA02" bodyB="ZeldaDressHH02"/>
+		<generic-constraint bodyA="ZeldaDressAA03" bodyB="ZeldaDressHH03"/>
+		<generic-constraint bodyA="ZeldaDressAA04" bodyB="ZeldaDressHH04"/>
+		<generic-constraint bodyA="ZeldaDressAA05" bodyB="ZeldaDressHH05"/>
+		
+		<generic-constraint bodyA="ZeldaUpperBB01" bodyB="ZeldaUpperAA01"/>
+		<generic-constraint bodyA="ZeldaUpperBB02" bodyB="ZeldaUpperAA02"/>
+		<generic-constraint bodyA="ZeldaUpperBB03" bodyB="ZeldaUpperAA03"/>
+		<generic-constraint bodyA="ZeldaUpperBB04" bodyB="ZeldaUpperAA04"/>
+		<generic-constraint bodyA="ZeldaUpperBB05" bodyB="ZeldaUpperAA05"/>
+		<generic-constraint bodyA="ZeldaUpperBB06" bodyB="ZeldaUpperAA06"/>
+		<generic-constraint bodyA="ZeldaUpperBB07" bodyB="ZeldaUpperAA07"/>
+		<generic-constraint bodyA="ZeldaUpperBB08" bodyB="ZeldaUpperAA08"/>
+		
+		<generic-constraint bodyA="ZeldaUpperCC01" bodyB="ZeldaUpperBB01"/>
+		<generic-constraint bodyA="ZeldaUpperCC02" bodyB="ZeldaUpperBB02"/>
+		<generic-constraint bodyA="ZeldaUpperCC03" bodyB="ZeldaUpperBB03"/>
+		<generic-constraint bodyA="ZeldaUpperCC04" bodyB="ZeldaUpperBB04"/>
+		<generic-constraint bodyA="ZeldaUpperCC05" bodyB="ZeldaUpperBB05"/>
+		<generic-constraint bodyA="ZeldaUpperCC06" bodyB="ZeldaUpperBB06"/>
+		<generic-constraint bodyA="ZeldaUpperCC07" bodyB="ZeldaUpperBB07"/>
+		<generic-constraint bodyA="ZeldaUpperCC08" bodyB="ZeldaUpperBB08"/>
+	
+	<per-triangle-shape name="upper">
+		<margin>5</margin>	
+		<prenetration>0</prenetration>
+		<shared>private</shared>
+		<tag>cloth1</tag>
+		<can-collide-with-tag>body</can-collide-with-tag>
+		<can-collide-with-tag>ground</can-collide-with-tag>		
+		<weight-threshold bone="ZeldaDressAA01">1</weight-threshold>
+		<weight-threshold bone="ZeldaDressAA02">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressAA03">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressAA04">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressAA05">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressBB01">1</weight-threshold>
+		<weight-threshold bone="ZeldaDressBB02">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressBB03">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressBB04">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressBB05">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressCC01">1</weight-threshold>
+		<weight-threshold bone="ZeldaDressCC02">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressCC03">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressCC04">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressCC05">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressDD01">1</weight-threshold>
+		<weight-threshold bone="ZeldaDressDD02">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressDD03">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressDD04">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressDD05">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressEE01">1</weight-threshold>
+		<weight-threshold bone="ZeldaDressEE02">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressEE03">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressEE04">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressEE05">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressFF01">1</weight-threshold>
+		<weight-threshold bone="ZeldaDressFF02">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressFF03">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressFF04">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressFF05">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressGG01">1</weight-threshold>
+		<weight-threshold bone="ZeldaDressGG02">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressGG03">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressGG04">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressGG05">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressHH01">1</weight-threshold>
+		<weight-threshold bone="ZeldaDressHH02">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressHH03">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressHH04">0.1</weight-threshold>
+		<weight-threshold bone="ZeldaDressHH05">0.1</weight-threshold>
+	</per-triangle-shape>
+	
+	<per-triangle-shape name="upperSMP">
+		<margin>1000</margin>	
+		<prenetration>0</prenetration>
+		<shared>private</shared>
+		<tag>cloth2</tag>
+		<can-collide-with-tag>body</can-collide-with-tag>
+		<can-collide-with-tag>ground</can-collide-with-tag>		
+		<weight-threshold bone="ZeldaUpperAA01">1</weight-threshold>
+		<weight-threshold bone="ZeldaUpperAA02">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperAA03">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperAA04">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperAA05">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperAA06">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperAA07">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperAA08">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperBB01">1</weight-threshold>
+		<weight-threshold bone="ZeldaUpperBB02">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperBB03">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperBB04">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperBB05">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperBB06">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperBB07">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperBB08">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperCC01">1</weight-threshold>
+		<weight-threshold bone="ZeldaUpperCC02">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperCC03">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperCC04">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperCC05">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperCC06">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperCC07">0.2</weight-threshold>
+		<weight-threshold bone="ZeldaUpperCC08">0.2</weight-threshold>
+	</per-triangle-shape>
+
+</system>

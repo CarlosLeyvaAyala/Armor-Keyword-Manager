@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="description.xsd">
+
+	<!-- ground -->
+	<per-triangle-shape name="VirtualGround">
+		<margin>0.5</margin>
+		<prenetration>10</prenetration>
+		<tag>ground</tag>
+		<can-collide-with-tag>cloth1</can-collide-with-tag>
+		<can-collide-with-tag>cloth2</can-collide-with-tag>
+	</per-triangle-shape>
+	
+	<!-- body -->
+	<bone name="NPC L Clavicle [LClv]"/>
+	<bone name="NPC R Clavicle [RClv]"/>
+	<bone name="NPC Spine2 [Spn2]"/>
+	
+	<bone name="ZeldaAmuletAA00"/>
+	
+	<per-triangle-shape name="VirtualBody">
+		<margin>0.2</margin>
+		<prenetration>1</prenetration>
+		<tag>body</tag>
+		<can-collide-with-tag>cloth1</can-collide-with-tag>
+		<can-collide-with-tag>cloth2</can-collide-with-tag>		
+		<weight-threshold bone="NPC L Clavicle [LClv]">0.2</weight-threshold>
+		<weight-threshold bone="NPC R Clavicle [RClv]">0.2</weight-threshold>
+		<weight-threshold bone="NPC Spine2 [Spn2]">0.2</weight-threshold>
+	</per-triangle-shape>
+	
+	<!--cloth-->
+	<bone-default>
+		<mass>0.5</mass>
+		<inertia x="3" y="3" z="3" />
+		<centerOfMassTransform>
+			<basis x="0" y="0" z="0" w="1" />
+			<origin x="0" y="0" z="0" />
+		</centerOfMassTransform>
+		<linearDamping>0.9</linearDamping>
+		<angularDamping>0.9</angularDamping>
+		<friction>0</friction>
+		<restitution>1</restitution>
+		<gravity-factor>1.0</gravity-factor>
+	</bone-default>
+	
+	<bone-default>
+		<margin-multiplier>0.01</margin-multiplier>
+	</bone-default>
+	<bone name="ZeldaAmuletAA01"/>
+	
+	<bone name="ZeldaAmuletAA02"/>
+	
+	<generic-constraint-default>
+		<frameInB>
+			<basis x="0" y="0" z="0" w="1" />
+			<origin x="0" y="0" z="0" />
+		</frameInB>
+		<useLinearReferenceFrameA>false</useLinearReferenceFrameA>
+		<linearLowerLimit x="0" y="0" z="0" />
+		<linearUpperLimit x="" y="0" z="" />
+		<angularLowerLimit x="-0.0" y="-0" z="-0.2" />
+		<angularUpperLimit x="0.2" y="0.2" z="0.2" />
+		<linearStiffness x="0" y="0" z="0" />
+		<angularStiffness x="0" y="0" z="0" />
+		<linearDamping x="0" y="0" z="0" />
+		<angularDamping x="0" y="0" z="0" />
+		<linearEquilibrium x="0" y="0" z="0" />
+		<angularEquilibrium x="0" y="0" z="0" />
+	</generic-constraint-default>
+	<constraint-group>
+		<generic-constraint bodyA="ZeldaAmuletAA01" bodyB="ZeldaAmuletAA00"/>
+		<generic-constraint bodyA="ZeldaAmuletAA02" bodyB="ZeldaAmuletAA01"/>
+	</constraint-group>
+	
+	<per-triangle-shape name="SecretStone">
+		<margin>0.2</margin>	
+		<prenetration>0</prenetration>
+		<shared>private</shared>
+		<tag>cloth1</tag>
+		<can-collide-with-tag>body</can-collide-with-tag>
+		<no-collide-with-tag>cloth2</no-collide-with-tag>		
+		<weight-threshold bone="ZeldaAmuletAA01">1</weight-threshold>
+		<weight-threshold bone="ZeldaAmuletAA02">0.1</weight-threshold>
+	</per-triangle-shape>
+	
+	<per-triangle-shape name="amulet">
+		<margin>0.2</margin>	
+		<prenetration>0</prenetration>
+		<shared>private</shared>
+		<tag>cloth2</tag>
+		<can-collide-with-tag>body</can-collide-with-tag>
+		<no-collide-with-tag>cloth1</no-collide-with-tag>			
+		<weight-threshold bone="ZeldaAmuletAA01">1</weight-threshold>
+		<weight-threshold bone="ZeldaAmuletAA02">0.1</weight-threshold>
+	</per-triangle-shape>
+
+</system>

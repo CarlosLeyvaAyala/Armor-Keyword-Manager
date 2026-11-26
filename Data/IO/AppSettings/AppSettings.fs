@@ -42,9 +42,7 @@ module Paths =
     let SpidFormsFile () = data () |> combine2' "spid forms.json"
 
     [<CompiledName "TempDir">]
-    let tempDir =
-        Path.GetTempPath()
-        |> combine2' "SIM.13C1EDD4B4034298A3A041762D6F4F68"
+    let tempDir = Path.GetTempPath() |> combine2' "SIM.13C1EDD4B4034298A3A041762D6F4F68"
 
     module Img =
         let filter = "Image files (*.jpg;*.png;*.jpeg)|*.jpg;*.png;*.jpeg"
@@ -58,10 +56,7 @@ module Paths =
             match ext with
             | IsEmptyStr -> blank
             | _ ->
-                match
-                    uId |> uIdToFileName |> changeExt ext
-                    |> combine2 (imagePath ())
-                    with
+                match uId |> uIdToFileName |> changeExt ext |> combine2 (imagePath ()) with
                 | FileExists f -> f
                 | _ -> blank
 
@@ -134,8 +129,7 @@ module Backup =
     open System.IO.Compression
 
     let SuggestedName () =
-        DateTime.Now.ToString("yyyy-MM-dd HH-mm")
-        |> sprintf "SIM %s.zip"
+        DateTime.Now.ToString("yyyy-MM-dd HH-mm") |> sprintf "SIM %s.zip"
 
     let Create filename =
         if File.Exists filename then
@@ -143,7 +137,7 @@ module Backup =
 
         ZipFile.CreateFromDirectory(Paths.data (), filename, CompressionLevel.Fastest, includeBaseDirectory = false)
 
-    let Restore filename =
+    let Restore (filename: string) =
         ZipFile.ExtractToDirectory(filename, Paths.data (), overwriteFiles = true)
 
     let CreateKeywods filename =
@@ -155,8 +149,7 @@ module Backup =
 
         Directory.CreateDirectory tmpD |> ignore
 
-        combine2 dataPath "Keywords.json"
-        |> File.copyWithSameName tmpD
+        combine2 dataPath "Keywords.json" |> File.copyWithSameName tmpD
 
         let img = combine2' @"Img\Keywords"
         (img dataPath, img tmpD) ||> Directory.copy true

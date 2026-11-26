@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="description.xsd">
+
+	<!-- ground -->
+	<per-triangle-shape name="VirtualGround">
+		<margin>0.5</margin>
+		<prenetration>10</prenetration>
+		<tag>ground</tag>
+		<can-collide-with-tag>cloth1</can-collide-with-tag>
+	</per-triangle-shape>
+	
+	<!-- body -->
+	<bone name="NPC Head [Head]"/>
+	<bone name="NPC Spine2 [Spn2]"/>
+	
+	<bone name="ZeldaHairAA00"/>
+	<bone name="ZeldaHairBB00"/>
+	
+	<per-triangle-shape name="VirtualHead">
+		<margin>0.2</margin>
+		<prenetration>1</prenetration>
+		<tag>body</tag>
+		<can-collide-with-tag>cloth1</can-collide-with-tag>
+		<weight-threshold bone="NPC Head [Head]">0.2</weight-threshold>
+		<weight-threshold bone="NPC Spine2 [Spn2]">0.2</weight-threshold>
+	</per-triangle-shape>
+	
+	<!--cloth-->
+	<bone-default>
+		<mass>0.5</mass>
+		<inertia x="3" y="3" z="3" />
+		<centerOfMassTransform>
+			<basis x="0" y="0" z="0" w="1" />
+			<origin x="0" y="0" z="0" />
+		</centerOfMassTransform>
+		<linearDamping>0.9</linearDamping>
+		<angularDamping>0.9</angularDamping>
+		<friction>0</friction>
+		<restitution>1</restitution>
+		<gravity-factor>1.0</gravity-factor>
+	</bone-default>
+	
+	<bone-default>
+		<margin-multiplier>0.01</margin-multiplier>
+	</bone-default>
+	<bone name="ZeldaHairAA01"/>
+	<bone name="ZeldaHairAA02"/>
+	<bone name="ZeldaHairAA03"/>
+	
+	<bone name="ZeldaHairBB01"/>
+	<bone name="ZeldaHairBB02"/>
+	<bone name="ZeldaHairBB03"/>
+	
+	
+	<generic-constraint-default>
+		<frameInB>
+			<basis x="0" y="0" z="0" w="1" />
+			<origin x="0" y="0" z="0" />
+		</frameInB>
+		<useLinearReferenceFrameA>false</useLinearReferenceFrameA>
+		<linearLowerLimit x="0" y="0" z="0" />
+		<linearUpperLimit x="" y="0" z="" />
+		<angularLowerLimit x="-0.0" y="-0" z="-0.2" />
+		<angularUpperLimit x="0.2" y="0.2" z="0.2" />
+		<linearStiffness x="0" y="0" z="0" />
+		<angularStiffness x="0" y="0" z="0" />
+		<linearDamping x="0" y="0" z="0" />
+		<angularDamping x="0" y="0" z="0" />
+		<linearEquilibrium x="0" y="0" z="0" />
+		<angularEquilibrium x="0" y="0" z="0" />
+	</generic-constraint-default>
+	<constraint-group>
+		<generic-constraint bodyA="ZeldaHairAA01" bodyB="ZeldaHairAA00"/>
+		<generic-constraint bodyA="ZeldaHairAA02" bodyB="ZeldaHairAA01"/>
+		<generic-constraint bodyA="ZeldaHairAA03" bodyB="ZeldaHairAA02"/>
+		
+		<generic-constraint bodyA="ZeldaHairBB01" bodyB="ZeldaHairBB00"/>
+		<generic-constraint bodyA="ZeldaHairBB02" bodyB="ZeldaHairBB01"/>
+		<generic-constraint bodyA="ZeldaHairBB03" bodyB="ZeldaHairBB02"/>
+	</constraint-group>
+	
+	<per-triangle-shape name="ZeldaHair">
+		<margin>0.1</margin>	
+		<prenetration>0</prenetration>
+		<shared>private</shared>
+		<tag>cloth1</tag>
+		<can-collide-with-tag>body</can-collide-with-tag>		
+		<weight-threshold bone="ZeldaHairAA01">1</weight-threshold>
+		<weight-threshold bone="ZeldaHairAA02">0.4</weight-threshold>
+		<weight-threshold bone="ZeldaHairAA03">0.4</weight-threshold>
+		<weight-threshold bone="ZeldaHairBB01">1</weight-threshold>
+		<weight-threshold bone="ZeldaHairBB02">0.4</weight-threshold>
+		<weight-threshold bone="ZeldaHairBB03">0.4</weight-threshold>
+	</per-triangle-shape>
+
+</system>

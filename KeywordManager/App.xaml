@@ -1,25 +1,27 @@
-﻿<Application x:Class="KeywordManager.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:KeywordManager"
-             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-             DispatcherUnhandledException="DispatchUnhandledException"
-             StartupUri="MainWindow.xaml">
-  <Application.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <md:BundledTheme BaseTheme="Light"
-                         PrimaryColor="LightBlue"
-                         SecondaryColor="Orange" />
-        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Dictionaries/KeywordColors.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Dictionaries/Dimensions.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Dictionaries/SVG.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Dictionaries/Colors.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Dictionaries/Converters.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Dictionaries/Nav.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Dictionaries/Tags.xaml" />
-      </ResourceDictionary.MergedDictionaries>
-    </ResourceDictionary>
-  </Application.Resources>
+﻿<Application
+    x:Class="KeywordManager.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:KeywordManager"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    DispatcherUnhandledException="DispatchUnhandledException"
+    StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <md:BundledTheme
+                    BaseTheme="Light"
+                    PrimaryColor="LightBlue"
+                    SecondaryColor="Orange" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Dictionaries/KeywordColors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Dictionaries/Dimensions.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Dictionaries/SVG.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Dictionaries/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Dictionaries/Converters.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Dictionaries/Nav.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Dictionaries/Tags.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>

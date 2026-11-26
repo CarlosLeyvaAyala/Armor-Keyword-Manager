@@ -10,6 +10,7 @@ module DB = Data.Items.Database
 type JsonWaedEnch =
     { formId: string
       level: int }
+
     static member toRaw(r: JsonWaedEnch) : Data.Items.RawWaedEnchantment = { formId = r.formId; level = r.level }
     static member ofRaw(r: Data.Items.RawWaedEnchantment) : JsonWaedEnch = { formId = r.formId; level = r.level }
 
@@ -60,6 +61,8 @@ module Import =
     let xEdit filename =
         filename |> File.ReadAllLines |> DB.importMany
 
+    let mutagen () = () // create Raw data
+
 [<RequireQualifiedAccess>]
 module internal Export =
     open Data.Items
@@ -71,9 +74,7 @@ module internal Export =
             DB.toArrayOfRaw ()
             |> Array.Parallel.map (
                 snd
-                >> (fun v ->
-                    ([| v.edid, v.itemType |], v.keywords |> List.toArray)
-                    ||> Array.allPairs)
+                >> (fun v -> ([| v.edid, v.itemType |], v.keywords |> List.toArray) ||> Array.allPairs)
             ) // Asociate each armor with each keyword
             |> Array.Parallel.collect id
             |> Array.Parallel.map (fun ((edid, itemType), keyword) -> itemType |> enum |> ItemType.toKID, keyword, edid)
@@ -98,8 +99,7 @@ module internal Export =
 [<RequireQualifiedAccess>]
 module internal File =
     let toJson () =
-        DB.toArrayOfRaw ()
-        |> IO.Common.toJson JsonData.ofRaw
+        DB.toArrayOfRaw () |> IO.Common.toJson JsonData.ofRaw
 
     let ofJson (d: JsonMap) =
         IO.Common.ofJson JsonData.toRaw DB.upsert d

@@ -710,3 +710,22 @@ let meshPaths =
     meshPaths
     |> List.collect (loadSkyrimNif filter tryOpenStream)
     |> renderNifToImage 900 900 angle fn)
+
+let loadNif =
+    let filter = filterCollisionBodies physicsBodies
+    let tryOpenStream = AssetResolver.tryOpenStream dataDir
+    loadSkyrimNif filter tryOpenStream
+
+let renderAsPieces meshPaths =
+    let getOutputFileName = getFileNameWithoutExtension >> regexReplace @"_\d$" ""
+
+    meshPaths
+    |> List.map (Tuple.dupMapSnd (getOutputFileName >> changeExt "png" >> fullSkyrimPath))
+    |> List.iter (fun (mesh, outImage) -> mesh |> loadNif |> renderNifToImage 500 500 0f outImage)
+
+let renderAsSet fn meshPaths =
+    let fn = fn |> sprintf "%s.png" |> fullSkyrimPath
+    meshPaths |> List.collect loadNif |> renderNifToImage 900 900 14f fn
+
+renderAsPieces meshPaths
+renderAsSet "BeanSidhe" meshPaths

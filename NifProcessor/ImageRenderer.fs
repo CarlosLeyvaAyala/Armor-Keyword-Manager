@@ -414,9 +414,8 @@ let palettePngEncoder =
         ChunkFilter = PngChunkFilter.ExcludeAll
     )
 
-//(loadDdsOrFallbackMemo: string option -> byte array * int * int)
 let renderNifToImage
-    (loadDdsOrFallbackMemo: string option -> byte array * int * int)
+    (loadDdsOrFallback: string option -> byte array * int * int)
     shadingMode
     (width: int)
     (height: int)
@@ -634,7 +633,7 @@ let renderNifToImage
         gl.EnableVertexAttribArray(2u)
 
         // Upload Diffuse Texture
-        let rgba, texW, texH = loadDdsOrFallbackMemo part.DiffuseTexturePath
+        let rgba, texW, texH = loadDdsOrFallback part.DiffuseTexturePath
         let texId = gl.GenTexture()
         gl.ActiveTexture(TextureUnit.Texture0)
         gl.BindTexture(TextureTarget.Texture2D, texId)
@@ -697,15 +696,50 @@ let renderNifToImage
     window.Close()
 
 //////////////////////////////////////////////////////////////////////////////////
-let loadDdsOrFallbackMemo =
-    DMLib.Misc.memoize (loadDdsOrFallback (AssetResolver.tryOpenStream dataDir))
+//2. Optional: Offset or Scale Individual Pieces (e.g., Weapons or Shields)
 
+//While armor pieces share the character's origin, weapons (ironsword.nif) or shields are modeled centered around (0, 0, 0) in their own local space. If you ever want to position a weapon or head piece manually before combining it, add a small helper to shift/rotate/scale a MeshPart list:
+let transformMeshes (matrix: Matrix4x4) (parts: MeshPart list) : MeshPart list =
+    parts
+    |> List.map (fun part ->
+        { part with
+            Vertices = part.Vertices |> Array.map (fun v -> Vector3.Transform(v, matrix))
+            Normals =
+                part.Normals
+                |> Array.map (fun n -> Vector3.Normalize(Vector3.TransformNormal(n, matrix))) })
 
-let mount dataDir =
+//For example, to move a head .nif up to neck height (Z + 120.0f units, which is standard Skyrim human neck height):
+
+//let headMeshes =
+//    loadSkyrimNif @"C:\SkyrimExtracted" @"C:\SkyrimExtracted\meshes\actors\character\character assets\malehead.nif"
+//    |> transformMeshes (Matrix4x4.CreateTranslation(0.0f, 0.0f, 120.0f))
+
+//let fullCharacter = combinedMeshes @ headMeshes
+//renderNifToImage fullCharacter "character_with_armor.png" 1024 1024
+
+//////////////////////////////////////////////////////////////////////////////////
+type RelativePath = string
+
+type NifRenderingFunctions =
+    {
+        /// Given a nif mesh path list, renders each nif as a separate piece in separate files.
+        renderAsPieces: RelativePath list -> unit
+        /// Given a nif mesh path list, renders each nif inside the same file.
+        /// Used to show how Armor sets look when all pieces are used together.
+        renderAsSet: RelativePath -> RelativePath list -> unit
+    }
+
+/// Get the functions needed to render nif files by relative path.
+/// This function mounts BSA files, so unmountAll is needed to be called when processing is finished
+/// to clean file locks.
+let mount skyrimDataDir physicsBodiesFilePath fileOutputDir =
+    let fullOutPath p = Path.Combine(fileOutputDir, p)
+
+    let bsaPaths = Directory.GetFiles(skyrimDataDir, "*.bsa")
+    AssetResolver.mount bsaPaths
+
     let physicsBodies =
-        Path.Combine(__SOURCE_DIRECTORY__, "PhysicsBodies.txt")
-        |> File.ReadAllLines
-        |> Array.map containsIC
+        physicsBodiesFilePath |> File.ReadAllLines |> Array.map containsIC
 
     let filterCollisionBodies physicsBodies (nif: NifFile) (shape: BSTriShape) =
         let tex = nif.GetTextureSlot(shape, 0)
@@ -717,7 +751,26 @@ let mount dataDir =
 
     let loadNif =
         let filter = filterCollisionBodies physicsBodies
-        let tryOpenStream = AssetResolver.tryOpenStream dataDir
+        let tryOpenStream = AssetResolver.tryOpenStream skyrimDataDir
         loadSkyrimNif filter tryOpenStream
 
-    ()
+    let loadDdsOrFallbackMemo =
+        DMLib.Misc.memoize (loadDdsOrFallback (AssetResolver.tryOpenStream skyrimDataDir))
+
+    let renderNifToImage = renderNifToImage loadDdsOrFallbackMemo
+
+    let renderAsPieces relMeshPaths =
+        let getOutputFileName = getFileNameWithoutExtension >> regexReplace @"_\d$" ""
+
+        relMeshPaths
+        |> List.map (Tuple.dupMapSnd (getOutputFileName >> changeExt "png" >> fullOutPath))
+        |> List.iter (fun (mesh, outImage) -> mesh |> loadNif |> renderNifToImage SmoothShaded 500 500 0f outImage)
+
+    let renderAsSet outImageFilename relMeshPaths =
+        let fn = outImageFilename |> sprintf "%s.png" |> fullOutPath
+        relMeshPaths |> List.collect loadNif |> renderNifToImage Unshaded 900 900 14f fn
+
+    { renderAsPieces = renderAsPieces
+      renderAsSet = renderAsSet }
+
+let unmountAll () = AssetResolver.unmountAll ()

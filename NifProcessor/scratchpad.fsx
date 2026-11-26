@@ -4,6 +4,7 @@
 #r "nuget: Silk.NET.Windowing, 2.23.0"
 #r "nuget: SixLabors.ImageSharp, 4.1.4"
 #r "nuget: FsToolkit.ErrorHandling, 5.2.0"
+#r "nuget: TextCopy"
 
 // DMLib includes must be deleted once nuget works again
 #I "..\..\DMLib-FSharp"
@@ -54,6 +55,43 @@ open FsToolkit.ErrorHandling
 #nowarn "9"
 open Microsoft.FSharp.NativeInterop
 
+///////////////////////////////
+#time on
+
+type NifFile with
+    member t.GetTriShapes() : BSTriShape seq =
+        t.Blocks
+        |> Seq.choose (function
+            | :? BSTriShape as s -> Some s
+            | _ -> None)
+
+    member t.GetTextureSlot(shape: BSTriShape, index: int) : string =
+        let validateIndex i =
+            if i < 0 || i >= t.Blocks.Count then None else Some i
+
+        option {
+            let! shaderIdx = validateIndex shape.ShaderPropertyRef.Index
+
+            let! shader =
+                match t.Blocks[shaderIdx] with
+                | :? BSLightingShaderProperty as o -> Some o
+                | _ -> None
+
+
+            let! texSetIdx = validateIndex shader.TextureSetRef.Index
+
+            let! texSet =
+                match t.Blocks[texSetIdx] with
+                | :? BSShaderTextureSet as o -> Some o
+                | _ -> None
+
+            return texSet.Textures[index].Content
+        }
+        |> Option.defaultValue ""
+
+let (|EmptySeq|_|) a = if Seq.isEmpty a then Some() else None
+
+///////////////////////////////
 type MeshPart =
     { Vertices: Vector3 array
       Normals: Vector3 array
@@ -109,39 +147,6 @@ void main() {
 }
 """
 
-///////////////////////////////
-type NifFile with
-    member t.GetTriShapes() : BSTriShape seq =
-        t.Blocks
-        |> Seq.choose (function
-            | :? BSTriShape as s -> Some s
-            | _ -> None)
-
-    member t.GetTextureSlot(shape: BSTriShape, index: int) : string =
-        let validateIndex i =
-            if i < 0 || i >= t.Blocks.Count then None else Some i
-
-        option {
-            let! shaderIdx = validateIndex shape.ShaderPropertyRef.Index
-
-            let! shader =
-                match t.Blocks[shaderIdx] with
-                | :? BSLightingShaderProperty as o -> Some o
-                | _ -> None
-
-
-            let! texSetIdx = validateIndex shader.TextureSetRef.Index
-
-            let! texSet =
-                match t.Blocks[texSetIdx] with
-                | :? BSShaderTextureSet as o -> Some o
-                | _ -> None
-
-            return texSet.Textures[index].Content
-        }
-        |> Option.defaultValue ""
-
-let (|EmptySeq|_|) a = if Seq.isEmpty a then Some() else None
 
 ///////////////////////////////
 
@@ -265,7 +270,7 @@ let matrixToArray (m: Matrix4x4) : float32[] =
        m.M43
        m.M44 |]
 
-let renderNifToImage (meshes: MeshPart list) (outputPath: string) (width: int) (height: int) =
+let renderNifToImage (width: int) (height: int) (outputPath: string) (meshes: MeshPart list) =
     if List.isEmpty meshes then
         failwith "No renderable shapes found in NIF."
 
@@ -489,6 +494,26 @@ let renderNifToImage (meshes: MeshPart list) (outputPath: string) (width: int) (
     gl.DeleteFramebuffer(fbo)
     window.Close()
 
+    //////////////////////////////////////////////////////////////
+let transformMeshes (matrix: Matrix4x4) (parts: MeshPart list) : MeshPart list =
+    parts
+    |> List.map (fun part ->
+        { part with
+            Vertices = part.Vertices |> Array.map (fun v -> Vector3.Transform(v, matrix))
+            Normals =
+                part.Normals
+                |> Array.map (fun n -> Vector3.Normalize(Vector3.TransformNormal(n, matrix))) })
+
+//For example, to move a head .nif up to neck height (Z + 120.0f units, which is standard Skyrim human neck height):
+
+//let headMeshes =
+//    loadSkyrimNif @"C:\SkyrimExtracted" @"C:\SkyrimExtracted\meshes\actors\character\character assets\malehead.nif"
+//    |> transformMeshes (Matrix4x4.CreateTranslation(0.0f, 0.0f, 120.0f))
+
+//let fullCharacter = combinedMeshes @ headMeshes
+//renderNifToImage fullCharacter "character_with_armor.png" 1024 1024
+//////////////////////////////////////////////////////////////
+
 
 
 let physicsBodies =
@@ -515,6 +540,18 @@ let nifPath =
 
 let outputPng = fullSkyrimPath "test_render.png"
 
-let meshes = loadSkyrimNif (filterCollisionBodies physicsBodies) dataDir nifPath
-renderNifToImage meshes outputPng 900 900
+nifPath
+|> loadSkyrimNif (filterCollisionBodies physicsBodies) dataDir
+|> renderNifToImage 900 900 outputPng
 
+
+[ @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\amulet_0.nif"
+  @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\boots_0.nif"
+  @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\circlet.nif"
+  @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\cuirass slutty_0.nif"
+  @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\earrings.nif"
+  @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\gauntlets_0.nif"
+  @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\hair.nif" ]
+|> List.map (DMLib.IO.Path.combine2 dataDir)
+|> List.collect (loadSkyrimNif (filterCollisionBodies physicsBodies) dataDir)
+|> renderNifToImage 900 900 outputPng

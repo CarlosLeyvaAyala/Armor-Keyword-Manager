@@ -177,6 +177,9 @@ module NormalizedString =
 
 [<RequireQualifiedAccess>]
 module AssetResolver =
+    /// Readers need to be stored so they can be unmounted later, because Archive.CreateReader
+    /// adds a file lock on the BSA.
+    let mutable private readers: IArchiveReader list = []
     /// Index all archived files (later BSAs overwrite earlier ones, matching Skyrim's load order)
     let mutable fileMap: Map<NormalizedString, IArchiveFile> = Map.empty
 
@@ -187,10 +190,30 @@ module AssetResolver =
             |> Seq.filter File.Exists
             |> Seq.map (fun path ->
                 let reader = Archive.CreateReader(GameRelease.SkyrimSE, path)
+                readers <- reader :: readers
 
                 reader.Files |> Seq.map (Tuple.dupMapFst (_.Path >> NormalizedString.create)))
             |> Seq.collect id
             |> Seq.fold (fun acc (k, f) -> acc |> Map.add k f) fileMap
+
+    /// Unmounts all BSA files so their file locks are freed.
+    let unmountAll () =
+        readers
+        |> List.iter (fun reader ->
+            match box reader with
+            | :? IDisposable as d -> d.Dispose()
+            | _ -> ())
+
+        readers <- []
+        fileMap <- Map.empty
+
+    /// Mounts BSAs and returns an IDisposable that calls unmountAll() when disposed.
+    /// Call it with <c>use _ = AssetResolver.mountScoped bsaFiles</c>.
+    let mountScoped bsaPaths =
+        mount bsaPaths
+
+        { new IDisposable with
+            member _.Dispose() = unmountAll () }
 
     /// Checks loose files in skyrimDataDir first, then falls back to loaded .bsa archives.
     let tryOpenStream skyrimDataDir relativePath =

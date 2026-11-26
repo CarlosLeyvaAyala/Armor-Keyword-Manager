@@ -146,9 +146,11 @@ in vec2 vTexCoord;
 
 uniform sampler2D uDiffuse;
 uniform vec3 uLightDir;
+uniform vec3 uCameraPos;
 uniform float uGamma;
 uniform float uSaturation;
-uniform int uShadingMode; // 0 = Unshaded, 1 = SmoothShaded, 2 = FlatShaded
+uniform float uRimStrength; // e.g. 0.0 = off, 0.35 = subtle rim, 0.6 = strong rim
+uniform int uShadingMode;   // 0 = Unshaded, 1 = SmoothShaded, 2 = FlatShaded
 
 out vec4 FragColor;
 
@@ -158,15 +160,24 @@ void main() {
 
     vec3 color = texColor.rgb;
 
-    // 1. Optional Directional Lighting
+    // 1. Directional Lighting + Rim Highlight
     if (uShadingMode != 0) {
         vec3 norm = (uShadingMode == 2)
             ? normalize(cross(dFdx(vFragPos), dFdy(vFragPos)))
             : normalize(vNormal);
 
+        // Key light
         float diff = max(dot(norm, normalize(uLightDir)), 0.0);
         vec3 lighting = vec3(0.40) + vec3(0.70) * diff;
         color *= lighting;
+
+        // Rim light (highlights silhouette edges facing away from the camera)
+        vec3 viewDir = normalize(uCameraPos - vFragPos);
+        float rimFactor = 1.0 - max(dot(norm, viewDir), 0.0);
+        float rim = pow(rimFactor, 4.0) * uRimStrength;
+
+        // Tint the rim slightly cool/neutral white and add it to the lit surface
+        color += vec3(0.95, 0.97, 1.0) * rim;
     }
 
     // 2. Brightness / Gamma Boost
@@ -324,6 +335,8 @@ let loadSkyrimNif filter tryOpenStream (nifRelativePath: string) : MeshPart list
     |> Seq.toList
 
 let loadDdsOrFallback tryOpenStream (ddsRelPath: string option) : byte[] * int * int =
+    printfn "Opening texture: %A" ddsRelPath
+
     match ddsRelPath |> Option.bind tryOpenStream with
     | Some stream ->
         use _ = stream
@@ -588,7 +601,6 @@ let renderNifToImage shadingMode (width: int) (height: int) angle (outputPath: s
     let mvpLoc = gl.GetUniformLocation(program, "uMVP")
     gl.UniformMatrix4(mvpLoc, 1u, false, ReadOnlySpan<float32>(mvpArray))
 
-
     let setupLight () =
         // 1. Derive camera-relative basis vectors
         let camForward = Vector3.Normalize(center - cameraPos)
@@ -601,6 +613,8 @@ let renderNifToImage shadingMode (width: int) (height: int) angle (outputPath: s
 
         let lightLoc = gl.GetUniformLocation(program, "uLightDir")
         gl.Uniform3(lightLoc, lightDir.X, lightDir.Y, lightDir.Z)
+        gl.Uniform3(gl.GetUniformLocation(program, "uCameraPos"), cameraPos.X, cameraPos.Y, cameraPos.Z)
+        gl.Uniform1(gl.GetUniformLocation(program, "uRimStrength"), 0.35f)
 
     setupLight ()
 
@@ -743,6 +757,8 @@ let transformMeshes (matrix: Matrix4x4) (parts: MeshPart list) : MeshPart list =
 
 
 
+AssetResolver.unmountAll ()
+
 let physicsBodies =
     Path.Combine(__SOURCE_DIRECTORY__, "PhysicsBodies.txt")
     |> File.ReadAllLines
@@ -755,7 +771,6 @@ let filterCollisionBodies physicsBodies (nif: NifFile) (shape: BSTriShape) =
     match tex, physicsBodies |> Array.tryFind (fun f -> f name) with
     | IsWhiteSpaceStr, Some _ -> false
     | _ -> true
-
 
 
 let bsaPaths =
@@ -813,4 +828,3 @@ let renderAsSet fn meshPaths =
 
 renderAsPieces meshPaths
 renderAsSet "BeanSidhe" meshPaths
-

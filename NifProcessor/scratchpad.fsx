@@ -111,6 +111,11 @@ type OutputImageType =
     | Jpg
     | Png
 
+type ShadingMode =
+    | Unshaded
+    | SmoothShaded
+    | FlatShaded
+
 let vertexShaderSource =
     """
 #version 330 core
@@ -121,11 +126,13 @@ layout (location = 2) in vec2 aTexCoord;
 uniform mat4 uMVP;
 
 out vec3 vFragPos;
+out vec3 vNormal;
 out vec2 vTexCoord;
 
 void main() {
     gl_Position = uMVP * vec4(aPos, 1.0);
     vFragPos = aPos;
+    vNormal = aNormal;
     vTexCoord = aTexCoord;
 }
 """
@@ -133,11 +140,15 @@ void main() {
 let fragmentShaderSource =
     """
 #version 330 core
+in vec3 vFragPos;
+in vec3 vNormal;
 in vec2 vTexCoord;
 
 uniform sampler2D uDiffuse;
+uniform vec3 uLightDir;
 uniform float uGamma;
 uniform float uSaturation;
+uniform int uShadingMode; // 0 = Unshaded, 1 = SmoothShaded, 2 = FlatShaded
 
 out vec4 FragColor;
 
@@ -145,20 +156,29 @@ void main() {
     vec4 texColor = texture(uDiffuse, vTexCoord);
     if (texColor.a < 0.1) discard;
 
-    // 1. Brightness / Gamma Boost
-    float gammaBoost = uGamma;
-    vec3 color = pow(texColor.rgb, vec3(1.0 / gammaBoost));
+    vec3 color = texColor.rgb;
 
-    // 2. Saturation Control
-    // 0.0 = grayscale, 1.0 = original saturation, 1.2 - 1.5 = richer/vibrant colors
-    float saturation = uSaturation;
+    // 1. Optional Directional Lighting
+    if (uShadingMode != 0) {
+        vec3 norm = (uShadingMode == 2)
+            ? normalize(cross(dFdx(vFragPos), dFdy(vFragPos)))
+            : normalize(vNormal);
+
+        float diff = max(dot(norm, normalize(uLightDir)), 0.0);
+        vec3 lighting = vec3(0.40) + vec3(0.70) * diff;
+        color *= lighting;
+    }
+
+    // 2. Brightness / Gamma Boost
+    color = pow(color, vec3(1.0 / uGamma));
+
+    // 3. Saturation Control
     float luminance = dot(color, vec3(0.2126, 0.7152, 0.0722));
-    color = clamp(mix(vec3(luminance), color, saturation), 0.0, 1.0);
+    color = clamp(mix(vec3(luminance), color, uSaturation), 0.0, 1.0);
 
     FragColor = vec4(color, texColor.a);
 }
 """
-
 
 ///////////////////////////////
 let dataDir = Path.Combine(__SOURCE_DIRECTORY__, "testing resources")
@@ -227,6 +247,23 @@ module AssetResolver =
     let listMountedFiles () =
         fileMap |> Map.toArray |> Array.map (fst >> NormalizedString.value)
 
+let computeSmoothNormals (verts: Vector3 array) (indices: uint16 array) : Vector3 array =
+    let norms = Array.zeroCreate<Vector3> verts.Length
+
+    for i in 0..3 .. indices.Length - 3 do
+        let i0, i1, i2 = int indices[i], int indices[i + 1], int indices[i + 2]
+        let faceNormal = Vector3.Cross(verts[i1] - verts[i0], verts[i2] - verts[i0])
+        norms[i0] <- norms[i0] + faceNormal
+        norms[i1] <- norms[i1] + faceNormal
+        norms[i2] <- norms[i2] + faceNormal
+
+    norms
+    |> Array.map (fun n ->
+        if n.LengthSquared() > 1e-6f then
+            Vector3.Normalize(n)
+        else
+            Vector3.UnitZ)
+
 let loadSkyrimNif filter tryOpenStream (nifRelativePath: string) : MeshPart list =
     use nifStream =
         match tryOpenStream nifRelativePath with
@@ -253,17 +290,17 @@ let loadSkyrimNif filter tryOpenStream (nifRelativePath: string) : MeshPart list
 
             let transformedVerts = verts |> Seq.toArray
 
+            let indices = tris |> Seq.collect (fun t -> [| t.V1; t.V2; t.V3 |]) |> Seq.toArray
+
             let normals =
                 match shape.Normals with
-                | EmptySeq -> Array.create transformedVerts.Length Vector3.UnitZ
+                | EmptySeq -> computeSmoothNormals transformedVerts indices
                 | n -> Seq.toArray n
 
             let uvs =
                 match shape.UVs with
                 | EmptySeq -> Array.zeroCreate transformedVerts.Length
                 | u -> u |> Seq.toArray |> Array.map (fun v -> Vector2(v.U, v.V))
-
-            let indices = tris |> Seq.collect (fun t -> [| t.V1; t.V2; t.V3 |]) |> Seq.toArray
 
             let texPath =
                 match nif.GetTextureSlot(shape, 0) with
@@ -409,7 +446,7 @@ let palettePngEncoder =
         ChunkFilter = PngChunkFilter.ExcludeAll
     )
 
-let renderNifToImage (width: int) (height: int) angle (outputPath: string) (meshes: MeshPart list) =
+let renderNifToImage shadingMode (width: int) (height: int) angle (outputPath: string) (meshes: MeshPart list) =
     if List.isEmpty meshes then
         failwith "No renderable shapes found in NIF."
 
@@ -533,15 +570,39 @@ let renderNifToImage (width: int) (height: int) angle (outputPath: string) (mesh
     let mvpArray = matrixToArray (view * proj)
 
     let program = createShaderProgram gl
-    gl.UseProgram(program)
-    gl.Uniform1(gl.GetUniformLocation(program, "uGamma"), 1.7f)
-    gl.Uniform1(gl.GetUniformLocation(program, "uSaturation"), 1.7f)
+
+    let setUpShader () =
+        let modeInt =
+            match shadingMode with
+            | Unshaded -> 0
+            | SmoothShaded -> 1
+            | FlatShaded -> 2
+
+        gl.UseProgram(program)
+        gl.Uniform1(gl.GetUniformLocation(program, "uGamma"), 1.7f)
+        gl.Uniform1(gl.GetUniformLocation(program, "uSaturation"), 1.7f)
+        gl.Uniform1(gl.GetUniformLocation(program, "uShadingMode"), modeInt)
+
+    setUpShader ()
 
     let mvpLoc = gl.GetUniformLocation(program, "uMVP")
     gl.UniformMatrix4(mvpLoc, 1u, false, ReadOnlySpan<float32>(mvpArray))
 
-    let lightLoc = gl.GetUniformLocation(program, "uLightDir")
-    gl.Uniform3(lightLoc, 0.5f, -1.0f, 0.8f)
+
+    let setupLight () =
+        // 1. Derive camera-relative basis vectors
+        let camForward = Vector3.Normalize(center - cameraPos)
+        let camRight = Vector3.Normalize(Vector3.Cross(camForward, Vector3.UnitZ))
+        let camUp = Vector3.Cross(camRight, camForward)
+
+        // 2. Aim light from slightly above (+0.5 Up) and to the left (-0.4 Right) of the camera lens
+        // Note: uLightDir points FROM the surface TOWARD the light source
+        let lightDir = Vector3.Normalize(-camForward - camRight * 0.4f + camUp * 0.5f)
+
+        let lightLoc = gl.GetUniformLocation(program, "uLightDir")
+        gl.Uniform3(lightLoc, lightDir.X, lightDir.Y, lightDir.Z)
+
+    setupLight ()
 
     // 4. Upload Buffers & Draw Each Shape
     let stride = 8u * uint32 sizeof<float32>
@@ -724,15 +785,15 @@ let meshPaths =
       @"meshes\yangyang\BeanSidhe\BeanSidheTop_0.nif"
       @"meshes\yangyang\BeanSidhe\BeanSidheWings_0.nif" ]
 
-0f :: [ 14.0f..5.0f..44f ]
-|> List.iter (fun angle ->
-    let fn = sprintf "render_sidhe_%02.0f_deg.png" angle |> fullSkyrimPath
-    let filter = filterCollisionBodies physicsBodies
-    let tryOpenStream = AssetResolver.tryOpenStream dataDir
+//0f :: [ 14.0f..5.0f..44f ]
+//|> List.iter (fun angle ->
+//    let fn = sprintf "render_sidhe_%02.0f_deg.png" angle |> fullSkyrimPath
+//    let filter = filterCollisionBodies physicsBodies
+//    let tryOpenStream = AssetResolver.tryOpenStream dataDir
 
-    meshPaths
-    |> List.collect (loadSkyrimNif filter tryOpenStream)
-    |> renderNifToImage 900 900 angle fn)
+//    meshPaths
+//    |> List.collect (loadSkyrimNif filter tryOpenStream)
+//    |> renderNifToImage Unshaded 900 900 angle fn)
 
 let loadNif =
     let filter = filterCollisionBodies physicsBodies
@@ -744,11 +805,12 @@ let renderAsPieces meshPaths =
 
     meshPaths
     |> List.map (Tuple.dupMapSnd (getOutputFileName >> changeExt "png" >> fullSkyrimPath))
-    |> List.iter (fun (mesh, outImage) -> mesh |> loadNif |> renderNifToImage 500 500 0f outImage)
+    |> List.iter (fun (mesh, outImage) -> mesh |> loadNif |> renderNifToImage SmoothShaded 500 500 0f outImage)
 
 let renderAsSet fn meshPaths =
     let fn = fn |> sprintf "%s.png" |> fullSkyrimPath
-    meshPaths |> List.collect loadNif |> renderNifToImage 900 900 14f fn
+    meshPaths |> List.collect loadNif |> renderNifToImage Unshaded 900 900 14f fn
 
 renderAsPieces meshPaths
 renderAsSet "BeanSidhe" meshPaths
+

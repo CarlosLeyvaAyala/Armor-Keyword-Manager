@@ -52,6 +52,8 @@ open Silk.NET.Windowing
 open SixLabors.ImageSharp
 open SixLabors.ImageSharp.PixelFormats
 open SixLabors.ImageSharp.Processing
+open SixLabors.ImageSharp.Processing.Processors.Quantization
+open SixLabors.ImageSharp.Formats.Png
 open DMLib
 open DMLib.String
 open DMLib.IO.Path
@@ -335,9 +337,65 @@ let matrixToArray (m: Matrix4x4) : float32[] =
        m.M43
        m.M44 |]
 
-let renderNifToImage (width: int) (height: int) (outputPath: string) angle (meshes: MeshPart list) =
+let cropToContent (padding: int) (img: Image<Rgba32>) =
+    let mutable minX, minY = img.Width, img.Height
+    let mutable maxX, maxY = -1, -1
+
+    img.ProcessPixelRows(fun accessor ->
+        for y in 0 .. accessor.Height - 1 do
+            let row = accessor.GetRowSpan(y)
+
+            for x in 0 .. row.Length - 1 do
+                if row[x].A > 0uy then
+                    if x < minX then
+                        minX <- x
+
+                    if x > maxX then
+                        maxX <- x
+
+                    if y < minY then
+                        minY <- y
+
+                    if y > maxY then
+                        maxY <- y
+                else
+                    // Zero out hidden RGB values so PNG DEFLATE compresses empty pixels maximally
+                    row[x] <- Rgba32(0uy, 0uy, 0uy, 0uy))
+
+    // Only crop if at least one visible pixel was found
+    if minX <= maxX && minY <= maxY then
+        let x0 = max 0 (minX - padding)
+        let y0 = max 0 (minY - padding)
+        let w = min (img.Width - x0) (maxX - minX + 1 + padding * 2)
+        let h = min (img.Height - y0) (maxY - minY + 1 + padding * 2)
+        img.Mutate(fun ctx -> ctx.Crop(Rectangle(x0, y0, w, h)) |> ignore)
+
+let optimizedPngEncoder =
+    PngEncoder(
+        CompressionLevel = PngCompressionLevel.BestCompression,
+        FilterMethod = PngFilterMethod.Adaptive,
+        ColorType = Nullable PngColorType.RgbWithAlpha,
+        ChunkFilter = PngChunkFilter.ExcludeAll
+    )
+
+let palettePngEncoder =
+    PngEncoder(
+        CompressionLevel = PngCompressionLevel.BestCompression,
+        ColorType = Nullable PngColorType.Palette,
+        Quantizer = WuQuantizer(QuantizerOptions(MaxColors = 256, TransparencyThreshold = 0.01f, Dither = null)),
+        ChunkFilter = PngChunkFilter.ExcludeAll
+    )
+
+let renderNifToImage (width: int) (height: int) angle (outputPath: string) (meshes: MeshPart list) =
     if List.isEmpty meshes then
         failwith "No renderable shapes found in NIF."
+
+    // 0. Render at 2x resolution for crisp Supersampled Anti-Aliasing (SSAA)
+    let width' = width
+    let height' = height
+    let ssFactor = 2
+    let width = width * ssFactor
+    let height = height * ssFactor
 
     let imageType =
         match outputPath with
@@ -549,20 +607,25 @@ let renderNifToImage (width: int) (height: int) (outputPath: string) angle (mesh
         gl.DeleteBuffer(vbo)
         gl.DeleteVertexArray(vao)
 
-    // 5. Read Pixels & Save Image (Runs once after all parts are drawn!)
+    // 5. Read Pixels, Auto-Crop & Save Image
     let pixels = Array.zeroCreate<byte> (width * height * 4)
     gl.ReadPixels(0, 0, uint32 width, uint32 height, PixelFormat.Rgba, PixelType.UnsignedByte, pixels.AsSpan())
 
     use outImage =
         Image.LoadPixelData<Rgba32>(ReadOnlySpan<byte>(pixels), width, height)
 
-    outImage.Mutate(fun ctx -> ctx.Flip(FlipMode.Vertical) |> ignore)
+    outImage.Mutate(fun ctx ->
+        ctx.Flip(FlipMode.Vertical) |> ignore
+        // Downsample 2x -> 1x with Lanczos3 for smooth anti-aliased silhouettes and textures
+        ctx.Resize(width', height', KnownResamplers.Lanczos3) |> ignore)
 
     match imageType with
     | Jpg -> outImage.SaveAsJpeg(outputPath)
-    | Png -> outImage.SaveAsPng(outputPath)
+    | Png ->
+        cropToContent 16 outImage
+        outImage.SaveAsPng(outputPath, palettePngEncoder)
 
-    printfn "%s was saved" outputPath
+    printfn "%s was saved (%dx%d)" outputPath outImage.Width outImage.Height
 
     // Cleanup FBO & Shader
     gl.DeleteProgram(program)
@@ -646,14 +709,4 @@ let meshPaths =
 
     meshPaths
     |> List.collect (loadSkyrimNif filter tryOpenStream)
-    |> renderNifToImage 900 900 fn angle)
-
-AssetResolver.listMountedFiles () |> Array.filter (containsIC ".nif")
-
-Directory.GetFiles(
-    @"D:\Documents\GitHub\Armor-Keyword-Manager\NifProcessor\testing resources\meshes\yangyang\BeanSidhe",
-    "*.nif"
-)
-|> Array.map (replace dataDir "" >> trimStartC '\\' >> encloseQuotes >> enclose "@" "")
-|> Array.fold smartNl ""
-|> TextCopy.ClipboardService.SetText
+    |> renderNifToImage 900 900 angle fn)

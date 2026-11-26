@@ -351,3 +351,4 @@ MigrationBackup/
 
 #Symlink added so F# interactive finds keywords and such
 Data/scripts/Data
+NifProcessor/testing resources/BeanSidhe - Textures.bsa

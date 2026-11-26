@@ -5,6 +5,7 @@
 #r "nuget: SixLabors.ImageSharp, 4.1.4"
 #r "nuget: FsToolkit.ErrorHandling, 5.2.0"
 #r "nuget: TextCopy"
+#r "nuget: Mutagen.Bethesda.Core, 0.55.0-alpha.113"
 
 // DMLib includes must be deleted once nuget works again
 #I "..\..\DMLib-FSharp"
@@ -49,13 +50,21 @@ open Silk.NET.Windowing
 open SixLabors.ImageSharp
 open SixLabors.ImageSharp.PixelFormats
 open SixLabors.ImageSharp.Processing
+open DMLib
 open DMLib.String
 open DMLib.IO.Path
 open DMLib.IO
 open FsToolkit.ErrorHandling
+open Mutagen.Bethesda
+open Mutagen.Bethesda.Archives
 
 #nowarn "9"
 open Microsoft.FSharp.NativeInterop
+
+///////////////////////////////
+// *** DELETE ME ***
+let trimStartC (c: char) (s: string) = s.TrimStart(c)
+let replaceChar (oldValue: char) newValue (s: string) = s.Replace(oldValue, newValue)
 
 ///////////////////////////////
 #time on
@@ -154,12 +163,59 @@ void main() {
 
 
 ///////////////////////////////
+let dataDir = Path.Combine(__SOURCE_DIRECTORY__, "testing resources")
 
-let loadSkyrimNif filter (skyrimDataDir: string) (nifPath: string) : MeshPart list =
-    let nif = NifFile()
+type NormalizedString = private NormalizedString of string
 
-    if nif.Load(nifPath) <> 0 then
-        failwithf "Failed to load NIF file: %s" nifPath
+module NormalizedString =
+    let private normalize =
+        replace "/" "\\"
+        >> replaceChar '\\' Path.DirectorySeparatorChar
+        >> trimStartC '\\'
+        >> toLower
+
+    let create = normalize >> NormalizedString
+    let value (NormalizedString s) = s
+
+[<RequireQualifiedAccess>]
+module AssetResolver =
+    /// Index all archived files (later BSAs overwrite earlier ones, matching Skyrim's load order)
+    let mutable fileMap: Map<NormalizedString, IArchiveFile> = Map.empty
+
+    /// Mounts a BSA to a virtual file system, overriding files when needed. This is load order dependent.
+    let mount bsaPaths =
+        fileMap <-
+            bsaPaths
+            |> Seq.filter File.Exists
+            |> Seq.map (fun path ->
+                let reader = Archive.CreateReader(GameRelease.SkyrimSE, path)
+
+                reader.Files |> Seq.map (Tuple.dupMapFst (_.Path >> NormalizedString.create)))
+            |> Seq.collect id
+            |> Seq.fold (fun acc (k, f) -> acc |> Map.add k f) fileMap
+
+    /// Checks loose files in skyrimDataDir first, then falls back to loaded .bsa archives.
+    let tryOpenStream skyrimDataDir relativePath =
+        let normalized = NormalizedString.create relativePath
+        let loosePath = normalized |> NormalizedString.value |> combine2 skyrimDataDir
+
+        match loosePath with
+        | FileExists _ -> Some(File.OpenRead loosePath :> Stream)
+        | _ -> fileMap |> Map.tryFind normalized |> Option.map (_.AsStream())
+
+    let listMountedFiles () =
+        fileMap |> Map.toArray |> Array.map (fst >> NormalizedString.value)
+
+let loadSkyrimNif filter tryOpenStream (nifRelativePath: string) : MeshPart list =
+    use nifStream =
+        match tryOpenStream nifRelativePath with
+        | Some s -> s
+        | None -> failwithf "NIF not found in loose files or BSAs: %s" nifRelativePath
+
+    let nif = NifFile(nifStream: Stream)
+
+    if not nif.Valid then
+        failwithf "Invalid NIF stream: %s" nifRelativePath
 
     nif.GetTriShapes()
     |> Seq.filter (filter nif)
@@ -209,10 +265,15 @@ let loadSkyrimNif filter (skyrimDataDir: string) (nifPath: string) : MeshPart li
                   DiffuseTexturePath = texPath })
     |> Seq.toList
 
-let loadDdsOrFallback (ddsPathOpt: string option) : byte[] * int * int =
-    match ddsPathOpt with
-    | Some path when File.Exists(path) ->
-        use image = Pfimage.FromFile(path)
+let loadDdsOrFallback tryOpenStream (ddsRelPath: string option) : byte[] * int * int =
+    match ddsRelPath |> Option.bind tryOpenStream with
+    | Some stream ->
+        use _ = stream
+        use image = Pfimage.FromStream(stream)
+
+        if image.Compressed then
+            image.Decompress()
+
         let rgba = Array.zeroCreate<byte> (image.Width * image.Height * 4)
         let bytesPerPixel = image.BitsPerPixel / 8
 
@@ -232,10 +293,11 @@ let loadDdsOrFallback (ddsPathOpt: string option) : byte[] * int * int =
 
         (rgba, image.Width, image.Height)
     | _ ->
-        // 1x1 white fallback texture if .dds is missing or still inside a .bsa
+        // Magenta fallback so missing textures are immediately obvious
         ([| 255uy; 0uy; 255uy; 255uy |], 1, 1)
 
-let loadDdsOrFallbackMemo = DMLib.Misc.memoize loadDdsOrFallback
+let loadDdsOrFallbackMemo =
+    DMLib.Misc.memoize (loadDdsOrFallback (AssetResolver.tryOpenStream dataDir))
 
 let compileShader (gl: GL) (shaderType: ShaderType) (source: string) : uint32 =
     let shader = gl.CreateShader(shaderType)
@@ -553,7 +615,11 @@ let filterCollisionBodies physicsBodies (nif: NifFile) (shape: BSTriShape) =
 
 
 
-let dataDir = Path.Combine(__SOURCE_DIRECTORY__, "testing resources")
+let bsaPaths =
+    Directory.GetFiles(@"D:\Documents\GitHub\Armor-Keyword-Manager\NifProcessor\testing resources", "*.bsa")
+
+AssetResolver.mount bsaPaths
+
 let fullSkyrimPath p = Path.Combine(dataDir, p)
 
 let nifPath =
@@ -561,25 +627,38 @@ let nifPath =
     fullSkyrimPath @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\cuirass slutty_0.nif"
 
 let meshPaths =
-    [ @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\amulet_0.nif"
-      @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\boots_0.nif"
-      @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\circlet.nif"
-      @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\cuirass slutty_0.nif"
-      @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\earrings.nif"
-      @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\gauntlets_0.nif"
-      @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\hair.nif" ]
+    //[ @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\amulet_0.nif"
+    //  @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\boots_0.nif"
+    //  @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\circlet.nif"
+    //  @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\cuirass slutty_0.nif"
+    //  @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\earrings.nif"
+    //  @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\gauntlets_0.nif"
+    //  @"meshes\SunJeongStuff\Legend of Zelda\Zonai Zelda\hair.nif" ]
+    [ @"meshes\yangyang\BeanSidhe\BeanSidheArmlets_0.nif"
+      @"meshes\yangyang\BeanSidhe\BeanSidheBracers_0.nif"
+      @"meshes\yangyang\BeanSidhe\BeanSidheCalves_0.nif"
+      @"meshes\yangyang\BeanSidhe\BeanSidhePanty_0.nif"
+      @"meshes\yangyang\BeanSidhe\BeanSidheThighs_0.nif"
+      @"meshes\yangyang\BeanSidhe\BeanSidheTop_0.nif"
+      @"meshes\yangyang\BeanSidhe\BeanSidheWings_0.nif"
+      ]
 
 0f :: [ 14.0f..5.0f..44f ]
 |> List.iter (fun angle ->
-    let fn = sprintf "render_%02.0f_deg.png" angle |> fullSkyrimPath
+    let fn = sprintf "render_sidhe_%02.0f_deg.png" angle |> fullSkyrimPath
+    let filter = filterCollisionBodies physicsBodies
+    let tryOpenStream = AssetResolver.tryOpenStream dataDir
 
     meshPaths
-    |> List.map (DMLib.IO.Path.combine2 dataDir)
-    |> List.collect (loadSkyrimNif (filterCollisionBodies physicsBodies) dataDir)
+    |> List.collect (loadSkyrimNif filter tryOpenStream)
     |> renderNifToImage 900 900 fn angle)
 
-match @"D:\Documents\GitHub\Armor-Keyword-Manager\NifProcessor\testing resources\render_00_deg.png" with
-| IsExtension "jpg" _
-| IsExtension "jpeg" _ -> "JPEG"
-| IsExtension "png" _ -> "PNG"
-| _ -> failwith "Unknown extension"
+AssetResolver.listMountedFiles () |> Array.filter (containsIC ".nif")
+
+Directory.GetFiles(
+    @"D:\Documents\GitHub\Armor-Keyword-Manager\NifProcessor\testing resources\meshes\yangyang\BeanSidhe",
+    "*.nif"
+)
+|> Array.map (replace dataDir "" >> trimStartC '\\' >> encloseQuotes >> enclose "@" "")
+|> Array.fold smartNl ""
+|> TextCopy.ClipboardService.SetText

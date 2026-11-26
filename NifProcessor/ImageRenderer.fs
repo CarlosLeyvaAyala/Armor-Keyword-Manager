@@ -27,7 +27,7 @@ open Microsoft.FSharp.NativeInterop
 
 ///////////////////////////////
 
-type NifFile with
+type private NifFile with
     member t.GetTriShapes() : BSTriShape seq =
         t.Blocks
         |> Seq.choose (function
@@ -53,30 +53,34 @@ type NifFile with
                 | :? BSShaderTextureSet as o -> Some o
                 | _ -> None
 
-            return texSet.Textures[index].Content
+            return
+                if index >= 0 && index < texSet.Textures.Count then
+                    texSet.Textures[index].Content
+                else
+                    ""
         }
         |> Option.defaultValue ""
 
-let (|EmptySeq|_|) a = if Seq.isEmpty a then Some() else None
+let private (|EmptySeq|_|) a = if Seq.isEmpty a then Some() else None
 
 ///////////////////////////////
-type MeshPart =
+type private MeshPart =
     { Vertices: Vector3 array
       Normals: Vector3 array
       UVs: Vector2 array
       Indices: uint16 array
       DiffuseTexturePath: string option }
 
-type OutputImageType =
+type private OutputImageType =
     | Jpg
     | Png
 
-type ShadingMode =
+type private ShadingMode =
     | Unshaded
     | SmoothShaded
     | FlatShaded
 
-let vertexShaderSource =
+let private vertexShaderSource =
     """
 #version 330 core
 layout (location = 0) in vec3 aPos;
@@ -97,7 +101,7 @@ void main() {
 }
 """
 
-let fragmentShaderSource =
+let private fragmentShaderSource =
     """
 #version 330 core
 in vec3 vFragPos;
@@ -154,9 +158,9 @@ void main() {
 ///////////////////////////////
 //let dataDir = Path.Combine(__SOURCE_DIRECTORY__, "testing resources")
 
-type NormalizedString = private NormalizedString of string
+type private NormalizedString = private NormalizedString of string
 
-module NormalizedString =
+module private NormalizedString =
     let private normalize =
         replace "/" "\\"
         >> replaceChar '\\' Path.DirectorySeparatorChar
@@ -167,7 +171,7 @@ module NormalizedString =
     let value (NormalizedString s) = s
 
 [<RequireQualifiedAccess>]
-module AssetResolver =
+module private AssetResolver =
     /// Readers need to be stored so they can be unmounted later, because Archive.CreateReader
     /// adds a file lock on the BSA.
     let mutable private readers: IArchiveReader list = []
@@ -218,7 +222,7 @@ module AssetResolver =
     let listMountedFiles () =
         fileMap |> Map.toArray |> Array.map (fst >> NormalizedString.value)
 
-let computeSmoothNormals (verts: Vector3 array) (indices: uint16 array) : Vector3 array =
+let private computeSmoothNormals (verts: Vector3 array) (indices: uint16 array) : Vector3 array =
     let norms = Array.zeroCreate<Vector3> verts.Length
 
     for i in 0..3 .. indices.Length - 3 do
@@ -235,7 +239,7 @@ let computeSmoothNormals (verts: Vector3 array) (indices: uint16 array) : Vector
         else
             Vector3.UnitZ)
 
-let loadSkyrimNif filter tryOpenStream (nifRelativePath: string) : MeshPart list =
+let private loadSkyrimNif filter tryOpenStream (nifRelativePath: string) : MeshPart list =
     use nifStream =
         match tryOpenStream nifRelativePath with
         | Some s -> s
@@ -294,7 +298,7 @@ let loadSkyrimNif filter tryOpenStream (nifRelativePath: string) : MeshPart list
                   DiffuseTexturePath = texPath })
     |> Seq.toList
 
-let loadDdsOrFallback tryOpenStream (ddsRelPath: string option) : byte[] * int * int =
+let private loadDdsOrFallback tryOpenStream (ddsRelPath: string option) : byte[] * int * int =
     match ddsRelPath |> Option.bind tryOpenStream with
     | Some stream ->
         use _ = stream
@@ -325,7 +329,7 @@ let loadDdsOrFallback tryOpenStream (ddsRelPath: string option) : byte[] * int *
         // Magenta fallback so missing textures are immediately obvious
         ([| 255uy; 0uy; 255uy; 255uy |], 1, 1)
 
-let compileShader (gl: GL) (shaderType: ShaderType) (source: string) : uint32 =
+let private compileShader (gl: GL) (shaderType: ShaderType) (source: string) : uint32 =
     let shader = gl.CreateShader(shaderType)
     gl.ShaderSource(shader, source)
     gl.CompileShader(shader)
@@ -336,7 +340,7 @@ let compileShader (gl: GL) (shaderType: ShaderType) (source: string) : uint32 =
 
     shader
 
-let createShaderProgram (gl: GL) : uint32 =
+let private createShaderProgram (gl: GL) : uint32 =
     let vs = compileShader gl ShaderType.VertexShader vertexShaderSource
     let fs = compileShader gl ShaderType.FragmentShader fragmentShaderSource
     let program = gl.CreateProgram()
@@ -347,7 +351,7 @@ let createShaderProgram (gl: GL) : uint32 =
     gl.DeleteShader(fs)
     program
 
-let matrixToArray (m: Matrix4x4) : float32[] =
+let private matrixToArray (m: Matrix4x4) : float32[] =
     [| m.M11
        m.M12
        m.M13
@@ -365,7 +369,7 @@ let matrixToArray (m: Matrix4x4) : float32[] =
        m.M43
        m.M44 |]
 
-let cropToContent (padding: int) (img: Image<Rgba32>) =
+let private cropToContent (padding: int) (img: Image<Rgba32>) =
     let mutable minX, minY = img.Width, img.Height
     let mutable maxX, maxY = -1, -1
 
@@ -398,7 +402,7 @@ let cropToContent (padding: int) (img: Image<Rgba32>) =
         let h = min (img.Height - y0) (maxY - minY + 1 + padding * 2)
         img.Mutate(fun ctx -> ctx.Crop(Rectangle(x0, y0, w, h)) |> ignore)
 
-let optimizedPngEncoder =
+let private optimizedPngEncoder =
     PngEncoder(
         CompressionLevel = PngCompressionLevel.BestCompression,
         FilterMethod = PngFilterMethod.Adaptive,
@@ -406,7 +410,7 @@ let optimizedPngEncoder =
         ChunkFilter = PngChunkFilter.ExcludeAll
     )
 
-let palettePngEncoder =
+let private palettePngEncoder =
     PngEncoder(
         CompressionLevel = PngCompressionLevel.BestCompression,
         ColorType = Nullable PngColorType.Palette,
@@ -414,7 +418,7 @@ let palettePngEncoder =
         ChunkFilter = PngChunkFilter.ExcludeAll
     )
 
-let renderNifToImage
+let private renderNifToImage
     (loadDdsOrFallback: string option -> byte array * int * int)
     shadingMode
     (width: int)
@@ -699,7 +703,7 @@ let renderNifToImage
 //2. Optional: Offset or Scale Individual Pieces (e.g., Weapons or Shields)
 
 //While armor pieces share the character's origin, weapons (ironsword.nif) or shields are modeled centered around (0, 0, 0) in their own local space. If you ever want to position a weapon or head piece manually before combining it, add a small helper to shift/rotate/scale a MeshPart list:
-let transformMeshes (matrix: Matrix4x4) (parts: MeshPart list) : MeshPart list =
+let private transformMeshes (matrix: Matrix4x4) (parts: MeshPart list) : MeshPart list =
     parts
     |> List.map (fun part ->
         { part with
@@ -720,7 +724,7 @@ let transformMeshes (matrix: Matrix4x4) (parts: MeshPart list) : MeshPart list =
 //////////////////////////////////////////////////////////////////////////////////
 type RelativePath = string
 
-type NifRenderingFunctions =
+type NifRenderingContext =
     {
         /// Given a nif mesh path list, renders each nif as a separate piece in separate files.
         renderAsPieces: RelativePath list -> unit
@@ -729,12 +733,32 @@ type NifRenderingFunctions =
         renderAsSet: RelativePath -> RelativePath list -> unit
     }
 
+    interface IDisposable with
+        member _.Dispose() = AssetResolver.unmountAll ()
+
+/// <summary>
+/// <para>
 /// Get the functions needed to render nif files by relative path.
+/// </para>
+/// <para>
 /// This function mounts BSA files, so unmountAll is needed to be called when processing is finished
 /// to clean file locks.
+/// </para>
+/// <example>
+/// Example:
+/// <code>
+/// use renderer = ImageRenderer.mount dataDir physicsFile outDir
+/// renderer.renderAsPieces pieces
+/// renderer.renderAsSet "iron_set" pieces
+/// </code>
+/// </example>
+/// </summary>
 let mount skyrimDataDir physicsBodiesFilePath fileOutputDir =
+    forceDir fileOutputDir
+
     let fullOutPath p = Path.Combine(fileOutputDir, p)
 
+    // TODO: Deterministic BSA load order
     let bsaPaths = Directory.GetFiles(skyrimDataDir, "*.bsa")
     AssetResolver.mount bsaPaths
 

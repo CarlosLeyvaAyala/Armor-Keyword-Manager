@@ -38,6 +38,8 @@
 #load "Types\Skyrim\EspFileName.fs"
 #load "Types\Skyrim\UniqueId.fs"
 
+#time on
+
 open System
 open System.IO
 open System.Numerics
@@ -62,12 +64,6 @@ open Mutagen.Bethesda.Archives
 open Microsoft.FSharp.NativeInterop
 
 ///////////////////////////////
-// *** DELETE ME ***
-let trimStartC (c: char) (s: string) = s.TrimStart(c)
-let replaceChar (oldValue: char) newValue (s: string) = s.Replace(oldValue, newValue)
-
-///////////////////////////////
-#time on
 
 type NifFile with
     member t.GetTriShapes() : BSTriShape seq =
@@ -255,7 +251,7 @@ let loadSkyrimNif filter tryOpenStream (nifRelativePath: string) : MeshPart list
                         | StartsWithIC "textures" -> normalized
                         | _ -> Path.Combine("textures", normalized)
 
-                    Some(Path.Combine(skyrimDataDir, withPrefix))
+                    Some(withPrefix)
 
             Some
                 { Vertices = transformedVerts
@@ -640,8 +636,7 @@ let meshPaths =
       @"meshes\yangyang\BeanSidhe\BeanSidhePanty_0.nif"
       @"meshes\yangyang\BeanSidhe\BeanSidheThighs_0.nif"
       @"meshes\yangyang\BeanSidhe\BeanSidheTop_0.nif"
-      @"meshes\yangyang\BeanSidhe\BeanSidheWings_0.nif"
-      ]
+      @"meshes\yangyang\BeanSidhe\BeanSidheWings_0.nif" ]
 
 0f :: [ 14.0f..5.0f..44f ]
 |> List.iter (fun angle ->

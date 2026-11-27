@@ -124,24 +124,25 @@ module Mo2Profile =
               "Dragonborn.esm" ]
 
         let listedActivePlugins =
-            if File.Exists(pluginsPath) then
+            match pluginsPath with
+            | FileExists _ ->
                 File.ReadAllLines(pluginsPath)
                 |> Array.choose (fun line ->
-                    let trimmed = line.Trim()
-
-                    if trimmed.StartsWith("*") then
-                        Some(trimmed.Substring(1))
-                    else
-                        None)
+                    match trim line with
+                    | StartsWith' "*" trimmed -> trimmed[1..] |> Some
+                    | _ -> None)
                 |> Array.toList
-            else
-                []
+            | _ -> []
 
         let allActiveNames =
             (baseMasters @ listedActivePlugins)
             |> List.distinctBy (fun s -> s.ToLowerInvariant())
 
-        let activePluginPaths = allActiveNames |> List.choose (tryResolveFile searchDirs)
+        let activePluginPaths =
+            allActiveNames
+            |> List.toArray
+            |> Array.Parallel.choose (tryResolveFile searchDirs)
+            |> Array.toList
 
         { ProfileName = profileName
           VanillaDataDir = vanillaDataDir
@@ -149,24 +150,12 @@ module Mo2Profile =
           OrderedBsaPaths = orderedBsaPaths
           ActivePluginPaths = activePluginPaths }
 
-    /// Lists available profile folder names inside an MO2 installation.
-    let listProfiles (mo2RootDir: string) : string list =
-        let profilesDir = Path.Combine(mo2RootDir, "profiles")
-
-        if Directory.Exists(profilesDir) then
-            Directory.GetDirectories(profilesDir)
-            |> Array.map Path.GetFileName
-            |> Array.toList
-        else
-            []
-
     /// Fallback loader for a standard non-MO2 Skyrim Data directory.
     let loadFromVanilla (vanillaDataDir: string) : SkyrimEnvironment =
         let bsaPaths =
-            if Directory.Exists(vanillaDataDir) then
-                Directory.GetFiles(vanillaDataDir, "*.bsa") |> Array.toList
-            else
-                []
+            match vanillaDataDir with
+            | DirectoryExists _ -> Directory.GetFiles(vanillaDataDir, "*.bsa") |> Array.toList
+            | _ -> []
 
         let localAppData =
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
@@ -182,22 +171,34 @@ module Mo2Profile =
               "Dragonborn.esm" ]
 
         let activeNames =
-            if File.Exists(pluginsPath) then
+            match pluginsPath with
+            | FileExists _ ->
                 File.ReadAllLines(pluginsPath)
                 |> Array.choose (fun line ->
-                    let t = line.Trim()
-                    if t.StartsWith("*") then Some(t.Substring(1)) else None)
+                    match trim line with
+                    | StartsWith' "*" t -> Some t[1..]
+                    | _ -> None)
                 |> Array.toList
-
                 |> fun listed -> (baseMasters @ listed) |> List.distinctBy (fun s -> s.ToLowerInvariant())
-            else
-                baseMasters
+            | _ -> baseMasters
 
         let activePluginPaths =
-            activeNames |> List.choose (tryResolveFile [ vanillaDataDir ])
+            activeNames
+            |> List.toArray
+            |> Array.Parallel.choose (tryResolveFile [ vanillaDataDir ])
+            |> Array.toList
 
         { ProfileName = "Vanilla"
           VanillaDataDir = vanillaDataDir
           SearchDirectories = [ vanillaDataDir ]
           OrderedBsaPaths = bsaPaths
           ActivePluginPaths = activePluginPaths }
+
+    /// Lists available profile folder names inside an MO2 installation.
+    let listProfiles (mo2RootDir: string) : string list =
+        match Path.Combine(mo2RootDir, "profiles") with
+        | DirectoryExists profilesDir ->
+            Directory.GetDirectories(profilesDir)
+            |> Array.map Path.GetFileName
+            |> Array.toList
+        | _ -> []
